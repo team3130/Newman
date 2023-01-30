@@ -75,10 +75,10 @@ public class Chassis extends SubsystemBase {
   }
 
     public boolean wheelsAreZeroed() {
-        return modules[Constants.Side.LEFT_FRONT].wheelsZeroed() &&
-        modules[Constants.Side.LEFT_BACK].wheelsZeroed() &&
-        modules[Constants.Side.RIGHT_FRONT].wheelsZeroed() &&
-        modules[Constants.Side.RIGHT_BACK].wheelsZeroed();
+        return modules[Constants.Side.LEFT_FRONT].PIDisDone() &&
+        modules[Constants.Side.LEFT_BACK].PIDisDone() &&
+        modules[Constants.Side.RIGHT_FRONT].PIDisDone() &&
+        modules[Constants.Side.RIGHT_BACK].PIDisDone();
     }
 
   public void flipBool() {
