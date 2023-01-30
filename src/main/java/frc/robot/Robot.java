@@ -5,22 +5,33 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.ZeroEverything;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  private Timer timer;
 
   private RobotContainer m_robotContainer;
 
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+    timer = new Timer();
+    timer.reset();
+    timer.start();
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    if (timer.hasElapsed(Constants.kResetTime)) {
+      timer.reset();
+      timer.stop();
+      CommandScheduler.getInstance().schedule(new ZeroEverything(m_robotContainer.getChassis()));
+    }
   }
 
   @Override

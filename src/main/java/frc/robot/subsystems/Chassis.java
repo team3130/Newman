@@ -65,13 +65,7 @@ public class Chassis extends SubsystemBase {
       modules[Constants.Side.RIGHT_FRONT] = new SwerveModule(Constants.Side.RIGHT_FRONT);
       modules[Constants.Side.RIGHT_BACK] = new SwerveModule(Constants.Side.RIGHT_BACK);
 
-      new Thread(()->{
-          try {
-              Thread.sleep(1000);
-              zeroHeading();
-          } catch (Exception e) {
-          }
-      }).start();
+      zeroHeading();
 
       n_Navx = tab.add("Navx angle", Navx.getRotation().getRadians()).getEntry();
 

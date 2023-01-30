@@ -26,6 +26,10 @@ public class RobotContainer {
   private static Joystick m_driverGamepad;
   private final Chassis m_chassis = new Chassis();
 
+  public Chassis getChassis() {
+    return m_chassis;
+  }
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings

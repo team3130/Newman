@@ -106,6 +106,8 @@ public final class Constants {
     public static double kMaxAccelerationDrive = 7;
     public static double kMaxAccelerationAngularDrive = 3;
 
+    public static double kResetTime = 1.5;
+
     public static class Side {
          public static final int LEFT_FRONT = 0;
          public static final int LEFT_BACK = 1;
