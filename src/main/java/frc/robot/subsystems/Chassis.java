@@ -74,6 +74,13 @@ public class Chassis extends SubsystemBase {
       SmartDashboard.putData(nField);
   }
 
+    public boolean wheelsAreZeroed() {
+        return modules[Constants.Side.LEFT_FRONT].wheelsZeroed() &&
+        modules[Constants.Side.LEFT_BACK].wheelsZeroed() &&
+        modules[Constants.Side.RIGHT_FRONT].wheelsZeroed() &&
+        modules[Constants.Side.RIGHT_BACK].wheelsZeroed();
+    }
+
   public void flipBool() {
       fieldRelative = !fieldRelative;
   }

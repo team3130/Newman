@@ -116,6 +116,11 @@ public class SwerveModule {
         m_driveMotor.setSelectedSensorPosition(0);
     }
 
+    public boolean wheelsZeroed() {
+        Rotation2d pos = new Rotation2d(getTurningPosition());
+        return pos.getDegrees() > 355 && pos.getDegrees() < 5;
+    }
+
     public SwerveModuleState getState() {
         return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
     }

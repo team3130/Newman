@@ -4,21 +4,20 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Chassis;
 
 /** An example command that uses an example subsystem. */
 public class ZeroWheels extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Chassis m_subsystem;
+  private final Chassis m_chassis;
   /**
    * Creates a new ExampleCommand.
    *
    * @param chassis The subsystem used by this command.
    */
   public ZeroWheels(Chassis chassis) {
-    m_subsystem = chassis;
+    m_chassis = chassis;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(chassis);
   }
@@ -31,18 +30,18 @@ public class ZeroWheels extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.turnToAngle(0);
+    m_chassis.turnToAngle(0);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_subsystem.stopModules();
+    m_chassis.stopModules();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_chassis.wheelsAreZeroed();
   }
 }
