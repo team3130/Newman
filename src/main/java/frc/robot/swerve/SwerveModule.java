@@ -118,7 +118,7 @@ public class SwerveModule {
 
     public boolean wheelsZeroed() {
         Rotation2d pos = new Rotation2d(getTurningPosition());
-        return pos.getDegrees() > 355 && pos.getDegrees() < 5;
+        return (pos.getDegrees() > 355 || pos.getDegrees() < 5) && getTurningVelocity() < 0.05;
     }
 
     public SwerveModuleState getState() {
