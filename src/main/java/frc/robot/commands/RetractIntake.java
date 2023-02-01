@@ -9,16 +9,15 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
 
-public class ToggleIntake extends CommandBase {
+public class RetractIntake extends CommandBase {
     private final Intake m_intake;
 
-    public ToggleIntake(Intake subsystem) {
+    public RetractIntake(Intake subsystem) {
         this.m_intake = subsystem;
     }
     double Speed = -.5;
     public void initialize() {
-        this.m_intake.setSpeed(Speed);
-        m_intake.ToggleLPneumatic();
+        this.m_intake.setSpeed(0.0);
         timerintake.reset();
         timerintake.start();
     }
@@ -27,7 +26,7 @@ public class ToggleIntake extends CommandBase {
 
     public void execute() {
         if (timerintake.hasElapsed(0.25)); {
-            m_intake.ToggleSPneumatic();
+            m_intake.ToggleLPneumatic();
         }
     }
 
@@ -36,7 +35,6 @@ public class ToggleIntake extends CommandBase {
     }
 
     public void end(boolean interrupted) {
-        this.m_intake.setSpeed(0.0);
-        m_intake.ToggleSPneumatic();
+
     }
 }
