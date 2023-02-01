@@ -19,6 +19,8 @@ public final class Constants {
     /**
      * CAN
      */
+    public final static int CAN_SpinnyBar = 55;
+    public final static int CAN_PNMMODULE = 1;
     public final static int CAN_LeftFrontSteer = 37;
     public final static int CAN_LeftFrontDrive = 17;
     public final static int CAN_RightFrontSteer = 14;
@@ -35,6 +37,11 @@ public final class Constants {
     public static final int[] turningId = new int[] {CAN_LeftFrontSteer, CAN_LeftBackSteer, CAN_RightFrontSteer, CAN_RightBackSteer};
     public static final int[] spinningId = new int[] {CAN_LeftFrontDrive, CAN_LeftBackDrive, CAN_RightFrontDrive, CAN_RightBackDrive};
     public final static int[] CANCoders = new int[] {CANCoderTopLeft, CANCoderBottomLeft, CANCoderTopRight, CANCoderBottomRight};
+    /**
+     * PNM ID's
+     */
+    public static final int PNM_LargeSolenoid = 0;
+    public static final int PNM_SmallSolenoid = 1;
     /**
      * Encoder offsets
      */

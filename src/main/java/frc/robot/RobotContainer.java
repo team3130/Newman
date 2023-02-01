@@ -9,11 +9,9 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.FlipFieldOrriented;
-import frc.robot.commands.TeleopDrive;
-import frc.robot.commands.ZeroEverything;
-import frc.robot.commands.ZeroWheels;
+import frc.robot.commands.*;
 import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.Intake;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -25,6 +23,7 @@ import frc.robot.subsystems.Chassis;
 public class RobotContainer {
   private static Joystick m_driverGamepad;
   private final Chassis m_chassis = new Chassis();
+  private final Intake m_intake = new Intake();
 
   public Chassis getChassis() {
     return m_chassis;
@@ -52,6 +51,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ZeroWheels(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ToggleIntake(m_intake));
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
   }
 
