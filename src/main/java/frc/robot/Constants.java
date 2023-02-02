@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -42,6 +43,10 @@ public final class Constants {
      */
     public static final int PNM_LargeSolenoid = 0;
     public static final int PNM_SmallSolenoid = 1;
+    /**
+     * Timer Settings
+     */
+    public static double timetoIntake = 0.25;
     /**
      * Encoder offsets
      */

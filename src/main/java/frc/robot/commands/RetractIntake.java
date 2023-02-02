@@ -15,7 +15,6 @@ public class RetractIntake extends CommandBase {
     public RetractIntake(Intake subsystem) {
         this.m_intake = subsystem;
     }
-    double Speed = -.5;
     public void initialize() {
         this.m_intake.setSpeed(0.0);
         timerintake.reset();
