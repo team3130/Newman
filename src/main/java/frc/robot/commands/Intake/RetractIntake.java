@@ -3,14 +3,18 @@
 // (powered by FernFlower decompiler)
 //
 
-package frc.robot.commands;
+package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
 
+import static frc.robot.Constants.timetoIntake;
+
 public class RetractIntake extends CommandBase {
     private final Intake m_intake;
+
+    private final Timer intakeTimer = new Timer();
 
     public RetractIntake(Intake subsystem) {
         this.m_intake = subsystem;
@@ -19,14 +23,13 @@ public class RetractIntake extends CommandBase {
     private boolean IntakeRan = false;
     public void initialize() {
         this.m_intake.setSpeed(0.0);
-        timerintake.reset();
-        timerintake.start();
+        intakeTimer.reset();
+        intakeTimer.start();
     }
-    private final Timer timerintake = new Timer();
-    private final double timetoIntake = 0.25;
+
 
     public void execute() {
-        if (timerintake.hasElapsed(0.25)) {
+        if (intakeTimer.hasElapsed(timetoIntake)) {
             m_intake.ToggleLPneumatic();
             IntakeRan = true;
         }
