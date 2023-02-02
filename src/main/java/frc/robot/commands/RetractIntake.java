@@ -15,6 +15,8 @@ public class RetractIntake extends CommandBase {
     public RetractIntake(Intake subsystem) {
         this.m_intake = subsystem;
     }
+
+    private boolean IntakeRan = false;
     public void initialize() {
         this.m_intake.setSpeed(0.0);
         timerintake.reset();
@@ -24,16 +26,16 @@ public class RetractIntake extends CommandBase {
     private final double timetoIntake = 0.25;
 
     public void execute() {
-        if (timerintake.hasElapsed(0.25)); {
+        if (timerintake.hasElapsed(0.25)) {
             m_intake.ToggleLPneumatic();
+            IntakeRan = true;
         }
     }
-
-    public boolean isFinished() {
-        return false;
+    public boolean isFinished () {
+        return IntakeRan;
     }
 
     public void end(boolean interrupted) {
-
+        IntakeRan = false;
     }
 }

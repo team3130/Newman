@@ -20,14 +20,14 @@ public class DeployIntake extends CommandBase {
     public static Timer timerintake = new Timer();
     public double Speed = -.5;
     public void initialize() {
-        this.m_intake.setSpeed(Speed);
         m_intake.ToggleLPneumatic();
         timerintake.reset();
         timerintake.start();
     }
     public void execute() {
-        if (timerintake.hasElapsed(timetoIntake)); {
+        if (timerintake.hasElapsed(timetoIntake)) {
             m_intake.ToggleSPneumatic();
+            this.m_intake.setSpeed(Speed);
         }
     }
 
