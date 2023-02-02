@@ -64,6 +64,66 @@ public class Navx {
     }
 
     /**
+     * Returns the current yaw of the Navx. If the Navx is not present, will return NaN.
+     *
+     * @return angle in degrees (-180, 180)
+     */
+    public static double getYaw() {
+        if (m_bNavXPresent) {
+            return m_navX.getYaw();
+        }
+        return Double.NaN;
+    }
+    
+    /**
+     * Returns the current pitch of the Navx. If the Navx is not present, will return NaN.
+     *
+     * @return angle in degrees (-180, 180)
+     */
+    public static double getPitch() {
+        if (m_bNavXPresent) {
+            return m_navX.getPitch();
+        }
+        return Double.NaN;
+    }
+
+    /**
+     * Returns the rotation rate of the Navx along the Y axis (Pitch). If the Navx is not present, will return NaN.
+     *
+     * @return angle in degrees (-180, 180)
+     */
+    public static double getPitchAccel() {
+        if (m_bNavXPresent) {
+            return m_navX.getRawGyroX();
+        }
+        return Double.NaN;
+    }
+
+    /**
+     * Returns the current roll of the Navx. If the Navx is not present, will return NaN.
+     *
+     * @return angle in degrees (-180, 180)
+     */
+    public static double getRoll() {
+        if (m_bNavXPresent) {
+            return m_navX.getRoll();
+        }
+        return Double.NaN;
+    }
+
+    /**
+     * Returns the rotation rate of the Navx along the Y axis (Roll). If the Navx is not present, will return NaN.
+     *
+     * @return angle in degrees (-180, 180)
+     */
+    public static double getRollAccel() {
+        if (m_bNavXPresent) {
+            return m_navX.getRawGyroY();
+        }
+        return Double.NaN;
+    }
+
+    /**
      * Returns the current rate of change of the robots heading
      *
      * <p> getRate() returns the rate of change of the angle the robot is facing,

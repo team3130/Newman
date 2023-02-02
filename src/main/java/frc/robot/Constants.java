@@ -90,12 +90,20 @@ public final class Constants {
 
     public static final boolean kNavxReversed = true;
 
-
+    //Swerve PID values
     public static double SwerveKp = 0.5;
     public static double SwerveKi = 0;
     public static double SwerveKd = 0.01;
     public static double SwerveKf = 0;
 
+    //Balancing PID values
+    public static double BalanceKp = 0.5;
+    public static double BalanceKi = 0;
+    public static double BalanceKd = 0.01;
+    public static double BalanceKf = 0;
+    
+    //TODO: Find a good value for this idk
+    public static double BalanceConstrain = 300;
 
     public static double openLoopRampRate = 0.7;
 
