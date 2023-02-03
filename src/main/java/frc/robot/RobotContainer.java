@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.Balance;
 import frc.robot.commands.FlipFieldOrriented;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ZeroEverything;
@@ -52,6 +53,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ZeroWheels(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new Balance(m_chassis));
+    
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
   }
 
