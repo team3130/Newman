@@ -9,6 +9,9 @@ import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
@@ -40,6 +43,16 @@ public class Balance extends CommandBase {
   private double accelerationRoll;
   private double accelerationTilt;
   private double tiltSum = 0;
+  
+
+  private static ShuffleboardTab tab = Shuffleboard.getTab("Chassis");
+
+  private final GenericEntry P = tab.add("Balancer P", Constants.BalanceKp).getEntry();
+  private final GenericEntry I = tab.add("Balancer I", Constants.BalanceKi).getEntry();
+  private final GenericEntry D = tab.add("Balancer D", Constants.BalanceKd).getEntry();
+  private final GenericEntry F = tab.add("Balancer F", Constants.BalanceKf).getEntry();
+  private final GenericEntry Constrain = tab.add("Balancer F", Constants.BalanceConstrain).getEntry();
+
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -53,11 +66,11 @@ public class Balance extends CommandBase {
     tilt = Math.atan(Math.sqrt(Math.pow(Math.tan(pitch),2) + Math.pow(Math.tan(roll),2)));
     accelerationTilt = Math.atan(Math.sqrt(Math.pow(Math.tan(accelerationPitch),2) + Math.pow(Math.tan(accelerationRoll),2)));
     tiltSum += tilt;
-    if (tiltSum < -Constants.BalanceConstrain) {
-      tiltSum = -Constants.BalanceConstrain;
+    if (tiltSum < -Constrain.getDouble(Constants.BalanceConstrain)) {
+      tiltSum = -Constrain.getDouble(Constants.BalanceConstrain);
     } 
-    else if (tiltSum > Constants.BalanceConstrain) {
-      tiltSum = Constants.BalanceConstrain;
+    else if (tiltSum > Constrain.getDouble(Constants.BalanceConstrain)) {
+      tiltSum = Constrain.getDouble(Constants.BalanceConstrain);
     } 
      
     int sign = 0;
@@ -75,7 +88,7 @@ public class Balance extends CommandBase {
     }
 
     //TODO: Tune PID values
-    double magnitude = (Constants.BalanceKp * tilt + Constants.BalanceKi * tiltSum + Constants.BalanceKd * accelerationTilt + Constants.BalanceKf) * sign;
+    double magnitude = (P.getDouble(Constants.BalanceKp) * tilt + I.getDouble(Constants.BalanceKi) * tiltSum + D.getDouble(Constants.BalanceKd) * accelerationTilt + F.getDouble(Constants.BalanceKf)) * sign;
     double direction = Math.atan2(Math.tan(roll),Math.tan(pitch)); //in radians???
     
     double x = magnitude * Math.cos(direction);

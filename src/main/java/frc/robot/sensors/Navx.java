@@ -153,5 +153,9 @@ public class Navx {
 
     public static void outputToShuffleboard() {
         SmartDashboard.putNumber("NavX angle", getRotation().getDegrees());
+        SmartDashboard.putNumber("NavX Yaw", getYaw());
+        SmartDashboard.putNumber("NavX Pitch", getPitch());
+        SmartDashboard.putNumber("NavX Roll", getRoll());
+        
     }
 }
