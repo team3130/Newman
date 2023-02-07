@@ -16,8 +16,6 @@ public class DeployIntake extends CommandBase {
 
     public static Timer timerintake = new Timer();
 
-    public double speed = -.5;
-
     public DeployIntake(Intake subsystem) {
         this.m_intake = subsystem;
     }
@@ -31,7 +29,7 @@ public class DeployIntake extends CommandBase {
     public void execute() {
         if (timerintake.hasElapsed(timetoIntake)) {
             m_intake.ToggleSPneumatic();
-            this.m_intake.setSpeed(speed);
+            this.m_intake.setSpeed();
         }
     }
 
@@ -40,7 +38,7 @@ public class DeployIntake extends CommandBase {
     }
 
     public void end(boolean interrupted) {
-        this.m_intake.setSpeed(0.0);
+        this.m_intake.stop();
         m_intake.ToggleSPneumatic();
     }
 }

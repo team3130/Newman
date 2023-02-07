@@ -22,7 +22,6 @@ public class RetractIntake extends CommandBase {
 
     private boolean IntakeRan = false;
     public void initialize() {
-        this.m_intake.setSpeed(0.0);
         intakeTimer.reset();
         intakeTimer.start();
     }
