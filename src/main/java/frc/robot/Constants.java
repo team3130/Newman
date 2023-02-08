@@ -31,6 +31,11 @@ public final class Constants {
     public final static int CANCoderBottomRight = 11;
     public final static int CANCoderTopLeft = 9;
     public final static int CANCoderBottomLeft = 3;
+    public final static int CAN_RotaryArm = 18;
+    public final static int CAN_ExtensionMotor = 16;
+    public final static int CAN_PNM = 33;
+    public final static int PNM_Grabber = 24;
+
     // Order should match side
     public static final int[] turningId = new int[] {CAN_LeftFrontSteer, CAN_LeftBackSteer, CAN_RightFrontSteer, CAN_RightBackSteer};
     public static final int[] spinningId = new int[] {CAN_LeftFrontDrive, CAN_LeftBackDrive, CAN_RightFrontDrive, CAN_RightBackDrive};
