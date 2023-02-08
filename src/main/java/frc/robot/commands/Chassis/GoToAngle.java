@@ -2,46 +2,56 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.Chassis;
 
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Chassis;
 
 /** An example command that uses an example subsystem. */
-public class ZeroWheels extends CommandBase {
+public class GoToAngle extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Chassis m_chassis;
+  private final Chassis m_subsystem;
+  private SwerveModuleState desiredState;
+  private SwerveModuleState[] states;
+
+  private final double point;
   /**
    * Creates a new ExampleCommand.
    *
-   * @param chassis The subsystem used by this command.
+   * @param subsystem The subsystem used by this command.
    */
-  public ZeroWheels(Chassis chassis) {
-    m_chassis = chassis;
+  public GoToAngle(Chassis subsystem, double point) {
+    m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(chassis);
+    addRequirements(subsystem);
+    this.point = point;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_subsystem.turnToAngle(point);
+    desiredState = new SwerveModuleState();
+    states = new SwerveModuleState[]{desiredState, desiredState, desiredState, desiredState};
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_chassis.turnToAngle(0);
+
+  m_subsystem.setModuleStates(states);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_chassis.stopModules();
+    m_subsystem.stopModules();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_chassis.wheelsAreZeroed();
+    return false;
   }
 }
