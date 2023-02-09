@@ -5,11 +5,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Hopper;
 
 /** An example command that uses an example subsystem. */
-public class HopperSpin extends CommandBase {
+public class HopperStop extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Hopper m_hopper;
 
@@ -18,7 +17,7 @@ public class HopperSpin extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public HopperSpin(Hopper subsystem) {
+  public HopperStop(Hopper subsystem) {
     m_hopper = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -27,7 +26,7 @@ public class HopperSpin extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_hopper.updateOutputSpeed();
+    m_hopper.updateOutputSpeed(0);
     m_hopper.spinMotor();
   }
 

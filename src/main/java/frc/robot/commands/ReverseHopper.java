@@ -26,7 +26,7 @@ public class ReverseHopper extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_hopper.spinMotor(-0.6);
+    m_hopper.spinMotor();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,7 +36,7 @@ public class ReverseHopper extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_hopper.spinMotor(0);
+    m_hopper.spinMotor();
   }
 
   // Returns true when the command should end.

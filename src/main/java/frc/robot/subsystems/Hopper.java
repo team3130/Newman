@@ -21,11 +21,16 @@ public class Hopper extends SubsystemBase {
         leftwheel.configFactoryDefault();
         rightwheel.configFactoryDefault();
     }
-public void spinMotor (double output) {
-        leftwheel.set(ControlMode.PercentOutput, output);
-        rightwheel.set(ControlMode.PercentOutput, output);
+public void spinMotor () {
+        leftwheel.set(ControlMode.PercentOutput, m_outputspeed);
+        rightwheel.set(ControlMode.PercentOutput, m_outputspeed);
 }
 
+
+public void hopperStop (){
+        leftwheel.set(ControlMode.PercentOutput, m_outputspeed);
+        rightwheel.set(ControlMode.PercentOutput, m_outputspeed);
+}
 public void updateOutputSpeed (){
         m_outputspeed = n_outputentry.getDouble(m_outputspeed);
 }
