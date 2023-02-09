@@ -4,6 +4,7 @@
 package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -12,6 +13,8 @@ public class Hopper extends SubsystemBase {
     protected final WPI_TalonSRX leftwheel;
     protected final WPI_TalonSRX rightwheel;
     private static ShuffleboardTab TAB = Shuffleboard.getTab("Hopper");
+    private double m_outputspeed = 0.45;
+    private final GenericEntry n_outputentry = TAB.add("HopperOutput", m_outputspeed).getEntry();
     public Hopper() {
         leftwheel = new WPI_TalonSRX(Constants.CAN_hopperleft);
         rightwheel = new WPI_TalonSRX(Constants.CAN_hopperright);
@@ -22,6 +25,10 @@ public void spinMotor (double output) {
         leftwheel.set(ControlMode.PercentOutput, output);
         rightwheel.set(ControlMode.PercentOutput, output);
 }
+
+public void updateOutputSpeed (){
+        m_outputspeed = n_outputentry.getDouble(m_outputspeed);
+}
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
@@ -31,4 +38,3 @@ public void spinMotor (double output) {
         // This method will be called once per scheduler run during simulation
     }
 }
-//sus
