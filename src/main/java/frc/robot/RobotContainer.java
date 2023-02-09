@@ -54,5 +54,4 @@ public class RobotContainer {
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new HopperSpin(m_hopper));
   }
-
 }
