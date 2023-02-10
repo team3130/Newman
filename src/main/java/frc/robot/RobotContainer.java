@@ -4,16 +4,29 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.FlipFieldOrriented;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ZeroEverything;
 import frc.robot.commands.ZeroWheels;
 import frc.robot.subsystems.Chassis;
+
+import java.io.IOException;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -25,6 +38,8 @@ import frc.robot.subsystems.Chassis;
 public class RobotContainer {
   private static Joystick m_driverGamepad;
   private final Chassis m_chassis = new Chassis();
+  private Command auton_command;
+
 
   public Chassis getChassis() {
     return m_chassis;
@@ -53,6 +68,77 @@ public class RobotContainer {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ZeroWheels(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
+  }
+  public void generateAutonCommand() {
+    Trajectory trajectory3;
+    TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Constants.kPhysicalMaxSpeedMetersPerSecond / 4, Constants.kMaxAccelerationDrive / 8)
+            .setKinematics(m_chassis.getKinematics());
+/*   Trajectory trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0,0, new Rotation2d(0)), List.of(new Translation2d(0.5, 0)),
+            new Pose2d(1,0, new Rotation2d(Math.toRadians(45))), trajectoryConfig);*/
+   /* Trajectory trajectory1 = TrajectoryGenerator.generateTrajectory(List.of(
+            new Pose2d(0, 0, new Rotation2d(0)),
+            new Pose2d(2, 0, new Rotation2d(Math.toRadians(0)))
+    ), trajectoryConfig);
+    Trajectory trajectory2 = TrajectoryGenerator.generateTrajectory(List.of(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(3, 0, new Rotation2d(Math.toRadians(90)))), trajectoryConfig);*/
+    /*    Trajectory trajectory3 = new Trajectory();*/
+
+    PathPlannerTrajectory trajectoryPlanned = PathPlanner.loadPath("Desperate", new PathConstraints(2, 2));
+   /* PathPlannerTrajectory trajectoryPlanned = PathPlanner.generatePath(new PathConstraints(2, 2), List.of(
+            new PathPoint(new Translation2d(0, 0), new Rotation2d(0), new Rotation2d(0)),
+            new PathPoint(new Translation2d(3, 0), new Rotation2d(Math.toRadians(0)), new Rotation2d(Math.toRadians(90))))); */
+   /* PathPlannerTrajectory trajectoryPlanned = PathPlanner.generatePath(new PathConstraints(2,2), List.of(
+            new PathPoint(new Translation2d(0,0), new Rotation2d(0), new Rotation2d(0) ),
+            new PathPoint(new Translation2d(1.5, 0.1), new Rotation2d(Math.toRadians(30)), new Rotation2d(0)), new PathPoint(new Translation2d(3,1),
+                    new Rotation2d(Math.toRadians(90)), new Rotation2d(0)), new PathPoint(new Translation2d(2.3,1.5),  new Rotation2d(Math.toRadians(120)), new Rotation2d(0)),
+                    new PathPoint( new Translation2d(1,2),  new Rotation2d(Math.toRadians(180)), new Rotation2d(0)),
+                    new PathPoint(new Translation2d(1.5, 2.2), new Rotation2d(0), new Rotation2d(0)),
+                    new PathPoint(new Translation2d(2.25, 2.5), new Rotation2d(Math.toRadians(30)), new Rotation2d(0)),
+                    new PathPoint(new Translation2d(3,3.25),  new Rotation2d(Math.toRadians(90)), new Rotation2d(0)),
+                    new PathPoint(new Translation2d(2.75, 4), new Rotation2d(Math.toRadians(120)), new Rotation2d(0)),
+                    new PathPoint(new Translation2d(0,4.5),  new Rotation2d(Math.toRadians(180)), new Rotation2d(0))));
+                    */
+    //start(ish) of driver vs auton
+   /*  PathPlannerTrajectory trajectoryPlanned = PathPlanner.generatePath(new PathConstraints(2,2), List.of(
+            new PathPoint(new Translation2d(0,0), new Rotation2d(0), new Rotation2d(0)),
+            new PathPoint(new Translation2d(0,1.1938), new Rotation2d(Math.toRadians(90)), new Rotation2d(0)),
+            new PathPoint(new Translation2d(-4.527, 1.1938), new Rotation2d(Math.toRadians(180)), new Rotation2d(0)),
+            new PathPoint(new Translation2d(-4.527,3.9574), new Rotation2d(Math.toRadians(270)), new Rotation2d(0)),
+            new PathPoint(new Translation2d(0,1.524), new Rotation2d(Math.toRadians(0)), new Rotation2d(0)),
+            new PathPoint(new Translation2d(0,-0.889), new Rotation2d(Math.toRadians(270)), new Rotation2d(0))),
+            new PathPoint(new Translation2d(-3.429,-0.889), new Rotation2d(Math.toRadians(180)), new Rotation2d(0)),
+            new PathPoint(new Translation2d(-3.429, -3.429),new Rotation2d(Math.toRadians(270), new Rotation2d(0))),
+            new PathPoint(new Translation2d())
+    );
+    */
+
+        try {
+      trajectory3 = TrajectoryUtil.fromPathweaverJson(Filesystem.getDeployDirectory().toPath().resolve("pathplanner/Forward 3 Meters and 90 degrees.path"));
+    }
+    catch (IOException e) {
+      DriverStation.reportError("Couldn't read file", false);
+    }
+    // System.out.println(trajectory2.toString());
+    /*  Trajectory trajectory = TrajectoryGenerator.generateTrajectory(List.of(new Pose2d(0,0,new Rotation2d(0)),
+            new Pose2d(1.5, 0.1, new Rotation2d(Math.toRadians(30))), new Pose2d(3, 1, new Rotation2d(Math.toRadians(90))),
+            new Pose2d(2.3, 1.5, new Rotation2d(Math.toRadians(120))), new Pose2d(1, 2, new Rotation2d(Math.toRadians(180))),
+            new Pose2d(1.25, 2.2, new Rotation2d(Math.toRadians(0))), new Pose2d(2.25, 2.5, new Rotation2d(Math.toRadians(30))),
+            new Pose2d(3, 3.25, new Rotation2d(Math.toRadians(90))), new Pose2d(2.75, 4, new Rotation2d(Math.toRadians(120))),
+            new Pose2d(0,4.5, new Rotation2d(Math.toRadians(180)))), trajectoryConfig); */
+    PIDController xController = new PIDController(Constants.kPXController, Constants.kIXController,Constants.kDXController);
+    PIDController yController = new PIDController(Constants.kPYController, Constants.kIYController ,Constants.kDYController);
+    HolonomicDriveController holonomicDriveController = new HolonomicDriveController(xController, yController, new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, 0, Constants.kThetaControllerConstraints));
+
+    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+            trajectoryPlanned,
+            m_chassis::getPose2d,
+            m_chassis.getKinematics(),
+            holonomicDriveController,
+            () -> {return trajectoryPlanned.getEndState().holonomicRotation;},
+            m_chassis::setModuleStates,
+            m_chassis);
+
+    auton_command = new SequentialCommandGroup(new InstantCommand(()->m_chassis.resetOdometry(trajectoryPlanned.getInitialPose())),
+            swerveControllerCommand, new InstantCommand(m_chassis::stopModules));
   }
 
 }

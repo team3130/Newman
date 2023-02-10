@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -57,6 +58,20 @@ public final class Constants {
     public static final double DriveTicksToMetersPerSecond = DriveTicksToMeters * 10; // multiply by velocity
     public final static double kMaxSteerVoltage = 5d;
     public final static double kMaxDriveVoltage = 9d;
+
+    public static final double kPXController = 3;
+    public static final double kIXController = 0.5;
+    public static final double kDXController = 0;
+    public static final double kPYController = 3;
+    public static final double kIYController = 0.5;
+    public static final double kDYController = 0;
+    public static final double kPThetaController = 5;
+    public static final double kIThetaController = 0;
+    public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI;
+    public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
+    public static final double kMaxAngularSpeedRadiansPerSecond =  kPhysicalMaxAngularSpeedRadiansPerSecond;
+    public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
+            kMaxAngularSpeedRadiansPerSecond, kMaxAngularAccelerationRadiansPerSecondSquared);
 
     /**
      * Length and width as measured as distances between center of wheels

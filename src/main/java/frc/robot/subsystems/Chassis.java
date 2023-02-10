@@ -179,6 +179,14 @@ public class Chassis extends SubsystemBase {
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
+    public Pose2d getPose2d() {
+        return m_odometry.getEstimatedPosition();
+    }
+
+    public void resetOdometry(Pose2d pose) {
+        m_odometry.resetPosition(getRotation2d(), generatePoses(), pose);
+    }
+
 
     public void resetEncoders() {
       for (int i = 0; i < modules.length; i++) {
