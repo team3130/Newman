@@ -60,8 +60,6 @@ public class RobotContainer {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new DeployIntake(m_intake));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).onFalse(new RetractIntake(m_intake));
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).onTrue(new TogLPneu(m_intake));
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RBUMPER).onTrue(new TogSPneu(m_intake));
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new ActuateBigArms(m_intake));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new ActuateSmallArms(m_intake));
