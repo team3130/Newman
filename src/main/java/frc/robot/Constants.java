@@ -113,19 +113,57 @@ public final class Constants {
 
     public static double kResetTime = 1.5;
 
-    public  static double placementArmGearboxRatio = 16d/61d;
-    public static double getPlacementArmGearInRatio = 12d/60d;
+    public abstract class RangeBasedMotor {
+        public double placementArmGearboxRatio;
+        public double getPlacementArmGearInRatio;
+        public double radiansToTicksPlacement;
+        public double ticksToRadiansPlacement;
+        public double placementArmP;
+        public double placementArmI;
+        public double placementArmD;
+        public double placementArmFDown;
+        public double placementArmFUp;
+        public double maxVelocityPlacementArm;
+        public double maxAccelerationPlacementArm;
+        public int sStrengthPlacementArm;
+        public int CAN_ID;
+    }
 
-    public static final double ticksToRadiansPlacement = kEncoderResolution * 2 * Math.PI * placementArmGearboxRatio * getPlacementArmGearInRatio;
-    public static final double radiansToTicksPlacement = 1/ticksToRadiansPlacement;
-    public static double placementArmP = 5.12295e-5 / 2;
-    public static double placementArmI = 0;
-    public static double placementArmD = 0;
-    public static double placementArmFDown = 0;
-    public static double placementArmFUp = 0;
-    public static double maxVelocityPlacementArm = Math.PI/4;
-    public static double maxAccelerationPlacementArm = Math.PI/8;
-    public static int sStrengthPlacementArm = 0;
+    public class RotaryMotor extends RangeBasedMotor {
+        public RotaryMotor() {
+            placementArmGearboxRatio = 16d/61d;
+            getPlacementArmGearInRatio = 12d/60d;
+            ticksToRadiansPlacement = kEncoderResolution * 2 * Math.PI * placementArmGearboxRatio * getPlacementArmGearInRatio;
+            radiansToTicksPlacement = 1/ticksToRadiansPlacement;
+            placementArmP = 5.12295e-5 / 2;
+            placementArmI = 0;
+            placementArmD = 0;
+            placementArmFDown = 0;
+            placementArmFUp = 0;
+            maxVelocityPlacementArm = Math.PI/4;
+            maxAccelerationPlacementArm = Math.PI/8;
+            sStrengthPlacementArm = 0;
+            CAN_ID = CAN_RotaryArm;
+        }
+    }
+
+    public class ExtensionMotor extends RangeBasedMotor {
+        public ExtensionMotor() {
+            placementArmGearboxRatio = 16d / 61d;
+            getPlacementArmGearInRatio = 12d / 60d;
+            ticksToRadiansPlacement = kEncoderResolution * 2 * Math.PI * placementArmGearboxRatio * getPlacementArmGearInRatio;
+            radiansToTicksPlacement = 1 / ticksToRadiansPlacement;
+            placementArmP = 5.12295e-5 / 2;
+            placementArmI = 0;
+            placementArmD = 0;
+            placementArmFDown = 0;
+            placementArmFUp = 0;
+            maxVelocityPlacementArm = Math.PI / 4;
+            maxAccelerationPlacementArm = Math.PI / 8;
+            sStrengthPlacementArm = 0;
+            CAN_ID = CAN_ExtensionMotor;
+        }
+    }
 
     public static class Side {
          public static final int LEFT_FRONT = 0;
