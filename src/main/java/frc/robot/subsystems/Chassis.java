@@ -17,11 +17,9 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.Constants;
 import frc.robot.sensors.Navx;
 import frc.robot.swerve.SwerveModule;
-
-import java.util.Arrays;
 
 
 public class Chassis extends SubsystemBase {

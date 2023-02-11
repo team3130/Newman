@@ -8,12 +8,11 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.Constants;
+import frc.robot.Constants.RangeBasedMotor;
 
 public class Placement extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
@@ -37,15 +36,17 @@ public class Placement extends SubsystemBase {
   public double l_placementArmFUp;
   public GenericEntry n_placementArmFDown;
   public double l_placementArmFDown;
-  public GenericEntry maxVelocityPlacementArm;
-  public GenericEntry maxAccelerationPlacementArm;
-  public GenericEntry placementArmS_Strength;
+  public GenericEntry n_maxVelocityPlacementArm;
+  public double l_maxVelocityPlacementArm;
+  public GenericEntry n_maxAccelerationPlacementArm;
+  public double l_maxAccelerationPlacementArm;
+  public GenericEntry n_placementArmS_Strength;
   public double l_placementArmS_Strength;
 
-  public Constants.RangeBasedMotor constants;
+  public RangeBasedMotor constants;
 
 
-  public Placement(Constants.RangeBasedMotor constants) {
+  public Placement(RangeBasedMotor constants) {
     rangeBasedMotor = new WPI_TalonFX(constants.CAN_ID);
     rangeBasedMotor.configFactoryDefault();
     rangeBasedMotor.config_kP(0,constants.placementArmP);
@@ -64,9 +65,9 @@ public class Placement extends SubsystemBase {
     n_highPositionAngle = Placement.add("high position", highPosition).getEntry();
     n_placementArmFUp = Placement.add("f up", constants.placementArmFUp).getEntry();
     n_placementArmFDown = Placement.add("f down", constants.placementArmFDown).getEntry();
-    maxVelocityPlacementArm = Placement.add("max velocity", constants.maxVelocityPlacementArm).getEntry();
-    maxAccelerationPlacementArm = Placement.add("max acceleration", constants.maxAccelerationPlacementArm).getEntry();
-    placementArmS_Strength = Placement.add("s strength", constants.sStrengthPlacementArm).getEntry();
+    n_maxVelocityPlacementArm = Placement.add("max velocity", constants.maxVelocityPlacementArm).getEntry();
+    n_maxAccelerationPlacementArm = Placement.add("max acceleration", constants.maxAccelerationPlacementArm).getEntry();
+    n_placementArmS_Strength = Placement.add("s strength", constants.sStrengthPlacementArm).getEntry();
 
     this.constants = constants;
 
@@ -106,7 +107,7 @@ public class Placement extends SubsystemBase {
   public double getSpeedPlacementArm(){
     return 10 * constants.ticksToRadiansPlacement * rangeBasedMotor.getSelectedSensorVelocity();
   }
-  public void updateShuffleBoard(){
+  public void updateValues(){
     if (l_placementArmP != n_placementArmP.getDouble(constants.placementArmP)){
       rangeBasedMotor.config_kP(0, n_placementArmP.getDouble(constants.placementArmP));
     }
@@ -121,6 +122,15 @@ public class Placement extends SubsystemBase {
     }
     if (l_placementArmFUp != n_placementArmFUp.getDouble(constants.placementArmFUp)){
       rangeBasedMotor.config_kF(0, n_placementArmFUp.getDouble(constants.placementArmFUp));
+    }
+    if (l_placementArmS_Strength != n_placementArmS_Strength.getDouble(constants.sStrengthPlacementArm)){
+      rangeBasedMotor.configMotionSCurveStrength(0, (int) n_placementArmS_Strength.getDouble(constants.sStrengthPlacementArm));
+    }
+    if (l_maxVelocityPlacementArm != n_maxVelocityPlacementArm.getDouble(constants.maxVelocityPlacementArm)){
+      rangeBasedMotor.configMotionCruiseVelocity( (int) n_maxVelocityPlacementArm.getDouble(constants.maxVelocityPlacementArm),  0);
+    }
+    if (l_maxAccelerationPlacementArm != n_maxAccelerationPlacementArm.getDouble(constants.maxAccelerationPlacementArm)){
+      rangeBasedMotor.configMotionAcceleration((int) n_maxVelocityPlacementArm.getDouble(constants.maxVelocityPlacementArm),  0);
     }
   }
 

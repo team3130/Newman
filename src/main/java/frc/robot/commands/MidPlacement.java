@@ -8,16 +8,17 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Placement;
 
 /** An example command that uses an example subsystem. */
-public class LowerPlacement extends CommandBase {
+public class MidPlacement extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Placement m_placement;
+  private double positionDeadband =Math.toRadians(2.5);
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public LowerPlacement(Placement subsystem) {
+  public MidPlacement(Placement subsystem) {
     m_placement = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -26,7 +27,8 @@ public class LowerPlacement extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_placement.LowerRotaryArm(.25);
+    m_placement.updateValues();
+    m_placement.goToMid();
 
   }
 
@@ -37,12 +39,12 @@ public class LowerPlacement extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_placement.LowerRotaryArm(0);
+
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(m_placement.rangeBasedMotor.getSelectedSensorPosition() - m_placement.midPosition) < positionDeadband;
   }
 }

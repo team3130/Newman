@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot;
+package frc.robot.Constants;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -113,7 +113,7 @@ public final class Constants {
 
     public static double kResetTime = 1.5;
 
-    public abstract class RangeBasedMotor {
+    /*public abstract class RangeBasedMotor {
         public double placementArmGearboxRatio;
         public double getPlacementArmGearInRatio;
         public double radiansToTicksPlacement;
@@ -127,9 +127,9 @@ public final class Constants {
         public double maxAccelerationPlacementArm;
         public int sStrengthPlacementArm;
         public int CAN_ID;
-    }
+    }*/
 
-    public class RotaryMotor extends RangeBasedMotor {
+    /*public class RotaryMotor extends RangeBasedMotor {
         public RotaryMotor() {
             placementArmGearboxRatio = 16d/61d;
             getPlacementArmGearInRatio = 12d/60d;
@@ -145,9 +145,9 @@ public final class Constants {
             sStrengthPlacementArm = 0;
             CAN_ID = CAN_RotaryArm;
         }
-    }
+    }*/
 
-    public class ExtensionMotor extends RangeBasedMotor {
+   /* public class ExtensionMotor extends RangeBasedMotor {
         public ExtensionMotor() {
             placementArmGearboxRatio = 16d / 61d;
             getPlacementArmGearInRatio = 12d / 60d;
@@ -163,7 +163,7 @@ public final class Constants {
             sStrengthPlacementArm = 0;
             CAN_ID = CAN_ExtensionMotor;
         }
-    }
+    }*/
 
     public static class Side {
          public static final int LEFT_FRONT = 0;

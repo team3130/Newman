@@ -9,6 +9,10 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.Constants;
+import frc.robot.Constants.ExtensionMotor;
+import frc.robot.Constants.RangeBasedMotor;
+import frc.robot.Constants.RotaryMotor;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Placement;
@@ -25,7 +29,8 @@ public class RobotContainer {
   private static Joystick m_driverGamepad;
   private static Joystick m_weaponsGamepad;
   private final Chassis m_chassis = new Chassis();
-  private final Placement m_placement = new Placement();
+  private final Placement m_placement = new Placement(new RotaryMotor());
+
 
   public Chassis getChassis() {
     return m_chassis;
@@ -59,8 +64,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ZeroWheels(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new RaisePlacement(m_placement));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new LowerPlacement(m_placement));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new MidPlacement(m_placement));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new HighPlacement(m_placement));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new ExtendPlacement(m_placement));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new RetractPlacement(m_placement));
 
