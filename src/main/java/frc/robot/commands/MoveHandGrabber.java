@@ -38,8 +38,6 @@ public class MoveHandGrabber extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_handGrabber.MoveGrabber();
-    //when button is released, hand is toggled
   }
 
   // Returns true when the command should end.

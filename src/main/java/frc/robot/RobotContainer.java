@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExtensionArm;
@@ -65,12 +66,11 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ZeroWheels(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new MoveRotaryArm(m_rotaryArm, 1));
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new MoveRotaryArm(m_rotaryArm, -1));
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new MoveExtensionArm(m_extensionArm, 1));
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new MoveExtensionArm(m_extensionArm, -1));
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new MoveHandGrabber(m_handGrabber));
-
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new MoveRotaryArm(m_rotaryArm, 1));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new MoveRotaryArm(m_rotaryArm, -1));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new MoveExtensionArm(m_extensionArm, 1));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new MoveExtensionArm(m_extensionArm, -1));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new MoveHandGrabber(m_handGrabber));
 
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
   }
