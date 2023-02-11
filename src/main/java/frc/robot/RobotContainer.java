@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExtensionArm;
+import frc.robot.subsystems.HandGrabber;
 import frc.robot.subsystems.RotaryArm;
 
 
@@ -29,6 +30,8 @@ public class RobotContainer {
   private final ExtensionArm m_extensionArm = new ExtensionArm();
 
   private final RotaryArm m_rotaryArm = new RotaryArm();
+
+  private final HandGrabber m_handGrabber = new HandGrabber();
 
   public Chassis getChassis() {
     return m_chassis;
@@ -66,6 +69,8 @@ public class RobotContainer {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new MoveRotaryArm(m_rotaryArm, -1));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new MoveExtensionArm(m_extensionArm, 1));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new MoveExtensionArm(m_extensionArm, -1));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new MoveHandGrabber(m_handGrabber));
+
 
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
   }
