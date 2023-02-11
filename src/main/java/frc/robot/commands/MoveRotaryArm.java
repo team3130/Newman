@@ -5,29 +5,31 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Placement;
+import frc.robot.subsystems.RotaryArm;
 
 /** An example command that uses an example subsystem. */
-public class RetractPlacement extends CommandBase {
+public class MoveRotaryArm extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Placement m_placement;
-
+  private final RotaryArm m_rotaryArm;
+  private int dir;
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public RetractPlacement(Placement subsystem) {
-    m_placement = subsystem;
+  public MoveRotaryArm(RotaryArm subsystem, int direction) {
+    // specify whether rotary arm should be lowered or raised by setting the direction parameter as either -1 or 1, respectively
+    m_rotaryArm = subsystem;
+    dir = direction;
+
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(m_rotaryArm);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_placement.RetractExtensionArm(.25);
-
+    m_rotaryArm.RotateRotaryArm(.25 * dir);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,8 +39,7 @@ public class RetractPlacement extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
-    m_placement.RetractExtensionArm(0);
+    m_rotaryArm.RotateRotaryArm(0);
   }
 
   // Returns true when the command should end.

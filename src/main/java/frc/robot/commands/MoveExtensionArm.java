@@ -6,29 +6,29 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.Placement;
+import frc.robot.subsystems.ExtensionArm;
 
 /** An example command that uses an example subsystem. */
-public class ExtendPlacement extends CommandBase {
+public class MoveExtensionArm extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Placement m_placement;
-
+  private final ExtensionArm m_extensionArm;
+  private int dir;
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ExtendPlacement(Placement subsystem) {
-    m_placement = subsystem;
+  public MoveExtensionArm(ExtensionArm subsystem, int direction/*extend or retract, 1 or -1, respectively*/) {
+    dir = direction;
+    m_extensionArm = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(m_extensionArm);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_placement.ExtendExtensionArm(.25);
-
+    m_extensionArm.ExtendExtensionArm(.25 * dir);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,7 +38,7 @@ public class ExtendPlacement extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_placement.ExtendExtensionArm(0);
+    m_extensionArm.ExtendExtensionArm(0);
   }
 
   // Returns true when the command should end.
