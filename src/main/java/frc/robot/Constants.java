@@ -113,6 +113,20 @@ public final class Constants {
 
     public static double kResetTime = 1.5;
 
+    public  static double placementArmGearboxRatio = 16d/61d;
+    public static double getPlacementArmGearInRatio = 12d/60d;
+
+    public static final double ticksToRadiansPlacement = kEncoderResolution * 2 * Math.PI * placementArmGearboxRatio * getPlacementArmGearInRatio;
+    public static final double radiansToTicksPlacement = 1/ticksToRadiansPlacement;
+    public static double placementArmP = 5.12295e-5 / 2;
+    public static double placementArmI = 0;
+    public static double placementArmD = 0;
+    public static double placementArmFDown = 0;
+    public static double placementArmFUp = 0;
+    public static double maxVelocityPlacementArm = Math.PI/4;
+    public static double maxAccelerationPlacementArm = Math.PI/8;
+    public static int sStrengthPlacementArm = 0;
+
     public static class Side {
          public static final int LEFT_FRONT = 0;
          public static final int LEFT_BACK = 1;
@@ -157,5 +171,7 @@ public final class Constants {
     public static final int LST_AXS_RTRIGGER = 3;
     public static final int LST_AXS_RJOYSTICKX = 4;
     public static final int LST_AXS_RJOYSTICKY = 5;
+
+
     }
 }
