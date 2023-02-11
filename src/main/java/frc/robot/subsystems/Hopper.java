@@ -28,8 +28,8 @@ public void spinMotor () {
 
 
 public void hopperStop (){
-        leftwheel.set(ControlMode.PercentOutput, m_outputspeed);
-        rightwheel.set(ControlMode.PercentOutput, m_outputspeed);
+        leftwheel.set(ControlMode.PercentOutput, 0);
+        rightwheel.set(ControlMode.PercentOutput, 0);
 }
 public void updateOutputSpeed (){
         m_outputspeed = n_outputentry.getDouble(m_outputspeed);
