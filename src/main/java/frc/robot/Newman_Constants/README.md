@@ -1,1 +1,0 @@
-# Newman_Constants
