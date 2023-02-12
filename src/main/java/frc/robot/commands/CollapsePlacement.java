@@ -5,19 +5,19 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Placement;
+import frc.robot.subsystems.PlacementExtensionArm;
 
 /** An example command that uses an example subsystem. */
-public class RetractPlacement extends CommandBase {
+public class CollapsePlacement extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Placement m_placement;
+  private final PlacementExtensionArm m_placement;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public RetractPlacement(Placement subsystem) {
+  public CollapsePlacement(PlacementExtensionArm subsystem) {
     m_placement = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -26,7 +26,8 @@ public class RetractPlacement extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_placement.RetractExtensionArm(.25);
+    m_placement.updateValues();
+    m_placement.collapseArm();
 
   }
 
@@ -37,8 +38,6 @@ public class RetractPlacement extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
-    m_placement.RetractExtensionArm(0);
   }
 
   // Returns true when the command should end.

@@ -5,12 +5,12 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Placement;
+import frc.robot.subsystems.PlacementRotaryArm;
 
 /** An example command that uses an example subsystem. */
 public class HighPlacement extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Placement m_placement;
+  private final PlacementRotaryArm m_placementRotaryArm;
   private double positionDeadband =Math.toRadians(2.5);
 
   /**
@@ -18,8 +18,8 @@ public class HighPlacement extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public HighPlacement(Placement subsystem) {
-    m_placement = subsystem;
+  public HighPlacement(PlacementRotaryArm subsystem) {
+    m_placementRotaryArm = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -27,8 +27,8 @@ public class HighPlacement extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_placement.updateValues();
-    m_placement.goToHigh();
+    m_placementRotaryArm.updateValues();
+    m_placementRotaryArm.goToHigh();
 
   }
 
@@ -45,6 +45,6 @@ public class HighPlacement extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(m_placement.rangeBasedMotor.getSelectedSensorPosition() - m_placement.highPosition) < positionDeadband;
+    return Math.abs(m_placementRotaryArm.rotaryMotor.getSelectedSensorPosition() - m_placementRotaryArm.highPosition) < positionDeadband;
   }
 }

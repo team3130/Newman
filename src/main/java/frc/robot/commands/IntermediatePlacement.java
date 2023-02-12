@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.PlacementExtensionArm;
 
 /** An example command that uses an example subsystem. */
-public class ExtendPlacement extends CommandBase {
+public class IntermediatePlacement extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final PlacementExtensionArm m_placement;
 
@@ -17,7 +17,7 @@ public class ExtendPlacement extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ExtendPlacement(PlacementExtensionArm subsystem) {
+  public IntermediatePlacement(PlacementExtensionArm subsystem) {
     m_placement = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -27,7 +27,7 @@ public class ExtendPlacement extends CommandBase {
   @Override
   public void initialize() {
     m_placement.updateValues();
-    m_placement.extendArm();
+    m_placement.intermediateArm();
 
   }
 
@@ -38,7 +38,6 @@ public class ExtendPlacement extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
   }
 
   // Returns true when the command should end.
