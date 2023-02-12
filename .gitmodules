@@ -1,0 +1,3 @@
+[submodule "Newman_Constants"]
+	path = Newman_Constants
+	url = https://github.com/team3130/Newman_Constants.git
