@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.sensors.Navx;
+import frc.robot.supportingClasses.OdoPosition;
 import frc.robot.swerve.SwerveModule;
 
 import java.util.Arrays;
@@ -133,13 +134,20 @@ public class Chassis extends SubsystemBase {
       };
   }
 
-  public void updateOdometryFromSwerve() {
-      m_odometry.updateWithTime(Timer.getFPGATimestamp(), Navx.getRotation(), generatePoses());
+  private void updateOdometryEncoders() {
+      double currentTime = Timer.getFPGATimestamp();
+      m_odometry.updateWithTime(currentTime, Navx.getRotation(), generatePoses());
   }
+
+      public void updateOdometryFromAprilTags(OdoPosition pose) {
+        // start with using the default matrix for confidence
+        m_odometry.addVisionMeasurement(pose.getPosition(), pose.getTime());
+        // m_odometry.addVisionMeasurement(pose.getPosition(), pose.getTime(), confidenceMatrix);
+    }
 
   @Override
   public void periodic() {
-    updateOdometryFromSwerve();
+    updateOdometryEncoders();
 
       outputToShuffleboard();
 

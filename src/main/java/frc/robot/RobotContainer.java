@@ -13,7 +13,9 @@ import frc.robot.commands.FlipFieldOrriented;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ZeroEverything;
 import frc.robot.commands.ZeroWheels;
+import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.Chassis;
+import frc.robot.supportingClasses.OdoPosition;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -25,6 +27,8 @@ import frc.robot.subsystems.Chassis;
 public class RobotContainer {
   private static Joystick m_driverGamepad;
   private final Chassis m_chassis = new Chassis();
+    public final Limelight m_limelight;
+
 
   public Chassis getChassis() {
     return m_chassis;
@@ -35,6 +39,8 @@ public class RobotContainer {
     // Configure the button bindings
     m_driverGamepad = new Joystick(0);
     configureButtonBindings();
+
+    m_limelight = new Limelight();
 
      m_chassis.setDefaultCommand(new TeleopDrive(m_chassis));
   }
@@ -54,5 +60,19 @@ public class RobotContainer {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
   }
+
+    public int tryUpdatePosition() {
+    refreshPosition();
+    return m_limelight.getNumberOfSuccesses();
+  }
+
+  public OdoPosition refreshPosition() {
+    return m_limelight.calculateCameraPosition();
+  }
+
+  public void updatePosition() {
+    m_chassis.updateOdometryFromAprilTags(refreshPosition());
+  }
+
 
 }

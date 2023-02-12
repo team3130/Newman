@@ -16,6 +16,7 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static final boolean debugMode = true;
     /**
      * CAN
      */
@@ -107,6 +108,30 @@ public final class Constants {
     public static double kMaxAccelerationAngularDrive = 3;
 
     public static double kResetTime = 1.5;
+
+    /**
+     * Camera constants
+     */
+    public static class Camera {
+        // The position and orientation of the camera in meters
+        public static final double xPos = Units.inchesToMeters(12);
+        public static final double yPos = Units.inchesToMeters(0);
+        public static final double zPos = Units.inchesToMeters(4.5);
+
+        // TODO: Find these values
+        public static final double pitch = 0;
+        public static final double yaw = 0;
+        public static final double roll = 0;
+
+        public static double confidenceN1 = 0;
+        public static double confidenceN2 = 0;
+        public static double confidenceN3 = 0;
+
+        public final static int kMedianFilterWindowSize = 5;
+    }
+
+    // for the KugelMediaFilter
+    public static final double kKugelMedianFilterP = 7/(Math.PI);
 
     public static class Side {
          public static final int LEFT_FRONT = 0;
