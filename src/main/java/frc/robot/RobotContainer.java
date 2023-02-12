@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Hopper;
+import frc.robot.Newman_Constants.Constants;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
