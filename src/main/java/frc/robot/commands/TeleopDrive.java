@@ -9,7 +9,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.Constants;
+import frc.robot.Newman_Constants.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Chassis;
 
