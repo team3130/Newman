@@ -10,7 +10,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import frc.robot.Constants.Camera;
+import frc.robot.Newman_Constants.Constants.Camera;
 import frc.robot.supportingClasses.KugelMedianFilter;
 import frc.robot.supportingClasses.OdoPosition;
 import org.photonvision.PhotonCamera;
