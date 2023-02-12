@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.Constants;
+import frc.robot.Newman_Constants.Constants;
 
 public class Navx {
     //Instance Handling

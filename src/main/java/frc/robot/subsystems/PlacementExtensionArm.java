@@ -10,7 +10,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.Constants;
+import frc.robot.Newman_Constants.Constants;
 
 public class PlacementExtensionArm extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
