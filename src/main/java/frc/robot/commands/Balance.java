@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import frc.robot.Constants;
+import frc.robot.Newman_Constants.Constants;
 import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
