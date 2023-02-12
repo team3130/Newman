@@ -6,13 +6,13 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Newman_Constants.Constants;
 
 public class ExtensionArm extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public WPI_TalonSRX extensionMotor;
   public ExtensionArm() {
-    extensionMotor = new WPI_TalonSRX(Constants.CAN_ExtensionMotor);
+    extensionMotor = new WPI_TalonSRX(Constants.CAN_ExtensionArm);
     extensionMotor.configFactoryDefault();
   }
 
