@@ -10,13 +10,10 @@ import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import frc.robot.Constants;
+import frc.robot.Newman_Constants.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Chassis;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.function.Function;
+import frc.robot.Newman_Constants.Constants;
 
 public class Chooser {
     private final SendableChooser<AutonCommand> m_autonChooser;
