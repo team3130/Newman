@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
 
-import static frc.robot.Constants.timetoIntake;
+import static frc.robot.Newman_Constants.Constants.timetoIntake;
 
 public class DeployIntake extends CommandBase {
     private final Intake m_intake;
