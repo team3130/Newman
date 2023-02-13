@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Newman_Constants.Constants;
 
 public class Intake extends SubsystemBase {
     private WPI_TalonSRX m_SpinnyBar;
@@ -29,8 +29,8 @@ public class Intake extends SubsystemBase {
         m_SpinnyBar = new WPI_TalonSRX(Constants.CAN_SpinnyBar);
         m_SpinnyBar.configFactoryDefault();
         m_SpinnyBar.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-        m_LargeSolenoid = new Solenoid(Constants.CAN_PNMMODULE, PneumaticsModuleType.CTREPCM, Constants.PNM_LargeSolenoid);
-        m_SmallSolenoid = new Solenoid(Constants.CAN_PNMMODULE, PneumaticsModuleType.CTREPCM, Constants.PNM_SmallSolenoid);
+        m_LargeSolenoid = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM, Constants.PNM_LargeSolenoid);
+        m_SmallSolenoid = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM, Constants.PNM_SmallSolenoid);
         this.m_SpinnyBar.setNeutralMode(NeutralMode.Coast);
     }
 
