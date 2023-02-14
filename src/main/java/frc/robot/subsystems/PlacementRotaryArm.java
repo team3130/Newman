@@ -13,42 +13,52 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 
+import java.util.HashMap;
+
 public class PlacementRotaryArm extends SubsystemBase {
+  public enum Position {
+    LOW, MID, HIGH
+  }
+
   /** Creates a new ExampleSubsystem. */
-  public WPI_TalonFX rotaryMotor;
-  public double lowPosition = 0;
-  public double midPosition = Math.PI/4;
-  public double highPosition = Math.PI /2;
+  private WPI_TalonFX rotaryMotor;
+  private double lowPosition = 0;
+  private double midPosition = Math.PI/4;
+  private double highPosition = Math.PI /2;
 
-  public GenericEntry n_lowPositionAngle;
-  public GenericEntry n_midPositionAngle;
-  public GenericEntry n_highPositionAngle;
+  private double positionDeadband = Math.toRadians(2.5);
 
-  public double placementRotaryArmP = 5.12295e-5 / 2;
-  public double placementRotaryArmI = 0;
-  public double placementRotaryArmD = 0;
-  public double placementRotaryArmFDown = 0;
-  public double placementRotaryArmFUp = 0;
-  public int sStrengthRotaryPlacementArm = 0;
+  private HashMap<Position, Double> positionMap;
+
+  private GenericEntry n_lowPositionAngle;
+  private GenericEntry n_midPositionAngle;
+  private GenericEntry n_highPositionAngle;
+
+  private double placementRotaryArmP = 5.12295e-5 / 2;
+  private double placementRotaryArmI = 0;
+  private double placementRotaryArmD = 0;
+  private double placementRotaryArmFDown = 0;
+  private double placementRotaryArmFUp = 0;
+  private int sStrengthRotaryPlacementArm = 0;
 
 
-  public ShuffleboardTab Placement;
-  public GenericEntry n_placementRotaryArmP;
-  public double l_placementRotaryArmP;
-  public GenericEntry n_placementRotaryArmI;
-  public double l_placementRotaryArmI;
-  public GenericEntry n_placementRotaryArmD;
-  public double l_placementRotaryArmD;
-  public GenericEntry n_placementRotaryArmFUp;
-  public double l_placementRotaryArmFUp;
-  public GenericEntry n_placementRotaryArmFDown;
-  public double l_placementRotaryArmFDown;
-  public GenericEntry n_maxVelocityRotaryPlacementArm;
-  public double l_maxVelocityRotaryPlacementArm;
-  public GenericEntry n_maxAccelerationRotaryPlacementArm;
-  public double l_maxAccelerationRotaryPlacementArm;
-  public GenericEntry n_placementRotaryArmS_Strength;
-  public double l_placementRotaryArmS_Strength;
+  private ShuffleboardTab Placement;
+  private GenericEntry n_placementRotaryArmP;
+  private double l_placementRotaryArmP;
+  private GenericEntry n_placementRotaryArmI;
+  private double l_placementRotaryArmI;
+  private GenericEntry n_placementRotaryArmD;
+  private double l_placementRotaryArmD;
+  private GenericEntry n_placementRotaryArmFUp;
+  private double l_placementRotaryArmFUp;
+  private GenericEntry n_placementRotaryArmFDown;
+  private double l_placementRotaryArmFDown;
+  private GenericEntry n_maxVelocityRotaryPlacementArm;
+  private double l_maxVelocityRotaryPlacementArm;
+  private GenericEntry n_maxAccelerationRotaryPlacementArm;
+  private double l_maxAccelerationRotaryPlacementArm;
+  private GenericEntry n_placementRotaryArmS_Strength;
+  private double l_placementRotaryArmS_Strength;
 
 
 
@@ -71,14 +81,16 @@ public class PlacementRotaryArm extends SubsystemBase {
     n_midPositionAngle = Placement.add("mid position", midPosition).getEntry();
     n_highPositionAngle = Placement.add("high position", highPosition).getEntry();
 
-
-
     n_placementRotaryArmFUp = Placement.add("f up", placementRotaryArmFUp).getEntry();
     n_placementRotaryArmFDown = Placement.add("f down", placementRotaryArmFDown).getEntry();
     n_maxVelocityRotaryPlacementArm = Placement.add("max velocity", Constants.maxVelocityRotaryPlacementArm).getEntry();
     n_maxAccelerationRotaryPlacementArm = Placement.add("max acceleration", Constants.maxAccelerationRotaryPlacementArm).getEntry();
     n_placementRotaryArmS_Strength = Placement.add("s strength", sStrengthRotaryPlacementArm).getEntry();
 
+    positionMap = new HashMap<>();
+    positionMap.put(Position.LOW, lowPosition);
+    positionMap.put(Position.MID, midPosition);
+    positionMap.put(Position.HIGH, highPosition);
   }
 
   @Override
@@ -133,6 +145,10 @@ public class PlacementRotaryArm extends SubsystemBase {
     if (l_maxAccelerationRotaryPlacementArm != n_maxAccelerationRotaryPlacementArm.getDouble(Constants.maxAccelerationRotaryPlacementArm)){
       rotaryMotor.configMotionAcceleration((int) n_maxVelocityRotaryPlacementArm.getDouble(Constants.maxVelocityRotaryPlacementArm),  0);
     }
+  }
+
+  public boolean isAtPosition(Position position) {
+    return Math.abs(rotaryMotor.getSelectedSensorPosition() - positionMap.get(position)) < positionDeadband;
   }
 
   @Override

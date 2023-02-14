@@ -6,12 +6,11 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.PlacementRotaryArm;
+import frc.robot.subsystems.PlacementRotaryArm.Position;
 
 /** An example command that uses an example subsystem. */
 public class HighPlacement extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final PlacementRotaryArm m_placementRotaryArm;
-  private double positionDeadband =Math.toRadians(2.5);
 
   /**
    * Creates a new ExampleCommand.
@@ -45,6 +44,6 @@ public class HighPlacement extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(m_placementRotaryArm.rotaryMotor.getSelectedSensorPosition() - m_placementRotaryArm.highPosition) < positionDeadband;
+    return m_placementRotaryArm.isAtPosition(Position.HIGH);
   }
 }

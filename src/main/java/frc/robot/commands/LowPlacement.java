@@ -9,9 +9,7 @@ import frc.robot.subsystems.PlacementRotaryArm;
 
 /** An example command that uses an example subsystem. */
 public class LowPlacement extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final PlacementRotaryArm m_placementRotaryArm;
-  private double positionDeadband = Math.toDegrees(2.5);
 
   /**
    * Creates a new ExampleCommand.
@@ -44,6 +42,6 @@ public class LowPlacement extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(m_placementRotaryArm.rotaryMotor.getSelectedSensorPosition() - m_placementRotaryArm.lowPosition) < positionDeadband;
+    return m_placementRotaryArm.isAtPosition(PlacementRotaryArm.Position.LOW);
   }
 }
