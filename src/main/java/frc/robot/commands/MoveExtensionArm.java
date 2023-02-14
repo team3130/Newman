@@ -4,14 +4,19 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ExtensionArm;
+import frc.robot.Newman_Constants.Constants;
 
 /** An example command that uses an example subsystem. */
 public class MoveExtensionArm extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ExtensionArm m_extensionArm;
   private int dir;
+  public XboxController m_xboxController;
+  public static double extensionArmMaxSpeed = 1; //TODO make this an actual number & add it to constants
+
   /**
    * Creates a new ExampleCommand.
    *
@@ -27,12 +32,19 @@ public class MoveExtensionArm extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_extensionArm.ExtendExtensionArm(.25 * dir);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    double y = m_xboxController.getRawAxis(0); // inverted?
+
+    if (Math.abs(y) < Constants.kDeadband) {
+      y = 0;
+    }
+    m_extensionArm.ExtendExtensionArm(y * extensionArmMaxSpeed); //that max is currently bs
+
+  }
 
   // Called once the command ends or is interrupted.
   @Override

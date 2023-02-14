@@ -4,7 +4,9 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.RotaryArm;
 
 /** An example command that uses an example subsystem. */
@@ -12,6 +14,9 @@ public class MoveRotaryArm extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final RotaryArm m_rotaryArm;
   private int dir;
+  public static double rotaryArmMaxSpeed = 1; //TODO make this an actual number & move it to constants
+
+  public XboxController m_xboxController;
   /**
    * Creates a new ExampleCommand.
    *
@@ -29,12 +34,19 @@ public class MoveRotaryArm extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_rotaryArm.RotateRotaryArm(.25 * dir);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    double y = m_xboxController.getRawAxis(0); // inverted?
+
+    if (Math.abs(y) < Constants.kDeadband) {
+      y = 0;
+    }
+    m_rotaryArm.RotateRotaryArm(y * rotaryArmMaxSpeed); //that max is currently bs
+  }
+
 
   // Called once the command ends or is interrupted.
   @Override

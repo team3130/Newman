@@ -47,6 +47,10 @@ public class RobotContainer {
     configureButtonBindings();
 
      m_chassis.setDefaultCommand(new TeleopDrive(m_chassis));
+
+     //idk if this is right
+     m_rotaryArm.setDefaultCommand(new MoveRotaryArm(m_rotaryArm,1));
+     m_extensionArm.setDefaultCommand(new MoveExtensionArm(m_extensionArm,1));
   }
 
   public static Joystick getDriverGamepad() {
@@ -67,10 +71,10 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ZeroWheels(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new MoveRotaryArm(m_rotaryArm, 1));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new MoveRotaryArm(m_rotaryArm, -1));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new MoveExtensionArm(m_extensionArm, 1));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new MoveExtensionArm(m_extensionArm, -1));
+    //new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new MoveRotaryArm(m_rotaryArm, 1));
+    //new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new MoveRotaryArm(m_rotaryArm, -1));
+    //new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new MoveExtensionArm(m_extensionArm, 1));
+    //new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new MoveExtensionArm(m_extensionArm, -1));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new MoveHandGrabber(m_handGrabber));
 
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
