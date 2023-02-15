@@ -29,6 +29,8 @@ public class Intake extends SubsystemBase {
         m_SpinnyBar = new WPI_TalonSRX(Constants.CAN_SpinnyBar);
         m_SpinnyBar.configFactoryDefault();
         m_SpinnyBar.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        m_SpinnyBar.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
+        m_SpinnyBar.enableVoltageCompensation(true);
         m_LargeSolenoid = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM, Constants.PNM_LargeSolenoid);
         m_SmallSolenoid = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM, Constants.PNM_SmallSolenoid);
         this.m_SpinnyBar.setNeutralMode(NeutralMode.Coast);
