@@ -17,6 +17,7 @@ import frc.robot.commands.Chassis.ZeroWheels;
 import frc.robot.commands.Placement.MoveExtensionArm;
 import frc.robot.commands.Placement.ActuateHandGrabber;
 import frc.robot.commands.Placement.MoveRotaryArm;
+import frc.robot.commands.Placement.zeroExtensionArm;
 import frc.robot.commands.WriteShuffleboardChanges;
 import frc.robot.subsystems.*;
 import frc.robot.Newman_Constants.Constants;
@@ -89,5 +90,6 @@ public class RobotContainer {
 
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
     Shuffleboard.getTab("Test").add("Write changes", new WriteShuffleboardChanges(new ExampleSubsystem(), usesShuffleBoard));
+    Shuffleboard.getTab("Test").add("Spin motor down", new zeroExtensionArm(m_extensionArm));
   }
 }
