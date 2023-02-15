@@ -31,6 +31,9 @@ public class ExtensionArm extends SubsystemBase {
   public void StopArm() {
     extensionMotor.set(0);
   }
+  public boolean BrokeLimit(){
+    return !m_LimitSwitch.get();
+  }
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation

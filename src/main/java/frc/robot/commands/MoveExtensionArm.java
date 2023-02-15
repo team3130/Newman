@@ -43,7 +43,7 @@ public class MoveExtensionArm extends CommandBase {
       y = 0;
     }
     m_extensionArm.ExtendExtensionArm(y * extensionArmMaxSpeed); //that max is currently bs
-    if (m_extensionArm.m_LimitSwitch.get()) {
+    if (m_extensionArm.BrokeLimit()) {
       m_extensionArm.StopArm();
     }
   }

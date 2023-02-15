@@ -34,7 +34,7 @@ public class ArmTo0 extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_ExtensionArm.m_LimitSwitch.get()) {
+    if (m_ExtensionArm.BrokeLimit()) {
       m_ExtensionArm.StopArm();
       LimitBrake = true;
     }
