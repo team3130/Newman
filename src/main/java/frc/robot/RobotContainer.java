@@ -67,7 +67,8 @@ public class RobotContainer {
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new HighPlacement(m_placementRotaryArm));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new ExtendPlacement(m_placementExtensionArm));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new CollapsePlacement(m_placementExtensionArm));
-
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ZeroPlacement(m_placementExtensionArm));
+    
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
   }
 
