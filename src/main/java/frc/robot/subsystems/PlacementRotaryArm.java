@@ -71,6 +71,8 @@ public class PlacementRotaryArm extends SubsystemBase {
     rotaryMotor.config_kF(0, placementRotaryArmFUp);
     rotaryMotor.config_kF(0, placementRotaryArmFDown);
     rotaryMotor.configMotionSCurveStrength(0, sStrengthRotaryPlacementArm);
+    rotaryMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
+    rotaryMotor.enableVoltageCompensation(true);
 
     Placement = Shuffleboard.getTab("rotary arm");
     n_placementRotaryArmP = Placement.add("p", placementRotaryArmP).getEntry();

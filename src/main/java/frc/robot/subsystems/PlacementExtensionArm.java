@@ -61,6 +61,8 @@ public class PlacementExtensionArm extends SubsystemBase {
     extensionMotor.config_kF(0,placementExtensionArmFUp);
     extensionMotor.config_kF(0,placementExtensionArmFDown);
     extensionMotor.configMotionSCurveStrength(0, sStrengthPlacementExtensionArm);
+    extensionMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
+    extensionMotor.enableVoltageCompensation(true);
 
     Placement = Shuffleboard.getTab("Extension Arm");
     n_placementExtensionArmP = Placement.add("p", placementExtensionArmP).getEntry();
