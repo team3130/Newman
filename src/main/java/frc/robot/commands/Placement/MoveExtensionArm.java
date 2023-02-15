@@ -40,7 +40,7 @@ public class MoveExtensionArm extends CommandBase implements ShuffleboardUpdated
   public void execute() {
     double y = m_xboxController.getRawAxis(0); // inverted?
 
-    if (Math.abs(y) < Constants.kDeadband) {
+    if (Math.abs(y) < Constants.kDeadband || (y < 0 && m_extensionArm.hitLimitSwitch())) {
       y = 0;
     }
     m_extensionArm.spinExtensionArm(y); //that max is currently bs
@@ -50,7 +50,7 @@ public class MoveExtensionArm extends CommandBase implements ShuffleboardUpdated
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_extensionArm.spinExtensionArm(0);
+    m_extensionArm.stop();
   }
 
   // Returns true when the command should end.

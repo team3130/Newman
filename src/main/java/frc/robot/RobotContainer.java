@@ -15,7 +15,7 @@ import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
 import frc.robot.commands.Chassis.ZeroWheels;
 import frc.robot.commands.Placement.MoveExtensionArm;
-import frc.robot.commands.Placement.MoveHandGrabber;
+import frc.robot.commands.Placement.ActuateHandGrabber;
 import frc.robot.commands.Placement.MoveRotaryArm;
 import frc.robot.commands.WriteShuffleboardChanges;
 import frc.robot.subsystems.*;
@@ -85,7 +85,7 @@ public class RobotContainer {
     //new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new MoveRotaryArm(m_rotaryArm, -1));
     //new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new MoveExtensionArm(m_extensionArm, 1));
     //new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new MoveExtensionArm(m_extensionArm, -1));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new MoveHandGrabber(m_handGrabber));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ActuateHandGrabber(m_handGrabber));
 
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
     Shuffleboard.getTab("Test").add("Write changes", new WriteShuffleboardChanges(new ExampleSubsystem(), usesShuffleBoard));
