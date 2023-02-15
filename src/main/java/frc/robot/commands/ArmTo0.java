@@ -4,59 +4,49 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.ExtensionArm;
-import frc.robot.Newman_Constants.Constants;
 
 /** An example command that uses an example subsystem. */
-public class MoveExtensionArm extends CommandBase {
+public class ArmTo0 extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final ExtensionArm m_extensionArm;
-  private int dir;
-  public XboxController m_xboxController;
-  public static double extensionArmMaxSpeed = 1; //TODO make this an actual number & add it to constants
+  private final ExtensionArm m_ExtensionArm;
+  private boolean LimitBrake = false;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveExtensionArm(ExtensionArm subsystem, int direction/*extend or retract, 1 or -1, respectively*/) {
-    dir = direction;
-    m_extensionArm = subsystem;
+  public ArmTo0(ExtensionArm subsystem) {
+    m_ExtensionArm = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_extensionArm);
+    addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_ExtensionArm.ExtendExtensionArm(-0.2);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double y = m_xboxController.getRawAxis(0); // inverted?
-
-    if (Math.abs(y) < Constants.kDeadband) {
-      y = 0;
-    }
-    m_extensionArm.ExtendExtensionArm(y * extensionArmMaxSpeed); //that max is currently bs
-    if (m_extensionArm.m_LimitSwitch.get()) {
-      m_extensionArm.StopArm();
+    if (m_ExtensionArm.m_LimitSwitch.get()) {
+      m_ExtensionArm.StopArm();
+      LimitBrake = true;
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_extensionArm.ExtendExtensionArm(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return LimitBrake;
   }
 }
