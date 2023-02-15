@@ -5,20 +5,24 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.PlacementExtensionArm;
 
 /** An example command that uses an example subsystem. */
-public class CollapsePlacement extends CommandBase {
+public class ZeroPlacement extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final PlacementExtensionArm m_placement;
+  private final PlacementExtensionArm m_placementExtensionArm;
+
+
+  private boolean broke = false;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public CollapsePlacement(PlacementExtensionArm subsystem) {
-    m_placement = subsystem;
+  public ZeroPlacement(PlacementExtensionArm subsystem) {
+    m_placementExtensionArm = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -26,27 +30,26 @@ public class CollapsePlacement extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_placement.updateValues();
-    m_placement.collapseArm();
-
+    broke = false;
+    m_placementExtensionArm.dumbPower();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_placement.brokeLimit()) {
-      m_placement.stopArm();
+    if (m_placementExtensionArm.brokeLimit() ) {
+      m_placementExtensionArm.stopArm();
+      broke = true;
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return broke;
   }
 }

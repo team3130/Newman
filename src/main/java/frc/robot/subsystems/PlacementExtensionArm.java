@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,6 +16,7 @@ import frc.robot.Newman_Constants.Constants;
 public class PlacementExtensionArm extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public WPI_TalonFX extensionMotor;
+  private DigitalInput m_limitswitch;
 
 
   //general
@@ -64,6 +66,9 @@ public class PlacementExtensionArm extends SubsystemBase {
     extensionMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
     extensionMotor.enableVoltageCompensation(true);
 
+    m_limitswitch = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
+
+
     Placement = Shuffleboard.getTab("Extension Arm");
     n_placementExtensionArmP = Placement.add("p", placementExtensionArmP).getEntry();
     n_placementExtensionArmI = Placement.add("i", placementExtensionArmI).getEntry();
@@ -97,6 +102,12 @@ public class PlacementExtensionArm extends SubsystemBase {
   public void collapseArm(){
     extensionMotor.set(ControlMode.MotionMagic, n_collapsedPosition.getDouble(n_collapsedPosition.getDouble(collapsedPosition)));
   }
+  public void stopArm(){
+    extensionMotor.set(ControlMode.PercentOutput, 0);
+  }
+  public void dumbPower(){
+    extensionMotor.set(ControlMode.PercentOutput, 0.2);
+  }
 
 
 
@@ -106,6 +117,9 @@ public class PlacementExtensionArm extends SubsystemBase {
   }
   public double getSpeedPlacementArm(){
     return 10 * Constants.ticksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorVelocity();
+  }
+  public boolean brokeLimit() {
+    return !m_limitswitch.get();
   }
   public void updateValues(){
     if (l_placementExtensionArmP != n_placementExtensionArmP.getDouble(placementExtensionArmP)){
