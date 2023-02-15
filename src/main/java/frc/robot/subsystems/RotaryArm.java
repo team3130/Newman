@@ -21,6 +21,8 @@ public class RotaryArm extends SubsystemBase implements ShuffleboardUpdated {
   public RotaryArm() {
     rotaryArmMotor = new WPI_TalonFX(Constants.CAN_RotaryArm);
     rotaryArmMotor.configFactoryDefault();
+    rotaryArmMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
+    rotaryArmMotor.enableVoltageCompensation(true);
   }
 
   @Override

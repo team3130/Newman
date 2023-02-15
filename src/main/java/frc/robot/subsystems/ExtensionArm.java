@@ -21,6 +21,8 @@ public class ExtensionArm extends SubsystemBase implements ShuffleboardUpdated {
   public ExtensionArm() {
     extensionMotor = new WPI_TalonSRX(Constants.CAN_ExtensionArm);
     extensionMotor.configFactoryDefault();
+    extensionMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
+    extensionMotor.enableVoltageCompensation(true);
   }
 
   @Override
