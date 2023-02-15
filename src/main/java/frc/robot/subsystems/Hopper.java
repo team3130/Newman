@@ -24,6 +24,10 @@ public class Hopper extends SubsystemBase {
         rightwheel = new WPI_TalonSRX(Constants.CAN_hopperright);
         leftwheel.configFactoryDefault();
         rightwheel.configFactoryDefault();
+        rightwheel.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
+        rightwheel.enableVoltageCompensation(true);
+        leftwheel.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
+        leftwheel.enableVoltageCompensation(true);
     }
 
     public void spinMotor() {
