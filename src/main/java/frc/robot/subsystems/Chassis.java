@@ -20,8 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.sensors.Navx;
 import frc.robot.swerve.SwerveModule;
-
-import java.util.Arrays;
+import frc.robot.Newman_Constants.Constants;
 
 
 public class Chassis extends SubsystemBase {
