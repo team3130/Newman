@@ -9,10 +9,14 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import frc.robot.Newman_Constants.Constants;
 
+import java.util.ArrayList;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -24,32 +28,15 @@ public class KugelControllerCommand extends CommandBase {
   protected final HolonomicDriveController m_controller;
   protected final Consumer<SwerveModuleState[]> m_outputModuleStates;
 
+  protected ShuffleboardTab tab = Shuffleboard.getTab("");
+
+
     public KugelControllerCommand(PathPlannerTrajectory trajectory, Supplier<Pose2d> robotPose, SwerveDriveKinematics kinematics, HolonomicDriveController holonomicDriveController, Consumer<SwerveModuleState[]> states, Subsystem requirement) {
         m_trajectory = trajectory;
         m_pose = robotPose;
         m_kinematics = kinematics;
         m_controller = holonomicDriveController;
         m_outputModuleStates = states;
-    }
-
-    public PathPlannerTrajectory.PathPlannerState sample(double time) {
-        if (time <= m_trajectory.getInitialState().timeSeconds) return m_trajectory.getInitialState();
-        if (time >= m_trajectory.getTotalTimeSeconds()) return m_trajectory.getEndState();
-
-        int low = 1;
-        int high = m_trajectory.getStates().size() - 1;
-
-        // bin search tracjectory top sample
-        while (low != high) {
-          int mid = (low + high) / 2;
-          if (m_trajectory.getState(mid).timeSeconds < time) {
-            low = mid + 1;
-          } else {
-            high = mid;
-          }
-        }
-
-        return m_trajectory.getState(low);
     }
 
     public void initialize() {
@@ -59,9 +46,10 @@ public class KugelControllerCommand extends CommandBase {
 
     public void execute() {
         double time = m_timer.get();
-        Trajectory.State desiredState = m_trajectory.sample(time);
+        PathPlannerTrajectory.PathPlannerState desiredState = (PathPlannerTrajectory.PathPlannerState) m_trajectory.sample(time);
 
-        ChassisSpeeds targetChassisSpeeds = m_controller.calculate(m_pose.get(), desiredState, sample(time).holonomicRotation);
+        ChassisSpeeds targetChassisSpeeds = m_controller.calculate(m_pose.get(), desiredState,
+                desiredState.holonomicRotation);
         SwerveModuleState[] targetModuleStates = m_kinematics.toSwerveModuleStates(targetChassisSpeeds);
 
         m_outputModuleStates.accept(targetModuleStates);
@@ -69,7 +57,13 @@ public class KugelControllerCommand extends CommandBase {
 
 
     public boolean isFinished() {
-        return m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds());
+        boolean timeHasPassed = m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds();
+        if (Constants.debugMode) {
+            if (timeHasPassed) {
+
+            }
+        }
+        return timeHasPassed;
     }
 
     @Override

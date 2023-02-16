@@ -7,9 +7,12 @@ package frc.robot;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
@@ -26,8 +29,11 @@ import frc.robot.commands.ZeroEverything;
 import frc.robot.commands.ZeroWheels;
 import frc.robot.subsystems.Chassis;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.supporting_classes.Chooser;
+import frc.robot.supporting_classes.KugelControllerCommand;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -70,7 +76,7 @@ public class RobotContainer {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
   }
-  public void generateAutonCommand() {
+  public Command generateAutonCommand() {
     Trajectory trajectory3;
     TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Constants.kPhysicalMaxSpeedMetersPerSecond / 4, Constants.kMaxAccelerationDrive / 8)
             .setKinematics(m_chassis.getKinematics());
@@ -83,10 +89,12 @@ public class RobotContainer {
     Trajectory trajectory2 = TrajectoryGenerator.generateTrajectory(List.of(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(3, 0, new Rotation2d(Math.toRadians(90)))), trajectoryConfig);*/
     /*    Trajectory trajectory3 = new Trajectory();*/
 
-    PathPlannerTrajectory trajectoryPlanned = PathPlanner.loadPath("Desperate", new PathConstraints(2, 2));
-   /* PathPlannerTrajectory trajectoryPlanned = PathPlanner.generatePath(new PathConstraints(2, 2), List.of(
+/*
+    PathPlannerTrajectory trajectoryPlanned = PathPlanner.loadPath("3meter", new PathConstraints(4, 3));
+*/
+    PathPlannerTrajectory trajectoryPlanned = PathPlanner.generatePath(new PathConstraints(2, 2), List.of(
             new PathPoint(new Translation2d(0, 0), new Rotation2d(0), new Rotation2d(0)),
-            new PathPoint(new Translation2d(3, 0), new Rotation2d(Math.toRadians(0)), new Rotation2d(Math.toRadians(90))))); */
+            new PathPoint(new Translation2d(3, 0), new Rotation2d(Math.toRadians(0)), new Rotation2d(Math.toRadians(90)))));
    /* PathPlannerTrajectory trajectoryPlanned = PathPlanner.generatePath(new PathConstraints(2,2), List.of(
             new PathPoint(new Translation2d(0,0), new Rotation2d(0), new Rotation2d(0) ),
             new PathPoint(new Translation2d(1.5, 0.1), new Rotation2d(Math.toRadians(30)), new Rotation2d(0)), new PathPoint(new Translation2d(3,1),
@@ -112,12 +120,12 @@ public class RobotContainer {
     );
     */
 
-        try {
+/*        try {
       trajectory3 = TrajectoryUtil.fromPathweaverJson(Filesystem.getDeployDirectory().toPath().resolve("pathplanner/Forward 3 Meters and 90 degrees.path"));
     }
     catch (IOException e) {
       DriverStation.reportError("Couldn't read file", false);
-    }
+    }*/
     // System.out.println(trajectory2.toString());
     /*  Trajectory trajectory = TrajectoryGenerator.generateTrajectory(List.of(new Pose2d(0,0,new Rotation2d(0)),
             new Pose2d(1.5, 0.1, new Rotation2d(Math.toRadians(30))), new Pose2d(3, 1, new Rotation2d(Math.toRadians(90))),
@@ -129,17 +137,19 @@ public class RobotContainer {
     PIDController yController = new PIDController(Constants.kPYController, Constants.kIYController ,Constants.kDYController);
     HolonomicDriveController holonomicDriveController = new HolonomicDriveController(xController, yController, new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, 0, Constants.kThetaControllerConstraints));
 
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+    KugelControllerCommand swerveControllerCommand = new KugelControllerCommand(
             trajectoryPlanned,
             m_chassis::getPose2d,
             m_chassis.getKinematics(),
             holonomicDriveController,
-            () -> {return trajectoryPlanned.getEndState().holonomicRotation;},
+            /*() -> {return trajectoryPlanned.getEndState().holonomicRotation;},*/
             m_chassis::setModuleStates,
             m_chassis);
 
     auton_command = new SequentialCommandGroup(new InstantCommand(()->m_chassis.resetOdometry(trajectoryPlanned.getInitialPose())),
             swerveControllerCommand, new InstantCommand(m_chassis::stopModules));
+
+    return auton_command;
   }
 
 }

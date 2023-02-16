@@ -1,5 +1,7 @@
 package frc.robot.supporting_classes;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
@@ -50,6 +52,10 @@ public class Chooser {
 
         AutonCommand cmd = new AutonCommand(swerveControllerCommand, trajectory.getInitialPose(), trajectory.getEndState().poseMeters);
         return cmd;
+    }
+
+    public AutonCommand make3MeterDrive() {
+        return autonGenerator(PathPlanner.loadPath("3meter", new PathConstraints(4, 3)));
     }
 
 
