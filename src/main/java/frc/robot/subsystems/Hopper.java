@@ -28,6 +28,9 @@ public class Hopper extends SubsystemBase {
         rightwheel.enableVoltageCompensation(true);
         leftwheel.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
         leftwheel.enableVoltageCompensation(true);
+
+        leftwheel.setInverted(true);
+        rightwheel.setInverted(false);
     }
 
     public void spinMotor() {
