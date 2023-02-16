@@ -12,7 +12,6 @@ import frc.robot.commands.ZeroEverything;
 import frc.robot.Newman_Constants.Constants;
 
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
   private Timer timer;
 
   private RobotContainer m_robotContainer;
@@ -46,6 +45,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    CommandScheduler.getInstance().cancelAll();
+    CommandScheduler.getInstance().schedule(m_robotContainer.getCmd());
   }
 
   @Override
