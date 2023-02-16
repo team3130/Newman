@@ -16,8 +16,10 @@ public class Hopper extends SubsystemBase {
     protected final WPI_TalonSRX rightwheel;
 
     private static ShuffleboardTab TAB = Shuffleboard.getTab("Hopper");
-    private double m_outputspeed = 0.45;
-    private final GenericEntry n_outputentry = TAB.add("HopperOutput", m_outputspeed).getEntry();
+    private double m_leftoutputSpeed = 0.45;
+    private double m_rightOutputSpeed = m_leftoutputSpeed * 4;
+    private final GenericEntry n_leftoutputentry = TAB.add("HopperLeftOutput", m_leftoutputSpeed).getEntry();
+    private final GenericEntry n_rightoutputentry = TAB.add("HopperRightOutput", m_rightOutputSpeed).getEntry();
 
     public Hopper() {
         leftwheel = new WPI_TalonSRX(Constants.CAN_hopperleft);
@@ -34,8 +36,8 @@ public class Hopper extends SubsystemBase {
     }
 
     public void spinMotor() {
-        leftwheel.set(ControlMode.PercentOutput, m_outputspeed);
-        rightwheel.set(ControlMode.PercentOutput, m_outputspeed);
+        leftwheel.set(ControlMode.PercentOutput, m_leftoutputSpeed);
+        rightwheel.set(ControlMode.PercentOutput, m_rightOutputSpeed);
     }
 
     public void hopperStop() {
@@ -44,7 +46,8 @@ public class Hopper extends SubsystemBase {
     }
 
     public void updateOutputSpeed() {
-        m_outputspeed = n_outputentry.getDouble(m_outputspeed);
+        m_leftoutputSpeed = n_leftoutputentry.getDouble(m_leftoutputSpeed);
+        m_rightOutputSpeed = n_rightoutputentry.getDouble(m_rightOutputSpeed) * 4;
     }
 
     @Override
