@@ -78,6 +78,12 @@ public class Chassis extends SubsystemBase {
         modules[Constants.Side.RIGHT_FRONT].PIDisDone() &&
         modules[Constants.Side.RIGHT_BACK].PIDisDone();
     }
+    public void resetOdometry(Pose2d pose) {
+        resetEncoders();
+        Navx.resetNavX();
+        // sets 0 to be to the right of the bot, because 0 radians on the unit circle is to the right of north (as a bearing)
+        m_odometry.resetPosition(new Rotation2d(0), modulePositions, pose);
+    }
 
   public void flipBool() {
       fieldRelative = !fieldRelative;
