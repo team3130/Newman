@@ -18,6 +18,7 @@ public class ExtensionArm extends SubsystemBase implements ShuffleboardUpdated {
   private static double extensionArmSpeed = 0.6;
   private ShuffleboardTab tab = Shuffleboard.getTab("Test");
   private GenericEntry n_outputSpeed = tab.add("Extension % out", extensionArmSpeed).getEntry();
+  private GenericEntry n_limitSwitch = tab.add("Limit switch", false).getEntry();
   /** Creates a new ExampleSubsystem. */
   private WPI_TalonSRX extensionMotor;
 
@@ -34,8 +35,13 @@ public class ExtensionArm extends SubsystemBase implements ShuffleboardUpdated {
     m_digitalInput = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
   }
 
+  public void outputShuffleboard() {
+    n_limitSwitch.setBoolean(hitLimitSwitch());
+  }
+
   @Override
   public void periodic() {
+    outputShuffleboard();
     // This method will be called once per scheduler run
   }
 
