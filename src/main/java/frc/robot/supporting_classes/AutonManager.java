@@ -69,7 +69,7 @@ public class AutonManager {
      *  The second parameter is a {@link Rotation2d} rotation,
      *      the rotation dictates the {@link edu.wpi.first.math.spline.Spline} that is made,
      *      which is basically the rotation of the plane that intersects the wheels when the bot gets to a position
-     *      <a src=https://docs.google.com/presentation/d/1Us-ONi37lHcfJIlmSMmEISfco7uoSHt6dLa4VgWFYe8/edit?usp=sharing>
+     *      <a href=https://docs.google.com/presentation/d/1Us-ONi37lHcfJIlmSMmEISfco7uoSHt6dLa4VgWFYe8/edit?usp=sharing>
      *          An explanation on holonomic rotation vs heading.
      *          </a>
      *  The third parameter is another {@link Rotation2d} rotation,
@@ -150,7 +150,7 @@ public class AutonManager {
 
     /**
      * Example for how to generate a trajectory and generate a path from a list of {@link PathPoint} object
-     * <a src=https://docs.google.com/document/d/1RInEhl8mW1UKMP4AbvWWiWmfI4klbDfyZLJbw1zbjDo/edit#heading=h.lie7pmqbolmu>
+     * <a href=https://docs.google.com/document/d/1RInEhl8mW1UKMP4AbvWWiWmfI4klbDfyZLJbw1zbjDo/edit#heading=h.lie7pmqbolmu>
      *     Explanation of PathPoint objects</a>
      * @return the command generated
      */

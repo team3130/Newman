@@ -22,13 +22,10 @@ import frc.robot.supporting_classes.AutonManager;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
-
 public class RobotContainer {
   protected static Joystick m_driverGamepad;
   protected final Chassis m_chassis = new Chassis();
-  protected Command auton_command;
   protected AutonManager m_autonManager;
-
 
   public Chassis getChassis() {
     return m_chassis;
@@ -61,7 +58,7 @@ public class RobotContainer {
   }
 
   public Command getCmd() {
-    return auton_command;
+    return m_autonManager.pick();
   }
 
 }
