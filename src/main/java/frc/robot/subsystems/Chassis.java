@@ -78,10 +78,16 @@ public class Chassis extends SubsystemBase {
         modules[Constants.Side.RIGHT_FRONT].PIDisDone() &&
         modules[Constants.Side.RIGHT_BACK].PIDisDone();
     }
+
+    /**
+   * Resets odometry
+   * <p>Resets navx</p>
+   * <p>Resets relative encoders to be what the absolute encoders are</p>
+   * <p>Hard reset of the odometry object</p>
+   */
     public void resetOdometry(Pose2d pose) {
         resetEncoders();
         Navx.resetNavX();
-        // sets 0 to be to the right of the bot, because 0 radians on the unit circle is to the right of north (as a bearing)
         m_odometry.resetPosition(new Rotation2d(0), modulePositions, pose);
     }
 
@@ -179,14 +185,14 @@ public class Chassis extends SubsystemBase {
       }
   }
 
-  @Override
-  public void simulationPeriodic() {
+    @Override
+    public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
-  }
+    }
 
     public void resetEncoders() {
-      for (int i = 0; i < modules.length; i++) {
-          modules[i].resetEncoders();
-      }
+        for (SwerveModule module : modules) {
+            module.resetEncoders();
+        }
     }
 }

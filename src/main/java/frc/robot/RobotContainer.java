@@ -43,8 +43,7 @@ public class RobotContainer {
     m_driverGamepad = new Joystick(0);
     configureButtonBindings();
 
-     m_chassis.setDefaultCommand(new TeleopDrive(m_chassis));
-     m_chassis.resetOdometry(new Pose2d(new Translation2d(0,0),new Rotation2d(0)));
+    m_chassis.setDefaultCommand(new TeleopDrive(m_chassis));
   }
 
 
@@ -63,6 +62,10 @@ public class RobotContainer {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
 
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
+  }
+
+  public void resetOdometry() {
+    m_chassis.resetOdometry(new Pose2d(0 ,0, new Rotation2d()));
   }
 
 }
