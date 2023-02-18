@@ -10,6 +10,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -36,6 +37,8 @@ public class AutonManager {
         safe_constraints = new PathConstraints(2, 2);
         violent_constraints = new PathConstraints(4, 3);
 
+        SmartDashboard.putData(m_autonChooser);
+
         populateChooser();
     }
 
@@ -43,13 +46,14 @@ public class AutonManager {
      * Method to populate chooser with commands to follow.
      */
     private void populateChooser() {
-        m_autonChooser.setDefaultOption("move forward in a line", generateExamplePathFromPoses());
+        m_autonChooser.setDefaultOption("do nothing", generateExamplePathFromPoses());
 
         // the string is the name passed into shuffleboard and the method call is to generate the method you will use
-        m_autonChooser.addOption("3 Meter", generate3MeterDrive());
-        m_autonChooser.addOption("Question mark", generateExamplePathFromFile());
-        m_autonChooser.addOption("playerside", generatepWeekZeroPath());
-        m_autonChooser.addOption("farside", generatepWeekZeroPath2());
+        // m_autonChooser.addOption("3 Meter", generate3MeterDrive());
+        // m_autonChooser.addOption("Question mark", generateExamplePathFromFile());
+        // m_autonChooser.addOption("player side", generatepWeekZeroPath());
+        // m_autonChooser.addOption("far side", generatepWeekZeroPath2());
+        m_autonChooser.addOption("feelin spicy", generateExamplePathFromPoses());
     }
 
     /**
@@ -166,7 +170,7 @@ public class AutonManager {
                 new PathPoint(
                         new Translation2d(0, 0),
                         new Rotation2d(), new Rotation2d()),
-                new PathPoint(new Translation2d(3, 0), new Rotation2d(), new Rotation2d(Math.toRadians(90)))
+                new PathPoint(new Translation2d(2, 0), new Rotation2d(), new Rotation2d(Math.toRadians(90)))
         );
 
         AutonCommand command = autonCommandGenerator(trajectory);
