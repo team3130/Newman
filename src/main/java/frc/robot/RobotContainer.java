@@ -19,6 +19,7 @@ import frc.robot.commands.ZeroEverything;
 import frc.robot.commands.ZeroWheels;
 import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.Hopper;
 import frc.robot.Newman_Constants.Constants;
 
 /**
@@ -62,6 +63,7 @@ public class RobotContainer {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
 
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new HopperSpin(m_hopper));
   }
 
   public void resetOdometry() {
