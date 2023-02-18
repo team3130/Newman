@@ -48,6 +48,8 @@ public class AutonManager {
         // the string is the name passed into shuffleboard and the method call is to generate the method you will use
         m_autonChooser.addOption("3 Meter", generate3MeterDrive());
         m_autonChooser.addOption("Question mark", generateExamplePathFromFile());
+        m_autonChooser.addOption("playerside", generatepWeekZeroPath());
+        m_autonChooser.addOption("farside", generatepWeekZeroPath2());
     }
 
     /**
@@ -181,5 +183,16 @@ public class AutonManager {
         return wrapCmd(autonCommand);
     }
 
+    public Command generatepWeekZeroPath() {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("week zero human player path", safe_constraints);
+        AutonCommand autonCommand = autonCommandGenerator(trajectory);
+        return wrapCmd(autonCommand);
+    }
+
+    public Command generatepWeekZeroPath2() {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("week zero path 2 farside", safe_constraints);
+        AutonCommand autonCommand = autonCommandGenerator(trajectory);
+        return wrapCmd(autonCommand);
+    }
 
 }
