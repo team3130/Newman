@@ -167,3 +167,5 @@ bin/
 !NavX.json
 
 src/main/deploy/pathplanner/
+
+.pathplanner/

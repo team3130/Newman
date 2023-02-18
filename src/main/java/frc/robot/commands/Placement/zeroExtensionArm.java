@@ -2,45 +2,55 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.Placement;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Chassis;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.Newman_Constants.Constants;
+import frc.robot.subsystems.ExtensionArm;
+import frc.robot.supportingClasses.ShuffleboardUpdated;
 
 /** An example command that uses an example subsystem. */
-public class FlipFieldOrriented extends CommandBase {
+public class zeroExtensionArm extends CommandBase implements ShuffleboardUpdated {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Chassis m_subsystem;
+  private final ExtensionArm m_extensionArm;
 
   /**
    * Creates a new ExampleCommand.
    *
-   * @param chassis The subsystem used by this command.
+   * @param subsystem The subsystem used by this command.
    */
-  public FlipFieldOrriented(Chassis chassis) {
-    m_subsystem = chassis;
+  public zeroExtensionArm(ExtensionArm subsystem) {
+    m_extensionArm = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(chassis);
+    addRequirements(m_extensionArm);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.flipBool();
+    m_extensionArm.spinExtensionArm(1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_extensionArm.stop();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return m_extensionArm.hitLimitSwitch();
+  }
+
+  @Override
+  public void updateValueFromShuffleboard() {
+
   }
 }
