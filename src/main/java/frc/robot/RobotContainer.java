@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -22,6 +26,14 @@ import frc.robot.commands.WriteShuffleboardChanges;
 import frc.robot.subsystems.*;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.supportingClasses.ShuffleboardUpdated;
+import frc.robot.commands.FlipFieldOrriented;
+import frc.robot.commands.TeleopDrive;
+import frc.robot.commands.ZeroEverything;
+import frc.robot.commands.ZeroWheels;
+import frc.robot.sensors.Navx;
+import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.Hopper;
+import frc.robot.Newman_Constants.Constants;
 
 
 /**
@@ -71,6 +83,7 @@ public class RobotContainer {
      configureButtonBindings();
   }
 
+
   public static Joystick getDriverGamepad() {
     return m_driverGamepad;
   }
@@ -89,14 +102,15 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ZeroWheels(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
-    //new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new MoveRotaryArm(m_rotaryArm, 1));
-    //new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new MoveRotaryArm(m_rotaryArm, -1));
-    //new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new MoveExtensionArm(m_extensionArm, 1));
-    //new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new MoveExtensionArm(m_extensionArm, -1));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ActuateHandGrabber(m_handGrabber));
-
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
     Shuffleboard.getTab("Test").add("Write changes", new WriteShuffleboardChanges(new ExampleSubsystem(), usesShuffleBoard));
     Shuffleboard.getTab("Test").add("Spin motor down", new zeroExtensionArm(m_extensionArm));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new HopperSpin(m_hopper));
   }
+
+  public void resetOdometry() {
+    m_chassis.resetOdometry(new Pose2d(0 ,0, new Rotation2d()));
+  }
+
 }

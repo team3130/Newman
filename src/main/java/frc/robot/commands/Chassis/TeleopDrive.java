@@ -50,10 +50,14 @@ public class TeleopDrive extends CommandBase {
     double y = -m_xboxController.getRawAxis(0); // left stick y-axis (y-axis is inverted)
     double x = -m_xboxController.getRawAxis(1); // left stick x-axis
     double theta = -m_xboxController.getRawAxis(4); // right stick x-axis
+    y = y*Math.abs(y);
+    x = x*Math.abs(x);
 
     // apply dead-band
-    if (Math.abs(x) < Constants.kDeadband && Math.abs(y) < Constants.kDeadband) {
+    if (Math.abs(x) < Constants.kDeadband) {
       x = 0;
+    }
+    if (Math.abs(y) < Constants.kDeadband) {
       y = 0;
     }
     theta = Math.abs(theta) > Constants.kDeadband ? theta : 0.0;
