@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Placement;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Newman_Constants.Constants;
@@ -13,19 +14,17 @@ import frc.robot.subsystems.RotaryArm;
 public class MoveRotaryArm extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final RotaryArm m_rotaryArm;
-  private int dir;
-  public static double rotaryArmMaxSpeed = 1; //TODO make this an actual number & move it to constants
 
-  public XboxController m_xboxController;
+  public Joystick m_xboxController;
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveRotaryArm(RotaryArm subsystem, int direction) {
+  public MoveRotaryArm(RotaryArm subsystem, Joystick m_xboxController) {
     // specify whether rotary arm should be lowered or raised by setting the direction parameter as either -1 or 1, respectively
     m_rotaryArm = subsystem;
-    dir = direction;
+    this.m_xboxController = m_xboxController;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_rotaryArm);
@@ -39,7 +38,8 @@ public class MoveRotaryArm extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double y = m_xboxController.getRawAxis(0); // inverted?
+    double y = m_xboxController.getRawAxis(5); // inverted?
+    y = y* Math.abs(y);
 
     if (Math.abs(y) < Constants.kDeadband) {
       y = 0;

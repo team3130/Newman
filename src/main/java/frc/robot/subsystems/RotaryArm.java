@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -23,6 +24,8 @@ public class RotaryArm extends SubsystemBase implements ShuffleboardUpdated {
     rotaryArmMotor.configFactoryDefault();
     rotaryArmMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
     rotaryArmMotor.enableVoltageCompensation(true);
+    rotaryArmMotor.setInverted(true);
+    rotaryArmMotor.setNeutralMode(NeutralMode.Brake);
   }
 
   @Override

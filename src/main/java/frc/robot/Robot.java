@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.Chassis.ZeroEverything;
 
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.commands.Placement.zeroExtensionArm;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -58,6 +59,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     CommandScheduler.getInstance().cancelAll();
+    // CommandScheduler.getInstance().schedule(new zeroExtensionArm(m_robotContainer.getExtensionArm()));
   }
 
   @Override

@@ -28,9 +28,9 @@ public class ExtensionArm extends SubsystemBase implements ShuffleboardUpdated {
     extensionMotor = new WPI_TalonSRX(Constants.CAN_ExtensionArm);
     extensionMotor.configFactoryDefault();
     extensionMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
-    extensionMotor.enableVoltageCompensation(true);
-
-    extensionMotor.setNeutralMode(NeutralMode.Coast);
+    extensionMotor.enableVoltageCompensation(false); //TODO: change when we get falcon
+    extensionMotor.setInverted(false);
+    extensionMotor.setNeutralMode(NeutralMode.Brake);
 
     m_digitalInput = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
   }

@@ -37,14 +37,18 @@ public class RobotContainer {
   private final Chassis m_chassis = new Chassis();
   private final ExtensionArm m_extensionArm = new ExtensionArm();
 
-  private final RotaryArm m_rotaryArm = new RotaryArm();
+  private final RotaryArm m_rotaryArm;
 
-  private final HandGrabber m_handGrabber = new HandGrabber();
+  private final HandGrabber m_handGrabber;
 
   private ShuffleboardUpdated[] usesShuffleBoard;
 
   public Chassis getChassis() {
     return m_chassis;
+  }
+
+  public ExtensionArm getExtensionArm() {
+    return m_extensionArm;
   }
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -55,9 +59,12 @@ public class RobotContainer {
 
      m_chassis.setDefaultCommand(new TeleopDrive(m_chassis));
 
+     m_rotaryArm = new RotaryArm();
+     m_handGrabber = new HandGrabber();
+
      //idk if this is right
-     m_rotaryArm.setDefaultCommand(new MoveRotaryArm(m_rotaryArm,1));
-     m_extensionArm.setDefaultCommand(new MoveExtensionArm(m_extensionArm));
+     m_rotaryArm.setDefaultCommand(new MoveRotaryArm(m_rotaryArm, m_weaponsGamepad));
+     m_extensionArm.setDefaultCommand(new MoveExtensionArm(m_extensionArm, m_weaponsGamepad));
 
      usesShuffleBoard = new ShuffleboardUpdated[]{m_rotaryArm, m_extensionArm};
 

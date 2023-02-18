@@ -5,6 +5,7 @@
 package frc.robot.commands.Placement;
 
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -17,15 +18,16 @@ import frc.robot.supportingClasses.ShuffleboardUpdated;
 public class MoveExtensionArm extends CommandBase implements ShuffleboardUpdated {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ExtensionArm m_extensionArm;
-  public XboxController m_xboxController;
+  public Joystick m_xboxController;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveExtensionArm(ExtensionArm subsystem) {
+  public MoveExtensionArm(ExtensionArm subsystem, Joystick m_xboxController) {
     m_extensionArm = subsystem;
+    this.m_xboxController = m_xboxController;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_extensionArm);
   }
@@ -38,7 +40,8 @@ public class MoveExtensionArm extends CommandBase implements ShuffleboardUpdated
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double y = m_xboxController.getRawAxis(0); // inverted?
+    double y = -m_xboxController.getRawAxis(1); // inverted?
+    y =y * Math.abs(y);
 
     if (Math.abs(y) < Constants.kDeadband || (y < 0 && m_extensionArm.hitLimitSwitch())) {
       y = 0;
