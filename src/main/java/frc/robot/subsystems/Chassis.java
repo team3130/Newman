@@ -43,6 +43,12 @@ public class Chassis extends SubsystemBase {
 
   private final GenericEntry n_FieldRelative = tab.add("field relative", true).getEntry();
   private final GenericEntry n_Navx;
+  private final GenericEntry n_Yaw;
+  private final GenericEntry n_Roll;
+  private final GenericEntry n_RollAccel;
+  private final GenericEntry n_Pitch;
+  private final GenericEntry n_PitchAccel;
+  
   private final Field2d nField;
 
   private boolean fieldRelative = true;
@@ -68,6 +74,13 @@ public class Chassis extends SubsystemBase {
       zeroHeading();
 
       n_Navx = tab.add("Navx angle", Navx.getRotation().getRadians()).getEntry();
+      
+      n_Yaw = tab.add("Yaw", Navx.getYaw()).getEntry();
+      n_Pitch = tab.add("Pitch", Navx.getPitch()).getEntry();
+      n_Roll = tab.add("Roll", Navx.getRoll()).getEntry();
+      n_PitchAccel = tab.add("Pitch Accel", Navx.getPitchAccel()).getEntry();
+      n_RollAccel = tab.add("Roll Accel", Navx.getRollAccel()).getEntry();
+      
 
       nField = new Field2d();
       
@@ -120,6 +133,12 @@ public class Chassis extends SubsystemBase {
       n_FieldRelative.setBoolean(fieldRelative);
 
       n_Navx.setDouble(Navx.getAngle());
+      n_Yaw.setDouble(Navx.getYaw());
+      n_Pitch.setDouble(Navx.getPitch());
+      n_PitchAccel.setDouble(Navx.getPitchAccel());
+      n_Roll.setDouble(Navx.getRoll());
+      n_RollAccel.setDouble(Navx.getRollAccel());
+
 
       nField.setRobotPose(m_odometry.getEstimatedPosition());
   }

@@ -51,7 +51,7 @@ public class Balance extends CommandBase {
   private final GenericEntry I = tab.add("Balancer I", Constants.BalanceKi).getEntry();
   private final GenericEntry D = tab.add("Balancer D", Constants.BalanceKd).getEntry();
   private final GenericEntry F = tab.add("Balancer F", Constants.BalanceKf).getEntry();
-  private final GenericEntry Constrain = tab.add("Balancer F", Constants.BalanceConstrain).getEntry();
+  private final GenericEntry Constrain = tab.add("Balancer Constrain", Constants.BalanceConstrain).getEntry();
 
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -62,7 +62,7 @@ public class Balance extends CommandBase {
     accelerationRoll = Math.toRadians(Navx.getRollAccel());
     pitch = Math.toRadians(Navx.getPitch());
     roll = Math.toRadians(Navx.getRoll());
-    
+
     tilt = Math.atan(Math.sqrt(Math.pow(Math.tan(pitch),2) + Math.pow(Math.tan(roll),2)));
     accelerationTilt = Math.atan(Math.sqrt(Math.pow(Math.tan(accelerationPitch),2) + Math.pow(Math.tan(accelerationRoll),2)));
     tiltSum += tilt;
@@ -72,35 +72,15 @@ public class Balance extends CommandBase {
     else if (tiltSum > Constrain.getDouble(Constants.BalanceConstrain)) {
       tiltSum = Constrain.getDouble(Constants.BalanceConstrain);
     } 
-     
-    int sign = 0;
-    if (pitch > roll) {
-      if (pitch > 0) 
-        sign = 1;
-      else 
-        sign = -1;
-    }
-    else {
-      if (roll > 0)
-        sign = 1;
-      else 
-        sign = -1;
-    }
 
     //TODO: Tune PID values
-    double magnitude = (P.getDouble(Constants.BalanceKp) * tilt + I.getDouble(Constants.BalanceKi) * tiltSum + D.getDouble(Constants.BalanceKd) * accelerationTilt + F.getDouble(Constants.BalanceKf)) * sign;
-    double direction = Math.atan2(Math.tan(roll),Math.tan(pitch)); //in radians???
+    double magnitude = (P.getDouble(Constants.BalanceKp) * tilt + I.getDouble(Constants.BalanceKi) * tiltSum + D.getDouble(Constants.BalanceKd) * accelerationTilt + F.getDouble(Constants.BalanceKf));
+    double direction = Math.atan2(Math.tan(roll),Math.tan(pitch)); 
     
     double x = magnitude * Math.cos(direction);
     double y = magnitude * Math.sin(direction);
 
-    SwerveModuleState[] moduleStates;
-    if (m_chassis.getFieldRelative()) {
-      moduleStates = m_chassis.getKinematics().toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(x, y, 0, m_chassis.getRotation2d()));
-    }
-    else {
-      moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(x,y,0));
-    }
+    SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(x,y,0));
     m_chassis.setModuleStates(moduleStates);
   }
 
