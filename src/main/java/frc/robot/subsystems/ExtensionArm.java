@@ -62,6 +62,10 @@ public class ExtensionArm extends SubsystemBase implements ShuffleboardUpdated {
     return !m_digitalInput.get();
   }
 
+  public double getDistanceExtensionArm(){
+    return Constants.ticksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorPosition();
+  }
+
   public void stop() {
     extensionMotor.set(0);
   }

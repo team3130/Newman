@@ -12,12 +12,15 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ExtensionArm;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.subsystems.RotaryArm;
 import frc.robot.supportingClasses.ShuffleboardUpdated;
 
 /** An example command that uses an example subsystem. */
 public class MoveExtensionArm extends CommandBase implements ShuffleboardUpdated {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ExtensionArm m_extensionArm;
+  private final RotaryArm m_rotaryArm;
+
   public Joystick m_xboxController;
 
   /**
@@ -25,7 +28,8 @@ public class MoveExtensionArm extends CommandBase implements ShuffleboardUpdated
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveExtensionArm(ExtensionArm subsystem, Joystick m_xboxController) {
+  public MoveExtensionArm(ExtensionArm subsystem, RotaryArm rsubsystem, Joystick m_xboxController) {
+    m_rotaryArm = rsubsystem;
     m_extensionArm = subsystem;
     this.m_xboxController = m_xboxController;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -34,8 +38,7 @@ public class MoveExtensionArm extends CommandBase implements ShuffleboardUpdated
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -46,8 +49,7 @@ public class MoveExtensionArm extends CommandBase implements ShuffleboardUpdated
     if (Math.abs(y) < Constants.kDeadband || (y < 0 && m_extensionArm.hitLimitSwitch())) {
       y = 0;
     }
-    m_extensionArm.spinExtensionArm(y); //that max is currently bs
-
+    if(m_extensionArm.getDistanceExtensionArm()>)
   }
 
   // Called once the command ends or is interrupted.

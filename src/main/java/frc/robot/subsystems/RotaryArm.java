@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -42,6 +43,9 @@ public class RotaryArm extends SubsystemBase implements ShuffleboardUpdated {
    */
   public void rotateRotaryArm(double scalar){
     rotaryArmMotor.set(outputSpeed * scalar);
+  }
+  public double getAngleRotaryArm(){
+    return Constants.ticksToRadiansRotaryPlacementArm * rotaryArmMotor.getSelectedSensorPosition();
   }
   @Override
   public void simulationPeriodic() {

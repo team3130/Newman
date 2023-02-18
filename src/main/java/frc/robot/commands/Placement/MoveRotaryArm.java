@@ -13,7 +13,7 @@ import frc.robot.subsystems.RotaryArm;
 /** An example command that uses an example subsystem. */
 public class MoveRotaryArm extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final RotaryArm m_rotaryArm;
+  public final RotaryArm m_rotaryArm;
 
   public Joystick m_xboxController;
   /**
