@@ -194,9 +194,6 @@ public class Chassis extends SubsystemBase {
         return m_odometry.getEstimatedPosition();
     }
 
-    public void resetOdometry(Pose2d pose) {
-        m_odometry.resetPosition(getRotation2d(), generatePoses(), pose);
-    }
 
 
     public void resetEncoders() {
