@@ -4,16 +4,23 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.*;
+import frc.robot.commands.FlipFieldOrriented;
+import frc.robot.commands.TeleopDrive;
+import frc.robot.commands.ZeroEverything;
+import frc.robot.commands.ZeroWheels;
+import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Hopper;
 import frc.robot.Newman_Constants.Constants;
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -26,7 +33,7 @@ public class RobotContainer {
   private static Joystick m_driverGamepad;
   private final Chassis m_chassis = new Chassis();
 
-  private final Hopper m_hopper = new Hopper();
+
   public Chassis getChassis() {
     return m_chassis;
   }
@@ -37,8 +44,9 @@ public class RobotContainer {
     m_driverGamepad = new Joystick(0);
     configureButtonBindings();
 
-     m_chassis.setDefaultCommand(new TeleopDrive(m_chassis));
+    m_chassis.setDefaultCommand(new TeleopDrive(m_chassis));
   }
+
 
   public static Joystick getDriverGamepad() {
     return m_driverGamepad;
@@ -53,7 +61,13 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ZeroWheels(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
+
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new HopperSpin(m_hopper));
   }
+
+  public void resetOdometry() {
+    m_chassis.resetOdometry(new Pose2d(0 ,0, new Rotation2d()));
+  }
+
 }
