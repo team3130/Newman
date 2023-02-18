@@ -15,7 +15,7 @@ import frc.robot.Newman_Constants.Constants;
 import frc.robot.supportingClasses.ShuffleboardUpdated;
 
 public class ExtensionArm extends SubsystemBase implements ShuffleboardUpdated {
-  private static double extensionArmSpeed = 0.6;
+  private static double extensionArmSpeed = 1;
   private ShuffleboardTab tab = Shuffleboard.getTab("Test");
   private GenericEntry n_outputSpeed = tab.add("Extension % out", extensionArmSpeed).getEntry();
   private GenericEntry n_limitSwitch = tab.add("Limit switch", false).getEntry();

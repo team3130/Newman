@@ -40,10 +40,10 @@ public class MoveExtensionArm extends CommandBase implements ShuffleboardUpdated
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double y = -m_xboxController.getRawAxis(1); // inverted?
+    double y = m_xboxController.getRawAxis(1); // inverted?
     y =y * Math.abs(y);
 
-    if (Math.abs(y) < Constants.kDeadband || (y < 0 && m_extensionArm.hitLimitSwitch())) {
+    if (Math.abs(y) < Constants.kDeadband || (y > 0 && m_extensionArm.hitLimitSwitch())) {
       y = 0;
     }
     m_extensionArm.spinExtensionArm(y); //that max is currently bs

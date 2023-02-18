@@ -26,10 +26,8 @@ import frc.robot.commands.WriteShuffleboardChanges;
 import frc.robot.subsystems.*;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.supportingClasses.ShuffleboardUpdated;
-import frc.robot.commands.FlipFieldOrriented;
-import frc.robot.commands.TeleopDrive;
-import frc.robot.commands.ZeroEverything;
-import frc.robot.commands.ZeroWheels;
+
+
 import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Hopper;
@@ -106,7 +104,6 @@ public class RobotContainer {
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
     Shuffleboard.getTab("Test").add("Write changes", new WriteShuffleboardChanges(new ExampleSubsystem(), usesShuffleBoard));
     Shuffleboard.getTab("Test").add("Spin motor down", new zeroExtensionArm(m_extensionArm));
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new HopperSpin(m_hopper));
   }
 
   public void resetOdometry() {
