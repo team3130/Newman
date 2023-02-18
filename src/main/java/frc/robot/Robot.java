@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Newman_Constants.Constants;
 
+import frc.robot.Newman_Constants.Constants;
+
 public class Robot extends TimedRobot {
   private Timer timer;
 
