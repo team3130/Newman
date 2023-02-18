@@ -8,12 +8,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.ZeroEverything;
+import frc.robot.Newman_Constants.Constants;
 
 import frc.robot.Newman_Constants.Constants;
 
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
   private Timer timer;
 
   private RobotContainer m_robotContainer;
@@ -32,7 +31,7 @@ public class Robot extends TimedRobot {
     if (timer.hasElapsed(Constants.kResetTime)) {
       timer.reset();
       timer.stop();
-      CommandScheduler.getInstance().schedule(new ZeroEverything(m_robotContainer.getChassis()));
+      m_robotContainer.resetOdometry();
     }
   }
 
