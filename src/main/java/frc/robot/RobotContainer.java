@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Chassis.FlipFieldOrriented;
 import frc.robot.commands.Chassis.TeleopDrive;
@@ -30,8 +31,9 @@ import frc.robot.supportingClasses.ShuffleboardUpdated;
 
 import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
-import frc.robot.subsystems.Hopper;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.supporting_classes.AutonManager;
+import frc.robot.subsystems.Hopper;
 
 
 /**
@@ -40,8 +42,8 @@ import frc.robot.Newman_Constants.Constants;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
-
 public class RobotContainer {
+  protected AutonManager m_autonManager;
   private static Joystick m_driverGamepad;
   private static Joystick m_weaponsGamepad;
   private final Chassis m_chassis = new Chassis();
@@ -79,6 +81,7 @@ public class RobotContainer {
      usesShuffleBoard = new ShuffleboardUpdated[]{m_rotaryArm, m_extensionArm};
 
      configureButtonBindings();
+     m_autonManager = new AutonManager(m_chassis);
   }
 
 
@@ -108,6 +111,10 @@ public class RobotContainer {
 
   public void resetOdometry() {
     m_chassis.resetOdometry(new Pose2d(0 ,0, new Rotation2d()));
+  }
+
+  public Command getCmd() {
+    return m_autonManager.pick();
   }
 
 }
