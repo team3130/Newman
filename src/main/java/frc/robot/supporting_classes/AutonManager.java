@@ -187,13 +187,13 @@ public class AutonManager {
         return wrapCmd(autonCommand);
     }
 
-    public Command generatepWeekZeroPath() {
+    public Command generateWeekZeroPath() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("week zero human player path", safe_constraints);
         AutonCommand autonCommand = autonCommandGenerator(trajectory);
         return wrapCmd(autonCommand);
     }
 
-    public Command generatepWeekZeroPath2() {
+    public Command generateWeekZeroPath2() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("week zero path 2 farside", safe_constraints);
         AutonCommand autonCommand = autonCommandGenerator(trajectory);
         return wrapCmd(autonCommand);
