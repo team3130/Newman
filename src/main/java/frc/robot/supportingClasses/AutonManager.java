@@ -1,4 +1,4 @@
-package frc.robot.supporting_classes;
+package frc.robot.supportingClasses;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
@@ -11,10 +11,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.Chassis;
 
@@ -46,7 +43,7 @@ public class AutonManager {
      * Method to populate chooser with commands to follow.
      */
     private void populateChooser() {
-        m_autonChooser.setDefaultOption("do nothing", generateExamplePathFromPoses());
+        m_autonChooser.setDefaultOption("do nothing", new InstantCommand());
 
         // the string is the name passed into shuffleboard and the method call is to generate the method you will use
         // m_autonChooser.addOption("3 Meter", generate3MeterDrive());

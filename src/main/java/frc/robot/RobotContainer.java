@@ -4,10 +4,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -18,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Chassis.FlipFieldOrriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
-import frc.robot.commands.Chassis.ZeroWheels;
 import frc.robot.commands.Placement.MoveExtensionArm;
 import frc.robot.commands.Placement.ActuateHandGrabber;
 import frc.robot.commands.Placement.MoveRotaryArm;
@@ -29,11 +26,8 @@ import frc.robot.Newman_Constants.Constants;
 import frc.robot.supportingClasses.ShuffleboardUpdated;
 
 
-import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
-import frc.robot.Newman_Constants.Constants;
-import frc.robot.supporting_classes.AutonManager;
-import frc.robot.subsystems.Hopper;
+import frc.robot.supportingClasses.AutonManager;
 
 
 /**
