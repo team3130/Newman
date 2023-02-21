@@ -4,14 +4,11 @@
 
 package frc.robot.commands.Placement;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.ExtensionArm;
-import frc.robot.supportingClasses.ShuffleboardUpdated;
 
 /** An example command that uses an example subsystem. */
-public class zeroExtensionArm extends CommandBase implements ShuffleboardUpdated {
+public class zeroExtensionArm extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ExtensionArm m_extensionArm;
 
@@ -49,8 +46,4 @@ public class zeroExtensionArm extends CommandBase implements ShuffleboardUpdated
     return m_extensionArm.hitLimitSwitch();
   }
 
-  @Override
-  public void updateValueFromShuffleboard() {
-
-  }
 }

@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -16,12 +17,10 @@ import frc.robot.Newman_Constants.Constants;
 
 public class ExtensionArm extends SubsystemBase implements Sendable {
   private static double extensionArmSpeed = 1;
-  private ShuffleboardTab tab = Shuffleboard.getTab("Test");
-  private GenericEntry n_outputSpeed = tab.add("Extension % out", extensionArmSpeed).getEntry();
-  private GenericEntry n_limitSwitch = tab.add("Limit switch", false).getEntry();
-  /** Creates a new ExampleSubsystem. */
+
   private WPI_TalonSRX extensionMotor;
 
+  // limit switch
   private final DigitalInput m_digitalInput;
 
   public ExtensionArm() {
@@ -35,13 +34,9 @@ public class ExtensionArm extends SubsystemBase implements Sendable {
     m_digitalInput = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
   }
 
-  public void outputShuffleboard() {
-    n_limitSwitch.setBoolean(hitLimitSwitch());
-  }
 
   @Override
   public void periodic() {
-    outputShuffleboard();
     // This method will be called once per scheduler run
   }
 
@@ -67,6 +62,21 @@ public class ExtensionArm extends SubsystemBase implements Sendable {
    */
   public void stop() {
     extensionMotor.set(0);
+  }
+
+  public double getSpeed() {
+    return extensionArmSpeed;
+  }
+
+  public void updateSpeed(double newSpeed) {
+    extensionArmSpeed = newSpeed;
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+    builder.addDoubleProperty("Extension % out", this::getSpeed, this::updateSpeed);
+    builder.addBooleanProperty("Hit limit switch", this::hitLimitSwitch, null);
   }
 
 }

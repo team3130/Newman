@@ -7,20 +7,18 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
-public class Hopper extends SubsystemBase implements Sendable {
+public class Hopper extends SubsystemBase {
     protected final WPI_TalonSRX leftwheel;
     protected final WPI_TalonSRX rightwheel;
 
-    private static ShuffleboardTab TAB = Shuffleboard.getTab("Hopper");
     private double m_leftoutputSpeed = 0.45;
     private double m_rightOutputSpeed = m_leftoutputSpeed * 4;
-    private final GenericEntry n_leftoutputentry = TAB.add("HopperLeftOutput", m_leftoutputSpeed).getEntry();
-    private final GenericEntry n_rightoutputentry = TAB.add("HopperRightOutput", m_rightOutputSpeed).getEntry();
 
     public Hopper() {
         leftwheel = new WPI_TalonSRX(Constants.CAN_hopperleft);
@@ -46,9 +44,13 @@ public class Hopper extends SubsystemBase implements Sendable {
         rightwheel.set(ControlMode.PercentOutput, 0);
     }
 
-    public void updateOutputSpeed() {
-        m_leftoutputSpeed = n_leftoutputentry.getDouble(m_leftoutputSpeed);
-        m_rightOutputSpeed = n_rightoutputentry.getDouble(m_rightOutputSpeed) * 4;
+    public void updateOutputSpeed(double newSpeed) {
+        m_leftoutputSpeed = newSpeed;
+        m_rightOutputSpeed = newSpeed * 4;
+    }
+
+    public double getSpeed() {
+        return m_leftoutputSpeed;
     }
 
     @Override
@@ -59,5 +61,11 @@ public class Hopper extends SubsystemBase implements Sendable {
     @Override
     public void simulationPeriodic() {
         // This method will be called once per scheduler run during simulation
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        super.initSendable(builder);
+        builder.addDoubleProperty("Hopper % out", this::getSpeed, this::updateOutputSpeed);
     }
 }

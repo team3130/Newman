@@ -288,9 +288,9 @@ public class Chassis extends SubsystemBase {
         // default init sendable
         super.initSendable(builder);
         // add field relative
-        builder.addBooleanProperty(".fieldRelative", this::getFieldRelative, this::setWhetherFieldOriented);
-        builder.addDoubleProperty(".pSwerveModule", this::getPValuesForSwerveModules, this::updatePValuesFromSwerveModule);
-        builder.addDoubleProperty(".dSwerveModule", this::getDValuesForSwerveModules, this::updateDValuesFromSwerveModule);
-        builder.addDoubleProperty(".Navx", this::getHeading, (double setpoint) -> {});
+        builder.addBooleanProperty("fieldRelative", this::getFieldRelative, this::setWhetherFieldOriented);
+        builder.addDoubleProperty("pSwerveModule", this::getPValuesForSwerveModules, this::updatePValuesFromSwerveModule);
+        builder.addDoubleProperty("dSwerveModule", this::getDValuesForSwerveModules, this::updateDValuesFromSwerveModule);
+        builder.addDoubleProperty("Navx", this::getHeading, null);
     }
 }

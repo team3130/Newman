@@ -106,7 +106,7 @@ public class HandGrabber extends SubsystemBase {
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-    builder.addBooleanProperty("state", this::getState, this::setState);
+    builder.addBooleanProperty("grabber state", this::getState, this::setState);
   }
 
 }

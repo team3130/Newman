@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Hopper;
 
 /** An example command that uses an example subsystem. */
@@ -27,7 +26,6 @@ public class HopperSpin extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_hopper.updateOutputSpeed();
     m_hopper.spinMotor();
   }
 

@@ -12,10 +12,9 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ExtensionArm;
 import frc.robot.Newman_Constants.Constants;
-import frc.robot.supportingClasses.ShuffleboardUpdated;
 
 /** An example command that uses an example subsystem. */
-public class MoveExtensionArm extends CommandBase implements ShuffleboardUpdated {
+public class MoveExtensionArm extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ExtensionArm m_extensionArm;
   public Joystick m_xboxController;
@@ -60,10 +59,5 @@ public class MoveExtensionArm extends CommandBase implements ShuffleboardUpdated
   @Override
   public boolean isFinished() {
     return false;
-  }
-
-  @Override
-  public void updateValueFromShuffleboard() {
-
   }
 }
