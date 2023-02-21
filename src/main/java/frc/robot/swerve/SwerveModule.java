@@ -17,16 +17,11 @@ import frc.robot.Newman_Constants.Constants;
 public class SwerveModule {
     private final WPI_TalonFX m_steerMotor;
     private final WPI_TalonFX m_driveMotor;
+
     private final CANCoder m_absoluteEncoder;
+
     private final PIDController turningPidController;
     private final double absoluteEncoderOffset;
-
-    private static ShuffleboardTab tab = Shuffleboard.getTab("Swerve Module");
-    // private final GenericEntry nAbsEncoderReadingTicks;
-    // private final GenericEntry nAbsEncoderReadingRads;
-    // private final GenericEntry nPosToGetTo;
-    // private final GenericEntry nRelEncoderReadingTicks;
-    // private final GenericEntry nRelEncoderReadingRads;
 
     private final int side;
 
@@ -36,30 +31,18 @@ public class SwerveModule {
 
         m_absoluteEncoder = new CANCoder(Constants.CANCoders[side]);
 
-        // network stuffs
-        // nAbsEncoderReadingTicks = tab.add("ticks abs encoder " + side, 0).getEntry();
-        // nAbsEncoderReadingRads = tab.add("rads abs encoder " + side, 0).getEntry();
-        // nPosToGetTo = tab.add("Target " + side, 0).getEntry();
-
-        // nRelEncoderReadingTicks = tab.add("ticks rel encoder " + side, 0).getEntry();
-        // nRelEncoderReadingRads = tab.add("rel encoder " + side, 0).getEntry();
-
         turningPidController = new PIDController(Constants.SwerveKp, Constants.SwerveKi, Constants.SwerveKd);
 
         m_steerMotor.configFactoryDefault();
         m_steerMotor.setNeutralMode(NeutralMode.Brake);
         m_steerMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
         m_steerMotor.enableVoltageCompensation(true);
-        //m_steerMotor.configOpenloopRamp(Constants.openLoopRampRate);
-
-        // m_steerMotor.setSensorPhase(true);
         m_steerMotor.setInverted(true);
 
         m_driveMotor.configFactoryDefault();
         m_driveMotor.setNeutralMode(NeutralMode.Brake);
         m_driveMotor.configVoltageCompSaturation(Constants.kMaxDriveVoltage);
         m_driveMotor.enableVoltageCompensation(true);
-        //m_driveMotor.configOpenloopRamp(Constants.openLoopRampRate);
         m_driveMotor.setInverted(false);
 
         turningPidController.enableContinuousInput(-Math.PI, Math.PI);
@@ -103,14 +86,6 @@ public class SwerveModule {
         turningPidController.setD(d);
     }
 
-    public void outputToShuffleboard() {
-        // nAbsEncoderReadingTicks.setDouble(getAbsolutEncoderTicks());
-        // nAbsEncoderReadingRads.setDouble(getAbsoluteEncoderRad() - Constants.kCanCoderOffsets[side]);
-
-
-        // nRelEncoderReadingTicks.setDouble(getTurningPosition());
-        // nRelEncoderReadingRads.setDouble(getTurningPosition());
-    }
     public void resetEncoders(){
         m_steerMotor.setSelectedSensorPosition((getAbsoluteEncoderRad() - absoluteEncoderOffset) / Constants.SteerTicksToRads);
         m_driveMotor.setSelectedSensorPosition(0);
@@ -125,22 +100,27 @@ public class SwerveModule {
         return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
     }
 
+    /**
+     * Default stop method to stop the motors
+     */
     public void stop(){
         m_steerMotor.set(ControlMode.PercentOutput, 0);
         m_driveMotor.set(ControlMode.PercentOutput, 0);
     }
 
+    /**
+     * Set the desired swerve module state
+     * @param state the state to set the swerve modules to
+     */
     public void setDesiredState(SwerveModuleState state){
         if (Math.abs(state.speedMetersPerSecond) < 0.001) {
             stop();
             return;
         }
-        // nPosToGetTo.setDouble(turningPidController.calculate(Math.IEEEremainder(getTurningPosition(), Math.PI * 2), state.angle.getRadians()));
+
         // max turn is 90 degrees optimization
         state = SwerveModuleState.optimize(state, getState().angle);
-        // nPosToGetTo.setDouble(state.angle.getRadians());
        m_driveMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond / Constants.kPhysicalMaxSpeedMetersPerSecond);
-//        m_driveMotor.set(0);
 
         m_steerMotor.set(turningPidController.calculate(Math.IEEEremainder(getTurningPosition(), Math.PI * 2), state.angle.getRadians()));
     }
@@ -153,12 +133,35 @@ public class SwerveModule {
         m_steerMotor.set(turningPidController.calculate(Math.IEEEremainder(getTurningPosition(), Math.PI * 2), setpoint));
     }
 
+    /**
+     * Get the position of the swerve module
+     * @return gets with turning position and velocity
+     */
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(getDrivePosition(), new Rotation2d(getTurningVelocity()));
     }
 
+    /**
+     * Whether the pid controller is at the setpoint
+     * @return whether pid is done
+     */
     public boolean PIDisDone() {
         return turningPidController.atSetpoint();
     }
 
+    /**
+     * Gets the P value for steering motors
+     * @return the P value
+     */
+    public double getPValue() {
+        return turningPidController.getP();
+    }
+
+    /**
+     * Gets the P value for steering motors
+     * @return the P value
+     */
+    public double getDValue() {
+        return turningPidController.getD();
+    }
 }

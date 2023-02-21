@@ -26,7 +26,7 @@ public class ActuateHandGrabber extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_handGrabber.MoveGrabber();
+    m_handGrabber.toggleGrabber();
     //when button is pressed, hand is toggled
   }
 

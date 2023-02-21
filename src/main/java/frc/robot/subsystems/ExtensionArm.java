@@ -7,14 +7,14 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
-import frc.robot.supportingClasses.ShuffleboardUpdated;
 
-public class ExtensionArm extends SubsystemBase implements ShuffleboardUpdated {
+public class ExtensionArm extends SubsystemBase implements Sendable {
   private static double extensionArmSpeed = 1;
   private ShuffleboardTab tab = Shuffleboard.getTab("Test");
   private GenericEntry n_outputSpeed = tab.add("Extension % out", extensionArmSpeed).getEntry();
@@ -62,12 +62,11 @@ public class ExtensionArm extends SubsystemBase implements ShuffleboardUpdated {
     return !m_digitalInput.get();
   }
 
+  /**
+   * Stops the devices connected to this subsystem
+   */
   public void stop() {
     extensionMotor.set(0);
   }
 
-  @Override
-  public void updateValueFromShuffleboard() {
-    extensionArmSpeed = n_outputSpeed.getDouble(extensionArmSpeed);
-  }
 }

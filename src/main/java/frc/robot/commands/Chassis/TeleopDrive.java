@@ -28,14 +28,14 @@ public class TeleopDrive extends CommandBase {
    *
    * @param chassis The subsystem used by this command.
    */
-  public TeleopDrive(Chassis chassis) {
+  public TeleopDrive(Chassis chassis, Joystick xboxController) {
     m_chassis = chassis;
     // Use addRequirements() here to declare subsystem dependencies.
     m_requirements.add(chassis);
     xLimiter = new SlewRateLimiter(Constants.kMaxAccelerationDrive);
     yLimiter = new SlewRateLimiter(Constants.kMaxAccelerationDrive);
     turningLimiter = new SlewRateLimiter(Constants.kMaxAccelerationAngularDrive);
-    m_xboxController = RobotContainer.getDriverGamepad();
+    m_xboxController = xboxController;
   }
 
   // Called when the command is initially scheduled.
@@ -50,8 +50,8 @@ public class TeleopDrive extends CommandBase {
     double y = -m_xboxController.getRawAxis(0); // left stick y-axis (y-axis is inverted)
     double x = -m_xboxController.getRawAxis(1); // left stick x-axis
     double theta = -m_xboxController.getRawAxis(4); // right stick x-axis
-    y = y*Math.abs(y);
-    x = x*Math.abs(x);
+    y = y * Math.abs(y);
+    x = x * Math.abs(x);
 
     // apply dead-band
     if (Math.abs(x) < Constants.kDeadband) {
