@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Newman_Constants.Constants;
-import frc.robot.commands.Chassis.FlipFieldOrriented;
+import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
 import frc.robot.commands.Placement.ActuateHandGrabber;
@@ -37,13 +37,19 @@ import frc.robot.supportingClasses.AutonManager;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  /**
+   * Auton manager is the object that handles the loading of auton paths
+   */
   protected AutonManager m_autonManager;
-  private static Joystick m_driverGamepad;
-  private static Joystick m_weaponsGamepad;
 
+  private static Joystick m_driverGamepad; // The controllers
+  private static Joystick m_weaponsGamepad; // The controllers
+
+  /**
+   * Subsystems
+   */
   private final Chassis m_chassis;
   private final ExtensionArm m_extensionArm;
-
   private final RotaryArm m_rotaryArm;
   private final HandGrabber m_handGrabber;
 
@@ -125,10 +131,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new FlipFieldOrriented(m_chassis));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new FlipFieldOriented(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ActuateHandGrabber(m_handGrabber));
-    SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
+    SmartDashboard.putData(new FlipFieldOriented(m_chassis));
 
     Shuffleboard.getTab("Test").add("Spin motor down", new zeroExtensionArm(m_extensionArm));
   }

@@ -2,14 +2,13 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.Hopper;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Hopper;
 
 /** An example command that uses an example subsystem. */
-public class ReverseHopper extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+public class HopperSpin extends CommandBase {
   private final Hopper m_hopper;
 
   /**
@@ -17,7 +16,7 @@ public class ReverseHopper extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ReverseHopper(Hopper subsystem) {
+  public HopperSpin(Hopper subsystem) {
     m_hopper = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -36,7 +35,7 @@ public class ReverseHopper extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_hopper.spinMotor();
+    m_hopper.hopperStop();
   }
 
   // Returns true when the command should end.

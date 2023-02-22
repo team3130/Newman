@@ -72,7 +72,7 @@ public class Chassis extends SubsystemBase {
      * If the PID controllers of the {@link SwerveModule}'s are all done
      * @return whether the wheels are zereod/PID controllers are done
      */
-    public boolean wheelsAreZeroed() {
+    public boolean turnToAnglePIDIsDone() {
         return modules[Constants.Side.LEFT_FRONT].PIDisDone() &&
         modules[Constants.Side.LEFT_BACK].PIDisDone() &&
         modules[Constants.Side.RIGHT_FRONT].PIDisDone() &&
