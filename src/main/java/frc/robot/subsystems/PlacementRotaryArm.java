@@ -28,6 +28,8 @@ public class PlacementRotaryArm extends SubsystemBase {
 
   private double positionDeadband = Math.toRadians(2.5);
 
+  private long offset = 100;
+
   private HashMap<Position, Double> positionMap;
 
   private GenericEntry n_lowPositionAngle;
@@ -151,6 +153,26 @@ public class PlacementRotaryArm extends SubsystemBase {
 
   public boolean isAtPosition(Position position) {
     return Math.abs(rotaryMotor.getSelectedSensorPosition() - positionMap.get(position)) < positionDeadband;
+  }
+
+  public void runAtPercentOutput(double output) {
+    rotaryMotor.set(ControlMode.PercentOutput, output);
+  }
+
+  public boolean goingUp() {
+    return rotaryMotor.getSelectedSensorVelocity() > offset;
+  }
+
+  public boolean isStationary() {
+    return rotaryMotor.getSelectedSensorVelocity() < Math.abs(offset);
+  }
+
+  public boolean goingDown() {
+    return rotaryMotor.getSelectedSensorVelocity() < -offset;
+  }
+
+  public void stop() {
+    rotaryMotor.set(ControlMode.PercentOutput, 0);
   }
 
   @Override
