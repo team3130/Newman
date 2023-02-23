@@ -82,8 +82,8 @@ public class PlacementExtensionArm extends SubsystemBase {
 
     n_placementExtensionArmFUp = Placement.add("f up", placementExtensionArmFUp).getEntry();
     n_placementExtensionArmFDown = Placement.add("f down", placementExtensionArmFDown).getEntry();
-    n_maxVelocityPlacementExtensionArm = Placement.add("max velocity", Constants.maxVelocityPlacementExtensionArm).getEntry();
-    n_maxAccelerationPlacementExtensionArm = Placement.add("max acceleration", Constants.maxAccelerationPlacementExtensionArm).getEntry();
+    n_maxVelocityPlacementExtensionArm = Placement.add("max velocity", Constants.kMaxVelocityPlacementExtensionArm).getEntry();
+    n_maxAccelerationPlacementExtensionArm = Placement.add("max acceleration", Constants.kMaxAccelerationPlacementExtensionArm).getEntry();
     n_placementExtensionArmS_Strength = Placement.add("s strength", sStrengthPlacementExtensionArm).getEntry();
 
   }
@@ -113,10 +113,10 @@ public class PlacementExtensionArm extends SubsystemBase {
 
 
   public double getPositionPlacementArm(){
-    return Constants.ticksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorPosition();
+    return Constants.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorPosition();
   }
   public double getSpeedPlacementArm(){
-    return 10 * Constants.ticksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorVelocity();
+    return 10 * Constants.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorVelocity();
   }
   public boolean brokeLimit() {
     return !m_limitswitch.get();
@@ -140,11 +140,11 @@ public class PlacementExtensionArm extends SubsystemBase {
     if (l_placementExtensionArmS_Strength != n_placementExtensionArmS_Strength.getDouble(sStrengthPlacementExtensionArm)){
       extensionMotor.configMotionSCurveStrength(0, (int) n_placementExtensionArmS_Strength.getDouble(sStrengthPlacementExtensionArm));
     }
-    if (l_maxVelocityPlacementExtensionArm != n_maxVelocityPlacementExtensionArm.getDouble(Constants.maxVelocityPlacementExtensionArm)){
-      extensionMotor.configMotionCruiseVelocity( (int) n_maxVelocityPlacementExtensionArm.getDouble(Constants.maxVelocityPlacementExtensionArm),  0);
+    if (l_maxVelocityPlacementExtensionArm != n_maxVelocityPlacementExtensionArm.getDouble(Constants.kMaxVelocityPlacementExtensionArm)){
+      extensionMotor.configMotionCruiseVelocity( (int) n_maxVelocityPlacementExtensionArm.getDouble(Constants.kMaxVelocityPlacementExtensionArm),  0);
     }
-    if (l_maxAccelerationPlacementExtensionArm != n_maxAccelerationPlacementExtensionArm.getDouble(Constants.maxAccelerationPlacementExtensionArm)){
-      extensionMotor.configMotionAcceleration((int) n_maxVelocityPlacementExtensionArm.getDouble(Constants.maxVelocityPlacementExtensionArm),  0);
+    if (l_maxAccelerationPlacementExtensionArm != n_maxAccelerationPlacementExtensionArm.getDouble(Constants.kMaxAccelerationPlacementExtensionArm)){
+      extensionMotor.configMotionAcceleration((int) n_maxVelocityPlacementExtensionArm.getDouble(Constants.kMaxVelocityPlacementExtensionArm),  0);
     }
   }
 

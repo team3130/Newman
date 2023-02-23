@@ -28,7 +28,7 @@ public class PlacementRotaryArm extends SubsystemBase {
 
   private double positionDeadband = Math.toRadians(2.5);
 
-  private long offset = 100;
+  private long deadband = 100;
 
   private HashMap<Position, Double> positionMap;
 
@@ -87,8 +87,8 @@ public class PlacementRotaryArm extends SubsystemBase {
 
     n_placementRotaryArmFUp = Placement.add("f up", placementRotaryArmFUp).getEntry();
     n_placementRotaryArmFDown = Placement.add("f down", placementRotaryArmFDown).getEntry();
-    n_maxVelocityRotaryPlacementArm = Placement.add("max velocity", Constants.maxVelocityRotaryPlacementArm).getEntry();
-    n_maxAccelerationRotaryPlacementArm = Placement.add("max acceleration", Constants.maxAccelerationRotaryPlacementArm).getEntry();
+    n_maxVelocityRotaryPlacementArm = Placement.add("max velocity", Constants.kMaxVelocityRotaryPlacementArm).getEntry();
+    n_maxAccelerationRotaryPlacementArm = Placement.add("max acceleration", Constants.kMaxAccelerationRotaryPlacementArm).getEntry();
     n_placementRotaryArmS_Strength = Placement.add("s strength", sStrengthRotaryPlacementArm).getEntry();
 
     positionMap = new HashMap<>();
@@ -119,10 +119,10 @@ public class PlacementRotaryArm extends SubsystemBase {
   }
 
   public double getPositionPlacementArm(){
-    return Constants.ticksToRadiansRotaryPlacementArm * rotaryMotor.getSelectedSensorPosition();
+    return Constants.kTicksToRadiansRotaryPlacementArm * rotaryMotor.getSelectedSensorPosition();
   }
   public double getSpeedPlacementArm(){
-    return 10 * Constants.ticksToRadiansRotaryPlacementArm * rotaryMotor.getSelectedSensorVelocity();
+    return 10 * Constants.kTicksToRadiansRotaryPlacementArm * rotaryMotor.getSelectedSensorVelocity();
   }
   public void updateValues(){
     if (l_placementRotaryArmP != n_placementRotaryArmP.getDouble(placementRotaryArmP)){
@@ -143,11 +143,11 @@ public class PlacementRotaryArm extends SubsystemBase {
     if (l_placementRotaryArmS_Strength != n_placementRotaryArmS_Strength.getDouble(sStrengthRotaryPlacementArm)){
       rotaryMotor.configMotionSCurveStrength(0, (int) n_placementRotaryArmS_Strength.getDouble(sStrengthRotaryPlacementArm));
     }
-    if (l_maxVelocityRotaryPlacementArm != n_maxVelocityRotaryPlacementArm.getDouble(Constants.maxVelocityRotaryPlacementArm)){
-      rotaryMotor.configMotionCruiseVelocity( (int) n_maxVelocityRotaryPlacementArm.getDouble(Constants.maxVelocityRotaryPlacementArm),  0);
+    if (l_maxVelocityRotaryPlacementArm != n_maxVelocityRotaryPlacementArm.getDouble(Constants.kMaxVelocityRotaryPlacementArm)){
+      rotaryMotor.configMotionCruiseVelocity( (int) n_maxVelocityRotaryPlacementArm.getDouble(Constants.kMaxVelocityRotaryPlacementArm),  0);
     }
-    if (l_maxAccelerationRotaryPlacementArm != n_maxAccelerationRotaryPlacementArm.getDouble(Constants.maxAccelerationRotaryPlacementArm)){
-      rotaryMotor.configMotionAcceleration((int) n_maxVelocityRotaryPlacementArm.getDouble(Constants.maxVelocityRotaryPlacementArm),  0);
+    if (l_maxAccelerationRotaryPlacementArm != n_maxAccelerationRotaryPlacementArm.getDouble(Constants.kMaxAccelerationRotaryPlacementArm)){
+      rotaryMotor.configMotionAcceleration((int) n_maxVelocityRotaryPlacementArm.getDouble(Constants.kMaxVelocityRotaryPlacementArm),  0);
     }
   }
 
@@ -160,15 +160,15 @@ public class PlacementRotaryArm extends SubsystemBase {
   }
 
   public boolean goingUp() {
-    return rotaryMotor.getSelectedSensorVelocity() > offset;
+    return rotaryMotor.getSelectedSensorVelocity() > deadband;
   }
 
   public boolean isStationary() {
-    return rotaryMotor.getSelectedSensorVelocity() < Math.abs(offset);
+    return rotaryMotor.getSelectedSensorVelocity() < Math.abs(deadband);
   }
 
   public boolean goingDown() {
-    return rotaryMotor.getSelectedSensorVelocity() < -offset;
+    return rotaryMotor.getSelectedSensorVelocity() < -deadband;
   }
 
   public void stop() {
