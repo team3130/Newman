@@ -12,6 +12,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.sensors.Navx;
@@ -282,8 +283,7 @@ public class Chassis extends SubsystemBase {
      * @param builder sendable builder
      */
     public void initSendable(SendableBuilder builder) {
-        /* TODO: implement this for the modules */
-        // Arrays.stream(modules).forEach((SwerveModule module) -> Shuffleboard.getTab("Subsystems").add(module));
+        Arrays.stream(modules).forEach((SwerveModule module) -> Shuffleboard.getTab("Subsystems").add(module));
 
         // default init sendable
         super.initSendable(builder);
