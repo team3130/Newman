@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -179,4 +181,80 @@ public class PlacementRotaryArm extends SubsystemBase {
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
+
+  /**
+   * calculates the length of the placement spring
+   * @param length extension arm length
+   * @param angle rotary angle
+   * @return A translation of the springs direction and magnitude
+   */
+  public Translation2d calculateExtensionArmSpringLength(double length, double angle) {
+      double xSpring = length * Math.cos(angle);
+      double ySpring = length * Math.sin(angle);
+
+      return new Translation2d(
+              Math.sqrt(Math.pow(xSpring - Constants.kExtensionArmSpringXPosition, 2) + Math.pow(ySpring - Constants.kExtensionArmSpringYPosition, 2)),
+              new Rotation2d(Math.atan2(ySpring - Constants.kExtensionArmSpringYPosition, xSpring - Constants.kExtensionArmSpringXPosition))
+      );
+  }
+
+  /**
+  * Calculates the torque of the spring extension arm
+  *
+  * @param springStretch the result of {@link #calculateExtensionArmSpringLength} resembles the line that the spring
+  *                      makes in the coordinate system: rotary arm axle is 0,0
+  * @param rotaryAngle The angle of the rotary arm
+  * @return the torque that the spring exerts on the rotary arm
+  */
+  public double calculateSpringExtensionArmTorque(Translation2d springStretch, double rotaryAngle) {
+    // angle between where the force is pointing and the normal of the arm
+     double thetaToNormal = springStretch.getAngle().getRadians() - rotaryAngle;
+     // Hookes law
+     double force = Constants.kExtensionArmSpringConstant * springStretch.getNorm();
+     // torque formula: radius * force * sin(theta) where theta is the angle of the force to the normal of the arm
+     return Constants.kExtensionArmSpringMountPosition * force * Math.sin(thetaToNormal);
+  }
+
+  /**
+   * <p>
+   *     Calculates the torque due to gravity that the axle currently experiences (without the spring).
+   * </p>
+   *
+   * <p>
+   * With standard feedforward you can have a second static gain called kG which is the gravity gain.
+   * For us the amount of torque that the motor needs to produce isn't constant due to the torque changing.
+   * Not only does the torque change because of the angle of the arm, the torque also changes due to the radius changing.
+   * </p>
+   *
+   * @param rotaryAngle the angle of the rotary arm
+   * @param extensionLength the length of the extension arm
+   * @return the torque on the arm due to gravity
+   */
+  public double calculateTorqueDueToGravity(double rotaryAngle, double extensionLength) {
+    // magic scalar of voltage to torque * force *
+    double force = Constants.kAccelerationDueToGravity * Constants.kMassOfExtensionArm;
+    // return the torque: radius * Force * sin(theta)
+    return force * extensionLength * Math.sin(rotaryAngle);
+  }
+
+  /**
+   * gets the net torque on the arm without a magic scalar
+   * @param extensionArmLength the length of the extension arm
+   * @return the net torque
+   */
+  public double getNetTorqueOnArm(double extensionArmLength) {
+    double rotaryArm = getPositionPlacementArm();
+
+    // the torque due to gravity - the upwards torque by the rotary arm
+    return calculateTorqueDueToGravity(rotaryArm, extensionArmLength)
+            -Math.abs(calculateSpringExtensionArmTorque(
+                    calculateExtensionArmSpringLength(extensionArmLength, rotaryArm),
+                    rotaryArm)
+            );
+  }
+
+  public double getStaticGain(double extensionArmLength) {
+    return getNetTorqueOnArm(extensionArmLength) * Constants.kTorqueToPercentOutScalar;
+  }
+
 }
