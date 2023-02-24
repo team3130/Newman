@@ -21,6 +21,19 @@ import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ZeroEverything;
 import frc.robot.commands.ZeroWheels;
 import frc.robot.sensors.Navx;
+import frc.robot.commands.Chassis.FlipFieldOrriented;
+import frc.robot.commands.Chassis.TeleopDrive;
+import frc.robot.commands.Chassis.ZeroEverything;
+import frc.robot.commands.Placement.MoveExtensionArm;
+import frc.robot.commands.Placement.ActuateHandGrabber;
+import frc.robot.commands.Placement.MoveRotaryArm;
+import frc.robot.commands.Placement.zeroExtensionArm;
+import frc.robot.commands.WriteShuffleboardChanges;
+import frc.robot.subsystems.*;
+import frc.robot.Newman_Constants.Constants;
+import frc.robot.supportingClasses.ShuffleboardUpdated;
+
+
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExtensionArm;
 import frc.robot.subsystems.HandGrabber;
@@ -40,6 +53,7 @@ import frc.robot.commands.WriteShuffleboardChanges;
 import frc.robot.subsystems.*;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.supportingClasses.ShuffleboardUpdated;
+import frc.robot.supportingClasses.AutonManager;
 
 
 import frc.robot.subsystems.Chassis;
@@ -62,6 +76,7 @@ public class RobotContainer {
 
 <<<<<<< HEAD
 =======
+  private final RotaryArm m_rotaryArm;
   private final RotaryArm m_rotaryArm;
 
   private final HandGrabber m_handGrabber;

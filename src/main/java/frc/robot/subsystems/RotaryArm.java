@@ -24,11 +24,8 @@ public class RotaryArm extends SubsystemBase implements ShuffleboardUpdated {
     rotaryArmMotor.configFactoryDefault();
     rotaryArmMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
     rotaryArmMotor.enableVoltageCompensation(true);
-<<<<<<< HEAD
-=======
     rotaryArmMotor.setInverted(true);
     rotaryArmMotor.setNeutralMode(NeutralMode.Brake);
->>>>>>> main
   }
 
   @Override

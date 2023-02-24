@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Newman_Constants.Constants ;
 =======
 import frc.robot.Newman_Constants.Constants;
->>>>>>> main
 
 public class SwerveModule {
     private final WPI_TalonFX m_steerMotor;
