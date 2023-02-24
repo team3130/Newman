@@ -10,6 +10,8 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Newman_Constants.Constants;
 import frc.robot.Newman_Constants.Constants.Camera;
 import frc.robot.supportingClasses.KugelMedianFilter;
 import frc.robot.supportingClasses.OdoPosition;
@@ -42,6 +44,10 @@ public class Limelight {
         }
 
         filter = new KugelMedianFilter(Camera.kMedianFilterWindowSize);
+
+        if (Constants.debugMode) {
+            Shuffleboard.getTab("Filter").add(filter);
+        }
     }
 
     public OdoPosition calculateCameraPosition() {
