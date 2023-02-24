@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
@@ -127,6 +128,13 @@ public class RobotContainer {
 
   public Command getCmd() {
     return m_autonManager.pick();
+  }
+
+  /**
+   * Schedules a command to zero the extension arm
+   */
+  public void zeroCommand() {
+    CommandScheduler.getInstance().schedule(new zeroExtensionArm(m_extensionArm));
   }
 
 }
