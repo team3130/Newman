@@ -4,18 +4,21 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.supportingClasses.ShuffleboardUpdated;
 
 public class HandGrabber extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
-  public Solenoid grabber;
-
+  private Solenoid grabber;
 
   public HandGrabber() {
     grabber = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM , Constants.PNM_Grabber);
+    // default
+    grabber.set(false);
   }
   public void MoveGrabber(){
     grabber.toggle();

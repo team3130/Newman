@@ -12,7 +12,11 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+<<<<<<< HEAD
 import frc.robot.Newman_Constants.Constants ;
+=======
+import frc.robot.Newman_Constants.Constants;
+>>>>>>> main
 
 public class SwerveModule {
     private final WPI_TalonFX m_steerMotor;

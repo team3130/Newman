@@ -4,27 +4,47 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.supportingClasses.ShuffleboardUpdated;
 
-public class RotaryArm extends SubsystemBase {
+public class RotaryArm extends SubsystemBase implements ShuffleboardUpdated {
   /** Creates a new ExampleSubsystem. */
-  public WPI_TalonFX rotaryArmMotor;
+  private double outputSpeed = 0.6;
+  private ShuffleboardTab tab = Shuffleboard.getTab("Test");
+  private GenericEntry n_outputSpeed = tab.add("Rotary arm % out", outputSpeed).getEntry();
+  private WPI_TalonFX rotaryArmMotor;
   public RotaryArm() {
     rotaryArmMotor = new WPI_TalonFX(Constants.CAN_RotaryArm);
     rotaryArmMotor.configFactoryDefault();
     rotaryArmMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
     rotaryArmMotor.enableVoltageCompensation(true);
+<<<<<<< HEAD
+=======
+    rotaryArmMotor.setInverted(true);
+    rotaryArmMotor.setNeutralMode(NeutralMode.Brake);
+>>>>>>> main
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
-  public void RotateRotaryArm(double speed){
+  public void updateValueFromShuffleboard() {
+    outputSpeed = n_outputSpeed.getDouble(outputSpeed);
+  }
 
-    rotaryArmMotor.set(speed);
+  /**
+   * Rotates the rotary arm
+   * @param scalar value that scales the output speed from shuffleboard
+   */
+  public void rotateRotaryArm(double scalar){
+    rotaryArmMotor.set(outputSpeed * scalar);
   }
   @Override
   public void simulationPeriodic() {

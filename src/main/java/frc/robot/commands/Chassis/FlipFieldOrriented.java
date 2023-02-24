@@ -2,33 +2,30 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.Chassis;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.HandGrabber;
+import frc.robot.subsystems.Chassis;
 
 /** An example command that uses an example subsystem. */
-public class MoveHandGrabber extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final HandGrabber m_handGrabber;
+public class FlipFieldOrriented extends CommandBase {
+  private final Chassis m_subsystem;
 
   /**
    * Creates a new ExampleCommand.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param chassis The subsystem used by this command.
    */
-  public MoveHandGrabber(HandGrabber subsystem) {
-    m_handGrabber = subsystem;
+  public FlipFieldOrriented(Chassis chassis) {
+    m_subsystem = chassis;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(chassis);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_handGrabber.MoveGrabber();
-    //when button is pressed, hand is toggled
+    m_subsystem.flipBool();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,12 +34,11 @@ public class MoveHandGrabber extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }
