@@ -13,14 +13,13 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-<<<<<<< HEAD
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
-import frc.robot.commands.FlipFieldOrriented;
-import frc.robot.commands.TeleopDrive;
-import frc.robot.commands.ZeroEverything;
-import frc.robot.commands.ZeroWheels;
-import frc.robot.sensors.Navx;
+//import frc.robot.commands.FlipFieldOrriented;
+//import frc.robot.commands.TeleopDrive;
+//import frc.robot.commands.ZeroEverything;
+//import frc.robot.commands.ZeroWheels;
+//import frc.robot.sensors.Navx;
 import frc.robot.commands.Chassis.FlipFieldOrriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
@@ -41,7 +40,6 @@ import frc.robot.subsystems.RotaryArm;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.Hopper;
 import frc.robot.Newman_Constants.Constants;
-=======
 import frc.robot.commands.Chassis.FlipFieldOrriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
@@ -58,7 +56,7 @@ import frc.robot.supportingClasses.AutonManager;
 
 import frc.robot.subsystems.Chassis;
 import frc.robot.supportingClasses.AutonManager;
->>>>>>> main
+
 
 
 /**
@@ -74,16 +72,14 @@ public class RobotContainer {
   private final Chassis m_chassis = new Chassis();
   private final ExtensionArm m_extensionArm = new ExtensionArm();
 
-<<<<<<< HEAD
-=======
+
   private final RotaryArm m_rotaryArm;
-  private final RotaryArm m_rotaryArm;
+
 
   private final HandGrabber m_handGrabber;
 
   private ShuffleboardUpdated[] usesShuffleBoard;
 
->>>>>>> main
   public Chassis getChassis() {
     return m_chassis;
   }
@@ -99,8 +95,7 @@ public class RobotContainer {
     m_weaponsGamepad = new Joystick(1);
 
      m_chassis.setDefaultCommand(new TeleopDrive(m_chassis));
-<<<<<<< HEAD
-=======
+
 
      m_rotaryArm = new RotaryArm();
      m_handGrabber = new HandGrabber();
@@ -113,7 +108,7 @@ public class RobotContainer {
 
      configureButtonBindings();
      m_autonManager = new AutonManager(m_chassis);
->>>>>>> main
+
   }
 
 
@@ -135,9 +130,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new FlipFieldOrriented(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
-<<<<<<< HEAD
+
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
-=======
+
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ActuateHandGrabber(m_handGrabber));
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
     Shuffleboard.getTab("Test").add("Write changes", new WriteShuffleboardChanges(new ExampleSubsystem(), usesShuffleBoard));
@@ -146,7 +141,7 @@ public class RobotContainer {
 
   public void resetOdometry() {
     m_chassis.resetOdometry(new Pose2d(0 ,0, new Rotation2d()));
->>>>>>> main
+
   }
 
   public Command getCmd() {
