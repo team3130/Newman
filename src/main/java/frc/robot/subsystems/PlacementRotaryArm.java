@@ -73,7 +73,6 @@ public class PlacementRotaryArm extends SubsystemBase {
     rotaryMotor.config_kI(0, placementRotaryArmI);
     rotaryMotor.config_kI(0, placementRotaryArmD);
     rotaryMotor.config_kF(0, placementRotaryArmFUp);
-    rotaryMotor.config_kF(0, placementRotaryArmFDown);
     rotaryMotor.configMotionSCurveStrength(0, sStrengthRotaryPlacementArm);
     rotaryMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
     rotaryMotor.enableVoltageCompensation(true);
