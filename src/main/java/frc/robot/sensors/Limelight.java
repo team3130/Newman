@@ -2,15 +2,11 @@ package frc.robot.sensors;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.Newman_Constants.Constants.Camera;
 import frc.robot.supportingClasses.KugelMedianFilter;
@@ -21,12 +17,17 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.io.IOException;
+import java.lang.annotation.Target;
 
 public class Limelight {
 
     PhotonCamera camera;
     public final GenericEntry ntHasTarget;
     public final GenericEntry ntDifferentTargets;
+    protected final GenericEntry nXCameraToTarget;
+    protected final GenericEntry nYCameraToTarget;
+
+    public final Transform2d poseOnField;
     private static ShuffleboardTab tab = Shuffleboard.getTab("PhotonCamera");
     AprilTagFieldLayout aprilTagFieldLayout;
     KugelMedianFilter filter;
@@ -36,6 +37,7 @@ public class Limelight {
         camera = new PhotonCamera("OV5647");
         ntHasTarget = tab.add("HasTarget", false).getEntry();
         ntDifferentTargets = tab.add("DifferentTargets", new Long[0]).getEntry();
+        poseOnField = (Transform2d) tab.add("positionOnField", new int[0]).getEntry();
 
         try {
             aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
@@ -48,6 +50,20 @@ public class Limelight {
         if (Constants.debugMode) {
             Shuffleboard.getTab("Filter").add(filter);
         }
+
+        nXCameraToTarget = tab.add("X Camera to target", 0).getEntry();
+        nYCameraToTarget = tab.add("Y camera to target", 0).getEntry();
+    }
+
+    public void outputToShuffleBoard(){
+        PhotonPipelineResult result = camera.getLatestResult();
+        PhotonTrackedTarget target = result.getBestTarget();
+
+        Transform3d transformation = target.getBestCameraToTarget();
+
+        Translation2d translation = transformation.getTranslation().toTranslation2d();
+        nXCameraToTarget.setDouble(translation.getX());
+        nYCameraToTarget.setDouble(translation.getY());
     }
 
     public OdoPosition calculateCameraPosition() {
@@ -75,6 +91,7 @@ public class Limelight {
 
         return filter.getOdoPose(new OdoPosition(position.toPose2d(), result.getTimestampSeconds()));
     }
+
 
     public int getNumberOfSuccesses() {
         return successfulUpdates;

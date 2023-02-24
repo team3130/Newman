@@ -36,7 +36,7 @@ public class Robot extends TimedRobot {
       CommandScheduler.getInstance().schedule(new ZeroEverything(m_robotContainer.getChassis()));
     }
 
-
+    m_robotContainer.getLimelight().outputToShuffleBoard();
         // April tag odometry stuff
     if (cameraIsGettingData) {
      m_robotContainer.updatePosition();

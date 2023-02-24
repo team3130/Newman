@@ -30,6 +30,10 @@ public class RobotContainer {
   private final Chassis m_chassis = new Chassis();
     public final Limelight m_limelight;
 
+    public Limelight getLimelight() {
+      return m_limelight;
+    }
+
 
   public Chassis getChassis() {
     return m_chassis;
