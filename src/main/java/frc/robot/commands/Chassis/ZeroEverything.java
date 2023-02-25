@@ -4,6 +4,8 @@
 
 package frc.robot.commands.Chassis;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Chassis;
@@ -29,5 +31,6 @@ public class ZeroEverything extends InstantCommand {
   public void initialize() {
     m_subsystem.zeroHeading();
     m_subsystem.resetEncoders();
+    m_subsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
   }
 }

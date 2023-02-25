@@ -184,7 +184,7 @@ public class SwerveModule implements Sendable {
      * @return gets with turning position and velocity
      */
     public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition(getDrivePosition(), new Rotation2d(getTurningVelocity()));
+        return new SwerveModulePosition(getDrivePosition(), new Rotation2d(getTurningPosition()));
     }
 
     /**

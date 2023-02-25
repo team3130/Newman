@@ -89,7 +89,7 @@ public class Hopper extends SubsystemBase {
      */
     @Override
     public void initSendable(SendableBuilder builder) {
-        super.initSendable(builder);
+        builder.setSmartDashboardType("Hopper");
         builder.addDoubleProperty("Hopper % out", this::getSpeed, this::updateOutputSpeed);
     }
 }

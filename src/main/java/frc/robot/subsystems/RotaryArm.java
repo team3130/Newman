@@ -70,7 +70,7 @@ public class RotaryArm extends SubsystemBase {
    * @param builder sendable builder
    */
   public void initSendable(SendableBuilder builder) {
-    super.initSendable(builder);
+    builder.setSmartDashboardType("Rotary arm");
     builder.addDoubleProperty("Rotary % output", this::getOutputSpeed, this::updateOutputSpeed);
   }
 }

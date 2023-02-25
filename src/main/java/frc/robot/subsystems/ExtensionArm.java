@@ -103,7 +103,7 @@ public class ExtensionArm extends SubsystemBase {
    */
   @Override
   public void initSendable(SendableBuilder builder) {
-    super.initSendable(builder);
+    builder.setSmartDashboardType("Extension arm");
     builder.addDoubleProperty("Extension % out", this::getSpeed, this::updateSpeed);
     builder.addBooleanProperty("Hit limit switch", this::hitLimitSwitch, null);
   }
