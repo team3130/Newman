@@ -35,18 +35,10 @@ public class zeroExtensionArm extends CommandBase implements ShuffleboardUpdated
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-<<<<<<< HEAD:src/main/java/frc/robot/commands/MoveExtensionArm.java
-    double y = m_xboxController.getRawAxis(0); // inverted?
-
-    if (Math.abs(y) < Constants.kDeadband) {
-      y = 0;
-    }
-    m_extensionArm.ExtendExtensionArm(y * extensionArmMaxSpeed); //that max is currently bs
-    if (m_extensionArm.BrokeLimit()) {
+    if (m_extensionArm.brokeLimit()) {
       m_extensionArm.StopArm();
     }
-=======
->>>>>>> main:src/main/java/frc/robot/commands/Placement/zeroExtensionArm.java
+
   }
 
   // Called once the command ends or is interrupted.
@@ -58,7 +50,7 @@ public class zeroExtensionArm extends CommandBase implements ShuffleboardUpdated
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_extensionArm.hitLimitSwitch();
+    return m_extensionArm.brokeLimit();
   }
 
   @Override
