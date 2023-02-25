@@ -4,15 +4,18 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ExtensionArm;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.subsystems.RotaryArm;
 
 /** An example command that uses an example subsystem. */
 public class MoveExtensionArm extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ExtensionArm m_extensionArm;
+  private final RotaryArm m_rotaryArm;
   private int dir;
   public XboxController m_xboxController;
   public static double extensionArmMaxSpeed = 1; //TODO make this an actual number & add it to constants
@@ -22,9 +25,10 @@ public class MoveExtensionArm extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveExtensionArm(ExtensionArm subsystem, int direction/*extend or retract, 1 or -1, respectively*/) {
+  public MoveExtensionArm(ExtensionArm subsystem, int direction, RotaryArm subsystem2) {
     dir = direction;
     m_extensionArm = subsystem;
+    m_rotaryArm = subsystem2;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_extensionArm);
   }
@@ -42,9 +46,14 @@ public class MoveExtensionArm extends CommandBase {
     if (Math.abs(y) < Constants.kDeadband) {
       y = 0;
     }
-    m_extensionArm.ExtendExtensionArm(y * extensionArmMaxSpeed); //that max is currently bs
-    if (m_extensionArm.BrokeLimit()) {
-      m_extensionArm.StopArm();
+    double rotaryArmAngle = m_rotaryArm.getAngleRotaryArm();
+    double extensionArmMaxLength = (Units.inchesToMeters(38) / Math.cos(rotaryArmAngle));
+    if ((m_extensionArm.getLengthExtensionArm() < extensionArmMaxLength)) {
+      if (m_extensionArm.BrokeLimit()) {
+        m_extensionArm.StopArm();
+      } else if ((m_extensionArm.getLengthExtensionArm() < extensionArmMaxLength) && (m_extensionArm.getLengthExtensionArm() * 1.1 > extensionArmMaxLength)) {
+        m_extensionArm.ExtendExtensionArm(y * extensionArmMaxSpeed); //that max is currently bs
+      }
     }
   }
 
