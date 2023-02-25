@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.commands.Chassis.ZeroWheels;
 import frc.robot.subsystems.Chassis;
 
 /**
@@ -35,7 +36,7 @@ public class AutonManager {
         this.m_chassis = chassis;
 
         safe_constraints = new PathConstraints(2, 2);
-        violent_constraints = new PathConstraints(4, 3);
+        violent_constraints = new PathConstraints(Constants.kPhysicalMaxSpeedMetersPerSecond, Constants.kPhysicalMaxSpeedMetersPerSecond);
 
         SmartDashboard.putData(m_autonChooser);
 
@@ -132,9 +133,9 @@ public class AutonManager {
      */
     public SequentialCommandGroup wrapCmd(AutonCommand command) {
                 return new SequentialCommandGroup(
-                new InstantCommand(() -> m_chassis.resetOdometry(command.getStartPosition())),
-                command.getCmd(),
-                new InstantCommand(m_chassis::stopModules)
+                    new InstantCommand(() -> m_chassis.resetOdometry(command.getStartPosition())),
+                    command.getCmd(),
+                    new InstantCommand(m_chassis::stopModules)
         );
     }
 
@@ -163,13 +164,13 @@ public class AutonManager {
         // the trajectory being made
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 /* Max velocity and acceleration the path will follow along the trapezoid profile */
-                safe_constraints,
+                violent_constraints,
                 /* Each path point is a 2 poses and 2 rotations see explanation here:
                 https://docs.google.com/document/d/1RInEhl8mW1UKMP4AbvWWiWmfI4klbDfyZLJbw1zbjDo/edit#heading=h.lie7pmqbolmu */
                 new PathPoint(
                         new Translation2d(0, 0),
                         new Rotation2d(), new Rotation2d()),
-                new PathPoint(new Translation2d(2, 0), new Rotation2d(), new Rotation2d(Math.toRadians(90)))
+                new PathPoint(new Translation2d(2, 0), new Rotation2d(), new Rotation2d(Math.toRadians(179)))
         );
 
         AutonCommand command = autonCommandGenerator(trajectory);

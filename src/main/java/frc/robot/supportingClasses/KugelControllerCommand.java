@@ -34,6 +34,7 @@ public class KugelControllerCommand extends CommandBase {
         m_kinematics = kinematics;
         m_controller = holonomicDriveController;
         m_outputModuleStates = states;
+        m_requirements.add(requirement);
     }
 
     public void initialize() {
