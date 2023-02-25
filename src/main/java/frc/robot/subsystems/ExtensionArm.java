@@ -34,6 +34,12 @@ public class ExtensionArm extends SubsystemBase {
   public boolean BrokeLimit(){
     return !m_LimitSwitch.get();
   }
+  public double getPositionPlacementArm(){
+    return Constants.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorPosition();
+  }
+  public double getSpeedPlacementArm(){
+    return 10 * Constants.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorVelocity();
+  }
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation

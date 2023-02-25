@@ -26,6 +26,13 @@ public class RotaryArm extends SubsystemBase {
 
     rotaryArmMotor.set(speed);
   }
+  public double getPositionRotaryArm(){
+    return Constants.ticksToRadiansRotaryPlacementArm * rotaryArmMotor.getSelectedSensorPosition();
+  }
+  public double getSpeedRotaryArm(){
+    return 10 * Constants.ticksToRadiansRotaryPlacementArm * rotaryArmMotor.getSelectedSensorVelocity();
+  }
+
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
