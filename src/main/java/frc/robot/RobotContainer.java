@@ -4,36 +4,35 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
-import edu.wpi.first.math.controller.HolonomicDriveController;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.FlipFieldOrriented;
-import frc.robot.commands.TeleopDrive;
-import frc.robot.commands.ZeroEverything;
-import frc.robot.commands.ZeroWheels;
-import frc.robot.subsystems.Chassis;
 import frc.robot.Newman_Constants.Constants;
-import frc.robot.supporting_classes.Chooser;
-import frc.robot.supporting_classes.KugelControllerCommand;
+import frc.robot.commands.Chassis.FlipFieldOriented;
+import frc.robot.commands.Chassis.TeleopDrive;
+import frc.robot.commands.Chassis.ZeroEverything;
+import frc.robot.commands.Placement.ActuateHandGrabber;
+import frc.robot.commands.Placement.MoveExtensionArm;
+import frc.robot.commands.Placement.MoveRotaryArm;
+import frc.robot.commands.Placement.zeroExtensionArm;
+import frc.robot.commands.Chassis.ZeroWheels;
+import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.ExtensionArm;
+import frc.robot.subsystems.HandGrabber;
+import frc.robot.subsystems.RotaryArm;
+import frc.robot.subsystems.Hopper;
+import frc.robot.supportingClasses.AutonManager;
 
 import java.io.IOException;
-import java.util.List;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,29 +40,96 @@ import java.util.List;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
-
 public class RobotContainer {
-  private static Joystick m_driverGamepad;
-  private final Chassis m_chassis = new Chassis();
-  private Command auton_command;
+  /**
+   * Auton manager is the object that handles the loading of auton paths
+   */
+  protected AutonManager m_autonManager;
 
+  private static Joystick m_driverGamepad; // The controllers
+  private static Joystick m_weaponsGamepad; // The controllers
 
+  /**
+   * Subsystems
+   */
+  private final Chassis m_chassis;
+  private final ExtensionArm m_extensionArm;
+  private final RotaryArm m_rotaryArm;
+  private final HandGrabber m_handGrabber;
+  private final Hopper m_hopper;
+
+  /**
+   * A getter for the chassis object in the container
+   * @return the Chassis subsystem
+   */
   public Chassis getChassis() {
     return m_chassis;
+  }
+
+  /**
+   * Gets the extension arm subsystem
+   * @return the extension arm subsystem
+   */
+  public ExtensionArm getExtensionArm() {
+    return m_extensionArm;
   }
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     m_driverGamepad = new Joystick(0);
-    configureButtonBindings();
+    m_weaponsGamepad = new Joystick(1);
 
-     m_chassis.setDefaultCommand(new TeleopDrive(m_chassis));
+    m_chassis = new Chassis();
+    m_extensionArm =  new ExtensionArm();
+    m_rotaryArm = new RotaryArm();
+    m_handGrabber = new HandGrabber();
+    m_hopper = new Hopper();
+
+    m_chassis.setDefaultCommand(new TeleopDrive(m_chassis, m_driverGamepad));
+
+    // idk if this is right
+    m_rotaryArm.setDefaultCommand(new MoveRotaryArm(m_rotaryArm, m_weaponsGamepad));
+    m_extensionArm.setDefaultCommand(new MoveExtensionArm(m_extensionArm, m_weaponsGamepad));
+
+    m_autonManager = new AutonManager(m_chassis);
+
+    configureButtonBindings();
+    vomitShuffleBoardData();
   }
 
+  /**
+   * adds the subsystem {@link edu.wpi.first.util.sendable.Sendable} objects to a 'Subsystems' shuffleboard tab
+   */
+  public void vomitShuffleBoardData() {
+    if (Constants.debugMode) {
+      ShuffleboardTab tab = Shuffleboard.getTab("Subsystems");
+      tab.add(m_chassis);
+      tab.add(m_extensionArm);
+      tab.add(m_rotaryArm);
+      tab.add(m_handGrabber);
+      tab.add(m_hopper);
+    }
+  }
+
+  /**
+   * This shouldn't be necessary as we can just pass the initialized object,
+   * However this can be here just in case we need it last minute
+   * @return the driver gamepad
+   */
   public static Joystick getDriverGamepad() {
     return m_driverGamepad;
   }
+
+  /**
+   * This shouldn't be necessary as we can just pass the initialized object,
+   * However this can be here just in case we need it last minute
+   * @return the weapons game pad
+   */
+  public static Joystick getWeaponsGamepad() {
+    return m_weaponsGamepad;
+  }
+
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -74,82 +140,34 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ZeroWheels(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
-    SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
+
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ActuateHandGrabber(m_handGrabber));
+    SmartDashboard.putData(new FlipFieldOriented(m_chassis));
+
+    Shuffleboard.getTab("Test").add("Spin motor down", new zeroExtensionArm(m_extensionArm));
   }
-  public Command generateAutonCommand() {
-    Trajectory trajectory3;
-    TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Constants.kPhysicalMaxSpeedMetersPerSecond / 4, Constants.kMaxAccelerationDrive / 8)
-            .setKinematics(m_chassis.getKinematics());
-/*   Trajectory trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0,0, new Rotation2d(0)), List.of(new Translation2d(0.5, 0)),
-            new Pose2d(1,0, new Rotation2d(Math.toRadians(45))), trajectoryConfig);*/
-   /* Trajectory trajectory1 = TrajectoryGenerator.generateTrajectory(List.of(
-            new Pose2d(0, 0, new Rotation2d(0)),
-            new Pose2d(2, 0, new Rotation2d(Math.toRadians(0)))
-    ), trajectoryConfig);
-    Trajectory trajectory2 = TrajectoryGenerator.generateTrajectory(List.of(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(3, 0, new Rotation2d(Math.toRadians(90)))), trajectoryConfig);*/
-    /*    Trajectory trajectory3 = new Trajectory();*/
 
-/*
-    PathPlannerTrajectory trajectoryPlanned = PathPlanner.loadPath("3meter", new PathConstraints(4, 3));
-*/
-    PathPlannerTrajectory trajectoryPlanned = PathPlanner.generatePath(new PathConstraints(2, 2), List.of(
-            new PathPoint(new Translation2d(0, 0), new Rotation2d(0), new Rotation2d(0)),
-            new PathPoint(new Translation2d(3, 0), new Rotation2d(Math.toRadians(0)), new Rotation2d(Math.toRadians(90)))));
-   /* PathPlannerTrajectory trajectoryPlanned = PathPlanner.generatePath(new PathConstraints(2,2), List.of(
-            new PathPoint(new Translation2d(0,0), new Rotation2d(0), new Rotation2d(0) ),
-            new PathPoint(new Translation2d(1.5, 0.1), new Rotation2d(Math.toRadians(30)), new Rotation2d(0)), new PathPoint(new Translation2d(3,1),
-                    new Rotation2d(Math.toRadians(90)), new Rotation2d(0)), new PathPoint(new Translation2d(2.3,1.5),  new Rotation2d(Math.toRadians(120)), new Rotation2d(0)),
-                    new PathPoint( new Translation2d(1,2),  new Rotation2d(Math.toRadians(180)), new Rotation2d(0)),
-                    new PathPoint(new Translation2d(1.5, 2.2), new Rotation2d(0), new Rotation2d(0)),
-                    new PathPoint(new Translation2d(2.25, 2.5), new Rotation2d(Math.toRadians(30)), new Rotation2d(0)),
-                    new PathPoint(new Translation2d(3,3.25),  new Rotation2d(Math.toRadians(90)), new Rotation2d(0)),
-                    new PathPoint(new Translation2d(2.75, 4), new Rotation2d(Math.toRadians(120)), new Rotation2d(0)),
-                    new PathPoint(new Translation2d(0,4.5),  new Rotation2d(Math.toRadians(180)), new Rotation2d(0))));
-                    */
-    //start(ish) of driver vs auton
-   /*  PathPlannerTrajectory trajectoryPlanned = PathPlanner.generatePath(new PathConstraints(2,2), List.of(
-            new PathPoint(new Translation2d(0,0), new Rotation2d(0), new Rotation2d(0)),
-            new PathPoint(new Translation2d(0,1.1938), new Rotation2d(Math.toRadians(90)), new Rotation2d(0)),
-            new PathPoint(new Translation2d(-4.527, 1.1938), new Rotation2d(Math.toRadians(180)), new Rotation2d(0)),
-            new PathPoint(new Translation2d(-4.527,3.9574), new Rotation2d(Math.toRadians(270)), new Rotation2d(0)),
-            new PathPoint(new Translation2d(0,1.524), new Rotation2d(Math.toRadians(0)), new Rotation2d(0)),
-            new PathPoint(new Translation2d(0,-0.889), new Rotation2d(Math.toRadians(270)), new Rotation2d(0))),
-            new PathPoint(new Translation2d(-3.429,-0.889), new Rotation2d(Math.toRadians(180)), new Rotation2d(0)),
-            new PathPoint(new Translation2d(-3.429, -3.429),new Rotation2d(Math.toRadians(270), new Rotation2d(0))),
-            new PathPoint(new Translation2d())
-    );
-    */
+  /**
+   * Resets odometry to 0, 0, 0
+   */
+  public void resetOdometry() {
+    m_chassis.resetOdometry(new Pose2d(0 ,0, new Rotation2d()));
 
-/*        try {
-      trajectory3 = TrajectoryUtil.fromPathweaverJson(Filesystem.getDeployDirectory().toPath().resolve("pathplanner/Forward 3 Meters and 90 degrees.path"));
-    }
-    catch (IOException e) {
-      DriverStation.reportError("Couldn't read file", false);
-    }*/
-    // System.out.println(trajectory2.toString());
-    /*  Trajectory trajectory = TrajectoryGenerator.generateTrajectory(List.of(new Pose2d(0,0,new Rotation2d(0)),
-            new Pose2d(1.5, 0.1, new Rotation2d(Math.toRadians(30))), new Pose2d(3, 1, new Rotation2d(Math.toRadians(90))),
-            new Pose2d(2.3, 1.5, new Rotation2d(Math.toRadians(120))), new Pose2d(1, 2, new Rotation2d(Math.toRadians(180))),
-            new Pose2d(1.25, 2.2, new Rotation2d(Math.toRadians(0))), new Pose2d(2.25, 2.5, new Rotation2d(Math.toRadians(30))),
-            new Pose2d(3, 3.25, new Rotation2d(Math.toRadians(90))), new Pose2d(2.75, 4, new Rotation2d(Math.toRadians(120))),
-            new Pose2d(0,4.5, new Rotation2d(Math.toRadians(180)))), trajectoryConfig); */
-    PIDController xController = new PIDController(Constants.kPXController, Constants.kIXController,Constants.kDXController);
-    PIDController yController = new PIDController(Constants.kPYController, Constants.kIYController ,Constants.kDYController);
-    HolonomicDriveController holonomicDriveController = new HolonomicDriveController(xController, yController, new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, 0, Constants.kThetaControllerConstraints));
+  }
 
-    KugelControllerCommand swerveControllerCommand = new KugelControllerCommand(
-            trajectoryPlanned,
-            m_chassis::getPose2d,
-            m_chassis.getKinematics(),
-            holonomicDriveController,
-            /*() -> {return trajectoryPlanned.getEndState().holonomicRotation;},*/
-            m_chassis::setModuleStates,
-            m_chassis);
+  /**
+   * Gets the selected auton command that is on shuffleboard
+   * @return the auton routine
+   */
+  public Command getAutonCmd() {
+    return m_autonManager.pick();
+  }
 
-    auton_command = new SequentialCommandGroup(new InstantCommand(()->m_chassis.resetOdometry(trajectoryPlanned.getInitialPose())),
-            swerveControllerCommand, new InstantCommand(m_chassis::stopModules));
-
-    return auton_command;
+  /**
+   * Schedules a command to zero the extension arm
+   */
+  public void zeroCommand() {
+    CommandScheduler.getInstance().schedule(new zeroExtensionArm(m_extensionArm));
   }
 
 }

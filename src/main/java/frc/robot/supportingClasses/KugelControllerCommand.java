@@ -1,4 +1,4 @@
-package frc.robot.supporting_classes;
+package frc.robot.supportingClasses;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -28,9 +28,6 @@ public class KugelControllerCommand extends CommandBase {
   protected final HolonomicDriveController m_controller;
   protected final Consumer<SwerveModuleState[]> m_outputModuleStates;
 
-  protected ShuffleboardTab tab = Shuffleboard.getTab("");
-
-
     public KugelControllerCommand(PathPlannerTrajectory trajectory, Supplier<Pose2d> robotPose, SwerveDriveKinematics kinematics, HolonomicDriveController holonomicDriveController, Consumer<SwerveModuleState[]> states, Subsystem requirement) {
         m_trajectory = trajectory;
         m_pose = robotPose;
@@ -55,15 +52,20 @@ public class KugelControllerCommand extends CommandBase {
         m_outputModuleStates.accept(targetModuleStates);
     }
 
+    public boolean inRange(Pose2d pose1, Pose2d pose2) {
+        return Math.abs(pose1.getX() - pose2.getX()) < 0.1 &&
+                Math.abs(pose1.getY() - pose2.getY()) < 0.1 &&
+                Math.abs(pose1.getRotation().getDegrees() - pose2.getRotation().getDegrees()) < 2.5;
+    }
 
     public boolean isFinished() {
-        boolean timeHasPassed = m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds();
+        boolean timeHasPassed = m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds());
         if (Constants.debugMode) {
-            if (timeHasPassed) {
-
-            }
+            return inRange(m_pose.get(), m_trajectory.getEndState().poseMeters);
         }
-        return timeHasPassed;
+        else {
+            return timeHasPassed;
+        }
     }
 
     @Override
