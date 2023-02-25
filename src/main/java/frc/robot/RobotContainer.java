@@ -41,7 +41,7 @@ public class RobotContainer {
   private static Joystick m_weaponsGamepad;
   private final Chassis m_chassis = new Chassis();
   private final ExtensionArm m_extensionArm = new ExtensionArm();
-
+  private final RotaryArm m_rotaryArm = new RotaryArm();
   public Chassis getChassis() {
     return m_chassis;
   }
@@ -75,6 +75,11 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ZeroWheels(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
+
+    //change the extension arm button bindings to whatever, but keep the parameters as seen here
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new MoveExtensionArm(m_extensionArm, 1, m_rotaryArm));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new MoveExtensionArm(m_extensionArm, -1, m_rotaryArm));
+
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
   }
 
