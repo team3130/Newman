@@ -21,4 +21,8 @@ public class OdoPosition {
     public double getTime() {
         return timeStamp;
     }
+
+    public String toString() {
+        return "position: " + pose2d.toString() + "time: " + timeStamp;
+    }
 }
