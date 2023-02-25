@@ -12,6 +12,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.sensors.Navx;
@@ -37,6 +39,8 @@ public class Chassis extends SubsystemBase {
     /** Whether it is field relative or robot oriented drive */
     private boolean fieldRelative = true;
 
+    private Field2d field2d;
+
     /**
      * Makes a chassis that starts at 0, 0, 0
      */
@@ -54,9 +58,6 @@ public class Chassis extends SubsystemBase {
         SwerveModulePosition[] modulePositions = new SwerveModulePosition[]{new SwerveModulePosition(), new SwerveModulePosition(),
               new SwerveModulePosition(), new SwerveModulePosition()};
 
-        // odometry wrapper class that has functionality for cameras that report position with latency
-        m_odometry = new SwerveDrivePoseEstimator(m_kinematics, startingRotation, modulePositions, startingPos);
-
         modules = new SwerveModule[4];
         modules[Constants.Side.LEFT_FRONT] = new SwerveModule(Constants.Side.LEFT_FRONT);
         modules[Constants.Side.LEFT_BACK] = new SwerveModule(Constants.Side.LEFT_BACK);
@@ -64,6 +65,12 @@ public class Chassis extends SubsystemBase {
         modules[Constants.Side.RIGHT_BACK] = new SwerveModule(Constants.Side.RIGHT_BACK);
 
         zeroHeading();
+
+        // odometry wrapper class that has functionality for cameras that report position with latency
+        m_odometry = new SwerveDrivePoseEstimator(m_kinematics, startingRotation, generatePoses(), startingPos);
+
+        field2d = new Field2d();
+        Shuffleboard.getTab("Test").add(field2d);
     }
 
     /**
@@ -155,6 +162,7 @@ public class Chassis extends SubsystemBase {
     @Override
     public void periodic() {
         updateOdometryFromSwerve();
+        field2d.setRobotPose(m_odometry.getEstimatedPosition());
     }
 
   /**
@@ -301,11 +309,11 @@ public class Chassis extends SubsystemBase {
      * @param builder sendable builder
      */
     public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("Chassis");
+
         // add each submodule as a child
         Arrays.stream(modules).forEach((SwerveModule module) -> this.addChild(module.toString(), module));
 
-        // default init sendable
-        super.initSendable(builder);
         // add field relative
         builder.addBooleanProperty("fieldRelative", this::getFieldRelative, this::setWhetherFieldOriented);
         builder.addDoubleProperty("pSwerveModule", this::getPValuesForSwerveModules, this::updatePValuesFromSwerveModule);

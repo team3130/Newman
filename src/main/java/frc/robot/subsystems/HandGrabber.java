@@ -105,7 +105,7 @@ public class HandGrabber extends SubsystemBase {
    */
   @Override
   public void initSendable(SendableBuilder builder) {
-    super.initSendable(builder);
+    builder.setSmartDashboardType("Manipulator");
     builder.addBooleanProperty("grabber state", this::getState, this::setState);
   }
 
