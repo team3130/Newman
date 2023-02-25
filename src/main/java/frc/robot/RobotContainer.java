@@ -23,10 +23,7 @@ import frc.robot.commands.Placement.ActuateHandGrabber;
 import frc.robot.commands.Placement.MoveExtensionArm;
 import frc.robot.commands.Placement.MoveRotaryArm;
 import frc.robot.commands.Placement.zeroExtensionArm;
-import frc.robot.subsystems.Chassis;
-import frc.robot.subsystems.ExtensionArm;
-import frc.robot.subsystems.HandGrabber;
-import frc.robot.subsystems.RotaryArm;
+import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.AutonManager;
 
 
@@ -52,6 +49,7 @@ public class RobotContainer {
   private final ExtensionArm m_extensionArm;
   private final RotaryArm m_rotaryArm;
   private final HandGrabber m_handGrabber;
+  private final Hopper m_hopper;
 
   /**
    * A getter for the chassis object in the container
@@ -79,6 +77,7 @@ public class RobotContainer {
     m_extensionArm =  new ExtensionArm();
     m_rotaryArm = new RotaryArm();
     m_handGrabber = new HandGrabber();
+    m_hopper = new Hopper();
 
     m_chassis.setDefaultCommand(new TeleopDrive(m_chassis, m_driverGamepad));
 
@@ -102,6 +101,7 @@ public class RobotContainer {
       tab.add(m_extensionArm);
       tab.add(m_rotaryArm);
       tab.add(m_handGrabber);
+      tab.add(m_hopper);
     }
   }
 

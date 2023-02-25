@@ -12,8 +12,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.sensors.Navx;
@@ -31,8 +29,6 @@ public class Chassis extends SubsystemBase {
     /** The odometry object */
     private final SwerveDrivePoseEstimator m_odometry;
 
-    /** The positions of the SwerveModules */
-    private SwerveModulePosition[] modulePositions;
     /** A list of the swerve modules (should be four */
     private final SwerveModule[] modules;
     /** Makes sure that the Navx Gyro is initialized */
@@ -55,7 +51,7 @@ public class Chassis extends SubsystemBase {
      */
     public Chassis(Pose2d startingPos, Rotation2d startingRotation) {
         m_kinematics = new SwerveDriveKinematics(Constants.moduleTranslations);
-        modulePositions = new SwerveModulePosition[]{new SwerveModulePosition(), new SwerveModulePosition(),
+        SwerveModulePosition[] modulePositions = new SwerveModulePosition[]{new SwerveModulePosition(), new SwerveModulePosition(),
               new SwerveModulePosition(), new SwerveModulePosition()};
 
         // odometry wrapper class that has functionality for cameras that report position with latency
@@ -90,7 +86,7 @@ public class Chassis extends SubsystemBase {
     public void resetOdometry(Pose2d pose) {
         resetEncoders();
         Navx.resetNavX();
-        m_odometry.resetPosition(new Rotation2d(0), modulePositions, pose);
+        m_odometry.resetPosition(getRotation2d(), generatePoses(), pose);
     }
 
     /**
@@ -279,19 +275,44 @@ public class Chassis extends SubsystemBase {
     }
 
     /**
+     * @return the x position from odometry
+     */
+    private double getX() {
+        return m_odometry.getEstimatedPosition().getX();
+    }
+
+    /**
+     * @return the y position from odometry
+     */
+    private double getY() {
+        return m_odometry.getEstimatedPosition().getY();
+    }
+
+    /**
+     * @return the yaw from odometry
+     */
+    private double getYaw() {
+        return m_odometry.getEstimatedPosition().getRotation().getDegrees();
+    }
+
+    /**
      * Initializes the data we send on shuffleboard
      * Calls the default init sendable for Subsystem Bases
      * @param builder sendable builder
      */
     public void initSendable(SendableBuilder builder) {
-        Arrays.stream(modules).forEach(SmartDashboard::putData);
+        // add each submodule as a child
+        Arrays.stream(modules).forEach((SwerveModule module) -> this.addChild(module.toString(), module));
 
         // default init sendable
         super.initSendable(builder);
         // add field relative
-        builder.addBooleanProperty(".fieldRelative", this::getFieldRelative, this::setWhetherFieldOriented);
-        builder.addDoubleProperty(".pSwerveModule", this::getPValuesForSwerveModules, this::updatePValuesFromSwerveModule);
-        builder.addDoubleProperty(".dSwerveModule", this::getDValuesForSwerveModules, this::updateDValuesFromSwerveModule);
-        builder.addDoubleProperty(".Navx", this::getHeading, null);
+        builder.addBooleanProperty("fieldRelative", this::getFieldRelative, this::setWhetherFieldOriented);
+        builder.addDoubleProperty("pSwerveModule", this::getPValuesForSwerveModules, this::updatePValuesFromSwerveModule);
+        builder.addDoubleProperty("dSwerveModule", this::getDValuesForSwerveModules, this::updateDValuesFromSwerveModule);
+        builder.addDoubleProperty("Navx", this::getHeading, null);
+        builder.addDoubleProperty("X position", this::getX, null);
+        builder.addDoubleProperty("Y position", this::getY, null);
+        builder.addDoubleProperty("rotation", this::getYaw, null);
     }
 }

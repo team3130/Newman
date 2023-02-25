@@ -212,6 +212,14 @@ public class SwerveModule implements Sendable {
     }
 
     /**
+     * The string representation of the swerve module
+     * @return "Swerve module side: " + sideNumber: int
+     */
+    public String toString() {
+        return "Swerve module side: " + side;
+    }
+
+    /**
      * Builds the sendable for shuffleboard
      * @param builder sendable builder
      */
