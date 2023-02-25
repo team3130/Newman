@@ -7,6 +7,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.Newman_Constants.Constants.Camera;
 import frc.robot.supportingClasses.KugelMedianFilter;
@@ -27,7 +28,6 @@ public class Limelight {
     protected final GenericEntry nXCameraToTarget;
     protected final GenericEntry nYCameraToTarget;
 
-    public final Transform2d poseOnField;
     private static ShuffleboardTab tab = Shuffleboard.getTab("PhotonCamera");
     AprilTagFieldLayout aprilTagFieldLayout;
     KugelMedianFilter filter;
@@ -37,7 +37,6 @@ public class Limelight {
         camera = new PhotonCamera("OV5647");
         ntHasTarget = tab.add("HasTarget", false).getEntry();
         ntDifferentTargets = tab.add("DifferentTargets", new Long[0]).getEntry();
-        poseOnField = (Transform2d) tab.add("positionOnField", new int[0]).getEntry();
 
         try {
             aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
@@ -48,7 +47,7 @@ public class Limelight {
         filter = new KugelMedianFilter(Camera.kMedianFilterWindowSize);
 
         if (Constants.debugMode) {
-            Shuffleboard.getTab("Filter").add(filter);
+            SmartDashboard.putData(filter);
         }
 
         nXCameraToTarget = tab.add("X Camera to target", 0).getEntry();
@@ -57,6 +56,9 @@ public class Limelight {
 
     public void outputToShuffleBoard(){
         PhotonPipelineResult result = camera.getLatestResult();
+        if (!result.hasTargets()) {
+            return;
+        }
         PhotonTrackedTarget target = result.getBestTarget();
 
         Transform3d transformation = target.getBestCameraToTarget();
