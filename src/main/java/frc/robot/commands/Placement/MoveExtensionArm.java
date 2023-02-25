@@ -12,16 +12,14 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ExtensionArm;
 import frc.robot.Newman_Constants.Constants;
-import frc.robot.supportingClasses.ShuffleboardUpdated;
 
-/** An example command that uses an example subsystem. */
-public class MoveExtensionArm extends CommandBase implements ShuffleboardUpdated {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+/** A command to move the extension arm based off the joysticks */
+public class MoveExtensionArm extends CommandBase {
   private final ExtensionArm m_extensionArm;
   public Joystick m_xboxController;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new Move Extension Arm command.
    *
    * @param subsystem The subsystem used by this command.
    */
@@ -43,7 +41,7 @@ public class MoveExtensionArm extends CommandBase implements ShuffleboardUpdated
     double y = m_xboxController.getRawAxis(1); // inverted?
     y =y * Math.abs(y);
 
-    if (Math.abs(y) < Constants.kDeadband || (y > 0 && m_extensionArm.brokeLimit())) {
+    if (Math.abs(y) < Constants.kDeadband || (y > 0 && m_extensionArm.hitLimitSwitch())) {
       y = 0;
     }
     m_extensionArm.spinExtensionArm(y); //that max is currently bs
@@ -60,10 +58,5 @@ public class MoveExtensionArm extends CommandBase implements ShuffleboardUpdated
   @Override
   public boolean isFinished() {
     return false;
-  }
-
-  @Override
-  public void updateValueFromShuffleboard() {
-
   }
 }

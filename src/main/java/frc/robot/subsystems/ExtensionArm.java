@@ -6,24 +6,32 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
-import frc.robot.supportingClasses.ShuffleboardUpdated;
 
-public class ExtensionArm extends SubsystemBase implements ShuffleboardUpdated {
+/**
+ * Extension arm is the punchy arm on the robot
+ */
+public class ExtensionArm extends SubsystemBase {
+  /**
+   * Speed to run the motor at by default, can be changed in shuffleboard
+   */
   private static double extensionArmSpeed = 1;
-  private ShuffleboardTab tab = Shuffleboard.getTab("Test");
-  private GenericEntry n_outputSpeed = tab.add("Extension % out", extensionArmSpeed).getEntry();
-  private GenericEntry n_limitSwitch = tab.add("Limit switch", false).getEntry();
-  /** Creates a new ExampleSubsystem. */
-  public WPI_TalonSRX extensionMotor;
-  public DigitalInput m_LimitSwitch;
 
+  /**
+   * The motor/speed controller for the mechanism
+   */
+  private final WPI_TalonSRX extensionMotor;
+
+  // limit switch
+  private final DigitalInput m_LimitSwitch;
+
+  /**
+   * Initializes the extension arm and configures the necessary device settings.
+   * Motors are set to: Factory default, then given 9 volts of voltage compensation, and put in brake mode
+   */
   public ExtensionArm() {
     extensionMotor = new WPI_TalonSRX(Constants.CAN_ExtensionArm);
     extensionMotor.configFactoryDefault();
@@ -37,15 +45,11 @@ public class ExtensionArm extends SubsystemBase implements ShuffleboardUpdated {
     extensionMotor.setNeutralMode(NeutralMode.Brake);
   }
 
-  public void outputShuffleboard() {
-    n_limitSwitch.setBoolean(brokeLimit());
-  }
-
+  /**
+   * This method will be called once per scheduler run
+   */
   @Override
-  public void periodic() {
-    outputShuffleboard();
-    // This method will be called once per scheduler run
-  }
+  public void periodic() {}
 
   /**
    * spins the extension arm
@@ -54,24 +58,54 @@ public class ExtensionArm extends SubsystemBase implements ShuffleboardUpdated {
   public void spinExtensionArm(double scalar) {
     extensionMotor.set(scalar);
   }
-  public void StopArm() {
-    extensionMotor.set(0);
-  }
-  public boolean brokeLimit(){
+
+  /**
+   * This method will be called once per scheduler run during simulation
+   */
+  @Override
+  public void simulationPeriodic() {}
+
+  /**
+   * Whether we hit the limit switch.
+   * If we hit the limit switch you are completely retracted.
+   * @return whether we hit the limit switch
+   */
+  public boolean hitLimitSwitch() {
     return !m_LimitSwitch.get();
   }
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
 
-
+  /**
+   * Stops the devices connected to this subsystem
+   */
   public void stop() {
     extensionMotor.set(0);
   }
 
-  @Override
-  public void updateValueFromShuffleboard() {
-    extensionArmSpeed = n_outputSpeed.getDouble(extensionArmSpeed);
+  /**
+   * returns the speed we are currently running the motor at.
+   * @return the control speed of the motor
+   */
+  public double getSpeed() {
+    return extensionArmSpeed;
   }
+
+  /**
+   * Setter for the speed
+   * @param newSpeed speed to set the arm to when we run it
+   */
+  public void updateSpeed(double newSpeed) {
+    extensionArmSpeed = newSpeed;
+  }
+
+  /**
+   * Initializes the sendable object in order to update the variables.
+   * @param builder sendable builder
+   */
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    builder.setSmartDashboardType("Extension arm");
+    builder.addDoubleProperty("Extension % out", this::getSpeed, this::updateSpeed);
+    builder.addBooleanProperty("Hit limit switch", this::hitLimitSwitch, null);
+  }
+
 }
