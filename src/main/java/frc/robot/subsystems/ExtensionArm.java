@@ -24,8 +24,6 @@ public class ExtensionArm extends SubsystemBase implements ShuffleboardUpdated {
   public WPI_TalonSRX extensionMotor;
   public DigitalInput m_LimitSwitch;
 
-  private final DigitalInput m_digitalInput;
-
   public ExtensionArm() {
     extensionMotor = new WPI_TalonSRX(Constants.CAN_ExtensionArm);
     extensionMotor.configFactoryDefault();
@@ -37,12 +35,10 @@ public class ExtensionArm extends SubsystemBase implements ShuffleboardUpdated {
     extensionMotor.enableVoltageCompensation(false); //TODO: change when we get falcon
     extensionMotor.setInverted(false);
     extensionMotor.setNeutralMode(NeutralMode.Brake);
-
-    m_digitalInput = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
   }
 
   public void outputShuffleboard() {
-    n_limitSwitch.setBoolean(hitLimitSwitch());
+    n_limitSwitch.setBoolean(brokeLimit());
   }
 
   @Override
@@ -61,7 +57,7 @@ public class ExtensionArm extends SubsystemBase implements ShuffleboardUpdated {
   public void StopArm() {
     extensionMotor.set(0);
   }
-  public boolean BrokeLimit(){
+  public boolean brokeLimit(){
     return !m_LimitSwitch.get();
   }
   @Override
@@ -69,9 +65,6 @@ public class ExtensionArm extends SubsystemBase implements ShuffleboardUpdated {
     // This method will be called once per scheduler run during simulation
   }
 
-  public boolean hitLimitSwitch() {
-    return !m_digitalInput.get();
-  }
 
   public void stop() {
     extensionMotor.set(0);

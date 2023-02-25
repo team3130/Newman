@@ -35,7 +35,7 @@ public class zeroExtensionArm extends CommandBase implements ShuffleboardUpdated
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_extensionArm.BrokeLimit()) {
+    if (m_extensionArm.brokeLimit()) {
       m_extensionArm.StopArm();
     }
   }
@@ -49,7 +49,7 @@ public class zeroExtensionArm extends CommandBase implements ShuffleboardUpdated
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_extensionArm.hitLimitSwitch();
+    return m_extensionArm.brokeLimit();
   }
 
   @Override

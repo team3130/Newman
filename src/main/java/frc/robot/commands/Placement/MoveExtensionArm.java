@@ -43,7 +43,7 @@ public class MoveExtensionArm extends CommandBase implements ShuffleboardUpdated
     double y = m_xboxController.getRawAxis(1); // inverted?
     y =y * Math.abs(y);
 
-    if (Math.abs(y) < Constants.kDeadband || (y > 0 && m_extensionArm.hitLimitSwitch())) {
+    if (Math.abs(y) < Constants.kDeadband || (y > 0 && m_extensionArm.brokeLimit())) {
       y = 0;
     }
     m_extensionArm.spinExtensionArm(y); //that max is currently bs
