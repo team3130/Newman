@@ -5,21 +5,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Chassis;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Hopper;
 
 /** An example command that uses an example subsystem. */
-public class ZeroEverything extends CommandBase {
+public class ReverseHopper extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Chassis m_subsystem;
+  private final Hopper m_hopper;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ZeroEverything(Chassis subsystem) {
-    m_subsystem = subsystem;
+  public ReverseHopper(Hopper subsystem) {
+    m_hopper = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -27,8 +26,7 @@ public class ZeroEverything extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.zeroHeading();
-    m_subsystem.resetEncoders();
+    m_hopper.spinMotor();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,7 +35,9 @@ public class ZeroEverything extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_hopper.spinMotor();
+  }
 
   // Returns true when the command should end.
   @Override
