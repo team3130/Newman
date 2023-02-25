@@ -34,11 +34,11 @@ public class ExtensionArm extends SubsystemBase {
   public boolean BrokeLimit(){
     return !m_LimitSwitch.get();
   }
-  public double getPositionPlacementArm(){
-    return Constants.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorPosition();
+  public double getLengthExtensionArm(){
+    return Constants.TicksToMetersExtensionPlacement;
   }
-  public double getSpeedPlacementArm(){
-    return 10 * Constants.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorVelocity();
+  public double getSpeedExtensionArm(){
+    return 10 * Constants.ticksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorVelocity();
   }
   @Override
   public void simulationPeriodic() {

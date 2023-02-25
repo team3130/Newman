@@ -26,7 +26,7 @@ public class RotaryArm extends SubsystemBase {
 
     rotaryArmMotor.set(speed);
   }
-  public double getPositionRotaryArm(){
+  public double getAngleRotaryArm(){
     return Constants.ticksToRadiansRotaryPlacementArm * rotaryArmMotor.getSelectedSensorPosition();
   }
   public double getSpeedRotaryArm(){
