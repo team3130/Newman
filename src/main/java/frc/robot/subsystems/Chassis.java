@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.sensors.Navx;
@@ -283,14 +284,14 @@ public class Chassis extends SubsystemBase {
      * @param builder sendable builder
      */
     public void initSendable(SendableBuilder builder) {
-        Arrays.stream(modules).forEach((SwerveModule module) -> Shuffleboard.getTab("Subsystems").add(module));
+        Arrays.stream(modules).forEach(SmartDashboard::putData);
 
         // default init sendable
         super.initSendable(builder);
         // add field relative
-        builder.addBooleanProperty("fieldRelative", this::getFieldRelative, this::setWhetherFieldOriented);
-        builder.addDoubleProperty("pSwerveModule", this::getPValuesForSwerveModules, this::updatePValuesFromSwerveModule);
-        builder.addDoubleProperty("dSwerveModule", this::getDValuesForSwerveModules, this::updateDValuesFromSwerveModule);
-        builder.addDoubleProperty("Navx", this::getHeading, null);
+        builder.addBooleanProperty(".fieldRelative", this::getFieldRelative, this::setWhetherFieldOriented);
+        builder.addDoubleProperty(".pSwerveModule", this::getPValuesForSwerveModules, this::updatePValuesFromSwerveModule);
+        builder.addDoubleProperty(".dSwerveModule", this::getDValuesForSwerveModules, this::updateDValuesFromSwerveModule);
+        builder.addDoubleProperty(".Navx", this::getHeading, null);
     }
 }
