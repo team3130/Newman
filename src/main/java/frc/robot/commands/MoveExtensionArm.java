@@ -50,14 +50,15 @@ public class MoveExtensionArm extends CommandBase {
       y = 0;
     }
     double rotaryArmAngle = m_rotaryArm.getAngleRotaryArm();
-    double extensionArmMaxLength = (Units.inchesToMeters(38)/Math.cos(rotaryArmAngle));
-    if ((m_extensionArm.getLengthExtensionArm()<extensionArmMaxLength)){
+    double extensionArmMaxLength = (Units.inchesToMeters(38) / Math.cos(rotaryArmAngle));
+    if ((m_extensionArm.getLengthExtensionArm() < extensionArmMaxLength)) {
       if (m_extensionArm.BrokeLimit()) {
         m_extensionArm.StopArm();
-      } else if ((m_extensionArm.getLengthExtensionArm()<extensionArmMaxLength)&&(m_extensionArm.getLengthExtensionArm()*1.1>extensionArmMaxLength)) {
-        m_extensionArm.ExtendExtensionArm(y * extensionArmMaxSpeed); //that max is currently bs}
+      } else if ((m_extensionArm.getLengthExtensionArm() < extensionArmMaxLength) && (m_extensionArm.getLengthExtensionArm() * 1.1 > extensionArmMaxLength)) {
+        m_extensionArm.ExtendExtensionArm(y * extensionArmMaxSpeed); //that max is currently bs
       }
     }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
