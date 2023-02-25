@@ -22,6 +22,9 @@ import frc.robot.sensors.Navx;
 import frc.robot.supportingClasses.OdoPosition;
 import frc.robot.swerve.SwerveModule;
 
+import java.util.Arrays;
+
+
 public class Chassis extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
 
@@ -77,6 +80,18 @@ public class Chassis extends SubsystemBase {
         modules[Constants.Side.LEFT_BACK].PIDisDone() &&
         modules[Constants.Side.RIGHT_FRONT].PIDisDone() &&
         modules[Constants.Side.RIGHT_BACK].PIDisDone();
+    }
+
+    /**
+   * Resets odometry
+   * <p>Resets navx</p>
+   * <p>Resets relative encoders to be what the absolute encoders are</p>
+   * <p>Hard reset of the odometry object</p>
+   */
+    public void resetOdometry(Pose2d pose) {
+        resetEncoders();
+        Navx.resetNavX();
+        m_odometry.resetPosition(new Rotation2d(0), modulePositions, pose);
     }
 
   public void flipBool() {
@@ -180,14 +195,19 @@ public class Chassis extends SubsystemBase {
       }
   }
 
-  @Override
-  public void simulationPeriodic() {
+    @Override
+    public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
+    public Pose2d getPose2d() {
+        return m_odometry.getEstimatedPosition();
+    }
+
+
 
     public void resetEncoders() {
-      for (int i = 0; i < modules.length; i++) {
-          modules[i].resetEncoders();
-      }
+        for (SwerveModule module : modules) {
+            module.resetEncoders();
+        }
     }
 }
