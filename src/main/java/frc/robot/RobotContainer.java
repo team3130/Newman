@@ -10,28 +10,20 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.*;
-
-//import frc.robot.sensors.Navx;
-import frc.robot.commands.Chassis.FlipFieldOrriented;
+import frc.robot.Newman_Constants.Constants;
+import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
-import frc.robot.commands.Placement.MoveExtensionArm;
 import frc.robot.commands.Placement.ActuateHandGrabber;
+import frc.robot.commands.Placement.MoveExtensionArm;
 import frc.robot.commands.Placement.MoveRotaryArm;
 import frc.robot.commands.Placement.zeroExtensionArm;
-import frc.robot.commands.WriteShuffleboardChanges;
 import frc.robot.commands.Chassis.ZeroWheels;
-
-
-import frc.robot.subsystems.*;
-import frc.robot.Newman_Constants.Constants;
-import frc.robot.supportingClasses.ShuffleboardUpdated;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExtensionArm;
 import frc.robot.subsystems.HandGrabber;
@@ -48,24 +40,35 @@ import frc.robot.supportingClasses.AutonManager;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  /**
+   * Auton manager is the object that handles the loading of auton paths
+   */
   protected AutonManager m_autonManager;
-  private static Joystick m_driverGamepad;
-  private static Joystick m_weaponsGamepad;
-  private final Chassis m_chassis = new Chassis();
-  private final ExtensionArm m_extensionArm = new ExtensionArm();
 
+  private static Joystick m_driverGamepad; // The controllers
+  private static Joystick m_weaponsGamepad; // The controllers
 
+  /**
+   * Subsystems
+   */
+  private final Chassis m_chassis;
+  private final ExtensionArm m_extensionArm;
   private final RotaryArm m_rotaryArm;
-
-
   private final HandGrabber m_handGrabber;
+  private final Hopper m_hopper;
 
-  private ShuffleboardUpdated[] usesShuffleBoard;
-
+  /**
+   * A getter for the chassis object in the container
+   * @return the Chassis subsystem
+   */
   public Chassis getChassis() {
     return m_chassis;
   }
 
+  /**
+   * Gets the extension arm subsystem
+   * @return the extension arm subsystem
+   */
   public ExtensionArm getExtensionArm() {
     return m_extensionArm;
   }
@@ -76,28 +79,52 @@ public class RobotContainer {
     m_driverGamepad = new Joystick(0);
     m_weaponsGamepad = new Joystick(1);
 
-     m_chassis.setDefaultCommand(new TeleopDrive(m_chassis));
+    m_chassis = new Chassis();
+    m_extensionArm =  new ExtensionArm();
+    m_rotaryArm = new RotaryArm();
+    m_handGrabber = new HandGrabber();
+    m_hopper = new Hopper();
 
+    m_chassis.setDefaultCommand(new TeleopDrive(m_chassis, m_driverGamepad));
 
-     m_rotaryArm = new RotaryArm();
-     m_handGrabber = new HandGrabber();
+    // idk if this is right
+    m_rotaryArm.setDefaultCommand(new MoveRotaryArm(m_rotaryArm, m_weaponsGamepad));
+    m_extensionArm.setDefaultCommand(new MoveExtensionArm(m_extensionArm, m_weaponsGamepad));
 
-     //idk if this is right
-     m_rotaryArm.setDefaultCommand(new MoveRotaryArm(m_rotaryArm, m_weaponsGamepad));
-     m_extensionArm.setDefaultCommand(new MoveExtensionArm(m_extensionArm, m_weaponsGamepad));
+    m_autonManager = new AutonManager(m_chassis);
 
-     usesShuffleBoard = new ShuffleboardUpdated[]{m_rotaryArm, m_extensionArm};
-
-     configureButtonBindings();
-     m_autonManager = new AutonManager(m_chassis);
-
+    configureButtonBindings();
+    vomitShuffleBoardData();
   }
 
+  /**
+   * adds the subsystem {@link edu.wpi.first.util.sendable.Sendable} objects to a 'Subsystems' shuffleboard tab
+   */
+  public void vomitShuffleBoardData() {
+    if (Constants.debugMode) {
+      ShuffleboardTab tab = Shuffleboard.getTab("Subsystems");
+      tab.add(m_chassis);
+      tab.add(m_extensionArm);
+      tab.add(m_rotaryArm);
+      tab.add(m_handGrabber);
+      tab.add(m_hopper);
+    }
+  }
 
+  /**
+   * This shouldn't be necessary as we can just pass the initialized object,
+   * However this can be here just in case we need it last minute
+   * @return the driver gamepad
+   */
   public static Joystick getDriverGamepad() {
     return m_driverGamepad;
   }
 
+  /**
+   * This shouldn't be necessary as we can just pass the initialized object,
+   * However this can be here just in case we need it last minute
+   * @return the weapons game pad
+   */
   public static Joystick getWeaponsGamepad() {
     return m_weaponsGamepad;
   }
@@ -113,20 +140,25 @@ public class RobotContainer {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ZeroWheels(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
 
-    SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
-
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ActuateHandGrabber(m_handGrabber));
-    SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
-    Shuffleboard.getTab("Test").add("Write changes", new WriteShuffleboardChanges(new ExampleSubsystem(), usesShuffleBoard));
+    SmartDashboard.putData(new FlipFieldOriented(m_chassis));
+
     Shuffleboard.getTab("Test").add("Spin motor down", new zeroExtensionArm(m_extensionArm));
   }
 
+  /**
+   * Resets odometry to 0, 0, 0
+   */
   public void resetOdometry() {
     m_chassis.resetOdometry(new Pose2d(0 ,0, new Rotation2d()));
 
   }
 
-  public Command getCmd() {
+  /**
+   * Gets the selected auton command that is on shuffleboard
+   * @return the auton routine
+   */
+  public Command getAutonCmd() {
     return m_autonManager.pick();
   }
 

@@ -15,12 +15,15 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.Chassis;
 
+/**
+ * A class to generate our auton paths from PathPlanner
+ */
 public class AutonManager {
-    private final SendableChooser<Command> m_autonChooser;
-    protected Chassis m_chassis;
+    private final SendableChooser<Command> m_autonChooser; // shuffleboard dropdown menu for selecting the path
+    protected Chassis m_chassis; // the chassis object
 
-    protected PathConstraints safe_constraints;
-    protected PathConstraints violent_constraints;
+    protected PathConstraints safe_constraints; // safe speeds for testing
+    protected PathConstraints violent_constraints; // wild speeds for if we want to go brrrrrrrrr
 
     /**
      * Makes an object to make and manage auton paths.

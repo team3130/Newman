@@ -5,16 +5,16 @@
 package frc.robot.commands.Chassis;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExampleSubsystem;
 
-/** An example command that uses an example subsystem. */
-public class ZeroEverything extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Chassis m_subsystem;
+/** A command to zero the heading and encoders. */
+public class ZeroEverything extends InstantCommand {
+  private final Chassis m_subsystem; // chassis subsystem
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new ZeroEverything command in order to reset navx heading and the encoders
    *
    * @param subsystem The subsystem used by this command.
    */
@@ -29,19 +29,5 @@ public class ZeroEverything extends CommandBase {
   public void initialize() {
     m_subsystem.zeroHeading();
     m_subsystem.resetEncoders();
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
   }
 }

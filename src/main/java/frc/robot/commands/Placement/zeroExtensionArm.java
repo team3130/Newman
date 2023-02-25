@@ -4,19 +4,15 @@
 
 package frc.robot.commands.Placement;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.ExtensionArm;
-import frc.robot.supportingClasses.ShuffleboardUpdated;
 
-/** An example command that uses an example subsystem. */
-public class zeroExtensionArm extends CommandBase implements ShuffleboardUpdated {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+/** A command to zero the extension arm stops when it hits the limit switch uses extension */
+public class zeroExtensionArm extends CommandBase {
   private final ExtensionArm m_extensionArm;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new zeroExtensionArm.
    *
    * @param subsystem The subsystem used by this command.
    */
@@ -34,12 +30,7 @@ public class zeroExtensionArm extends CommandBase implements ShuffleboardUpdated
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    if (m_extensionArm.brokeLimit()) {
-      m_extensionArm.StopArm();
-    }
-
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -50,11 +41,7 @@ public class zeroExtensionArm extends CommandBase implements ShuffleboardUpdated
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_extensionArm.brokeLimit();
+    return m_extensionArm.hitLimitSwitch();
   }
 
-  @Override
-  public void updateValueFromShuffleboard() {
-
-  }
 }
