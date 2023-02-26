@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -40,6 +41,7 @@ public class KugelControllerCommand extends CommandBase {
     public void initialize() {
         m_timer.reset();
         m_timer.start();
+        m_controller.getThetaController().reset(m_trajectory.getInitialState().holonomicRotation.getRadians());
     }
 
     public void execute() {

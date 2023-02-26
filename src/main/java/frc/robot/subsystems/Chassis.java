@@ -40,8 +40,6 @@ public class Chassis extends SubsystemBase {
     /** Whether it is field relative or robot oriented drive */
     private boolean fieldRelative = true;
 
-    private Field2d field2d;
-
     /**
      * Makes a chassis that starts at 0, 0, 0
      */
@@ -69,9 +67,6 @@ public class Chassis extends SubsystemBase {
 
         // odometry wrapper class that has functionality for cameras that report position with latency
         m_odometry = new SwerveDrivePoseEstimator(m_kinematics, startingRotation, generatePoses(), startingPos);
-
-        field2d = new Field2d();
-        Shuffleboard.getTab("Test").add(field2d);
     }
 
     /**
@@ -163,7 +158,7 @@ public class Chassis extends SubsystemBase {
     @Override
     public void periodic() {
         updateOdometryFromSwerve();
-        field2d.setRobotPose(m_odometry.getEstimatedPosition());
+        // field2d.setRobotPose(m_odometry.getEstimatedPosition());
     }
 
   /**
