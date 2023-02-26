@@ -19,14 +19,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 
 //import frc.robot.sensors.Navx;
-import frc.robot.commands.Chassis.FlipFieldOrriented;
-import frc.robot.commands.Chassis.TeleopDrive;
-import frc.robot.commands.Chassis.ZeroEverything;
+import frc.robot.commands.Chassis.*;
 import frc.robot.commands.Placement.ActuateHandGrabber;
 import frc.robot.commands.Placement.MoveExtensionArm;
 import frc.robot.commands.Placement.MoveRotaryArm;
 import frc.robot.commands.Placement.zeroExtensionArm;
-import frc.robot.commands.Chassis.ZeroWheels;
+import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExtensionArm;
 import frc.robot.subsystems.HandGrabber;
@@ -35,7 +33,7 @@ import frc.robot.subsystems.Hopper;
 import frc.robot.supportingClasses.AutonManager;
 import frc.robot.supportingClasses.OdoPosition;
 import frc.robot.Newman_Constants.Constants;
-
+import frc.robot.supportingClasses.ShuffleboardUpdated;
 
 
 /**
@@ -51,9 +49,9 @@ public class RobotContainer {
   protected AutonManager m_autonManager;
   private static Joystick m_driverGamepad;
   private static Joystick m_weaponsGamepad;
-  private final Chassis m_chassis = new Chassis();
-    public final Limelight m_limelight;
-  private final ExtensionArm m_extensionArm = new ExtensionArm();
+  private final Chassis m_chassis;
+  private final Limelight m_limelight;
+  private final ExtensionArm m_extensionArm;
 
     public Limelight getLimelight() {
       return m_limelight;
@@ -90,6 +88,7 @@ public class RobotContainer {
     m_rotaryArm = new RotaryArm();
     m_handGrabber = new HandGrabber();
     m_hopper = new Hopper();
+    m_limelight = new Limelight();
 
     m_chassis.setDefaultCommand(new TeleopDrive(m_chassis, m_driverGamepad));
 
@@ -136,9 +135,7 @@ public class RobotContainer {
    * However this can be here just in case we need it last minute
    * @return the weapons game pad
    */
-  public static Joystick getWeaponsGamepad() {
-    return m_weaponsGamepad;
-  }
+
 
 
   /**
