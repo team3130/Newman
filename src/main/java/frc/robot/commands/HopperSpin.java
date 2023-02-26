@@ -27,7 +27,6 @@ public class HopperSpin extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_hopper.updateOutputSpeed();
     m_hopper.spinMotor();
   }
 

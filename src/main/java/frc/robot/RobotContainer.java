@@ -125,16 +125,14 @@ public class RobotContainer {
     return m_driverGamepad;
   }
 
-  public static Joystick getWeaponsGamepad() {
-    return m_weaponsGamepad;
-  }
-
-
-  /**
+    /**
    * This shouldn't be necessary as we can just pass the initialized object,
    * However this can be here just in case we need it last minute
    * @return the weapons game pad
    */
+  public static Joystick getWeaponsGamepad() {
+    return m_weaponsGamepad;
+  }
 
 
 
@@ -175,6 +173,19 @@ public class RobotContainer {
    */
   public void zeroCommand() {
     CommandScheduler.getInstance().schedule(new zeroExtensionArm(m_extensionArm));
+  }
+
+  public int tryUpdatePosition() {
+    refreshPosition();
+    return m_limelight.getNumberOfSuccesses();
+  }
+
+  public OdoPosition refreshPosition() {
+    return m_limelight.calculateCameraPosition();
+  }
+
+  public void updatePosition() {
+    m_chassis.updateOdometryFromAprilTags(refreshPosition());
   }
 
 }

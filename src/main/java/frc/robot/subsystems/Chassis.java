@@ -153,6 +153,7 @@ public class Chassis extends SubsystemBase {
       m_odometry.updateWithTime(Timer.getFPGATimestamp(), Navx.getRotation(), generatePoses());
     }
 
+
     /**
      * subsystem looped call made by the scheduler.
      * Updates the odometry from swerve
@@ -320,5 +321,9 @@ public class Chassis extends SubsystemBase {
         builder.addDoubleProperty("X position", this::getX, null);
         builder.addDoubleProperty("Y position", this::getY, null);
         builder.addDoubleProperty("rotation", this::getYaw, null);
+    }
+
+    public void updateOdometryFromAprilTags(OdoPosition refreshPosition) {
+        m_odometry.addVisionMeasurement(refreshPosition.getPosition(), refreshPosition.getTime());
     }
 }

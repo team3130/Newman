@@ -66,6 +66,8 @@ public class Limelight {
         Translation2d translation = transformation.getTranslation().toTranslation2d();
         nXCameraToTarget.setDouble(translation.getX());
         nYCameraToTarget.setDouble(translation.getY());
+
+        System.out.println(result.getTimestampSeconds());
     }
 
     public OdoPosition calculateCameraPosition() {

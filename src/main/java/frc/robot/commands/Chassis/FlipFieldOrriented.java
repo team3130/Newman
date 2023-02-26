@@ -25,7 +25,7 @@ public class FlipFieldOrriented extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.flipBool();
+    m_subsystem.flipFieldRelative();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
