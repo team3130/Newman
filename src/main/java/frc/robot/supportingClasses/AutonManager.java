@@ -7,6 +7,7 @@ import com.pathplanner.lib.PathPoint;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Chassis.ZeroWheels;
+import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
 
 /**
@@ -177,6 +179,22 @@ public class AutonManager {
         return wrapCmd(command);
     }
 
+    public CommandBase backToStart(Pose2d Current) {
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+                violent_constraints,
+
+                new PathPoint(
+                        Current.getTranslation(),
+                        new Rotation2d(0), m_chassis.getRotation2d()
+                ),
+
+                new PathPoint(new Translation2d(0, 0), new Rotation2d(), new Rotation2d())
+        );
+
+        AutonCommand commad = autonCommandGenerator(trajectory);
+        return wrapCmd(commad);
+    }
+
     /**
      * This example trajectory is a question mark
      * @return the Question mark command
@@ -198,5 +216,7 @@ public class AutonManager {
         AutonCommand autonCommand = autonCommandGenerator(trajectory);
         return wrapCmd(autonCommand);
     }
+
+
 
 }
