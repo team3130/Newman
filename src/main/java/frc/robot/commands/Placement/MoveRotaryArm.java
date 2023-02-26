@@ -38,8 +38,8 @@ public class MoveRotaryArm extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double y = m_xboxController.getRawAxis(5); // inverted?
-    y = y* Math.abs(y);
+    double y = m_xboxController.getRawAxis(Constants.Buttons.LST_AXS_RJOYSTICKY); // inverted?
+    y *= Math.abs(y);
 
     if (Math.abs(y) < Constants.kDeadband) {
       y = 0;

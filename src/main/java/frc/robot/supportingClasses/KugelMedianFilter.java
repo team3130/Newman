@@ -75,11 +75,6 @@ public class KugelMedianFilter implements Sendable {
 
         head = (head + 1) % bucketSize;
 
-        if (itemsAdded < bucketSize) {
-            DriverStation.reportError("we did not read enough items", Constants.debugMode);
-            return null;
-        }
-
         // setup for the search
         double smallestErrorSeen = Double.MAX_VALUE;
         int indexOfSmallestError = bucketSize / 2;
