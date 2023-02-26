@@ -42,16 +42,16 @@ public class Balance extends CommandBase {
   private double accelerationPitch;
   private double accelerationRoll;
   private double accelerationTilt;
-  private double tiltSum = 0;
   
 
   private static ShuffleboardTab tab = Shuffleboard.getTab("Chassis");
 
   private final GenericEntry P = tab.add("Balancer P", Constants.BalanceKp).getEntry();
-  private final GenericEntry I = tab.add("Balancer I", Constants.BalanceKi).getEntry();
   private final GenericEntry D = tab.add("Balancer D", Constants.BalanceKd).getEntry();
   private final GenericEntry F = tab.add("Balancer F", Constants.BalanceKf).getEntry();
-  private final GenericEntry Constrain = tab.add("Balancer Constrain", Constants.BalanceConstrain).getEntry();
+  private final GenericEntry getDirection = tab.add("Direction", 0).getEntry();
+  private final GenericEntry getTilt = tab.add("Tilt", 0).getEntry();
+  private final GenericEntry getTiltAccel = tab.add("Tilt Accel", 0).getEntry();
 
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -65,18 +65,15 @@ public class Balance extends CommandBase {
 
     tilt = Math.atan(Math.sqrt(Math.pow(Math.tan(pitch),2) + Math.pow(Math.tan(roll),2)));
     accelerationTilt = Math.atan(Math.sqrt(Math.pow(Math.tan(accelerationPitch),2) + Math.pow(Math.tan(accelerationRoll),2)));
-    tiltSum += tilt;
-    if (tiltSum < -Constrain.getDouble(Constants.BalanceConstrain)) {
-      tiltSum = -Constrain.getDouble(Constants.BalanceConstrain);
-    } 
-    else if (tiltSum > Constrain.getDouble(Constants.BalanceConstrain)) {
-      tiltSum = Constrain.getDouble(Constants.BalanceConstrain);
-    } 
+    getTilt.setDouble(tilt);
+    getTiltAccel.setDouble(accelerationTilt);
+
 
     //TODO: Tune PID values
-    double magnitude = (P.getDouble(Constants.BalanceKp) * tilt + I.getDouble(Constants.BalanceKi) * tiltSum + D.getDouble(Constants.BalanceKd) * accelerationTilt + F.getDouble(Constants.BalanceKf));
+    double magnitude = (P.getDouble(Constants.BalanceKp) * tilt + D.getDouble(Constants.BalanceKd) * accelerationTilt + F.getDouble(Constants.BalanceKf));
     double direction = Math.atan2(Math.tan(roll),Math.tan(pitch)); 
-    
+    getDirection.setDouble(direction);
+
     double x = magnitude * Math.cos(direction);
     double y = magnitude * Math.sin(direction);
 
@@ -89,7 +86,7 @@ public class Balance extends CommandBase {
   public void end(boolean interrupted) {
     angle = Navx.getAngle();
 
-    double direction = Math.atan2(Math.tan(roll),Math.tan(pitch)); //in radians???
+    double direction = Math.atan2(Math.tan(roll),Math.tan(pitch));
     
     m_chassis.turnToAngle(angle + direction + Math.PI / 2);
   }
