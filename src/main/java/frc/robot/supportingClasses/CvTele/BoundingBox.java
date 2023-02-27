@@ -2,6 +2,7 @@ package frc.robot.supportingClasses.CvTele;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 
 /**
@@ -9,7 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public class BoundingBox {
     // same coordinate system as Pose3Ds, mathematical grid
-    protected double xSmall, ySmall, zSmall, xBig, yBig, zBig;
+    protected final double xSmall, ySmall, zSmall, xBig, yBig, zBig;
 
     /**
      * Creates a bounding box object
@@ -54,24 +55,91 @@ public class BoundingBox {
     }
 
     /**
+     *  Creates a bounding box from {@link Pose3d} objects.
+     *
+     * @param lowerCorner 3D point of the lower corner of the bounding box
+     * @param upperCorner 3D point of the upper corner of the bounding box
+     */
+    public BoundingBox(Pose3d lowerCorner, Pose3d upperCorner) {
+        this(lowerCorner.getX(), lowerCorner.getY(), lowerCorner.getZ(), upperCorner.getX(), upperCorner.getY(), upperCorner.getZ());
+    }
+
+    /**
+     * Creates a bounding fiel drom {@link Pose2d} objects
+     *
+     * @param lowerCorner 2D point of the lower corner of the bounding box.
+     * @param upperCorner 2D point of the upper corner of the bounding box.
+     */
+    public BoundingBox(Pose2d lowerCorner, Pose2d upperCorner) {
+        this(lowerCorner.getX(), lowerCorner.getY(), 0, upperCorner.getX(), upperCorner.getY(), 0);
+    }
+
+    /**
      *  A method that tells you if the passed in point is in the bounding box
      *
      * @param secondObjectPosition the position of the object you are comparing it to 3D space
      * @return the point is in the box
      */
     public boolean isInBox(Pose3d secondObjectPosition) {
-        return this.isInBox(secondObjectPosition.toPose2d()) &&
-                secondObjectPosition.getZ() < zBig && secondObjectPosition.getZ() > zSmall;
+        return this.isInBox(secondObjectPosition.getX(), secondObjectPosition.getY(), secondObjectPosition.getZ());
     }
 
     /**
-     *  A method that tells you if the passed in point is in the bounding box
+     * A method that tells you if the passed in point is in the bounding box
+     *
+     * @param x x coordinate of the point you want to check
+     * @param y y coordinate of the point you want to check
+     * @return whether the point is in the box or not
+     */
+    public boolean isInBox(double x, double y) {
+        return (x > xSmall && x < xBig) && (y > ySmall && y < yBig);
+    }
+
+    /**
+     * A method that tells you if the passed in point is in the bounding box
+     *
+     * @param x x coordinate of the point you want to check
+     * @param y y coordinate of the point you want to check
+     * @param z z coordinate of the point you want to check
+     * @return whether the point is in the box
+     */
+    public boolean isInBox(double x, double y, double z) {
+        return this.isInBox(x, y) && (z > zSmall && z < zBig);
+    }
+
+    /**
+     *  A method that tells you if the passed in point is in the bounding box.
      *
      * @param secondObjectPosition the position of the object you are comparing it to 2D space
      * @return the point is in the box
      */
     public boolean isInBox(Pose2d secondObjectPosition) {
-        return (secondObjectPosition.getX() < xBig && secondObjectPosition.getX() > xSmall) &&
-                (secondObjectPosition.getY() < yBig && secondObjectPosition.getY() > ySmall);
+        return this.isInBox(secondObjectPosition.getX(), secondObjectPosition.getY());
     }
+
+    /**
+     *  A method that tells you if the passed in bounding box has overlap with another bounding box.
+     *
+     * @param secondObjectPosition the other bounding box that you are comparing in space
+     * @return the point is in the box
+     */
+    public boolean hasOverlapWith(BoundingBox secondObjectPosition) {
+        return this.isInBox(secondObjectPosition.getLowPoint()) || this.isInBox(secondObjectPosition.getHighPoint());
+    }
+
+    /**
+     * @return a Pose3D of the low point
+     */
+    public Pose3d getLowPoint() {
+        return new Pose3d(xSmall, ySmall, zSmall, new Rotation3d());
+    }
+
+    /**
+     * @return a Pose3D of the high point
+     */
+    public Pose3d getHighPoint() {
+        return new Pose3d(xBig, yBig, zBig, new Rotation3d());
+    }
+
+
 }
