@@ -29,8 +29,6 @@ public class ZeroEverything extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.zeroHeading();
-    m_subsystem.resetEncoders();
     m_subsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
   }
 }

@@ -7,12 +7,15 @@ import com.pathplanner.lib.PathPoint;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.commands.Chassis.ZeroWheels;
+import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
 
 /**
@@ -35,7 +38,7 @@ public class AutonManager {
         this.m_chassis = chassis;
 
         safe_constraints = new PathConstraints(2, 2);
-        violent_constraints = new PathConstraints(4, 3);
+        violent_constraints = new PathConstraints(Constants.kPhysicalMaxSpeedMetersPerSecond, Constants.kPhysicalMaxSpeedMetersPerSecond);
 
         SmartDashboard.putData(m_autonChooser);
 
@@ -89,17 +92,16 @@ public class AutonManager {
         PIDController yController = new PIDController(Constants.kPYController, Constants.kIYController ,Constants.kDYController);
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(xController, yController, new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, 0, Constants.kThetaControllerConstraints));
 
-        SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+        KugelControllerCommand kugelControllerCommand = new KugelControllerCommand(
                 trajectory,
                 m_chassis::getPose2d,
                 m_chassis.getKinematics(),
                 holonomicDriveController,
-                () -> {return trajectory.getEndState().holonomicRotation;},
                 m_chassis::setModuleStates,
                 m_chassis);
 
 
-        return new AutonCommand(swerveControllerCommand, trajectory.getInitialPose(), trajectory.getEndState().poseMeters);
+        return new AutonCommand(kugelControllerCommand, trajectory.getInitialPose(), trajectory.getEndState().poseMeters);
     }
 
     /**
@@ -133,9 +135,9 @@ public class AutonManager {
      */
     public SequentialCommandGroup wrapCmd(AutonCommand command) {
                 return new SequentialCommandGroup(
-                new InstantCommand(() -> m_chassis.resetOdometry(command.getStartPosition())),
-                command.getCmd(),
-                new InstantCommand(m_chassis::stopModules)
+                    new InstantCommand(() -> m_chassis.resetOdometry(command.getStartPosition())),
+                    command.getCmd(),
+                    new InstantCommand(m_chassis::stopModules)
         );
     }
 
@@ -164,7 +166,7 @@ public class AutonManager {
         // the trajectory being made
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 /* Max velocity and acceleration the path will follow along the trapezoid profile */
-                safe_constraints,
+                violent_constraints,
                 /* Each path point is a 2 poses and 2 rotations see explanation here:
                 https://docs.google.com/document/d/1RInEhl8mW1UKMP4AbvWWiWmfI4klbDfyZLJbw1zbjDo/edit#heading=h.lie7pmqbolmu */
                 new PathPoint(
@@ -175,6 +177,22 @@ public class AutonManager {
 
         AutonCommand command = autonCommandGenerator(trajectory);
         return wrapCmd(command);
+    }
+
+    public CommandBase backToStart(Pose2d Current) {
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+                violent_constraints,
+
+                new PathPoint(
+                        Current.getTranslation(),
+                        new Rotation2d(0), m_chassis.getRotation2d()
+                ),
+
+                new PathPoint(new Translation2d(0, 0), new Rotation2d(), new Rotation2d())
+        );
+
+        AutonCommand commad = autonCommandGenerator(trajectory);
+        return wrapCmd(commad);
     }
 
     /**
@@ -198,5 +216,7 @@ public class AutonManager {
         AutonCommand autonCommand = autonCommandGenerator(trajectory);
         return wrapCmd(autonCommand);
     }
+
+
 
 }

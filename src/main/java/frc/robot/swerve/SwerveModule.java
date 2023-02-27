@@ -123,9 +123,9 @@ public class SwerveModule implements Sendable {
     /**
      * Resets the relative encoders according the absolute encoder involving the offset
      */
-    public void resetEncoders(){
+    public void resetEncoders() {
         m_steerMotor.setSelectedSensorPosition((getAbsoluteEncoderRad() - absoluteEncoderOffset) / Constants.SteerTicksToRads);
-        m_driveMotor.setSelectedSensorPosition(0);
+        // m_driveMotor.setSelectedSensorPosition(0);
     }
 
     /**
