@@ -6,28 +6,26 @@ package frc.robot.commands.Chassis;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Chassis;
-import frc.robot.subsystems.ExampleSubsystem;
 
 /** An example command that uses an example subsystem. */
-public class ZeroEverything extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+public class FlipFieldOrriented extends CommandBase {
   private final Chassis m_subsystem;
 
   /**
    * Creates a new ExampleCommand.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param chassis The subsystem used by this command.
    */
-  public ZeroEverything(Chassis subsystem) {
-    m_subsystem = subsystem;
+  public FlipFieldOrriented(Chassis chassis) {
+    m_subsystem = chassis;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(chassis);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
+    m_subsystem.flipFieldRelative();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -41,6 +39,6 @@ public class ZeroEverything extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

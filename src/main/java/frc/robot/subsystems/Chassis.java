@@ -18,14 +18,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.sensors.Navx;
+import frc.robot.supportingClasses.OdoPosition;
 import frc.robot.swerve.SwerveModule;
 
 import java.util.Arrays;
 
 
-/**
- * Chassis subsystem
- */
 public class Chassis extends SubsystemBase {
     /** The geometry of the swerve modules */
     private final SwerveDriveKinematics m_kinematics;
@@ -150,6 +148,7 @@ public class Chassis extends SubsystemBase {
     public void updateOdometryFromSwerve() {
       m_odometry.update(Navx.getRotation(), generatePoses());
     }
+
 
     /**
      * subsystem looped call made by the scheduler.
@@ -318,5 +317,9 @@ public class Chassis extends SubsystemBase {
         builder.addDoubleProperty("X position", this::getX, null);
         builder.addDoubleProperty("Y position", this::getY, null);
         builder.addDoubleProperty("rotation", this::getYaw, null);
+    }
+
+    public void updateOdometryFromAprilTags(OdoPosition refreshPosition) {
+        // m_odometry.addVisionMeasurement(refreshPosition.getPosition(), refreshPosition.getTime());
     }
 }
