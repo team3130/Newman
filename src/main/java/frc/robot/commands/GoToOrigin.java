@@ -5,11 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Chassis;
-import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.supportingClasses.AutonManager;
-import frc.robot.supportingClasses.KugelControllerCommand;
+import frc.robot.supportingClasses.Auton.AutonManager;
 
 /** An example command that uses an example subsystem. */
 public class GoToOrigin extends CommandBase {

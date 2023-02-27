@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Chassis.FlipFieldOriented;
@@ -31,9 +30,7 @@ import frc.robot.subsystems.ExtensionArm;
 import frc.robot.subsystems.HandGrabber;
 import frc.robot.subsystems.RotaryArm;
 import frc.robot.subsystems.Hopper;
-import frc.robot.supportingClasses.AutonManager;
-
-import java.io.IOException;
+import frc.robot.supportingClasses.Auton.AutonManager;
 
 
 /**

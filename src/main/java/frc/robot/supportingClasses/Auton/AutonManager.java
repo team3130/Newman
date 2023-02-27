@@ -1,4 +1,4 @@
-package frc.robot.supportingClasses;
+package frc.robot.supportingClasses.Auton;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
@@ -15,8 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Newman_Constants.Constants;
-import frc.robot.commands.Chassis.ZeroWheels;
-import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
 
 /**
