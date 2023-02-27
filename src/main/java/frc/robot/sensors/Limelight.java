@@ -67,7 +67,7 @@ public class Limelight {
         nXCameraToTarget.setDouble(translation.getX());
         nYCameraToTarget.setDouble(translation.getY());
 
-        System.out.println(result.getTimestampSeconds());
+        // System.out.println(result.getTimestampSeconds());
     }
 
     public OdoPosition calculateCameraPosition() {

@@ -324,6 +324,6 @@ public class Chassis extends SubsystemBase {
     }
 
     public void updateOdometryFromAprilTags(OdoPosition refreshPosition) {
-        m_odometry.addVisionMeasurement(refreshPosition.getPosition(), refreshPosition.getTime());
+        // m_odometry.addVisionMeasurement(refreshPosition.getPosition(), refreshPosition.getTime());
     }
 }
