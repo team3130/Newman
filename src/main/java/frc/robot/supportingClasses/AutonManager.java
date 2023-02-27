@@ -10,6 +10,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -28,6 +29,8 @@ public class AutonManager {
     protected PathConstraints safe_constraints; // safe speeds for testing
     protected PathConstraints violent_constraints; // wild speeds for if we want to go brrrrrrrrr
 
+    private DriverStation.Alliance alliance;
+
     /**
      * Makes an object to make and manage auton paths.
      * Also calls {@link #populateChooser()}
@@ -43,6 +46,8 @@ public class AutonManager {
         SmartDashboard.putData(m_autonChooser);
 
         populateChooser();
+
+        alliance = DriverStation.getAlliance();
     }
 
     /**
@@ -57,6 +62,7 @@ public class AutonManager {
         // m_autonChooser.addOption("player side", generatepWeekZeroPath());
         // m_autonChooser.addOption("far side", generatepWeekZeroPath2());
         m_autonChooser.addOption("feelin spicy", generateExamplePathFromPoses());
+        m_autonChooser.addOption("circuit", complexPathTest());
     }
 
     /**
@@ -179,6 +185,16 @@ public class AutonManager {
         return wrapCmd(command);
     }
 
+    public CommandBase complexPathTest() {
+        PathPlannerTrajectory circuit = PathPlanner.loadPath("circuit", safe_constraints);
+        PathPlannerTrajectory circuitLoop2 = PathPlanner.loadPath("circuit", safe_constraints);
+        PathPlannerTrajectory circuitLoop3 = PathPlanner.loadPath("circuit", safe_constraints);
+        circuit.concatenate(circuitLoop2);
+        circuit.concatenate(circuitLoop3);
+
+        return wrapCmd(autonCommandGenerator(circuit));
+    }
+
     public CommandBase backToStart(Pose2d Current) {
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 violent_constraints,
@@ -201,18 +217,21 @@ public class AutonManager {
      */
     public Command generateExamplePathFromFile() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("Question Mark", safe_constraints);
+        PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, alliance);
         AutonCommand autonCommand = autonCommandGenerator(trajectory);
         return wrapCmd(autonCommand);
     }
 
     public Command generateWeekZeroPath() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("week zero human player path", safe_constraints);
+        PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, alliance);
         AutonCommand autonCommand = autonCommandGenerator(trajectory);
         return wrapCmd(autonCommand);
     }
 
     public Command generateWeekZeroPath2() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("week zero path 2 farside", safe_constraints);
+        PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, alliance);
         AutonCommand autonCommand = autonCommandGenerator(trajectory);
         return wrapCmd(autonCommand);
     }
