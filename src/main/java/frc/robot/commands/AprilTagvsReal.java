@@ -20,6 +20,7 @@ public class AprilTagvsReal extends CommandBase {
   ArrayList<Double> AprilTagPoses;
   public Chassis m_chassis;
   public Limelight m_limelight;
+  Double time;
   /*
    * Creates a new ExampleCommand.
    *
@@ -36,16 +37,18 @@ public class AprilTagvsReal extends CommandBase {
   public void initialize() {
     AprilTagPoses = new ArrayList<Double>();
     realPoses = new ArrayList<Double>();
-
+    time = m_limelight.getLatestResult();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (m_limelight.result != null) {
-      time = m_limelight.result.getTimestampSeconds();
-      realPoses.add(m_chassis.getPose2d().getX());
-      AprilTagPoses.add(m_limelight.getX());
+      if (time != m_limelight.getLatestResult()) {
+        realPoses.add(m_chassis.getPose2d().getX());
+        AprilTagPoses.add(m_limelight.getX());
+        time = m_limelight.getLatestResult();
+      }
     }
   }
 

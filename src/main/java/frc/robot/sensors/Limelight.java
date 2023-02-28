@@ -28,8 +28,6 @@ public class Limelight {
     protected final GenericEntry nXCameraToTarget;
     protected final GenericEntry nYCameraToTarget;
 
-    public PhotonPipelineResult result;
-
     private static ShuffleboardTab tab = Shuffleboard.getTab("PhotonCamera");
     AprilTagFieldLayout aprilTagFieldLayout;
     KugelMedianFilter filter;
@@ -57,7 +55,7 @@ public class Limelight {
     }
 
     public void outputToShuffleBoard(){
-        result = camera.getLatestResult();
+        PhotonPipelineResult result = camera.getLatestResult();
 
         if (!result.hasTargets()) {
             return;
@@ -71,6 +69,10 @@ public class Limelight {
         nYCameraToTarget.setDouble(translation.getY());
 
         // System.out.println(result.getTimestampSeconds());
+    }
+
+    public double getLatestResult() {
+        return camera.getLatestResult();
     }
 
     public double getX(){
