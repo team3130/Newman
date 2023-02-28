@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExampleSubsystem;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 import java.sql.Array;
 import java.util.ArrayList;
@@ -37,17 +38,17 @@ public class AprilTagvsReal extends CommandBase {
   public void initialize() {
     AprilTagPoses = new ArrayList<Double>();
     realPoses = new ArrayList<Double>();
-    time = m_limelight.getLatestResult();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_limelight.result != null) {
-      if (time != m_limelight.getLatestResult()) {
+    PhotonPipelineResult latestResult = m_limelight.getLatestResult();
+    if (latestResult != null) {
+      if (time != latestResult.getTimestampSeconds()) {
         realPoses.add(m_chassis.getPose2d().getX());
         AprilTagPoses.add(m_limelight.getX());
-        time = m_limelight.getLatestResult();
+        time = latestResult.getTimestampSeconds();
       }
     }
   }

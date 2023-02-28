@@ -19,24 +19,25 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.io.IOException;
 import java.lang.annotation.Target;
+import java.util.ArrayList;
 
 public class Limelight {
 
     PhotonCamera camera;
-    public final GenericEntry ntHasTarget;
-    public final GenericEntry ntDifferentTargets;
+
     protected final GenericEntry nXCameraToTarget;
     protected final GenericEntry nYCameraToTarget;
+    protected final GenericEntry nsuccessfulImageReads;
 
     private static ShuffleboardTab tab = Shuffleboard.getTab("PhotonCamera");
     AprilTagFieldLayout aprilTagFieldLayout;
     KugelMedianFilter filter;
     int successfulUpdates = 0;
 
+    protected double lastReadTime = 0;
+
     public Limelight() {
         camera = new PhotonCamera("OV5647");
-        ntHasTarget = tab.add("HasTarget", false).getEntry();
-        ntDifferentTargets = tab.add("DifferentTargets", new Long[0]).getEntry();
 
         try {
             aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
@@ -52,6 +53,8 @@ public class Limelight {
 
         nXCameraToTarget = tab.add("X Camera to target", 0).getEntry();
         nYCameraToTarget = tab.add("Y camera to target", 0).getEntry();
+
+        nsuccessfulImageReads = tab.add("Successful image reads", 0).getEntry();
     }
 
     public void outputToShuffleBoard(){
@@ -68,15 +71,14 @@ public class Limelight {
         nXCameraToTarget.setDouble(translation.getX());
         nYCameraToTarget.setDouble(translation.getY());
 
-        // System.out.println(result.getTimestampSeconds());
+        nsuccessfulImageReads.setInteger(successfulUpdates);
     }
 
-    public double getLatestResult() {
+    public PhotonPipelineResult getLatestResult() {
         return camera.getLatestResult();
     }
 
     public double getX(){
-
         PhotonPipelineResult result = camera.getLatestResult();
         if (!result.hasTargets()) {
             return Double.MAX_VALUE;
@@ -86,34 +88,40 @@ public class Limelight {
         Transform3d transformation = target.getBestCameraToTarget();
 
         Translation2d translation = transformation.getTranslation().toTranslation2d();
-        return transformation.getX();
+        return translation.getX();
     }
 
 
     public OdoPosition calculateCameraPosition() {
         PhotonPipelineResult result = camera.getLatestResult();
 
-        if(!result.hasTargets()){
+        if (result.getTimestampSeconds() == lastReadTime || !result.hasTargets()) {
             return null;
         }
+
         successfulUpdates++;
+        lastReadTime = result.getTimestampSeconds();
 
-        PhotonTrackedTarget target = result.getBestTarget();
-        // x is forward, y is left, z is up
-        Transform3d bestCameraToTarget = target.getBestCameraToTarget();
+        OdoPosition best = null;
+
+        for (PhotonTrackedTarget target : result.getTargets()) {
+            // x is forward, y is left, z is up
+            Transform3d bestCameraToTarget = target.getBestCameraToTarget();
 
 
-        // the matrix transformation for the camera to the center of the bot
-        Transform3d cameraToCenterOfBot = new Transform3d(
-                new Translation3d(Camera.xPos, Camera.yPos, Camera.zPos),
-                new Rotation3d(Camera.roll, Camera.pitch, Camera.yaw));
+            // the matrix transformation for the camera to the center of the bot
+            Transform3d cameraToCenterOfBot = new Transform3d(
+                    new Translation3d(Camera.xPos, Camera.yPos, Camera.zPos),
+                    new Rotation3d(Camera.roll, Camera.pitch, Camera.yaw));
 
-        Pose3d position = PhotonUtils.estimateFieldToRobotAprilTag(
-                bestCameraToTarget,
-                aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(),
-                cameraToCenterOfBot);
+            Pose3d position = PhotonUtils.estimateFieldToRobotAprilTag(
+                    bestCameraToTarget,
+                    aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(),
+                    cameraToCenterOfBot);
 
-        return filter.getOdoPose(new OdoPosition(position.toPose2d(), result.getTimestampSeconds()));
+            best = filter.getOdoPose(new OdoPosition(position.toPose2d(), result.getTimestampSeconds()));;
+        }
+        return best;
     }
 
 
