@@ -7,6 +7,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import frc.robot.commands.AprilTagvsReal;
+import frc.robot.commands.Chassis.ZeroEverything;
 import frc.robot.Newman_Constants.Constants;
 
 public class Robot extends TimedRobot {
@@ -46,7 +49,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     CommandScheduler.getInstance().cancelAll();
-    CommandScheduler.getInstance().schedule(m_robotContainer.getAutonCmd());
+    CommandScheduler.getInstance().schedule(new ParallelRaceGroup(m_robotContainer.getAutonCmd(), new AprilTagvsReal(m_robotContainer.getChassis(), m_robotContainer.getLimelight())));
   }
 
   @Override

@@ -19,6 +19,8 @@ import frc.robot.commands.Chassis.ZeroWheels;
 import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
 
+import java.util.ArrayList;
+
 /**
  * A class to generate our auton paths from PathPlanner
  */
@@ -63,6 +65,7 @@ public class AutonManager {
         // m_autonChooser.addOption("far side", generatepWeekZeroPath2());
         m_autonChooser.addOption("feelin spicy", generateExamplePathFromPoses());
         m_autonChooser.addOption("circuit", complexPathTest());
+        m_autonChooser.addOption("AprilTagTesting",aprilTagTesting());
     }
 
     /**
@@ -184,6 +187,18 @@ public class AutonManager {
         AutonCommand command = autonCommandGenerator(trajectory);
         return wrapCmd(command);
     }
+
+    public Command aprilTagTesting(){
+
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(safe_constraints, new PathPoint(
+                new Translation2d(0, 0), new Rotation2d(), new Rotation2d()),
+                new PathPoint( new Translation2d(-3, 0),  new Rotation2d(), new Rotation2d()));
+
+        AutonCommand command = autonCommandGenerator(trajectory);
+        return wrapCmd(command);
+
+    }
+
 
     public CommandBase complexPathTest() {
         PathPlannerTrajectory circuit = PathPlanner.loadPath("circuit", safe_constraints);
