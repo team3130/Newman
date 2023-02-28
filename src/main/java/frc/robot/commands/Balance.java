@@ -76,8 +76,8 @@ public class Balance extends CommandBase {
 
     //TODO: Tune PID values
     double magnitude = (P.getDouble(Constants.BalanceKp) * tilt + D.getDouble(Constants.BalanceKd) * accelerationTilt + F.getDouble(Constants.BalanceKf));
-    double direction = Math.atan2(Math.tan(roll),Math.tan(pitch)); 
-    getDirection.setDouble(direction);
+    double direction = Math.atan2(Math.tan(pitch),Math.tan(roll)); 
+    getDirection.setDouble(direction*180/Math.PI);
 
     double x = magnitude * Math.cos(direction);
     double y = magnitude * Math.sin(direction);
@@ -91,7 +91,7 @@ public class Balance extends CommandBase {
   public void end(boolean interrupted) {
     angle = Navx.getAngle();
 
-    double direction = Math.atan2(Math.tan(roll),Math.tan(pitch));
+    double direction = Math.atan2(Math.tan(pitch),Math.tan(roll));
     
     m_chassis.turnToAngle(angle + direction + Math.PI / 2);
   }
