@@ -7,12 +7,18 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.Chassis.ZeroEverything;
 import frc.robot.Newman_Constants.Constants;
+
+import frc.robot.Newman_Constants.Constants;
+import frc.robot.commands.Placement.zeroExtensionArm;
 
 public class Robot extends TimedRobot {
   private Timer timer;
 
   private RobotContainer m_robotContainer;
+  boolean cameraIsGettingData = false;
+
 
   @Override
   public void robotInit() {
@@ -29,6 +35,17 @@ public class Robot extends TimedRobot {
       timer.reset();
       timer.stop();
       m_robotContainer.resetOdometry();
+    }
+
+    m_robotContainer.getLimelight().outputToShuffleBoard();
+        // April tag odometry stuff
+    if (cameraIsGettingData) {
+     m_robotContainer.updatePosition();
+    }
+    else {
+      if (m_robotContainer.tryUpdatePosition() > 5) {
+        cameraIsGettingData = true;
+      }
     }
   }
 
