@@ -148,7 +148,7 @@ public class Chassis extends SubsystemBase {
      * Also provides a timestamp that the update occurred
      */
     public void updateOdometryFromSwerve() {
-      m_odometry.update(Navx.getRotation(), generatePoses());
+      m_odometry.updateWithTime(Timer.getFPGATimestamp(), Navx.getRotation(), generatePoses());
     }
 
 
