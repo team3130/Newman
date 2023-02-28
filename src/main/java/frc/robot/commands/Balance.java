@@ -7,6 +7,7 @@ package frc.robot.commands;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.GenericEntry;
@@ -68,6 +69,10 @@ public class Balance extends CommandBase {
     getTilt.setDouble(tilt);
     getTiltAccel.setDouble(accelerationTilt);
 
+    MedianFilter fTilt = new MedianFilter(10);
+    tilt = fTilt.calculate(tilt); 
+    MedianFilter fAccelerationTilt = new MedianFilter(10);
+    accelerationTilt = fAccelerationTilt.calculate(accelerationTilt);
 
     //TODO: Tune PID values
     double magnitude = (P.getDouble(Constants.BalanceKp) * tilt + D.getDouble(Constants.BalanceKd) * accelerationTilt + F.getDouble(Constants.BalanceKf));
