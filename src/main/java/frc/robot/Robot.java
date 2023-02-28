@@ -15,10 +15,7 @@ import frc.robot.commands.Placement.zeroExtensionArm;
 
 public class Robot extends TimedRobot {
   private Timer timer;
-
   private RobotContainer m_robotContainer;
-  boolean cameraIsGettingData = false;
-
 
   @Override
   public void robotInit() {
@@ -38,15 +35,6 @@ public class Robot extends TimedRobot {
     }
 
     m_robotContainer.getLimelight().outputToShuffleBoard();
-        // April tag odometry stuff
-    if (cameraIsGettingData) {
-     m_robotContainer.updatePosition();
-    }
-    else {
-      if (m_robotContainer.tryUpdatePosition() > 5) {
-        cameraIsGettingData = true;
-      }
-    }
   }
 
   @Override

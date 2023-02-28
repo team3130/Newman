@@ -5,6 +5,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -66,8 +67,6 @@ public class Limelight {
         Translation2d translation = transformation.getTranslation().toTranslation2d();
         nXCameraToTarget.setDouble(translation.getX());
         nYCameraToTarget.setDouble(translation.getY());
-
-        // System.out.println(result.getTimestampSeconds());
     }
 
     public OdoPosition calculateCameraPosition() {

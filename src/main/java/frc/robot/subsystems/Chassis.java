@@ -11,9 +11,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.sensors.Limelight;
 import frc.robot.sensors.Navx;
 import frc.robot.supportingClasses.OdoPosition;
 import frc.robot.swerve.SwerveModule;
@@ -35,11 +37,13 @@ public class Chassis extends SubsystemBase {
     /** Whether it is field relative or robot oriented drive */
     private boolean fieldRelative = true;
 
+    private final Limelight m_limelight;
+
     /**
      * Makes a chassis that starts at 0, 0, 0
      */
-    public Chassis(){
-      this (new Pose2d(), new Rotation2d());
+    public Chassis(Limelight limelight){
+      this (new Pose2d(), new Rotation2d(), limelight);
     }
 
     /**
@@ -47,7 +51,7 @@ public class Chassis extends SubsystemBase {
      * @param startingPos the initial position to say that the robot is at
      * @param startingRotation the initial rotation of the bot
      */
-    public Chassis(Pose2d startingPos, Rotation2d startingRotation) {
+    public Chassis(Pose2d startingPos, Rotation2d startingRotation, Limelight limelight) {
         m_kinematics = new SwerveDriveKinematics(Constants.moduleTranslations);
 
         modules = new SwerveModule[4];
@@ -60,6 +64,8 @@ public class Chassis extends SubsystemBase {
 
         // odometry wrapper class that has functionality for cameras that report position with latency
         m_odometry = new SwerveDrivePoseEstimator(m_kinematics, startingRotation, generatePoses(), startingPos);
+
+        m_limelight = limelight;
     }
 
     /**
@@ -152,6 +158,10 @@ public class Chassis extends SubsystemBase {
     @Override
     public void periodic() {
         updateOdometryFromSwerve();
+        OdoPosition position = refreshPosition();
+        if (position != null) {
+            updateOdometryFromAprilTags(position);
+        }
         // field2d.setRobotPose(m_odometry.getEstimatedPosition());
     }
 
@@ -315,6 +325,10 @@ public class Chassis extends SubsystemBase {
     }
 
     public void updateOdometryFromAprilTags(OdoPosition refreshPosition) {
-        // m_odometry.addVisionMeasurement(refreshPosition.getPosition(), refreshPosition.getTime());
+        m_odometry.addVisionMeasurement(refreshPosition.getPosition(), refreshPosition.getTime());
     }
+
+    public OdoPosition refreshPosition() {
+        return m_limelight.calculateCameraPosition();
+  }
 }
