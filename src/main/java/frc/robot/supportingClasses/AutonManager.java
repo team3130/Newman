@@ -7,6 +7,7 @@ import com.pathplanner.lib.PathPoint;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -14,6 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.Chassis;
+
+import java.util.ArrayList;
 
 /**
  * A class to generate our auton paths from PathPlanner
@@ -54,6 +57,7 @@ public class AutonManager {
         // m_autonChooser.addOption("player side", generatepWeekZeroPath());
         // m_autonChooser.addOption("far side", generatepWeekZeroPath2());
         m_autonChooser.addOption("feelin spicy", generateExamplePathFromPoses());
+        m_autonChooser.addOption("AprilTagTesting",aprilTagTesting());
     }
 
     /**
@@ -176,6 +180,18 @@ public class AutonManager {
         AutonCommand command = autonCommandGenerator(trajectory);
         return wrapCmd(command);
     }
+
+    public Command aprilTagTesting(){
+
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(safe_constraints, new PathPoint(
+                new Translation2d(0, 0), new Rotation2d(), new Rotation2d()),
+                new PathPoint( new Translation2d(-3, 0),  new Rotation2d(), new Rotation2d()));
+
+        AutonCommand command = autonCommandGenerator(trajectory);
+        return wrapCmd(command);
+
+    }
+
 
     /**
      * This example trajectory is a question mark
