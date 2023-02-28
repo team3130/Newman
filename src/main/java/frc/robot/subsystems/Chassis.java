@@ -37,6 +37,7 @@ public class Chassis extends SubsystemBase {
     /** Whether it is field relative or robot oriented drive */
     private boolean fieldRelative = true;
 
+    /** limelight object */
     private final Limelight m_limelight;
 
     /**
@@ -324,10 +325,17 @@ public class Chassis extends SubsystemBase {
         builder.addDoubleProperty("rotation", this::getYaw, null);
     }
 
+    /**
+     * update odometry from april tags
+     * @param refreshPosition time and position to set to
+     */
     public void updateOdometryFromAprilTags(OdoPosition refreshPosition) {
         m_odometry.addVisionMeasurement(refreshPosition.getPosition(), refreshPosition.getTime());
     }
 
+    /**
+     * @return the odoPosition from limelight
+     */
     public OdoPosition refreshPosition() {
         return m_limelight.calculateCameraPosition();
   }

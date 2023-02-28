@@ -47,17 +47,13 @@ public class RobotContainer {
   private final Limelight m_limelight;
   private final ExtensionArm m_extensionArm;
 
-    public Limelight getLimelight() {
+  public Limelight getLimelight() {
       return m_limelight;
     }
-
-
 
   private final RotaryArm m_rotaryArm;
   private final HandGrabber m_handGrabber;
   private final Hopper m_hopper;
-
-  private ShuffleboardUpdated[] usesShuffleBoard;
 
   public Chassis getChassis() {
     return m_chassis;
@@ -129,8 +125,6 @@ public class RobotContainer {
     return m_weaponsGamepad;
   }
 
-
-
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -157,7 +151,8 @@ public class RobotContainer {
     if (positionToResetTo == null) {
       return false;
     }
-    m_chassis.resetOdometry(m_limelight.calculateCameraPosition().getPosition());
+    m_chassis.resetOdometry(positionToResetTo.getPosition());
+    return true;
   }
 
   /**
@@ -174,6 +169,4 @@ public class RobotContainer {
   public void zeroCommand() {
     CommandScheduler.getInstance().schedule(new zeroExtensionArm(m_extensionArm));
   }
-
-
 }

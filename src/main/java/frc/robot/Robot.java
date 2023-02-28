@@ -7,11 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.Chassis.ZeroEverything;
 import frc.robot.Newman_Constants.Constants;
-
-import frc.robot.Newman_Constants.Constants;
-import frc.robot.commands.Placement.zeroExtensionArm;
 
 public class Robot extends TimedRobot {
   private Timer timer;
@@ -29,9 +25,10 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     if (timer.hasElapsed(Constants.kResetTime)) {
-      timer.reset();
-      timer.stop();
-      m_robotContainer.resetOdometry();
+      if (m_robotContainer.resetOdometry()) {
+        timer.reset();
+        timer.stop();
+      }
     }
 
     m_robotContainer.getLimelight().outputToShuffleBoard();
