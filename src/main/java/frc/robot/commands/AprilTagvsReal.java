@@ -4,19 +4,15 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.Chassis;
-import frc.robot.subsystems.ExampleSubsystem;
 import org.photonvision.targeting.PhotonPipelineResult;
 
-import java.sql.Array;
 import java.util.ArrayList;
-/** An example command that uses an example subsystem. */
+
+/** An April tag command to print out csv formatted data on robot pose to the console. */
 public class AprilTagvsReal extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   ArrayList<Double> realPoses;
   ArrayList<Double> AprilTagPoses;
   public Chassis m_chassis;
@@ -36,8 +32,8 @@ public class AprilTagvsReal extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    AprilTagPoses = new ArrayList<Double>();
-    realPoses = new ArrayList<Double>();
+    AprilTagPoses = new ArrayList<>();
+    realPoses = new ArrayList<>();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

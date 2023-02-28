@@ -8,11 +8,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Chassis;
-import frc.robot.subsystems.ExampleSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class ZeroEverything extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Chassis m_subsystem;
 
   /**

@@ -337,6 +337,6 @@ public class Chassis extends SubsystemBase {
      * @return the odoPosition from limelight
      */
     public OdoPosition refreshPosition() {
-        return m_limelight.calculateCameraPosition();
+        return m_limelight.calculate();
   }
 }

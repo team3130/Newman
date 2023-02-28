@@ -5,7 +5,6 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,8 +18,6 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.io.IOException;
-import java.lang.annotation.Target;
-import java.util.ArrayList;
 
 public class Limelight {
 
@@ -58,6 +55,10 @@ public class Limelight {
         nsuccessfulImageReads = tab.add("Successful image reads", 0).getEntry();
     }
 
+    /**
+     * method to write generic entry changes
+     * TODO: Remove before comp
+     */
     public void outputToShuffleBoard(){
         PhotonPipelineResult result = camera.getLatestResult();
 
@@ -75,10 +76,17 @@ public class Limelight {
         nsuccessfulImageReads.setInteger(successfulUpdates);
     }
 
+    /**
+     * TODO: remove this is as it is bad practice to return the pipeline result, only coordinates should be returned by this class as that is it's function
+     * @return the latest camera result
+     */
     public PhotonPipelineResult getLatestResult() {
         return camera.getLatestResult();
     }
 
+    /**
+     * @return the x position of the camera relative to the april tag
+     */
     public double getX(){
         PhotonPipelineResult result = camera.getLatestResult();
         if (!result.hasTargets()) {
@@ -93,18 +101,31 @@ public class Limelight {
     }
 
 
-    public OdoPosition calculateCameraPosition() {
+    /**
+     * Calculates the position of the bot relative to an april tag.
+     * That calculation is then given to {@link KugelMedianFilter}.
+     * The command will return null if there is no new information or if there are no targets in frame.
+     * This will add all the targets that are currently visible to the {@link KugelMedianFilter}.
+     *
+     * @return the filtered camera position
+     */
+    public OdoPosition calculate() {
+        // the most recent result as read by the camera
         PhotonPipelineResult result = camera.getLatestResult();
 
+        // if there is no new results or if there are no targets on the screen
         if (result.getTimestampSeconds() == lastReadTime || !result.hasTargets()) {
             return null;
         }
 
+        // increment the amount of successful updates we have read
         successfulUpdates++;
         lastReadTime = result.getTimestampSeconds();
 
+        // default value for what we will return
         OdoPosition best = null;
 
+        // for each target that is currently on the screen
         for (PhotonTrackedTarget target : result.getTargets()) {
             // x is forward, y is left, z is up
             Transform3d bestCameraToTarget = target.getBestCameraToTarget();
@@ -115,17 +136,25 @@ public class Limelight {
                     new Translation3d(Camera.xPos, Camera.yPos, Camera.zPos),
                     new Rotation3d(Camera.roll, Camera.pitch, Camera.yaw));
 
+            // the position of the bot relative to the april tag
             Pose3d position = PhotonUtils.estimateFieldToRobotAprilTag(
                     bestCameraToTarget,
                     aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(),
                     cameraToCenterOfBot);
 
+            /* updates the best value that we will return on the last iteration,
+              also passes the read position into the {@link KugelMedianFilter)
+             */
             best = filter.getOdoPose(new OdoPosition(position.toPose2d(), result.getTimestampSeconds()));;
         }
+        // returns the last filtered value that we checked in the above for loop
         return best;
     }
 
 
+    /**
+     * @return the number of successful images we have read
+     */
     public int getNumberOfSuccesses() {
         return successfulUpdates;
     }

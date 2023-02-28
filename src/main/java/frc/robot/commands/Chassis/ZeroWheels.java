@@ -9,7 +9,6 @@ import frc.robot.subsystems.Chassis;
 
 /** An example command that uses an example subsystem. */
 public class ZeroWheels extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Chassis m_chassis;
   /**
    * Creates a new ExampleCommand.

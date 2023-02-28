@@ -9,7 +9,6 @@ import frc.robot.subsystems.Hopper;
 
 /** An example command that uses an example subsystem. */
 public class ReverseHopper extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Hopper m_hopper;
 
   /**

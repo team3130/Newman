@@ -7,26 +7,25 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Hopper;
 
-/** An example command that uses an example subsystem. */
+/** A command to spin the hopper backwards */
 public class ReverseHopper extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Hopper m_hopper;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new ReverseHopper
    *
-   * @param subsystem The subsystem used by this command.
+   * @param hopper the hopper subsystem
    */
-  public ReverseHopper(Hopper subsystem) {
-    m_hopper = subsystem;
+  public ReverseHopper(Hopper hopper) {
+    m_hopper = hopper;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(hopper);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_hopper.spinMotor();
+    m_hopper.reverseMotors();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,7 +35,7 @@ public class ReverseHopper extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_hopper.spinMotor();
+    m_hopper.hopperStop();
   }
 
   // Returns true when the command should end.

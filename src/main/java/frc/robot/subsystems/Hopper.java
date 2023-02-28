@@ -47,6 +47,14 @@ public class Hopper extends SubsystemBase {
     }
 
     /**
+     * Reverse the direction of the hopper motors to feed out
+     */
+    public void reverseMotors() {
+        m_leftWheel.set(ControlMode.PercentOutput, m_leftOutputSpeed);
+        m_rightWheel.set(ControlMode.PercentOutput, m_rightOutputSpeed);
+    }
+
+    /**
      * stop the motors, usually called when commands end
      */
     public void hopperStop() {

@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -28,7 +26,6 @@ import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.AutonManager;
 import frc.robot.supportingClasses.OdoPosition;
-import frc.robot.supportingClasses.ShuffleboardUpdated;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -147,7 +144,7 @@ public class RobotContainer {
    * Resets odometry to 0, 0, 0
    */
   public boolean resetOdometry() {
-    OdoPosition positionToResetTo = m_limelight.calculateCameraPosition();
+    OdoPosition positionToResetTo = m_limelight.calculate();
     if (positionToResetTo == null) {
       return false;
     }

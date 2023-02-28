@@ -5,24 +5,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Chassis;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.supportingClasses.AutonManager;
-import frc.robot.supportingClasses.KugelControllerCommand;
 
-/** An example command that uses an example subsystem. */
+/** A command to go to whatever origin is */
 public class GoToOrigin extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Chassis m_chassis;
-  private AutonManager autonManager;
+  private final AutonManager autonManager;
   private Thread m_thread;
   private boolean firstHit = true;
 
   private CommandBase autonCommand;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new goToOrigin Command.
    *
    * @param chassis The subsystem used by this command.
    */

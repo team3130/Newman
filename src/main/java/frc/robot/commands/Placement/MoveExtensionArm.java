@@ -4,14 +4,10 @@
 
 package frc.robot.commands.Placement;
 
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ExtensionArm;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.subsystems.ExtensionArm;
 
 /** A command to move the extension arm based off the joysticks */
 public class MoveExtensionArm extends CommandBase {
