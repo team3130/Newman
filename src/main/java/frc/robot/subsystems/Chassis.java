@@ -11,9 +11,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
@@ -54,8 +51,6 @@ public class Chassis extends SubsystemBase {
      */
     public Chassis(Pose2d startingPos, Rotation2d startingRotation) {
         m_kinematics = new SwerveDriveKinematics(Constants.moduleTranslations);
-        SwerveModulePosition[] modulePositions = new SwerveModulePosition[]{new SwerveModulePosition(), new SwerveModulePosition(),
-              new SwerveModulePosition(), new SwerveModulePosition()};
 
         modules = new SwerveModule[4];
         modules[Constants.Side.LEFT_FRONT] = new SwerveModule(Constants.Side.LEFT_FRONT);
