@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 
@@ -13,6 +15,8 @@ public class ExtensionArm extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public WPI_TalonSRX extensionMotor;
   public DigitalInput m_LimitSwitch;
+  private static Joystick m_weaponsGamepad;
+
   public ExtensionArm() {
     extensionMotor = new WPI_TalonSRX(Constants.CAN_ExtensionArm);
     extensionMotor.configFactoryDefault();
@@ -24,6 +28,8 @@ public class ExtensionArm extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    m_weaponsGamepad.setRumble(GenericHID.RumbleType.kBothRumble,getRumbleExtensionArmValue());
+
   }
   public void ExtendExtensionArm(double speed) {
     extensionMotor.set(speed);
@@ -35,7 +41,10 @@ public class ExtensionArm extends SubsystemBase {
     return !m_LimitSwitch.get();
   }
   public double getLengthExtensionArm(){
-    return Constants.ticksToMetersExtensionPlacement;
+    return Constants.kTicksToMetersExtensionPlacement * extensionMotor.getSelectedSensorPosition();
+  }
+  public double getRumbleExtensionArmValue(){
+    return Constants.kExtensionArmLength/getLengthExtensionArm();
   }
   @Override
   public void simulationPeriodic() {

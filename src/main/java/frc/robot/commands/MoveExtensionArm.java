@@ -55,6 +55,7 @@ public class MoveExtensionArm extends CommandBase {
         m_extensionArm.ExtendExtensionArm(y * extensionArmMaxSpeed); //that max is currently bs
       }
     }
+
   }
 
   // Called once the command ends or is interrupted.
