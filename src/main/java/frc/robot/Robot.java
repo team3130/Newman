@@ -6,14 +6,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.ZeroEverything;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import frc.robot.commands.AprilTagvsReal;
+import frc.robot.commands.Chassis.ZeroEverything;
+import frc.robot.Newman_Constants.Constants;
 
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
   private Timer timer;
-
   private RobotContainer m_robotContainer;
 
   @Override
@@ -28,10 +28,13 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     if (timer.hasElapsed(Constants.kResetTime)) {
-      timer.reset();
-      timer.stop();
-      CommandScheduler.getInstance().schedule(new ZeroEverything(m_robotContainer.getChassis()));
+      if (m_robotContainer.resetOdometry()) {
+        timer.reset();
+        timer.stop();
+      }
     }
+
+    m_robotContainer.getLimelight().outputToShuffleBoard();
   }
 
   @Override
@@ -45,6 +48,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    CommandScheduler.getInstance().cancelAll();
+    CommandScheduler.getInstance().schedule(new ParallelRaceGroup(m_robotContainer.getAutonCmd(), new AprilTagvsReal(m_robotContainer.getChassis(), m_robotContainer.getLimelight())));
   }
 
   @Override
@@ -56,6 +61,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     CommandScheduler.getInstance().cancelAll();
+    m_robotContainer.zeroCommand();
   }
 
   @Override
