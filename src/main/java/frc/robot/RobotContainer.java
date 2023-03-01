@@ -11,6 +11,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -51,6 +56,32 @@ public class RobotContainer {
     // Configure the button bindings
     m_driverGamepad = new Joystick(0);
     m_weaponsGamepad = new Joystick(1);
+
+    m_limelight = new Limelight();
+
+    m_chassis = new Chassis(m_limelight);
+
+    Mechanism2d arm = new Mechanism2d(4, 2);
+    MechanismRoot2d root = arm.getRoot("arm", 5, 5);
+    MechanismLigament2d zero = new MechanismLigament2d("retracted", Constants.kExtensionArmLength / 2, -90);
+    root.append(zero);
+
+    SmartDashboard.putData("Arm", arm);
+
+    m_extensionArm =  new ExtensionArm(arm, root, zero);
+    m_rotaryArm = new RotaryArm(arm, root, zero);
+
+    m_handGrabber = new HandGrabber();
+    m_hopper = new Hopper();
+
+    m_chassis.setDefaultCommand(new TeleopDrive(m_chassis, m_driverGamepad));
+
+    // idk if this is right
+    m_rotaryArm.setDefaultCommand(new MoveRotaryArm(m_rotaryArm, m_weaponsGamepad));
+    m_extensionArm.setDefaultCommand(new MoveExtensionArm(m_extensionArm, m_weaponsGamepad));
+
+    m_autonManager = new AutonManager(m_chassis);
+
     configureButtonBindings();
 
      m_chassis.setDefaultCommand(new TeleopDrive(m_chassis));

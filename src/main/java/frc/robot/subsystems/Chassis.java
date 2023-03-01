@@ -40,20 +40,24 @@ public class Chassis extends SubsystemBase {
     private double lastKpRead = Constants.SwerveKp;
   private double lastKdRead = Constants.SwerveKd;
 
+    /**
+     * Makes a chassis that starts at 0, 0, 0
+     */
+    public Chassis() {
+        this(new Pose2d(), new Rotation2d());
+    }
+
   private final GenericEntry n_FieldRelative = tab.add("field relative", true).getEntry();
-  private final GenericEntry n_Navx;
-  private final Field2d nField;
+
 
   private boolean fieldRelative = true;
 
-  public Chassis(){
-      this (new Pose2d(), new Rotation2d());
-  }
 
   public Chassis(Pose2d startingPos, Rotation2d startingRotation) {
       m_kinematics = new SwerveDriveKinematics(Constants.moduleTranslations);
       modulePositions = new SwerveModulePosition[]{new SwerveModulePosition(), new SwerveModulePosition(),
               new SwerveModulePosition(), new SwerveModulePosition()};
+
 
       // odometry wrapper class that has functionality for cameras that report position with latency
       m_odometry = new SwerveDrivePoseEstimator(m_kinematics, startingRotation, modulePositions, startingPos);
@@ -66,11 +70,6 @@ public class Chassis extends SubsystemBase {
 
       zeroHeading();
 
-      n_Navx = tab.add("Navx angle", Navx.getRotation().getRadians()).getEntry();
-
-      nField = new Field2d();
-      
-      SmartDashboard.putData(nField);
   }
 
     public boolean wheelsAreZeroed() {
@@ -130,9 +129,6 @@ public class Chassis extends SubsystemBase {
 
       n_FieldRelative.setBoolean(fieldRelative);
 
-      n_Navx.setDouble(Navx.getAngle());
-
-      nField.setRobotPose(m_odometry.getEstimatedPosition());
   }
 
   public SwerveModulePosition[] generatePoses() {
@@ -151,8 +147,6 @@ public class Chassis extends SubsystemBase {
   @Override
   public void periodic() {
     updateOdometryFromSwerve();
-
-      outputToShuffleboard();
 
       modules[Constants.Side.LEFT_FRONT].outputToShuffleboard();
       modules[Constants.Side.LEFT_BACK].outputToShuffleboard();

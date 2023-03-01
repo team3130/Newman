@@ -6,6 +6,9 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,13 +19,39 @@ public class ExtensionArm extends SubsystemBase {
   public WPI_TalonSRX extensionMotor;
   public DigitalInput m_LimitSwitch;
   private static Joystick m_weaponsGamepad;
+  /**
+   * mechanism 2d to show the extension arm length
+   */
+  protected MechanismLigament2d ligament;
+  /**
+   * Speed to run the motor at by default, can be changed in shuffleboard
+   */
+  private static double extensionArmSpeed = 1;
 
-  public ExtensionArm() {
+  /**
+   * The motor/speed controller for the mechanism
+   */
+  private final WPI_TalonSRX extensionMotor;
+
+  // limit switch
+  private final DigitalInput m_LimitSwitch;
+
+  /**
+   * Initializes the extension arm and configures the necessary device settings.
+   * Motors are set to: Factory default, then given 9 volts of voltage compensation, and put in brake mode
+   */
+  public ExtensionArm(MechanismLigament2d ligament) {
     extensionMotor = new WPI_TalonSRX(Constants.CAN_ExtensionArm);
     extensionMotor.configFactoryDefault();
     extensionMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
     extensionMotor.enableVoltageCompensation(true);
     m_LimitSwitch = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
+
+    extensionMotor.enableVoltageCompensation(false); //TODO: change when we get falcon
+    extensionMotor.setInverted(false);
+    extensionMotor.setNeutralMode(NeutralMode.Brake);
+
+    this.ligament = ligament;
   }
 
   @Override
