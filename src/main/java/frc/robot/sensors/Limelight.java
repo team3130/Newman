@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.Newman_Constants.Constants.Camera;
-import frc.robot.supportingClasses.KugelMedianFilter;
+import frc.robot.supportingClasses.VisionMedianFilter;
 import frc.robot.supportingClasses.OdoPosition;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
@@ -29,7 +29,7 @@ public class Limelight {
 
     private static ShuffleboardTab tab = Shuffleboard.getTab("PhotonCamera");
     AprilTagFieldLayout aprilTagFieldLayout;
-    KugelMedianFilter filter;
+    VisionMedianFilter filter;
     int successfulUpdates = 0;
 
     protected double lastReadTime = 0;
@@ -43,7 +43,7 @@ public class Limelight {
             DriverStation.reportError("error loading field position file", false);
         }
 
-        filter = new KugelMedianFilter(Camera.kMedianFilterWindowSize);
+        filter = new VisionMedianFilter(Camera.kMedianFilterWindowSize);
 
         if (Constants.debugMode) {
             SmartDashboard.putData(filter);
@@ -103,9 +103,9 @@ public class Limelight {
 
     /**
      * Calculates the position of the bot relative to an april tag.
-     * That calculation is then given to {@link KugelMedianFilter}.
+     * That calculation is then given to {@link VisionMedianFilter}.
      * The command will return null if there is no new information or if there are no targets in frame.
-     * This will add all the targets that are currently visible to the {@link KugelMedianFilter}.
+     * This will add all the targets that are currently visible to the {@link VisionMedianFilter}.
      *
      * @return the filtered camera position
      */
@@ -143,7 +143,7 @@ public class Limelight {
                     cameraToCenterOfBot);
 
             /* updates the best value that we will return on the last iteration,
-              also passes the read position into the {@link KugelMedianFilter)
+              also passes the read position into the {@link VisionMedianFilter)
              */
             best = filter.getOdoPose(new OdoPosition(position.toPose2d(), result.getTimestampSeconds()));;
         }

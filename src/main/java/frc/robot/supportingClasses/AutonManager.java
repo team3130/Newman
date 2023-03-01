@@ -15,11 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Newman_Constants.Constants;
-import frc.robot.commands.Chassis.ZeroWheels;
-import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
-
-import java.util.ArrayList;
 
 /**
  * A class to generate our auton paths from PathPlanner
@@ -101,7 +97,7 @@ public class AutonManager {
         PIDController yController = new PIDController(Constants.kPYController, Constants.kIYController ,Constants.kDYController);
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(xController, yController, new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, 0, Constants.kThetaControllerConstraints));
 
-        KugelControllerCommand kugelControllerCommand = new KugelControllerCommand(
+        HolonomicControllerCommand holonomicControllerCommand = new HolonomicControllerCommand(
                 trajectory,
                 m_chassis::getPose2d,
                 m_chassis.getKinematics(),
@@ -110,7 +106,7 @@ public class AutonManager {
                 m_chassis);
 
 
-        return new AutonCommand(kugelControllerCommand, trajectory.getInitialPose(), trajectory.getEndState().poseMeters);
+        return new AutonCommand(holonomicControllerCommand, trajectory.getInitialPose(), trajectory.getEndState().poseMeters);
     }
 
     /**

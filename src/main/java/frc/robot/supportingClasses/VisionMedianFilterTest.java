@@ -4,11 +4,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import org.junit.jupiter.api.Test;
 
-class KugelMedianFilterTest {
+class VisionMedianFilterTest {
 
     @Test
     public void getOdoPose() {
-        KugelMedianFilter medianFilter = new KugelMedianFilter(5);
+        VisionMedianFilter medianFilter = new VisionMedianFilter(5);
         Pose2d[] poses = new Pose2d[] {
                 new Pose2d(1.09, 2.054, new Rotation2d(Math.toRadians(29))),
                 new Pose2d(0.95, 3, new Rotation2d(Math.toRadians(24))),

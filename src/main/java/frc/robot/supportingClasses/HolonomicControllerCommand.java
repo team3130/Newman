@@ -14,7 +14,7 @@ import frc.robot.Newman_Constants.Constants;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class KugelControllerCommand extends CommandBase {
+public class HolonomicControllerCommand extends CommandBase {
   protected final Timer m_timer = new Timer();
   protected final PathPlannerTrajectory m_trajectory;
   protected final Supplier<Pose2d> m_pose;
@@ -22,7 +22,7 @@ public class KugelControllerCommand extends CommandBase {
   protected final HolonomicDriveController m_controller;
   protected final Consumer<SwerveModuleState[]> m_outputModuleStates;
 
-    public KugelControllerCommand(PathPlannerTrajectory trajectory, Supplier<Pose2d> robotPose, SwerveDriveKinematics kinematics, HolonomicDriveController holonomicDriveController, Consumer<SwerveModuleState[]> states, Subsystem requirement) {
+    public HolonomicControllerCommand(PathPlannerTrajectory trajectory, Supplier<Pose2d> robotPose, SwerveDriveKinematics kinematics, HolonomicDriveController holonomicDriveController, Consumer<SwerveModuleState[]> states, Subsystem requirement) {
         m_trajectory = trajectory;
         m_pose = robotPose;
         m_kinematics = kinematics;

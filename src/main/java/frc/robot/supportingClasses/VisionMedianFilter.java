@@ -8,7 +8,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Newman_Constants.Constants;
 
-public class KugelMedianFilter implements Sendable {
+public class VisionMedianFilter implements Sendable {
     // hehe
     protected int head;
     // size of elements we want in our moving window
@@ -32,11 +32,11 @@ public class KugelMedianFilter implements Sendable {
     protected Pose2d mostRecentPose;
 
     /**
-     * Constructs a KugelMedianFilter
+     * Constructs a VisionMedianFilter
      * @param bucketSize odd value for the bucket of the median filter
      *                   If the value is odd it will be truncated
      */
-    public KugelMedianFilter(int bucketSize) {
+    public VisionMedianFilter(int bucketSize) {
         head = 0;
         if (bucketSize % 2 == 0) {
             bucketSize--;
