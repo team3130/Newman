@@ -28,6 +28,7 @@ public class RotaryArm extends SubsystemBase {
    *
    * @param ligament the ligament object that is on smart-dashboard
    */
+
   public RotaryArm(MechanismLigament2d ligament) {
     rotaryArmMotor = new WPI_TalonFX(Constants.CAN_RotaryArm);
     rotaryArmMotor.configFactoryDefault();

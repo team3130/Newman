@@ -20,7 +20,7 @@ public class ExtensionArm extends SubsystemBase {
   /**
    * Weapons gamepad
    */
-  private static Joystick m_weaponsGamepad;
+  private static Joystick controller;
   /**
    * mechanism 2d to show the extension arm length
    */
@@ -44,7 +44,7 @@ public class ExtensionArm extends SubsystemBase {
    *
    * @param ligament the ligament object that is on smart-dashboard
    */
-  public ExtensionArm(MechanismLigament2d ligament) {
+  public ExtensionArm(MechanismLigament2d ligament, Joystick controller) {
     extensionMotor = new WPI_TalonSRX(Constants.CAN_ExtensionArm);
     extensionMotor.configFactoryDefault();
     extensionMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
@@ -61,7 +61,7 @@ public class ExtensionArm extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    m_weaponsGamepad.setRumble(GenericHID.RumbleType.kBothRumble,getRumbleExtensionArmValue());
+    controller.setRumble(GenericHID.RumbleType.kBothRumble,getRumbleExtensionArmValue());
   }
 
   /**
@@ -97,8 +97,8 @@ public class ExtensionArm extends SubsystemBase {
    * @return the value to rumble to extension arm
    */
   public double getRumbleExtensionArmValue(){
-    return (Constants.kExtensionArmLengthExtended - Constants.kExtensionArmLengthRetracted) /
-            (getLengthExtensionArm() - Constants.kExtensionArmLengthRetracted);
+    return Math.pow(((Constants.kExtensionArmLengthExtended - Constants.kExtensionArmLengthRetracted) /
+            (getLengthExtensionArm() - Constants.kExtensionArmLengthRetracted)),2);
   }
 
   @Override

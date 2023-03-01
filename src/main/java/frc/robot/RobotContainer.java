@@ -62,7 +62,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Arm", arm);
 
-    m_extensionArm =  new ExtensionArm(zero);
+    m_extensionArm =  new ExtensionArm(zero, m_weaponsGamepad);
     m_rotaryArm = new RotaryArm(zero);
 
     m_handGrabber = new Manipulator();
@@ -98,6 +98,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ZeroWheels(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new MoveExtensionArm(m_extensionArm, m_rotaryArm));
 
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
   }
