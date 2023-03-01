@@ -53,7 +53,7 @@ public class Balance extends CommandBase {
   private final GenericEntry getDirection = tab.add("Direction", 0).getEntry();
   private final GenericEntry getTilt = tab.add("Tilt", 0).getEntry();
   private final GenericEntry getTiltAccel = tab.add("Tilt Accel", 0).getEntry();
-
+  private final GenericEntry minTilt = tab.add("Minimum Tilt", 0.5).getEntry();
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -70,12 +70,13 @@ public class Balance extends CommandBase {
     getTiltAccel.setDouble(accelerationTilt);
 
     MedianFilter fTilt = new MedianFilter(10);
-    tilt = fTilt.calculate(tilt); 
+    // tilt = fTilt.calculate(tilt); 
     MedianFilter fAccelerationTilt = new MedianFilter(10);
     accelerationTilt = fAccelerationTilt.calculate(accelerationTilt);
 
     //TODO: Tune PID values
-    double magnitude = (P.getDouble(Constants.BalanceKp) * tilt + D.getDouble(Constants.BalanceKd) * accelerationTilt + F.getDouble(Constants.BalanceKf));
+
+    double magnitude = D.getDouble(Constants.BalanceKd) * accelerationTilt + F.getDouble(Constants.BalanceKf);
     double direction = Math.atan2(Math.tan(pitch),Math.tan(roll)); 
     getDirection.setDouble(direction*180/Math.PI);
 
@@ -99,6 +100,9 @@ public class Balance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (tilt < 0.1 && accelerationTilt < 0.1) {
+      return true;
+    }
     return false;
   }
 }
