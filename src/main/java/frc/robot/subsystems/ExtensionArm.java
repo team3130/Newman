@@ -35,7 +35,7 @@ public class ExtensionArm extends SubsystemBase {
     return !m_LimitSwitch.get();
   }
   public double getLengthExtensionArm(){
-    return Constants.ticksToMetersExtensionPlacement;
+    return Constants.ticksToMetersExtensionPlacement * extensionMotor.getSelectedPosition();
   }
   public double getSpeedExtensionArm(){
     return 10 * Constants.ticksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorVelocity();
