@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -35,9 +37,12 @@ import frc.robot.subsystems.Hopper;
 public class RobotContainer {
   private static Joystick m_driverGamepad;
   private static Joystick m_weaponsGamepad;
-  private final Chassis m_chassis = new Chassis();
-  private final ExtensionArm m_extensionArm = new ExtensionArm();
-  private final RotaryArm m_rotaryArm = new RotaryArm();
+  private final Chassis m_chassis;
+  private final ExtensionArm m_extensionArm;
+  private final RotaryArm m_rotaryArm;
+  private final Hopper m_hopper;
+  private final Manipulator m_handGrabber;
+
   public Chassis getChassis() {
     return m_chassis;
   }
@@ -48,9 +53,7 @@ public class RobotContainer {
     m_driverGamepad = new Joystick(0);
     m_weaponsGamepad = new Joystick(1);
 
-    m_limelight = new Limelight();
-
-    m_chassis = new Chassis(m_limelight);
+    m_chassis = new Chassis();
 
     Mechanism2d arm = new Mechanism2d(4, 2);
     MechanismRoot2d root = arm.getRoot("arm", 5, 5);
@@ -59,19 +62,17 @@ public class RobotContainer {
 
     SmartDashboard.putData("Arm", arm);
 
-    m_extensionArm =  new ExtensionArm(arm, root, zero);
-    m_rotaryArm = new RotaryArm(arm, root, zero);
+    m_extensionArm =  new ExtensionArm(zero);
+    m_rotaryArm = new RotaryArm(zero);
 
     m_handGrabber = new Manipulator();
     m_hopper = new Hopper();
 
-    m_chassis.setDefaultCommand(new TeleopDrive(m_chassis, m_driverGamepad));
+    m_chassis.setDefaultCommand(new TeleopDrive(m_chassis));
 
     // idk if this is right
-    m_rotaryArm.setDefaultCommand(new MoveRotaryArm(m_rotaryArm, m_weaponsGamepad));
-    m_extensionArm.setDefaultCommand(new MoveExtensionArm(m_extensionArm, m_weaponsGamepad));
-
-    m_autonManager = new AutonManager(m_chassis);
+    m_rotaryArm.setDefaultCommand(new MoveRotaryArm(m_rotaryArm));
+    m_extensionArm.setDefaultCommand(new MoveExtensionArm(m_extensionArm, m_rotaryArm));
 
     configureButtonBindings();
 
@@ -98,11 +99,11 @@ public class RobotContainer {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ZeroWheels(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
 
-    //change the extension arm button bindings to whatever, but keep the parameters as seen here
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new MoveExtensionArm(m_extensionArm, 1, m_rotaryArm));
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new MoveExtensionArm(m_extensionArm, -1, m_rotaryArm));
-
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
+  }
+
+  public void resetOdometry() {
+    m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
   }
 
 }

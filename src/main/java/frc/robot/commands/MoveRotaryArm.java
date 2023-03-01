@@ -13,8 +13,6 @@ import frc.robot.subsystems.RotaryArm;
 public class MoveRotaryArm extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final RotaryArm m_rotaryArm;
-  private int dir;
-  public static double rotaryArmMaxSpeed = 1; //TODO make this an actual number & move it to constants
 
   public XboxController m_xboxController;
   /**
@@ -22,10 +20,9 @@ public class MoveRotaryArm extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveRotaryArm(RotaryArm subsystem, int direction) {
+  public MoveRotaryArm(RotaryArm subsystem) {
     // specify whether rotary arm should be lowered or raised by setting the direction parameter as either -1 or 1, respectively
     m_rotaryArm = subsystem;
-    dir = direction;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_rotaryArm);
@@ -44,14 +41,14 @@ public class MoveRotaryArm extends CommandBase {
     if (Math.abs(y) < Constants.kDeadband) {
       y = 0;
     }
-    m_rotaryArm.RotateRotaryArm(y * rotaryArmMaxSpeed); //that max is currently bs
+    m_rotaryArm.rotateRotaryArm(y); //that max is currently bs
   }
 
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_rotaryArm.RotateRotaryArm(0);
+    m_rotaryArm.rotateRotaryArm(0);
   }
 
   // Returns true when the command should end.

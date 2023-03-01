@@ -16,19 +16,17 @@ public class MoveExtensionArm extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ExtensionArm m_extensionArm;
   private final RotaryArm m_rotaryArm;
-  private int dir;
   public XboxController m_xboxController;
-  public static double extensionArmMaxSpeed = 1; //TODO make this an actual number & add it to constants
 
   /**
    * Creates a new ExampleCommand.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param extensionArm The extension arm which is the required subsystem.
+   * @param rotaryArm the rotary arm subsystem. NOT REQUIRED
    */
-  public MoveExtensionArm(ExtensionArm subsystem, int direction, RotaryArm subsystem2) {
-    dir = direction;
-    m_extensionArm = subsystem;
-    m_rotaryArm = subsystem2;
+  public MoveExtensionArm(ExtensionArm extensionArm, RotaryArm rotaryArm) {
+    m_extensionArm = extensionArm;
+    m_rotaryArm = rotaryArm;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_extensionArm);
   }
@@ -52,7 +50,7 @@ public class MoveExtensionArm extends CommandBase {
       if (m_extensionArm.brokeLimit()) {
         m_extensionArm.stopArm();
       } else if ((m_extensionArm.getLengthExtensionArm() < extensionArmMaxLength) && (m_extensionArm.getLengthExtensionArm() * 1.1 > extensionArmMaxLength)) {
-        m_extensionArm.extendExtensionArm(y * extensionArmMaxSpeed); //that max is currently bs
+        m_extensionArm.extendExtensionArm(y); //that max is currently bs
       }
     }
 
