@@ -9,15 +9,23 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 
-public class HandGrabber extends SubsystemBase {
-  /** Creates a new ExampleSubsystem. */
-  public Solenoid grabber;
+/**
+ * subsystem for the manipulator
+ */
+public class Manipulator extends SubsystemBase {
+  public Solenoid grabber; // solenoid for firing the pistons
 
-
-  public HandGrabber() {
+  /**
+   * Creates a new Manipulator
+   */
+  public Manipulator() {
     grabber = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM , Constants.PNM_Grabber);
   }
-  public void MoveGrabber(){
+
+  /**
+   * toggles the manipulator
+   */
+  public void toggleManipulator(){
     grabber.toggle();
   }
 

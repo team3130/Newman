@@ -4,20 +4,22 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 
+/**
+ * The subsystem for the extension arm
+ */
 public class ExtensionArm extends SubsystemBase {
-  /** Creates a new ExampleSubsystem. */
-  public WPI_TalonSRX extensionMotor;
-  public DigitalInput m_LimitSwitch;
+  /**
+   * Weapons gamepad
+   */
   private static Joystick m_weaponsGamepad;
   /**
    * mechanism 2d to show the extension arm length
@@ -26,7 +28,7 @@ public class ExtensionArm extends SubsystemBase {
   /**
    * Speed to run the motor at by default, can be changed in shuffleboard
    */
-  private static double extensionArmSpeed = 1;
+  private double extensionArmSpeed = 1;
 
   /**
    * The motor/speed controller for the mechanism
@@ -39,6 +41,8 @@ public class ExtensionArm extends SubsystemBase {
   /**
    * Initializes the extension arm and configures the necessary device settings.
    * Motors are set to: Factory default, then given 9 volts of voltage compensation, and put in brake mode
+   *
+   * @param ligament the ligament object that is on smart-dashboard
    */
   public ExtensionArm(MechanismLigament2d ligament) {
     extensionMotor = new WPI_TalonSRX(Constants.CAN_ExtensionArm);
@@ -58,23 +62,45 @@ public class ExtensionArm extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     m_weaponsGamepad.setRumble(GenericHID.RumbleType.kBothRumble,getRumbleExtensionArmValue());
+  }
 
+  /**
+   * extend the extension arm
+   * @param speed the speed to run the extension arm at
+   */
+  public void extendExtensionArm(double speed) {
+    extensionMotor.set(speed * extensionArmSpeed);
   }
-  public void ExtendExtensionArm(double speed) {
-    extensionMotor.set(speed);
-  }
-  public void StopArm() {
+
+  /**
+   * Stops the extension arm
+   */
+  public void stopArm() {
     extensionMotor.set(0);
   }
-  public boolean BrokeLimit(){
+
+  /**
+   * @return whether the limit switch got broke or not
+   */
+  public boolean brokeLimit(){
     return !m_LimitSwitch.get();
   }
+
+  /**
+   * @return the length of the extension arm
+   */
   public double getLengthExtensionArm(){
-    return Constants.kTicksToMetersExtensionPlacement * extensionMotor.getSelectedSensorPosition();
+    return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition() + Constants.kExtensionArmLengthRetracted;
   }
+
+  /**
+   * @return the value to rumble to extension arm
+   */
   public double getRumbleExtensionArmValue(){
-    return Constants.kExtensionArmLength/getLengthExtensionArm();
+    return (Constants.kExtensionArmLengthExtended - Constants.kExtensionArmLengthRetracted) /
+            (getLengthExtensionArm() - Constants.kExtensionArmLengthRetracted);
   }
+
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation

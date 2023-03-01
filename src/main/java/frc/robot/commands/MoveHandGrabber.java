@@ -5,21 +5,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.HandGrabber;
+import frc.robot.subsystems.Manipulator;
 
 /** An example command that uses an example subsystem. */
 public class MoveHandGrabber extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final HandGrabber m_handGrabber;
+  private final Manipulator m_manipulator;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveHandGrabber(HandGrabber subsystem) {
-    m_handGrabber = subsystem;
+  public MoveHandGrabber(Manipulator subsystem) {
+    m_manipulator = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -27,7 +26,7 @@ public class MoveHandGrabber extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_handGrabber.MoveGrabber();
+    m_manipulator.toggleManipulator();
     //when button is pressed, hand is toggled
   }
 

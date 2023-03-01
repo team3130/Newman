@@ -4,34 +4,25 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.commands.FlipFieldOrriented;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.ZeroEverything;
 import frc.robot.commands.ZeroWheels;
-import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExtensionArm;
-import frc.robot.subsystems.HandGrabber;
+import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.RotaryArm;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.Hopper;
-import frc.robot.Newman_Constants.Constants;
 
 
 /**
@@ -63,7 +54,7 @@ public class RobotContainer {
 
     Mechanism2d arm = new Mechanism2d(4, 2);
     MechanismRoot2d root = arm.getRoot("arm", 5, 5);
-    MechanismLigament2d zero = new MechanismLigament2d("retracted", Constants.kExtensionArmLength / 2, -90);
+    MechanismLigament2d zero = new MechanismLigament2d("retracted", Constants.kExtensionArmLengthExtended / 2, -90);
     root.append(zero);
 
     SmartDashboard.putData("Arm", arm);
@@ -71,7 +62,7 @@ public class RobotContainer {
     m_extensionArm =  new ExtensionArm(arm, root, zero);
     m_rotaryArm = new RotaryArm(arm, root, zero);
 
-    m_handGrabber = new HandGrabber();
+    m_handGrabber = new Manipulator();
     m_hopper = new Hopper();
 
     m_chassis.setDefaultCommand(new TeleopDrive(m_chassis, m_driverGamepad));

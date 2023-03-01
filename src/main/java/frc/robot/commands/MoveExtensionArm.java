@@ -49,10 +49,10 @@ public class MoveExtensionArm extends CommandBase {
     double rotaryArmAngle = m_rotaryArm.getAngleRotaryArm();
     double extensionArmMaxLength = (Units.inchesToMeters(38) / Math.cos(rotaryArmAngle));
     if ((m_extensionArm.getLengthExtensionArm() < extensionArmMaxLength)) {
-      if (m_extensionArm.BrokeLimit()) {
-        m_extensionArm.StopArm();
+      if (m_extensionArm.brokeLimit()) {
+        m_extensionArm.stopArm();
       } else if ((m_extensionArm.getLengthExtensionArm() < extensionArmMaxLength) && (m_extensionArm.getLengthExtensionArm() * 1.1 > extensionArmMaxLength)) {
-        m_extensionArm.ExtendExtensionArm(y * extensionArmMaxSpeed); //that max is currently bs
+        m_extensionArm.extendExtensionArm(y * extensionArmMaxSpeed); //that max is currently bs
       }
     }
 
@@ -61,7 +61,7 @@ public class MoveExtensionArm extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_extensionArm.ExtendExtensionArm(0);
+    m_extensionArm.extendExtensionArm(0);
   }
 
   // Returns true when the command should end.

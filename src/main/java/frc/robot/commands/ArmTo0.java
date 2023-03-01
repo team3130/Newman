@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.ExtensionArm;
 
 /** An example command that uses an example subsystem. */
@@ -28,14 +27,14 @@ public class ArmTo0 extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_ExtensionArm.ExtendExtensionArm(-0.2);
+    m_ExtensionArm.extendExtensionArm(-0.2);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_ExtensionArm.BrokeLimit()) {
-      m_ExtensionArm.StopArm();
+    if (m_ExtensionArm.brokeLimit()) {
+      m_ExtensionArm.stopArm();
       LimitBrake = true;
     }
   }
