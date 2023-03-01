@@ -38,7 +38,7 @@ public class RobotContainer {
    * Auton manager is the object that handles the loading of auton paths
    */
   protected AutonManager m_autonManager;
-  private static Joystick m_driverGamepad;
+  public static Joystick m_driverGamepad;
   private static Joystick m_weaponsGamepad;
   private final Chassis m_chassis;
   private final Limelight m_limelight;
