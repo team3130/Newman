@@ -34,7 +34,9 @@ public class HighPlacement extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_placementRotaryArm.updateValues();
+    timeRunning.reset();
+    //m_placementRotaryArm.updateValues();
+    timeRunning.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -47,7 +49,8 @@ public class HighPlacement extends CommandBase {
     // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
+    timeRunning.stop();
+    timeRunning.reset();
   }
 
   // Returns true when the command should end.

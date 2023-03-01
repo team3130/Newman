@@ -45,6 +45,7 @@ public class PlacementRotaryArm extends SubsystemBase {
   private double placementRotaryArmP = 5.12295e-5 / 2;
   private double placementRotaryArmI = 0;
   private double placementRotaryArmD = 0;
+  private double feedforward = 0;
   //private double placementRotaryArmFDown = 0;
   //private double placementRotaryArmFUp = 0;
   private int sStrengthRotaryPlacementArm = 0;
@@ -65,6 +66,8 @@ public class PlacementRotaryArm extends SubsystemBase {
   private double l_maxAccelerationRotaryPlacementArm;
   private GenericEntry n_placementRotaryArmS_Strength;
   private double l_placementRotaryArmS_Strength;
+  private double l_feedforward;
+  private GenericEntry n_feedForward;
   public static final TrapezoidProfile.Constraints rotaryArmConstraints = new TrapezoidProfile.Constraints(
           Constants.kMaxVelocityRotaryPlacementArm, Constants.kMaxAccelerationRotaryPlacementArm);
   private TrapezoidProfile lower = new TrapezoidProfile(rotaryArmConstraints,
@@ -100,6 +103,8 @@ public class PlacementRotaryArm extends SubsystemBase {
     n_placementRotaryArmI = Placement.add("i", placementRotaryArmI).getEntry();
     n_placementRotaryArmD = Placement.add("d", placementRotaryArmD).getEntry();
 
+    n_feedForward = Placement.add("feed forward", feedforward).getEntry();
+
     n_lowPositionAngle = Placement.add("low position", lowPosition).getEntry();
     n_midPositionAngle = Placement.add("mid position", midPosition).getEntry();
     n_highPositionAngle = Placement.add("high position", highPosition).getEntry();
@@ -120,17 +125,20 @@ public class PlacementRotaryArm extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+  public double getFeedForward(double extensionLength, double placementAngle){
+    return Constants.kPercentOutputToHoldAtMaxExtension * extensionLength * Math.sin(placementAngle);
+  }
   public void gotoLow(double extensionLength, double placementAngle, double time) {
-    rotaryMotor.setVoltage((Constants.kPercentOutputToHoldAtMaxExtension * extensionLength * Math.sin(placementAngle) + rotaryPID.calculate(placementAngle,
-            lower.calculate(time))));
+    rotaryMotor.setVoltage((getFeedForward(extensionLength, placementAngle)) + rotaryPID.calculate(placementAngle,
+            lower.calculate(time)));
   }
   public void goToMid(double extensionLength, double placementAngle, double time) {
-    rotaryMotor.setVoltage((Constants.kPercentOutputToHoldAtMaxExtension * extensionLength * Math.sin(placementAngle) + rotaryPID.calculate(placementAngle,
-            mid.calculate(time))));
+    rotaryMotor.setVoltage((getFeedForward(extensionLength,placementAngle)) + rotaryPID.calculate(placementAngle,
+            mid.calculate(time)));
   }
   public void goToHigh(double extensionLength, double placementAngle, double time) {
-      rotaryMotor.setVoltage(((Constants.kPercentOutputToHoldAtMaxExtension * extensionLength * Math.sin(placementAngle)) + rotaryPID.calculate(placementAngle,
-              upper.calculate(time))));
+      rotaryMotor.setVoltage((getFeedForward(extensionLength,placementAngle)) + rotaryPID.calculate(placementAngle,
+              upper.calculate(time)));
   }
 
   public double getPositionPlacementArm(){
@@ -140,7 +148,7 @@ public class PlacementRotaryArm extends SubsystemBase {
     return 10 * Constants.kTicksToRadiansRotaryPlacementArm * rotaryMotor.getSelectedSensorVelocity();
   }
   public void updateValues(){
-    if (l_placementRotaryArmP != n_placementRotaryArmP.getDouble(placementRotaryArmP)){
+    /*if (l_placementRotaryArmP != n_placementRotaryArmP.getDouble(placementRotaryArmP)){
       rotaryMotor.config_kP(0, n_placementRotaryArmP.getDouble(placementRotaryArmP));
     }
     if (l_placementRotaryArmI != n_placementRotaryArmI.getDouble(placementRotaryArmI)){
@@ -149,7 +157,8 @@ public class PlacementRotaryArm extends SubsystemBase {
     if (l_placementRotaryArmD != n_placementRotaryArmD.getDouble(placementRotaryArmD)){
       rotaryMotor.config_kD(0, n_placementRotaryArmD.getDouble(placementRotaryArmD));
     }
-    /*if (l_placementRotaryArmFDown != n_placementRotaryArmFDown.getDouble(placementRotaryArmFDown)){
+
+    if (l_placementRotaryArmFDown != n_placementRotaryArmFDown.getDouble(placementRotaryArmFDown)){
       rotaryMotor.config_kF(0, n_placementRotaryArmFDown.getDouble(placementRotaryArmFDown));
     }
     if (l_placementRotaryArmFUp != n_placementRotaryArmFUp.getDouble(placementRotaryArmFUp)){
