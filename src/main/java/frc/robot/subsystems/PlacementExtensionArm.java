@@ -113,7 +113,7 @@ public class PlacementExtensionArm extends SubsystemBase {
 
 
   public double getPositionPlacementArm(){
-    return Constants.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorPosition();
+    return Constants.kTicksToMetersExtensionPlacement * extensionMotor.getSelectedSensorPosition();
   }
   public double getSpeedPlacementArm(){
     return 10 * Constants.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorVelocity();

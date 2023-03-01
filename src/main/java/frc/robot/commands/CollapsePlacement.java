@@ -32,22 +32,15 @@ public class CollapsePlacement extends CommandBase {
   @Override
   public void initialize() {
     m_placement.updateValues();
-    ran = false;
-
 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_placementRotary.getPositionPlacementArm()>Math.toRadians(30) && !ran){
       m_placement.collapseArm();
-      ran = true;
     }
-    if (m_placement.brokeLimit()) {
-      m_placement.stopArm();
-    }
-  }
+
 
   // Called once the command ends or is interrupted.
   @Override

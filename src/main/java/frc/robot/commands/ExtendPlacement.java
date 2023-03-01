@@ -32,18 +32,15 @@ public class ExtendPlacement extends CommandBase {
   @Override
   public void initialize() {
     m_placement.updateValues();
-    ran = false;
 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_placementRotary.getPositionPlacementArm()>Math.toRadians(30) && !ran) {
       m_placement.extendArm();
-      ran = true;
     }
-  }
+
 
   // Called once the command ends or is interrupted.
   @Override

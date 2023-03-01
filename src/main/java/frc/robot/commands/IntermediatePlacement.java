@@ -14,8 +14,6 @@ public class IntermediatePlacement extends CommandBase {
   private final PlacementExtensionArm m_placement;
   private final PlacementRotaryArm m_placementRotary;
 
-  private boolean ran = false;
-
 
   /**
    * Creates a new ExampleCommand.
@@ -34,17 +32,12 @@ public class IntermediatePlacement extends CommandBase {
   @Override
   public void initialize() {
     m_placement.updateValues();
-    ran = false;
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_placementRotary.getPositionPlacementArm()>Math.toRadians(30) & !ran){
       m_placement.collapseArm();
-      ran = true;
-    }
   }
 
   // Called once the command ends or is interrupted.
@@ -55,6 +48,6 @@ public class IntermediatePlacement extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_placementRotary.getPositionPlacementArm()>Math.toRadians(30);
   }
 }

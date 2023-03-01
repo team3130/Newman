@@ -64,8 +64,8 @@ public class RobotContainer {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ZeroWheels(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new Calibrate(m_placementRotaryArm));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new MidPlacement(m_placementRotaryArm));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new HighPlacement(m_placementRotaryArm));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new MidPlacement(m_placementRotaryArm, m_placementExtensionArm));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new HighPlacement(m_placementRotaryArm, m_placementExtensionArm));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new ExtendPlacement(m_placementExtensionArm, m_placementRotaryArm));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new CollapsePlacement(m_placementExtensionArm, m_placementRotaryArm));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ZeroPlacement(m_placementExtensionArm));

@@ -7,8 +7,12 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -41,11 +45,9 @@ public class PlacementRotaryArm extends SubsystemBase {
   private double placementRotaryArmP = 5.12295e-5 / 2;
   private double placementRotaryArmI = 0;
   private double placementRotaryArmD = 0;
-  private double placementRotaryArmFDown = 0;
-  private double placementRotaryArmFUp = 0;
+  //private double placementRotaryArmFDown = 0;
+  //private double placementRotaryArmFUp = 0;
   private int sStrengthRotaryPlacementArm = 0;
-
-
   private ShuffleboardTab Placement;
   private GenericEntry n_placementRotaryArmP;
   private double l_placementRotaryArmP;
@@ -63,19 +65,35 @@ public class PlacementRotaryArm extends SubsystemBase {
   private double l_maxAccelerationRotaryPlacementArm;
   private GenericEntry n_placementRotaryArmS_Strength;
   private double l_placementRotaryArmS_Strength;
+  public static final TrapezoidProfile.Constraints rotaryArmConstraints = new TrapezoidProfile.Constraints(
+          Constants.kMaxVelocityRotaryPlacementArm, Constants.kMaxAccelerationRotaryPlacementArm);
+  private TrapezoidProfile lower = new TrapezoidProfile(rotaryArmConstraints,
+          new TrapezoidProfile.State(0, 0),
+          new TrapezoidProfile.State(lowPosition, 0));
+
+  private TrapezoidProfile mid = new TrapezoidProfile(rotaryArmConstraints,
+          new TrapezoidProfile.State(0, 0),
+          new TrapezoidProfile.State(midPosition, 0));
+
+  private TrapezoidProfile upper = new TrapezoidProfile(rotaryArmConstraints,
+          new TrapezoidProfile.State(0, 0),
+          new TrapezoidProfile.State(highPosition, 0));
+  public ProfiledPIDController rotaryPID = new ProfiledPIDController(placementRotaryArmP, placementRotaryArmI,
+          placementRotaryArmD, rotaryArmConstraints);
 
 
 
   public PlacementRotaryArm() {
     rotaryMotor = new WPI_TalonFX(Constants.CAN_RotaryArm);
     rotaryMotor.configFactoryDefault();
-    rotaryMotor.config_kP(0, placementRotaryArmP);
-    rotaryMotor.config_kI(0, placementRotaryArmI);
-    rotaryMotor.config_kI(0, placementRotaryArmD);
-    rotaryMotor.config_kF(0, placementRotaryArmFUp);
-    rotaryMotor.configMotionSCurveStrength(0, sStrengthRotaryPlacementArm);
+    //rotaryMotor.config_kP(0, placementRotaryArmP);
+    //rotaryMotor.config_kI(0, placementRotaryArmI);
+    //rotaryMotor.config_kD(0, placementRotaryArmD);
+    //rotaryMotor.config_kF(0, placementRotaryArmFUp);
+    //rotaryMotor.configMotionSCurveStrength(0, sStrengthRotaryPlacementArm);
     rotaryMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
     rotaryMotor.enableVoltageCompensation(true);
+
 
     Placement = Shuffleboard.getTab("rotary arm");
     n_placementRotaryArmP = Placement.add("p", placementRotaryArmP).getEntry();
@@ -86,11 +104,11 @@ public class PlacementRotaryArm extends SubsystemBase {
     n_midPositionAngle = Placement.add("mid position", midPosition).getEntry();
     n_highPositionAngle = Placement.add("high position", highPosition).getEntry();
 
-    n_placementRotaryArmFUp = Placement.add("f up", placementRotaryArmFUp).getEntry();
-    n_placementRotaryArmFDown = Placement.add("f down", placementRotaryArmFDown).getEntry();
+    //n_placementRotaryArmFUp = Placement.add("f up", placementRotaryArmFUp).getEntry();
+    //n_placementRotaryArmFDown = Placement.add("f down", placementRotaryArmFDown).getEntry();
     n_maxVelocityRotaryPlacementArm = Placement.add("max velocity", Constants.kMaxVelocityRotaryPlacementArm).getEntry();
     n_maxAccelerationRotaryPlacementArm = Placement.add("max acceleration", Constants.kMaxAccelerationRotaryPlacementArm).getEntry();
-    n_placementRotaryArmS_Strength = Placement.add("s strength", sStrengthRotaryPlacementArm).getEntry();
+    //n_placementRotaryArmS_Strength = Placement.add("s strength", sStrengthRotaryPlacementArm).getEntry();
 
     positionMap = new HashMap<>();
     positionMap.put(Position.LOW, lowPosition);
@@ -102,21 +120,17 @@ public class PlacementRotaryArm extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
-
-
-  public void gotoLow(){
-    rotaryMotor.set(ControlMode.MotionMagic, n_lowPositionAngle.getDouble(lowPosition), DemandType.ArbitraryFeedForward, n_placementRotaryArmFDown.getDouble(placementRotaryArmFDown));
+  public void gotoLow(double extensionLength, double placementAngle, double time) {
+    rotaryMotor.setVoltage((Constants.kPercentOutputToHoldAtMaxExtension * extensionLength * Math.sin(placementAngle) + rotaryPID.calculate(placementAngle,
+            lower.calculate(time))));
   }
-  public void goToMid(){
-    if (getPositionPlacementArm() < midPosition) {
-      rotaryMotor.set(ControlMode.MotionMagic, n_midPositionAngle.getDouble(midPosition), DemandType.ArbitraryFeedForward, n_placementRotaryArmFUp.getDouble(placementRotaryArmFUp));
-    }
-    else {
-      rotaryMotor.set(ControlMode.MotionMagic, n_midPositionAngle.getDouble(midPosition), DemandType.ArbitraryFeedForward, n_placementRotaryArmFDown.getDouble(placementRotaryArmFDown));
-    }
+  public void goToMid(double extensionLength, double placementAngle, double time) {
+    rotaryMotor.setVoltage((Constants.kPercentOutputToHoldAtMaxExtension * extensionLength * Math.sin(placementAngle) + rotaryPID.calculate(placementAngle,
+            mid.calculate(time))));
   }
-  public void goToHigh(){
-    rotaryMotor.set(ControlMode.MotionMagic, n_highPositionAngle.getDouble(highPosition), DemandType.ArbitraryFeedForward, n_placementRotaryArmFUp.getDouble(placementRotaryArmFUp));
+  public void goToHigh(double extensionLength, double placementAngle, double time) {
+      rotaryMotor.setVoltage(((Constants.kPercentOutputToHoldAtMaxExtension * extensionLength * Math.sin(placementAngle)) + rotaryPID.calculate(placementAngle,
+              upper.calculate(time))));
   }
 
   public double getPositionPlacementArm(){
@@ -135,7 +149,7 @@ public class PlacementRotaryArm extends SubsystemBase {
     if (l_placementRotaryArmD != n_placementRotaryArmD.getDouble(placementRotaryArmD)){
       rotaryMotor.config_kD(0, n_placementRotaryArmD.getDouble(placementRotaryArmD));
     }
-    if (l_placementRotaryArmFDown != n_placementRotaryArmFDown.getDouble(placementRotaryArmFDown)){
+    /*if (l_placementRotaryArmFDown != n_placementRotaryArmFDown.getDouble(placementRotaryArmFDown)){
       rotaryMotor.config_kF(0, n_placementRotaryArmFDown.getDouble(placementRotaryArmFDown));
     }
     if (l_placementRotaryArmFUp != n_placementRotaryArmFUp.getDouble(placementRotaryArmFUp)){
@@ -150,10 +164,20 @@ public class PlacementRotaryArm extends SubsystemBase {
     if (l_maxAccelerationRotaryPlacementArm != n_maxAccelerationRotaryPlacementArm.getDouble(Constants.kMaxAccelerationRotaryPlacementArm)){
       rotaryMotor.configMotionAcceleration((int) n_maxVelocityRotaryPlacementArm.getDouble(Constants.kMaxVelocityRotaryPlacementArm),  0);
     }
+    */
   }
 
   public boolean isAtPosition(Position position) {
-    return Math.abs(rotaryMotor.getSelectedSensorPosition() - positionMap.get(position)) < positionDeadband;
+    return rotaryPID.atSetpoint();
+  }
+  public double getMidPosition(){
+    return midPosition;
+  }
+  public double getHighPosition(){
+    return highPosition;
+  }
+  public double getLowPosition(){
+    return lowPosition;
   }
 
   public void runAtPercentOutput(double output) {
