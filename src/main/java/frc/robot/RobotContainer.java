@@ -50,11 +50,10 @@ public class RobotContainer {
    */
   protected AutonManager m_autonManager;
   private static Joystick m_driverGamepad;
-  private static Joystick m_weaponsGamepad;
+  public static Joystick m_weaponsGamepad;
   private final Chassis m_chassis;
   private final Limelight m_limelight;
   private final ExtensionArm m_extensionArm;
-
     public Limelight getLimelight() {
       return m_limelight;
     }
