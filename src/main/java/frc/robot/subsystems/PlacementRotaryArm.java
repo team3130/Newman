@@ -16,6 +16,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 
@@ -48,7 +49,7 @@ public class PlacementRotaryArm extends SubsystemBase {
   private double feedforward = 0;
   //private double placementRotaryArmFDown = 0;
   //private double placementRotaryArmFUp = 0;
-  private int sStrengthRotaryPlacementArm = 0;
+  //private int sStrengthRotaryPlacementArm = 0;
   private ShuffleboardTab Placement;
   private GenericEntry n_placementRotaryArmP;
   private double l_placementRotaryArmP;
@@ -56,13 +57,14 @@ public class PlacementRotaryArm extends SubsystemBase {
   private double l_placementRotaryArmI;
   private GenericEntry n_placementRotaryArmD;
   private double l_placementRotaryArmD;
-  private GenericEntry n_placementRotaryArmFUp;
+  /*private GenericEntry n_placementRotaryArmFUp;
   private double l_placementRotaryArmFUp;
   private GenericEntry n_placementRotaryArmFDown;
   private double l_placementRotaryArmFDown;
+   */
   private GenericEntry n_maxVelocityRotaryPlacementArm;
   private double l_maxVelocityRotaryPlacementArm;
-  private GenericEntry n_maxAccelerationRotaryPlacementArm;
+  private SimpleWidget n_maxAccelerationRotaryPlacementArm;
   private double l_maxAccelerationRotaryPlacementArm;
   private GenericEntry n_placementRotaryArmS_Strength;
   private double l_placementRotaryArmS_Strength;
@@ -112,7 +114,7 @@ public class PlacementRotaryArm extends SubsystemBase {
     //n_placementRotaryArmFUp = Placement.add("f up", placementRotaryArmFUp).getEntry();
     //n_placementRotaryArmFDown = Placement.add("f down", placementRotaryArmFDown).getEntry();
     n_maxVelocityRotaryPlacementArm = Placement.add("max velocity", Constants.kMaxVelocityRotaryPlacementArm).getEntry();
-    n_maxAccelerationRotaryPlacementArm = Placement.add("max acceleration", Constants.kMaxAccelerationRotaryPlacementArm).getEntry();
+    n_maxAccelerationRotaryPlacementArm = Placement.add("max acceleration", Constants.kMaxAccelerationRotaryPlacementArm);
     //n_placementRotaryArmS_Strength = Placement.add("s strength", sStrengthRotaryPlacementArm).getEntry();
 
     positionMap = new HashMap<>();
@@ -148,16 +150,16 @@ public class PlacementRotaryArm extends SubsystemBase {
     return 10 * Constants.kTicksToRadiansRotaryPlacementArm * rotaryMotor.getSelectedSensorVelocity();
   }
   public void updateValues(){
-    /*if (l_placementRotaryArmP != n_placementRotaryArmP.getDouble(placementRotaryArmP)){
-      rotaryMotor.config_kP(0, n_placementRotaryArmP.getDouble(placementRotaryArmP));
+    if (l_placementRotaryArmP != n_placementRotaryArmP.getDouble(placementRotaryArmP)){
+      rotaryPID.setP(n_placementRotaryArmP.getDouble(placementRotaryArmP));
     }
     if (l_placementRotaryArmI != n_placementRotaryArmI.getDouble(placementRotaryArmI)){
-      rotaryMotor.config_kI(0, n_placementRotaryArmI.getDouble(placementRotaryArmI));
+      rotaryPID.setI(n_placementRotaryArmI.getDouble(placementRotaryArmI));
     }
     if (l_placementRotaryArmD != n_placementRotaryArmD.getDouble(placementRotaryArmD)){
-      rotaryMotor.config_kD(0, n_placementRotaryArmD.getDouble(placementRotaryArmD));
+      rotaryPID.setD(n_placementRotaryArmD.getDouble(placementRotaryArmD));
     }
-
+/*
     if (l_placementRotaryArmFDown != n_placementRotaryArmFDown.getDouble(placementRotaryArmFDown)){
       rotaryMotor.config_kF(0, n_placementRotaryArmFDown.getDouble(placementRotaryArmFDown));
     }

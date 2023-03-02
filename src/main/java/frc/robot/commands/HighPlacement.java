@@ -35,10 +35,9 @@ public class HighPlacement extends CommandBase {
   @Override
   public void initialize() {
     timeRunning.reset();
-    //m_placementRotaryArm.updateValues();
+    m_placementRotaryArm.updateValues();
     timeRunning.start();
   }
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {

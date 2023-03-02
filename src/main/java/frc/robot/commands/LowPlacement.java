@@ -32,7 +32,7 @@ public class LowPlacement extends CommandBase {
   @Override
   public void initialize() {
     timeRunning.reset();
-    //m_placementRotaryArm.updateValues();
+    m_placementRotaryArm.updateValues();
     timeRunning.start();
 
   }
