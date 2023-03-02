@@ -63,7 +63,7 @@ public class ExtensionArm extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     gamepad.setRumble(GenericHID.RumbleType.kBothRumble,getRumbleExtensionArmValue());
-  }//periodic
+  }
 
   /**
    * extend the extension arm
