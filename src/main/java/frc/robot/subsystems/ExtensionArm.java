@@ -45,7 +45,6 @@ public class ExtensionArm extends SubsystemBase {
    * @param ligament the ligament object that is on smart-dashboard
    */
   public ExtensionArm(MechanismLigament2d ligament, Joystick gamepad) {
-    this.gamepad = gamepad;
     extensionMotor = new WPI_TalonSRX(Constants.CAN_ExtensionArm);
     extensionMotor.configFactoryDefault();
     extensionMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
@@ -55,7 +54,8 @@ public class ExtensionArm extends SubsystemBase {
     extensionMotor.enableVoltageCompensation(false); //TODO: change when we get falcon
     extensionMotor.setInverted(false);
     extensionMotor.setNeutralMode(NeutralMode.Brake);
-
+    
+    this.gamepad = gamepad;
     this.ligament = ligament;
   }
 
