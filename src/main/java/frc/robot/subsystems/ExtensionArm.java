@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -28,6 +30,7 @@ public class ExtensionArm extends SubsystemBase {
   /**
    * Speed to run the motor at by default, can be changed in shuffleboard
    */
+  private static ShuffleboardTab tab = Shuffleboard.getTab("Placement");
   private double extensionArmSpeed = 1;
 
   /**
@@ -63,6 +66,7 @@ public class ExtensionArm extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     gamepad.setRumble(GenericHID.RumbleType.kBothRumble,getRumbleExtensionArmValue());
+    ligament.setLength(getLengthExtensionArm());
   }
 
   /**
