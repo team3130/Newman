@@ -15,7 +15,6 @@ import frc.robot.Newman_Constants.Constants;
  */
 public class RotaryArm extends SubsystemBase {
   private double outputSpeed = 0.6; // the speed we will run the rotary arm at
-
   private final WPI_TalonFX rotaryArmMotor; // motor for the rotary arm
 
   /**

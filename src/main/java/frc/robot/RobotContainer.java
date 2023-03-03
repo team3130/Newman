@@ -18,6 +18,10 @@ import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
 import frc.robot.commands.GoToOrigin;
+import frc.robot.commands.Intake.IntakeGoToHighLimit;
+import frc.robot.commands.Intake.IntakeGoToLowLimit;
+import frc.robot.commands.Intake.IntakeGoToMidLimit;
+import frc.robot.commands.Intake.IntakeToggleBeaterBar;
 import frc.robot.commands.Placement.ActuateHandGrabber;
 import frc.robot.commands.Placement.MoveExtensionArm;
 import frc.robot.commands.Placement.MoveRotaryArm;
@@ -51,6 +55,8 @@ public class RobotContainer {
   private final RotaryArm m_rotaryArm;
   private final HandGrabber m_handGrabber;
   private final Hopper m_hopper;
+  private final IntakePivot m_pivot;
+  private final IntakeBeaterBar m_beaterBar;
 
   public Chassis getChassis() {
     return m_chassis;
@@ -77,6 +83,8 @@ public class RobotContainer {
     m_rotaryArm = new RotaryArm();
     m_handGrabber = new HandGrabber();
     m_hopper = new Hopper();
+    m_beaterBar = new IntakeBeaterBar();
+    m_pivot = new IntakePivot();
 
     m_chassis.setDefaultCommand(new TeleopDrive(m_chassis, m_driverGamepad));
 
@@ -101,6 +109,8 @@ public class RobotContainer {
       tab.add(m_rotaryArm);
       tab.add(m_handGrabber);
       tab.add(m_hopper);
+      tab.add(m_pivot);
+      tab.add(m_beaterBar);
     }
   }
 
@@ -135,6 +145,12 @@ public class RobotContainer {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new GoToOrigin(m_chassis, m_autonManager));
 
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ActuateHandGrabber(m_handGrabber));
+
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new IntakeToggleBeaterBar(m_beaterBar));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new IntakeGoToLowLimit(m_beaterBar,m_pivot));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new IntakeGoToMidLimit(m_beaterBar,m_pivot));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new IntakeGoToHighLimit(m_beaterBar,m_pivot));
+
     SmartDashboard.putData(new FlipFieldOriented(m_chassis));
 
     Shuffleboard.getTab("Test").add("Spin motor down", new zeroExtensionArm(m_extensionArm));
