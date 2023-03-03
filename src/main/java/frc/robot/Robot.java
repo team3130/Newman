@@ -18,7 +18,6 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 public class Robot extends TimedRobot {
   private Timer timer;
   private RobotContainer m_robotContainer;
-  private boolean first = true;
 
   @Override
   public void robotInit() {
@@ -26,18 +25,17 @@ public class Robot extends TimedRobot {
     timer = new Timer();
     timer.reset();
     timer.start();
-
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     if (timer.hasElapsed(Constants.kResetTime)) {
-      if (first) {
-        m_robotContainer.resetOdometryWithoutApril();
-        first = false;
+      if (m_robotContainer.resetOdometry()) {
+        timer.reset();
+        timer.stop();
       } else {
-        m_robotContainer.resetOdometry();
+        m_robotContainer.resetOdometryWithoutApril();
       }
     }
   }
