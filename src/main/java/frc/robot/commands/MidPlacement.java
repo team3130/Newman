@@ -38,14 +38,14 @@ public class MidPlacement extends CommandBase {
     timeRunning.reset();
     m_placementRotaryArm.updateValues();
     timeRunning.start();
+    m_placementRotaryArm.makeSetpointMid();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_placementRotaryArm.goToMid(m_placementExtensionArm.getPositionPlacementArm(),
-            m_placementRotaryArm.getPositionPlacementArm(),timeRunning.get());
-
+    m_placementRotaryArm.gotoPos(m_placementExtensionArm.getPositionPlacementArm(),
+            m_placementRotaryArm.getPositionPlacementArm());
   }
 
   // Called once the command ends or is interrupted.

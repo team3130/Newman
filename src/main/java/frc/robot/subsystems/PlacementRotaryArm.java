@@ -130,17 +130,17 @@ public class PlacementRotaryArm extends SubsystemBase {
   public double getFeedForward(double extensionLength, double placementAngle){
     return Constants.kPercentOutputToHoldAtMaxExtension * extensionLength * Math.sin(placementAngle);
   }
-  public void gotoLow(double extensionLength, double placementAngle, double time) {
-    rotaryMotor.setVoltage((getFeedForward(extensionLength, placementAngle)) + rotaryPID.calculate(placementAngle,
-            lower.calculate(time)));
+  public void gotoPos(double extensionLength, double placementAngle){
+    rotaryMotor.set(ControlMode.PercentOutput, (getFeedForward(extensionLength, placementAngle)) + rotaryPID.calculate(placementAngle));
   }
-  public void goToMid(double extensionLength, double placementAngle, double time) {
-    rotaryMotor.setVoltage((getFeedForward(extensionLength,placementAngle)) + rotaryPID.calculate(placementAngle,
-            mid.calculate(time)));
+  public void makeSetpointLow(){
+    rotaryPID.setGoal(lowPosition);
   }
-  public void goToHigh(double extensionLength, double placementAngle, double time) {
-      rotaryMotor.setVoltage((getFeedForward(extensionLength,placementAngle)) + rotaryPID.calculate(placementAngle,
-              upper.calculate(time)));
+  public void makeSetpointMid(){
+    rotaryPID.setGoal(midPosition);
+  }
+  public void makeSetpointHigh(){
+    rotaryPID.setGoal(highPosition);
   }
 
   public double getPositionPlacementArm(){
