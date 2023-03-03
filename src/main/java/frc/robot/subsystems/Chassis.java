@@ -108,7 +108,7 @@ public class Chassis extends SubsystemBase {
     }
 
     /**
-     * Zereos the Navx's heading
+     * Zeros the Navx's heading
      */
     public void zeroHeading(){
       Navx.resetNavX();
@@ -161,7 +161,7 @@ public class Chassis extends SubsystemBase {
         updateOdometryFromSwerve();
         OdoPosition position = refreshPosition();
         if (position != null) {
-            updateOdometryFromAprilTags(position);
+            updateOdometryFromVision(position);
         }
         // field2d.setRobotPose(m_odometry.getEstimatedPosition());
     }
@@ -216,7 +216,7 @@ public class Chassis extends SubsystemBase {
     }
 
     /**
-     * Returns the current position of the bot as a Pose2d
+     * Returns the current position of the bot as a {@link Pose2d}
      * @return position according to odometry
      */
     public Pose2d getPose2d() {
@@ -329,7 +329,7 @@ public class Chassis extends SubsystemBase {
      * update odometry from april tags
      * @param refreshPosition time and position to set to
      */
-    public void updateOdometryFromAprilTags(OdoPosition refreshPosition) {
+    public void updateOdometryFromVision(OdoPosition refreshPosition) {
         m_odometry.addVisionMeasurement(refreshPosition.getPosition(), refreshPosition.getTime());
     }
 
