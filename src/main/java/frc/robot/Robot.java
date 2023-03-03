@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.robot.commands.AprilTagvsReal;
 import frc.robot.commands.Chassis.ZeroEverything;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.sensors.Limelight;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Robot extends TimedRobot {
   private Timer timer;
@@ -31,10 +34,10 @@ public class Robot extends TimedRobot {
       if (m_robotContainer.resetOdometry()) {
         timer.reset();
         timer.stop();
+      } else {
+        m_robotContainer.resetOdometryWithoutApril();
       }
     }
-
-    m_robotContainer.getLimelight().outputToShuffleBoard();
   }
 
   @Override

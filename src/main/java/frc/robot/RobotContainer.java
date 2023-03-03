@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -151,6 +153,12 @@ public class RobotContainer {
     m_chassis.resetOdometry(positionToResetTo.getPosition());
     return true;
   }
+
+  public void resetOdometryWithoutApril() {
+    m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
+  }
+
+
 
   /**
    * Gets the selected auton command that is on shuffleboard
