@@ -39,10 +39,10 @@ public class HolonomicControllerCommand extends CommandBase {
 
     public void execute() {
         double time = m_timer.get();
-        PathPlannerTrajectory.PathPlannerState desiredState = (PathPlannerTrajectory.PathPlannerState) m_trajectory.sample(time);
+        PathPlannerTrajectory.PathPlannerState desiredState = (PathPlannerTrajectory.PathPlannerState()) m_trajectory.sample(time);
 
         ChassisSpeeds targetChassisSpeeds = m_controller.calculate(m_pose.get(), desiredState,
-                desiredState.holonomicRotation);
+                desiredState.holonomicRotation());
         SwerveModuleState[] targetModuleStates = m_kinematics.toSwerveModuleStates(targetChassisSpeeds);
 
         m_outputModuleStates.accept(targetModuleStates);
@@ -56,8 +56,8 @@ public class HolonomicControllerCommand extends CommandBase {
 
     public boolean isFinished() {
         boolean timeHasPassed = m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds());
-        if (Constants.debugMode) {
-            return inRange(m_pose.get(), m_trajectory.getEndState().poseMeters);
+        if (Constants.debugMode()) {
+            return inRange(m_pose.get(), m_trajectory.getEndState().poseMeters());
         }
         else {
             return timeHasPassed;
