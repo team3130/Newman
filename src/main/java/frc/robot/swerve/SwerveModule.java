@@ -8,12 +8,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import frc.robot.Newman_Constants.Constants ;
+import frc.robot.Newman_Constants.Constants;
 
 
 /**
@@ -128,17 +125,9 @@ public class SwerveModule implements Sendable {
      * Resets the relative encoders according the absolute encoder involving the offset
      */
     public void resetEncoders() {
-        m_steerMotor.setSelectedSensorPosition((getAbsoluteEncoderRad() - absoluteEncoderOffset) / Constants.SteerTicksToRads);
-        // m_driveMotor.setSelectedSensorPosition(0);
-    }
-
-    /**
-     * Whether the wheels are zereoed or not
-     * @return custom at setpoint logic for the PID controller
-     */
-    public boolean wheelsZeroed() {
-        Rotation2d pos = new Rotation2d(getTurningPosition());
-        return (pos.getDegrees() > 355 || pos.getDegrees() < 5) && getTurningVelocity() < 0.05;
+        m_steerMotor.setSelectedSensorPosition(
+                (getAbsoluteEncoderRad() - absoluteEncoderOffset) / Constants.SteerTicksToRads, 0, 10);
+        m_driveMotor.setSelectedSensorPosition(0, 0, 10);
     }
 
     /**

@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -18,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
-import frc.robot.commands.Chassis.ZeroEverything;
 import frc.robot.commands.GoToOrigin;
 import frc.robot.commands.Placement.ActuateHandGrabber;
 import frc.robot.commands.Placement.MoveExtensionArm;
@@ -132,8 +129,6 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new FlipFieldOriented(m_chassis));
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
-
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new GoToOrigin(m_chassis, m_autonManager));
 
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ActuateHandGrabber(m_handGrabber));
@@ -153,12 +148,6 @@ public class RobotContainer {
     m_chassis.resetOdometry(positionToResetTo.getPosition());
     return true;
   }
-
-  public void resetOdometryWithoutApril() {
-    m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
-  }
-
-
 
   /**
    * Gets the selected auton command that is on shuffleboard

@@ -87,8 +87,6 @@ public class Chassis extends SubsystemBase {
     * <p>Hard reset of the odometry object</p>
     */
     public void resetOdometry(Pose2d pose) {
-        resetEncoders();
-        Navx.resetNavX();
         m_odometry.resetPosition(getRotation2d(), generatePoses(), pose);
     }
 
@@ -221,15 +219,6 @@ public class Chassis extends SubsystemBase {
      */
     public Pose2d getPose2d() {
         return m_odometry.getEstimatedPosition();
-    }
-
-    /**
-     * Command to reset the encoders
-     */
-    public void resetEncoders() {
-        for (SwerveModule module : modules) {
-            module.resetEncoders();
-        }
     }
 
     /**

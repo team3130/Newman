@@ -25,16 +25,9 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    if (timer.hasElapsed(Constants.kResetTime)) {
-      if (m_robotContainer.resetOdometry()) {
-        timer.reset();
-        timer.stop();
-      } else {
-        if (first) {
-          m_robotContainer.resetOdometryWithoutApril();
-          first = false;
-        }
-      }
+    if (m_robotContainer.resetOdometry()) {
+      timer.reset();
+      timer.stop();
     }
   }
 
