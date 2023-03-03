@@ -55,13 +55,11 @@ public class AutonManager {
         m_autonChooser.setDefaultOption("do nothing", new InstantCommand());
 
         // the string is the name passed into shuffleboard and the method call is to generate the method you will use
-        // m_autonChooser.addOption("3 Meter", generate3MeterDrive());
-        // m_autonChooser.addOption("Question mark", generateExamplePathFromFile());
-        // m_autonChooser.addOption("player side", generatepWeekZeroPath());
-        // m_autonChooser.addOption("far side", generatepWeekZeroPath2());
+/*         m_autonChooser.addOption("3 Meter", generate3MeterDrive());
+         m_autonChooser.addOption("Question mark", generateExamplePathFromFile());
+         m_autonChooser.addOption("player side", generatepWeekZeroPath());
+         m_autonChooser.addOption("far side", generatepWeekZeroPath2());*/
         m_autonChooser.addOption("feelin spicy", generateExamplePathFromPoses());
-        m_autonChooser.addOption("circuit", complexPathTest());
-        m_autonChooser.addOption("AprilTagTesting",aprilTagTesting());
     }
 
     /**
@@ -118,16 +116,16 @@ public class AutonManager {
      * @return the final command
      */
     public SequentialCommandGroup wrapCmd(AutonCommand first, Command... restOfCommands) {
-        SequentialCommandGroup commandgroup = new SequentialCommandGroup(
+        SequentialCommandGroup commandGroup = new SequentialCommandGroup(
                 new InstantCommand(() -> m_chassis.resetOdometry(first.getStartPosition())),
                 first.getCmd()
         );
         // add the rest of the commands passed in
-        commandgroup.addCommands(restOfCommands);
+        commandGroup.addCommands(restOfCommands);
         // stop the modules
-        commandgroup.addCommands(new InstantCommand(m_chassis::stopModules));
+        commandGroup.addCommands(new InstantCommand(m_chassis::stopModules));
 
-        return commandgroup;
+        return commandGroup;
     }
 
     /**
@@ -184,28 +182,11 @@ public class AutonManager {
         return wrapCmd(command);
     }
 
-    public Command aprilTagTesting(){
-
-        PathPlannerTrajectory trajectory = PathPlanner.generatePath(safe_constraints, new PathPoint(
-                new Translation2d(0, 0), new Rotation2d(), new Rotation2d()),
-                new PathPoint( new Translation2d(-3, 0),  new Rotation2d(), new Rotation2d()));
-
-        AutonCommand command = autonCommandGenerator(trajectory);
-        return wrapCmd(command);
-
-    }
-
-
-    public CommandBase complexPathTest() {
-        PathPlannerTrajectory circuit = PathPlanner.loadPath("circuit", safe_constraints);
-        PathPlannerTrajectory circuitLoop2 = PathPlanner.loadPath("circuit", safe_constraints);
-        PathPlannerTrajectory circuitLoop3 = PathPlanner.loadPath("circuit", safe_constraints);
-        circuit.concatenate(circuitLoop2);
-        circuit.concatenate(circuitLoop3);
-
-        return wrapCmd(autonCommandGenerator(circuit));
-    }
-
+    /**
+     * Generates a path from a passed in position to the origin
+     * @param Current the position of the start of that path
+     * @return the command to get to the start of the path
+     */
     public CommandBase backToStart(Pose2d Current) {
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 violent_constraints,
@@ -218,8 +199,8 @@ public class AutonManager {
                 new PathPoint(new Translation2d(0, 0), new Rotation2d(), new Rotation2d())
         );
 
-        AutonCommand commad = autonCommandGenerator(trajectory);
-        return wrapCmd(commad);
+        AutonCommand command = autonCommandGenerator(trajectory);
+        return wrapCmd(command);
     }
 
     /**
