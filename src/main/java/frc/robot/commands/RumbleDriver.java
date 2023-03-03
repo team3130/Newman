@@ -1,17 +1,20 @@
-package frc.robot.supportingClasses;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import static frc.robot.RobotContainer.m_driverGamepad;
+
+
+
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.Newman_Constants.Constants;
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
-public class RumbleDriver {
+public class RumbleDriver extends CommandBase {
     private Timer timer1;
+    private final Joystick m_driverGamepad;
 
-    public RumbleDriver () {
+    public RumbleDriver (Joystick mDriverGamepad) {
+        m_driverGamepad = mDriverGamepad;
         timer1 = new Timer();
         timer1.reset();
         timer1.start();
