@@ -11,7 +11,7 @@ import frc.robot.subsystems.PlacementRotaryArm;
 /** An example command that uses an example subsystem. */
 public class ExtendPlacement extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final PlacementExtensionArm m_placement;
+  private final PlacementExtensionArm m_placementExtension;
   private final PlacementRotaryArm m_placementRotary;
   private boolean ran = false;
 
@@ -21,7 +21,7 @@ public class ExtendPlacement extends CommandBase {
    * @param subsystem The subsystem used by this command.
    */
   public ExtendPlacement(PlacementExtensionArm subsystem, PlacementRotaryArm rotary) {
-    m_placement = subsystem;
+    m_placementExtension = subsystem;
     m_placementRotary = rotary;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -31,14 +31,15 @@ public class ExtendPlacement extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_placement.updateValues();
+    m_placementExtension.updateValues();
 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      m_placement.extendArm();
+    if (m_placementExtension.passedBumper(m_placementRotary))
+    m_placementExtension.extendArm();
     }
 
 

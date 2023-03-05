@@ -14,6 +14,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
@@ -29,6 +31,8 @@ public class PlacementRotaryArm extends SubsystemBase {
 
   /** Creates a new ExampleSubsystem. */
   private WPI_TalonFX rotaryMotor;
+  private Solenoid brake;
+  private boolean defaultState=false;
   private double lowPosition = 0;
   private double midPosition = Math.PI/4;
   private double highPosition = Math.PI /2;
@@ -70,8 +74,10 @@ public class PlacementRotaryArm extends SubsystemBase {
   private double l_placementRotaryArmS_Strength;
   private double l_feedforward;
   private GenericEntry n_feedForward;
+
   public static final TrapezoidProfile.Constraints rotaryArmConstraints = new TrapezoidProfile.Constraints(
           Constants.kMaxVelocityRotaryPlacementArm, Constants.kMaxAccelerationRotaryPlacementArm);
+  /*
   private TrapezoidProfile lower = new TrapezoidProfile(rotaryArmConstraints,
           new TrapezoidProfile.State(0, 0),
           new TrapezoidProfile.State(lowPosition, 0));
@@ -83,6 +89,8 @@ public class PlacementRotaryArm extends SubsystemBase {
   private TrapezoidProfile upper = new TrapezoidProfile(rotaryArmConstraints,
           new TrapezoidProfile.State(0, 0),
           new TrapezoidProfile.State(highPosition, 0));
+          */
+
   public ProfiledPIDController rotaryPID = new ProfiledPIDController(placementRotaryArmP, placementRotaryArmI,
           placementRotaryArmD, rotaryArmConstraints);
 
@@ -91,6 +99,8 @@ public class PlacementRotaryArm extends SubsystemBase {
   public PlacementRotaryArm() {
     rotaryMotor = new WPI_TalonFX(Constants.CAN_RotaryArm);
     rotaryMotor.configFactoryDefault();
+    brake = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM, Constants.PNM_Brake);
+    brake.set(defaultState);
     //rotaryMotor.config_kP(0, placementRotaryArmP);
     //rotaryMotor.config_kI(0, placementRotaryArmI);
     //rotaryMotor.config_kD(0, placementRotaryArmD);
@@ -98,6 +108,7 @@ public class PlacementRotaryArm extends SubsystemBase {
     //rotaryMotor.configMotionSCurveStrength(0, sStrengthRotaryPlacementArm);
     rotaryMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
     rotaryMotor.enableVoltageCompensation(true);
+    rotaryPID.setTolerance(Math.toRadians(2));
 
 
     Placement = Shuffleboard.getTab("rotary arm");
@@ -127,10 +138,20 @@ public class PlacementRotaryArm extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+  public void toggleBrake(){
+    brake.toggle();
+  }
+  public void engageBrake(){
+    brake.set(!defaultState);
+  }
+  public void releaseBrake(){
+    brake.set(defaultState);
+  }
   public double getFeedForward(double extensionLength, double placementAngle){
     return Constants.kPercentOutputToHoldAtMaxExtension * extensionLength * Math.sin(placementAngle);
   }
-  public void gotoPos(double extensionLength, double placementAngle){
+  public void gotoPos(double extensionLength, double placementAngle){ //does this need a time?
     rotaryMotor.set(ControlMode.PercentOutput, (getFeedForward(extensionLength, placementAngle)) + rotaryPID.calculate(placementAngle));
   }
   public void makeSetpointLow(){

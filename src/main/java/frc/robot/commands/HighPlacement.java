@@ -35,6 +35,7 @@ public class HighPlacement extends CommandBase {
   @Override
   public void initialize() {
     timeRunning.reset();
+    m_placementRotaryArm.releaseBrake();
     m_placementRotaryArm.updateValues();
     timeRunning.start();
     m_placementRotaryArm.makeSetpointHigh();
@@ -49,6 +50,7 @@ public class HighPlacement extends CommandBase {
     // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_placementRotaryArm.engageBrake();
     timeRunning.stop();
     timeRunning.reset();
   }

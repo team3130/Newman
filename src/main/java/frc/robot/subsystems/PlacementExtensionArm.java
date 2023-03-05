@@ -30,7 +30,6 @@ public class PlacementExtensionArm extends SubsystemBase {
   public GenericEntry n_placementExtensionArmFUp;
   public double l_placementExtensionArmFUp;
   public GenericEntry n_placementExtensionArmFDown;
-  public double l_placementExtensionArmFDown;
   public GenericEntry n_maxVelocityPlacementExtensionArm;
   public double l_maxVelocityPlacementExtensionArm;
   public GenericEntry n_maxAccelerationPlacementExtensionArm;
@@ -49,7 +48,7 @@ public class PlacementExtensionArm extends SubsystemBase {
   public double placementExtensionArmI = 0;
   public double placementExtensionArmD = 0;
   public double placementExtensionArmFDown = 0;
-  public double placementExtensionArmFUp = 0;
+  public double placementExtensionArmF = 0;
   public int sStrengthPlacementExtensionArm = 0;
 
 
@@ -60,9 +59,13 @@ public class PlacementExtensionArm extends SubsystemBase {
     extensionMotor.config_kP(0,placementExtensionArmP);
     extensionMotor.config_kI(0,placementExtensionArmI);
     extensionMotor.config_kI(0,placementExtensionArmD);
-    extensionMotor.config_kF(0,placementExtensionArmFUp);
-    extensionMotor.config_kF(0,placementExtensionArmFDown);
-    extensionMotor.configMotionSCurveStrength(0, sStrengthPlacementExtensionArm);
+    extensionMotor.config_kF(0, placementExtensionArmF);
+
+    extensionMotor.configMotionCruiseVelocity(Constants.kMaxVelocityPlacementExtensionArm);
+    extensionMotor.configMotionAcceleration(Constants.kMaxAccelerationPlacementExtensionArm);
+    extensionMotor.configMotionSCurveStrength(sStrengthPlacementExtensionArm);
+
+
     extensionMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
     extensionMotor.enableVoltageCompensation(true);
 
@@ -80,7 +83,7 @@ public class PlacementExtensionArm extends SubsystemBase {
     n_extendedPosition = Placement.add("extended position", extendedPosition).getEntry();
 
 
-    n_placementExtensionArmFUp = Placement.add("f up", placementExtensionArmFUp).getEntry();
+    n_placementExtensionArmFUp = Placement.add("f up", placementExtensionArmF).getEntry();
     n_placementExtensionArmFDown = Placement.add("f down", placementExtensionArmFDown).getEntry();
     n_maxVelocityPlacementExtensionArm = Placement.add("max velocity", Constants.kMaxVelocityPlacementExtensionArm).getEntry();
     n_maxAccelerationPlacementExtensionArm = Placement.add("max acceleration", Constants.kMaxAccelerationPlacementExtensionArm).getEntry();
@@ -109,11 +112,15 @@ public class PlacementExtensionArm extends SubsystemBase {
     extensionMotor.set(ControlMode.PercentOutput, 0.2);
   }
 
-
-
+  public boolean passedBumper(PlacementRotaryArm rotaryArm){
+    return rotaryArm.getPositionPlacementArm() > Math.toRadians(30);
+  }
+  public boolean isMoving(PlacementRotaryArm rotaryArm){ // alternative to passedBumper
+    return !rotaryArm.isStationary();
+  }
 
   public double getPositionPlacementArm(){
-    return Constants.kTicksToMetersExtensionPlacement * extensionMotor.getSelectedSensorPosition();
+    return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition();
   }
   public double getSpeedPlacementArm(){
     return 10 * Constants.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorVelocity();
@@ -131,11 +138,8 @@ public class PlacementExtensionArm extends SubsystemBase {
     if (l_placementExtensionArmD != n_placementExtensionArmD.getDouble(placementExtensionArmD)){
       extensionMotor.config_kD(0, n_placementExtensionArmD.getDouble(placementExtensionArmD));
     }
-    if (l_placementExtensionArmFDown != n_placementExtensionArmFDown.getDouble(placementExtensionArmFDown)){
-      extensionMotor.config_kF(0, n_placementExtensionArmFDown.getDouble(placementExtensionArmFDown));
-    }
-    if (l_placementExtensionArmFUp != n_placementExtensionArmFUp.getDouble(placementExtensionArmFUp)){
-      extensionMotor.config_kF(0, n_placementExtensionArmFUp.getDouble(placementExtensionArmFUp));
+    if (l_placementExtensionArmFUp != n_placementExtensionArmFUp.getDouble(placementExtensionArmF)){
+      extensionMotor.config_kF(0, n_placementExtensionArmFUp.getDouble(placementExtensionArmF));
     }
     if (l_placementExtensionArmS_Strength != n_placementExtensionArmS_Strength.getDouble(sStrengthPlacementExtensionArm)){
       extensionMotor.configMotionSCurveStrength(0, (int) n_placementExtensionArmS_Strength.getDouble(sStrengthPlacementExtensionArm));

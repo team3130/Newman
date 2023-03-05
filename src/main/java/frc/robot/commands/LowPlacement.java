@@ -32,6 +32,7 @@ public class LowPlacement extends CommandBase {
   @Override
   public void initialize() {
     timeRunning.reset();
+    m_placementRotaryArm.releaseBrake();
     m_placementRotaryArm.updateValues();
     timeRunning.start();
     m_placementRotaryArm.makeSetpointLow();
@@ -50,6 +51,8 @@ public class LowPlacement extends CommandBase {
   public void end(boolean interupted) {
     timeRunning.stop();
     timeRunning.reset();
+    m_placementRotaryArm.engageBrake();
+
   }
 
   // Returns true when the command should end.

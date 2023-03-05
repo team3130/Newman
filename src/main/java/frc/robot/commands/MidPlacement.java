@@ -36,6 +36,7 @@ public class MidPlacement extends CommandBase {
   @Override
   public void initialize() {
     timeRunning.reset();
+    m_placementRotaryArm.releaseBrake();
     m_placementRotaryArm.updateValues();
     timeRunning.start();
     m_placementRotaryArm.makeSetpointMid();
@@ -53,6 +54,7 @@ public class MidPlacement extends CommandBase {
   public void end(boolean interrupted) {
     timeRunning.stop();
     timeRunning.reset();
+    m_placementRotaryArm.engageBrake();
   }
 
   // Returns true when the command should end.
