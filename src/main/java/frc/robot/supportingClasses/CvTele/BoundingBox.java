@@ -54,6 +54,10 @@ public class BoundingBox {
         }
     }
 
+    public BoundingBox(double xSmall, double ySmall, double xBig, double yBig) {
+        this(xSmall, ySmall, -1, xBig, yBig, Double.MAX_VALUE / 2);
+    }
+
     /**
      *  Creates a bounding box from {@link Pose3d} objects.
      *
@@ -65,13 +69,13 @@ public class BoundingBox {
     }
 
     /**
-     * Creates a bounding fiel drom {@link Pose2d} objects
+     * Creates a bounding field from {@link Pose2d} objects
      *
      * @param lowerCorner 2D point of the lower corner of the bounding box.
      * @param upperCorner 2D point of the upper corner of the bounding box.
      */
     public BoundingBox(Pose2d lowerCorner, Pose2d upperCorner) {
-        this(lowerCorner.getX(), lowerCorner.getY(), 0, upperCorner.getX(), upperCorner.getY(), 0);
+        this(lowerCorner.getX(), lowerCorner.getY(), upperCorner.getX(), upperCorner.getY());
     }
 
     /**

@@ -1,16 +1,20 @@
 package frc.robot.supportingClasses.CvTele;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameElement {
     // local constants
     protected static class Constants {
         public final static double heightGridDeadband = 0.1; // meters off the ground
-        public static final BoundingBox scoringStationBlue = new BoundingBox(); //TODO: find values
-        public static final BoundingBox scoringStationRed = new BoundingBox(); //TODO: find values
+        public static final BoundingBox scoringStationBlue = new BoundingBox(0, 0, 1.35, 5.5);
+        public static final BoundingBox scoringStationRed = new BoundingBox(15, 0, 18, 5.5);
+        public static final BoundingBox communityStationRed = new BoundingBox(0, 5.5, 0.3, 10);
+        public static final BoundingBox communityStationBlue = new BoundingBox(16.2, 5.5, 17, 9);
         public static final double[] redCubableXpositions = new double[] {
                 //TODO: find values
         }; // the x position that you can score on cubes
@@ -47,7 +51,9 @@ public class GameElement {
     // an enum for the type of the game element
     public enum GameElementType {
         CONE,
-        CUBE
+        CUBE,
+        // either is a requisite type meant to be used as like it can be either cube or cone
+        EITHER,
     }
 
     // the index will be the byte funny
@@ -58,8 +64,9 @@ public class GameElement {
             Constants.blueCubableYPositions, Constants.blueConeableYPositions
         };
 
-    protected final Pose3d position;
+    protected Pose3d position;
     protected final GameElementType type;
+
     protected static Alliance alliance = DriverStation.getAlliance();
 
     protected final Alliance gridGameElementIsOn; // which grid the game element is on, Invalid for not on one
@@ -369,5 +376,47 @@ public class GameElement {
      */
     public double getZ() {
         return position.getZ();
+    }
+
+    /**
+     * @param otherPoint point that the transformation is made from in relation to this. usually odometry
+     * @return the transformation to the position
+     */
+    public Transform3d getTranslationToPose(Pose3d otherPoint) {
+        return position.minus(otherPoint);
+    }
+
+    /**
+     *  Overload of {@link #getTranslationToPose(Pose3d)}
+     *
+     * @param otherPoint point that the transformation is made from in relation to this. usually odometry
+     * @return the transformation to the position
+     */
+    public Transform2d getTranslationToPose(Pose2d otherPoint) {
+        return position.toPose2d().minus(otherPoint);
+    }
+
+    /**
+     * @param poses list of poses that you are searching the nearest point to
+     * @return the nearest pose2D from the passed in list of poses
+     */
+    public Pose2d getNearestPoseTo(List<Pose2d> poses) {
+        return position.toPose2d().nearest(poses);
+    }
+
+    /**
+     * @param otherPose the other position you are comparing this to
+     * @return the distance to another pose as a double
+     */
+    public double getDistanceToPosition(Pose2d otherPose) {
+        return Math.hypot(position.getX() - otherPose.getX(), position.getY() - otherPose.getY());
+    }
+
+    /**
+     * Loose list of types (maybe out of date): CONE, CUBE, EITHER
+     * @return the game element type for options see: {@link GameElementType}
+     */
+    public GameElementType getType() {
+        return this.type;
     }
 }
