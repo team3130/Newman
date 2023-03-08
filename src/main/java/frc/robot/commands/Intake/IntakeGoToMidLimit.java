@@ -39,7 +39,9 @@ public class IntakeGoToMidLimit extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_pivot.hitLimitSwitch(m_pivot.m_middlePosition)){m_pivot.stop();}
+    if(m_pivot.hitLimitSwitch(m_pivot.m_middlePosition)){
+      m_pivot.stop();
+    }
 }
   // Called once the command ends or is interrupted.
   @Override

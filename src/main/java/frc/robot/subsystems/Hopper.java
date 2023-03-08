@@ -17,9 +17,9 @@ import frc.robot.Newman_Constants.Constants;
 public class Hopper extends SubsystemBase {
     protected final WPI_TalonSRX m_leftWheel; // the left wheel for hopper
     protected final WPI_TalonSRX m_rightWheel; // the right wheel for hopper
-
-    private double m_leftOutputSpeed = 0.45; // the left output speed
-    private double m_rightOutputSpeed = m_leftOutputSpeed * 4; // the right output speed
+    private double m_leftHopperSpeed = 0.45; // the left output speed
+    private double m_rightHopperSpeed = m_leftHopperSpeed; //TODO double check gearing is the same
+    private double m_shootingOutputSpeed = -0.5;
 
     /**
      * Constructs a hopper with 9 volts of voltage compensation on the motors.
@@ -41,23 +41,34 @@ public class Hopper extends SubsystemBase {
     /**
      * spin the motor at the set speed which can be updated from shuffleboard or with the {@link #updateOutputSpeed(double speed)} method
      */
-    public void spinMotor() {
-        m_leftWheel.set(ControlMode.PercentOutput, m_leftOutputSpeed);
-        m_rightWheel.set(ControlMode.PercentOutput, m_rightOutputSpeed);
+    public void spinHopper() {
+        m_leftWheel.set(ControlMode.PercentOutput, m_leftHopperSpeed);
+        m_rightWheel.set(ControlMode.PercentOutput, m_rightHopperSpeed);
+    }
+
+    /** spin fast enough to shoot **/
+    public void spinToShoot(){
+        m_leftWheel.set(ControlMode.PercentOutput, m_shootingOutputSpeed);
+        m_rightWheel.set(ControlMode.PercentOutput, m_shootingOutputSpeed);
+    }
+    /** alternating directions to unjam pieces that have become lodged **/
+    public void alternateHopper(){
+        m_leftWheel.set(ControlMode.PercentOutput,-m_leftHopperSpeed);
+        m_rightWheel.set(ControlMode.PercentOutput, m_rightHopperSpeed);
     }
 
     /**
      * Reverse the direction of the hopper motors to feed out
      */
-    public void reverseMotors() {
-        m_leftWheel.set(ControlMode.PercentOutput, m_leftOutputSpeed);
-        m_rightWheel.set(ControlMode.PercentOutput, m_rightOutputSpeed);
+    public void reverseHopper() {
+        m_leftWheel.set(ControlMode.PercentOutput, -m_leftHopperSpeed);
+        m_rightWheel.set(ControlMode.PercentOutput, -m_rightHopperSpeed);
     }
 
     /**
      * stop the motors, usually called when commands end
      */
-    public void hopperStop() {
+    public void stopHopper() {
         m_leftWheel.set(ControlMode.PercentOutput, 0);
         m_rightWheel.set(ControlMode.PercentOutput, 0);
     }
@@ -68,15 +79,15 @@ public class Hopper extends SubsystemBase {
      * @param newSpeed to run the motors at
      */
     public void updateOutputSpeed(double newSpeed) {
-        m_leftOutputSpeed = newSpeed;
-        m_rightOutputSpeed = newSpeed * 4;
+        m_leftHopperSpeed = newSpeed;
+        m_rightHopperSpeed = newSpeed * 4;
     }
 
     /**
      * @return the left side set speed
      */
     public double getSpeed() {
-        return m_leftOutputSpeed;
+        return m_leftHopperSpeed;
     }
 
     /**
