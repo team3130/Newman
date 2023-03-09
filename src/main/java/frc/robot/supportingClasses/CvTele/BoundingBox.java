@@ -54,8 +54,17 @@ public class BoundingBox {
         }
     }
 
+    /**
+     * Wrapper for {@link #BoundingBox(double, double, double, double, double, double)}  BoundingBox},
+     * initializes the small z value at -1 and the big z value to be 1000
+     *
+     * @param xSmall the small x value
+     * @param ySmall the small y value
+     * @param xBig the big x value
+     * @param yBig the big y value
+     */
     public BoundingBox(double xSmall, double ySmall, double xBig, double yBig) {
-        this(xSmall, ySmall, -1, xBig, yBig, Double.MAX_VALUE / 2);
+        this(xSmall, ySmall, -1, xBig, yBig, 1000);
     }
 
     /**

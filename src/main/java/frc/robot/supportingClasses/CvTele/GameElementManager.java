@@ -185,6 +185,8 @@ public class GameElementManager {
     }
 
     public void generatePath() {
+        final int scoringPosition = this.getIdealScoringPosition();
+        final GameElement toGet = getIdealNextElementToPickup(scoringPosition, m_chassis.getPose2d());
 
         state = UPDATE_TO_ADD;
     }
@@ -227,6 +229,8 @@ public class GameElementManager {
      * @return the next ideal game element to pickup
      */
     protected GameElement getIdealNextElementToPickup(int scoringPosition, Pose2d positionFrom) {
+        //TODO: check distance to scoring position or change scoring position calculation to include a position coming from
+
         // poses that we will check for getNearest element latter
         ArrayList<GameElement> posesToCompareTo = new ArrayList<>(groundBucketSize);
         // the type of the game element that we need at the ideal scoring position based off of param
