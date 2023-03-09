@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Newman_Constants.Constants;
 
@@ -14,6 +15,7 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   private boolean first = true;
 
+  private  boolean Counterreset = false;
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
@@ -29,10 +31,16 @@ public class Robot extends TimedRobot {
       if (m_robotContainer.resetOdometry()) {
         timer.reset();
         timer.stop();
+        Counterreset = true;
       } else {
+<<<<<<< Updated upstream
         if (first) {
           m_robotContainer.resetOdometryWithoutApril();
           first = false;
+=======
+        if (Counterreset = false){
+          m_robotContainer.resetOdometryWithoutApril();
+>>>>>>> Stashed changes
         }
       }
     }
