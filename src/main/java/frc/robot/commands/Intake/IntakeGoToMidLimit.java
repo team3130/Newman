@@ -5,6 +5,7 @@
 package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.IntakeBeaterBar;
 import frc.robot.subsystems.IntakePivot;
 
@@ -18,9 +19,9 @@ public class IntakeGoToMidLimit extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public IntakeGoToMidLimit(IntakeBeaterBar subsystem1, IntakePivot subsystem2) {
+  public IntakeGoToMidLimit(IntakeBeaterBar subsystem1, IntakePivot pivot) {
     m_beaterBar = subsystem1;
-    m_pivot = subsystem2;
+    m_pivot = pivot;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_beaterBar, m_pivot);
   }

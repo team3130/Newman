@@ -10,17 +10,19 @@ import frc.robot.subsystems.IntakeBeaterBar;
 import frc.robot.subsystems.IntakePivot;
 
 /** An example command that uses an example subsystem. */
-public class IntakeToggleBeaterBar extends CommandBase {
+public class IntakeBeaterHopper extends CommandBase {
   private final IntakeBeaterBar m_beaterBar;
   private final Hopper m_hopper;
+  private final IntakePivot m_pivot;
   /*
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public IntakeToggleBeaterBar(IntakeBeaterBar beaterbar, Hopper hopper) {
+  public IntakeBeaterHopper(IntakeBeaterBar beaterbar, IntakePivot pivot, Hopper hopper) {
     m_beaterBar = beaterbar;
     m_hopper =hopper;
+    m_pivot = pivot;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_beaterBar);
   }
@@ -28,21 +30,23 @@ public class IntakeToggleBeaterBar extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(!m_beaterBar.isSpinning()){
-      m_beaterBar.Spin();
-    }
-    else{
-      m_beaterBar.Stop();
-    }
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_beaterBar.Spin();
+    if (m_pivot.lastLimitPosition == m_pivot.m_middlePosition){
+      m_hopper.spinHopper();
+    }
   }
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_beaterBar.Stop();
+    m_hopper.stopHopper();
+  }
 
   // Returns true when the command should end.
   @Override
