@@ -54,6 +54,12 @@ public class TeleopDrive extends CommandBase {
     y = y * Math.abs(y);
     x = x * Math.abs(x);
 
+    if (m_chassis.isTurtleMode()){ //cube inputs
+      x = x * Math.abs(x);
+      y = y * Math.abs(y);
+    }
+
+
     // apply dead-band
     if (Math.abs(x) < Constants.kDeadband) {
       x = 0;

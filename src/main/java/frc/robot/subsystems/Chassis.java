@@ -36,6 +36,8 @@ public class Chassis extends SubsystemBase {
 
     /** Whether it is field relative or robot oriented drive */
     private boolean fieldRelative = true;
+    private boolean turtleMode = false;
+
 
     /** limelight object */
     private final Limelight m_limelight;
@@ -129,6 +131,18 @@ public class Chassis extends SubsystemBase {
     public Rotation2d getRotation2d(){
       return Rotation2d.fromDegrees(getHeading());
     }
+
+    public boolean isTurtleMode(){
+        return turtleMode;
+    }
+    public void toggleTurtleMode(){
+        if (turtleMode) {
+            turtleMode = false;
+        } else {
+            turtleMode = true;
+        }
+    }
+
 
     /**
      * Generates the positions of the swerve modules
