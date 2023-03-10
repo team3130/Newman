@@ -9,38 +9,40 @@ import frc.robot.subsystems.PlacementExtensionArm;
 import frc.robot.subsystems.PlacementRotaryArm;
 
 /** An example command that uses an example subsystem. */
-public class IntermediatePlacement extends CommandBase {
+public class CollapseExtension extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final PlacementExtensionArm m_placementExtension;
+  private final PlacementExtensionArm m_placement;
   private final PlacementRotaryArm m_placementRotary;
-
+  private boolean ran = false;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public IntermediatePlacement(PlacementExtensionArm subsystem, PlacementRotaryArm rotary) {
-    m_placementExtension = subsystem;
-    m_placementRotary = rotary;
+  public CollapseExtension(PlacementExtensionArm subsystem, PlacementRotaryArm sub) {
+    m_placement = subsystem;
+    m_placementRotary = sub;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
-    addRequirements(rotary);
+    addRequirements(sub);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_placementExtension.updateValues();
+    m_placement.updateValues();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_placementExtension.passedBumper(m_placementRotary)) {
-      m_placementExtension.intermediateArm();
+    if (!m_placement.brokeLimit()) {
+      m_placement.collapseArm();
     }
   }
+
 
   // Called once the command ends or is interrupted.
   @Override

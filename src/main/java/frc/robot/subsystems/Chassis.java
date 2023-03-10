@@ -48,7 +48,6 @@ public class Chassis extends SubsystemBase {
   public Chassis(){
       this (new Pose2d(), new Rotation2d());
   }
-
   public Chassis(Pose2d startingPos, Rotation2d startingRotation) {
       m_kinematics = new SwerveDriveKinematics(Constants.moduleTranslations);
       modulePositions = new SwerveModulePosition[]{new SwerveModulePosition(), new SwerveModulePosition(),
