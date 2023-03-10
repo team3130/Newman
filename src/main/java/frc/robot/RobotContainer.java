@@ -18,10 +18,7 @@ import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
 import frc.robot.commands.GoToOrigin;
-import frc.robot.commands.Intake.IntakeGoToHighLimit;
-import frc.robot.commands.Intake.IntakeGoToLowLimit;
-import frc.robot.commands.Intake.IntakeGoToMidLimit;
-import frc.robot.commands.Intake.IntakeToggleBeaterBar;
+import frc.robot.commands.Intake.*;
 import frc.robot.commands.Placement.ActuateHandGrabber;
 import frc.robot.commands.Placement.MoveExtensionArm;
 import frc.robot.commands.Placement.MoveRotaryArm;
@@ -146,10 +143,9 @@ public class RobotContainer {
 
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ActuateHandGrabber(m_handGrabber));
 
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new IntakeToggleBeaterBar(m_beaterBar));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new IntakeGoToLowLimit(m_beaterBar,m_pivot));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new IntakeGoToMidLimit(m_beaterBar,m_pivot));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new IntakeGoToHighLimit(m_beaterBar,m_pivot));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new RunIntakeToPlace(m_beaterBar, m_pivot, m_hopper));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new GoToNextIntakePos(m_pivot));
+
 
     SmartDashboard.putData(new FlipFieldOriented(m_chassis));
 

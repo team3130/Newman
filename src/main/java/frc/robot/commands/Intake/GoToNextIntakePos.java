@@ -5,12 +5,10 @@
 package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IntakeBeaterBar;
 import frc.robot.subsystems.IntakePivot;
 
 /** An example command that uses an example subsystem. */
-public class IntakeGoToHighLimit extends CommandBase {
-  private final IntakeBeaterBar m_beaterBar;
+public class GoToNextIntakePos extends CommandBase {
   private final IntakePivot m_pivot;
 
   /*
@@ -18,24 +16,23 @@ public class IntakeGoToHighLimit extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public IntakeGoToHighLimit(IntakeBeaterBar subsystem1, IntakePivot subsystem2) {
-    m_beaterBar = subsystem1;
-    m_pivot = subsystem2;
+  public GoToNextIntakePos(IntakePivot pivot) {
+    m_pivot = pivot;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_beaterBar, m_pivot);
+    addRequirements(pivot);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(m_pivot.lastLimitPosition != m_pivot.m_highPosition){m_pivot.movePivotMotor(1);}
+    m_pivot.goToNext();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    if(m_pivot.hitLimitSwitch(m_pivot.m_highPosition)){m_pivot.stop();}
-  }
+  public void execute() {}
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}

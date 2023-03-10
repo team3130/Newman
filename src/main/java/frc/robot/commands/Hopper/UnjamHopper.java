@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Hopper;
 
 /** An example command that uses an example subsystem. */
-public class HopperUnjam extends CommandBase {
+public class UnjamHopper extends CommandBase {
   private final Hopper m_hopper;
 
   /**
@@ -16,7 +16,7 @@ public class HopperUnjam extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public HopperUnjam(Hopper subsystem) {
+  public UnjamHopper(Hopper subsystem) {
     m_hopper = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);

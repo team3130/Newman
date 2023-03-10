@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 
@@ -20,6 +21,8 @@ public class Hopper extends SubsystemBase {
     private double m_leftHopperSpeed = 0.45; // the left output speed
     private double m_rightHopperSpeed = m_leftHopperSpeed; //TODO double check gearing is the same
     private double m_shootingOutputSpeed = -0.5;
+    private final DigitalInput breakbeam;
+
 
     /**
      * Constructs a hopper with 9 volts of voltage compensation on the motors.
@@ -34,6 +37,9 @@ public class Hopper extends SubsystemBase {
         m_leftWheel.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
         m_leftWheel.enableVoltageCompensation(true);
 
+        breakbeam = new DigitalInput(Constants.DIO_BreakBeam);
+
+
         m_leftWheel.setInverted(true);
         m_rightWheel.setInverted(false);
     }
@@ -45,6 +51,10 @@ public class Hopper extends SubsystemBase {
         m_leftWheel.set(ControlMode.PercentOutput, m_leftHopperSpeed);
         m_rightWheel.set(ControlMode.PercentOutput, m_rightHopperSpeed);
     }
+    public boolean hasNards() {
+        return !breakbeam.get();
+    }
+
 
     /** spin fast enough to shoot **/
     public void spinToShoot(){

@@ -10,47 +10,47 @@ import frc.robot.subsystems.IntakeBeaterBar;
 import frc.robot.subsystems.IntakePivot;
 
 /** An example command that uses an example subsystem. */
-public class IntakeGoToMidLimit extends CommandBase {
+public class RunIntakeToShoot extends CommandBase {
   private final IntakeBeaterBar m_beaterBar;
+  private final Hopper m_hopper;
   private final IntakePivot m_pivot;
-
   /*
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public IntakeGoToMidLimit(IntakeBeaterBar subsystem1, IntakePivot pivot) {
-    m_beaterBar = subsystem1;
+  public RunIntakeToShoot(IntakeBeaterBar beaterbar, IntakePivot pivot, Hopper hopper) {
+    m_beaterBar = beaterbar;
+    m_hopper = hopper;
     m_pivot = pivot;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_beaterBar, m_pivot);
+    addRequirements(m_beaterBar);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(m_pivot.lastLimitPosition == m_pivot.m_highPosition){
-      m_pivot.movePivotMotor(-1);
-    }
-    if(m_pivot.lastLimitPosition == m_pivot.m_lowPosition){
-      m_pivot.movePivotMotor(1);
-    }
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_pivot.hitLimitSwitch(m_pivot.m_middlePosition)){
-      m_pivot.stop();
+    m_beaterBar.Spin();
+    if (m_pivot.atMiddlePos() && !m_hopper.hasNards()){ //if pivot is at middle and the hopper is empty run hopper
+      m_hopper.spinHopper();
     }
-}
+  }
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_beaterBar.Stop();
+    m_hopper.stopHopper();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
-  }
+    return m_hopper.hasNards();
+  } //once there is something in hopper intake should stop
 }
