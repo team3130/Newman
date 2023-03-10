@@ -26,14 +26,15 @@ import java.util.HashMap;
 
 public class PlacementRotaryArm extends SubsystemBase {
   public enum Position {
-    LOW, MID, HIGH
+    ZERO, LOW, MID, HIGH
   }
 
   /** Creates a new ExampleSubsystem. */
   private WPI_TalonFX rotaryMotor;
   private Solenoid brake;
   private boolean defaultState=false;
-  private double lowPosition = 0;
+  private double zeroPosition = 0;
+  private double lowPosition = Math.PI/6;
   private double midPosition = Math.PI/4;
   private double highPosition = Math.PI /2;
 
@@ -163,6 +164,7 @@ public class PlacementRotaryArm extends SubsystemBase {
   public void makeSetpointHigh(){
     rotaryPID.setGoal(highPosition);
   }
+  public void makeSetpointZero(){rotaryPID.setGoal(zeroPosition);}
 
   public double getPositionPlacementArm(){
     return Constants.kTicksToRadiansRotaryPlacementArm * rotaryMotor.getSelectedSensorPosition();

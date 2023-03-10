@@ -4,52 +4,60 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.PlacementExtensionArm;
+import frc.robot.subsystems.PlacementRotaryArm;
 
 /** An example command that uses an example subsystem. */
-public class ZeroPlacement extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+public class LowRotary extends CommandBase {
+  private final PlacementRotaryArm m_placementRotaryArm;
   private final PlacementExtensionArm m_placementExtensionArm;
-
-
-  private boolean broke = false;
+  private Timer timeRunning = new Timer();
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ZeroPlacement(PlacementExtensionArm subsystem) {
-    m_placementExtensionArm = subsystem;
+  public LowRotary(PlacementRotaryArm subsystem, PlacementExtensionArm extension) {
+    m_placementRotaryArm = subsystem;
+    m_placementExtensionArm = extension;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
+    addRequirements(extension);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    broke = false;
-    m_placementExtensionArm.dumbPower();
+    timeRunning.reset();
+    m_placementRotaryArm.releaseBrake();
+    m_placementRotaryArm.updateValues();
+    timeRunning.start();
+    m_placementRotaryArm.makeSetpointLow();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_placementExtensionArm.brokeLimit() ) {
-      m_placementExtensionArm.stopArm();
-      broke = true;
-    }
+    m_placementRotaryArm.gotoPos(m_placementExtensionArm.getPositionPlacementArm(),
+            m_placementRotaryArm.getPositionPlacementArm());
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interupted) {
+    timeRunning.stop();
+    timeRunning.reset();
+    m_placementRotaryArm.engageBrake();
+
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return broke;
+    return m_placementRotaryArm.isAtPosition(PlacementRotaryArm.Position.LOW);
   }
 }
