@@ -133,6 +133,7 @@ public class PlacementRotaryArm extends SubsystemBase {
     positionMap.put(Position.LOW, lowPosition);
     positionMap.put(Position.MID, midPosition);
     positionMap.put(Position.HIGH, highPosition);
+    positionMap.put(Position.ZERO, zeroPosition);
   }
 
   @Override

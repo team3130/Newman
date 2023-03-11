@@ -18,10 +18,10 @@ public class ZeroExtension extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ZeroExtension(PlacementExtensionArm subsystem) {
-    m_placementExtensionArm = subsystem;
+  public ZeroExtension(PlacementExtensionArm extension) {
+    m_placementExtensionArm = extension;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(extension);
   }
 
   // Called when the command is initially scheduled.

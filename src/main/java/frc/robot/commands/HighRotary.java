@@ -22,21 +22,20 @@ public class HighRotary extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public HighRotary(PlacementRotaryArm subsystem, PlacementExtensionArm extension) {
-    m_placementRotaryArm = subsystem;
+  public HighRotary(PlacementRotaryArm rotary, PlacementExtensionArm extension) {
+    m_placementRotaryArm = rotary;
     m_placementExtensionArm = extension;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
-    addRequirements(extension);
+    addRequirements(rotary, extension);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timeRunning.reset();
+   // timeRunning.reset();
     m_placementRotaryArm.releaseBrake();
     m_placementRotaryArm.updateValues();
-    timeRunning.start();
+  //  timeRunning.start();
     m_placementRotaryArm.makeSetpointHigh();
   }
   // Called every time the scheduler runs while the command is scheduled.
@@ -50,8 +49,8 @@ public class HighRotary extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_placementRotaryArm.engageBrake();
-    timeRunning.stop();
-    timeRunning.reset();
+  //  timeRunning.stop();
+   // timeRunning.reset();
   }
 
   // Returns true when the command should end.

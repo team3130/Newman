@@ -20,12 +20,11 @@ public class IntermediateExtension extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public IntermediateExtension(PlacementExtensionArm subsystem, PlacementRotaryArm rotary) {
-    m_placementExtension = subsystem;
+  public IntermediateExtension(PlacementExtensionArm extension, PlacementRotaryArm rotary) {
+    m_placementExtension = extension;
     m_placementRotary = rotary;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
-    addRequirements(rotary);
+    addRequirements(extension, rotary);
   }
 
   // Called when the command is initially scheduled.
@@ -37,7 +36,7 @@ public class IntermediateExtension extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_placementExtension.passedBumper(m_placementRotary)) {
+    if (m_placementExtension.outsideBumper(m_placementRotary)) {
       m_placementExtension.intermediateArm();
     }
   }

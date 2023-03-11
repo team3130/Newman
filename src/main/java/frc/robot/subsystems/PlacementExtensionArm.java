@@ -97,7 +97,7 @@ public class PlacementExtensionArm extends SubsystemBase {
   }
 
   public void extendArm(){
-    extensionMotor.set(ControlMode.MotionMagic, n_collapsedPosition.getDouble(n_collapsedPosition.getDouble(collapsedPosition)));
+    extensionMotor.set(ControlMode.MotionMagic, n_extendedPosition.getDouble(n_extendedPosition.getDouble(extendedPosition)));
   }
   public void intermediateArm(){
     extensionMotor.set(ControlMode.MotionMagic, n_intermediatePosition.getDouble(n_intermediatePosition.getDouble(intermediatePosition)));
@@ -112,8 +112,11 @@ public class PlacementExtensionArm extends SubsystemBase {
     extensionMotor.set(ControlMode.PercentOutput, 0.2);
   }
 
-  public boolean passedBumper(PlacementRotaryArm rotaryArm){
+  public boolean outsideBumper(PlacementRotaryArm rotaryArm){
     return rotaryArm.getPositionPlacementArm() > Math.toRadians(30);
+  }
+  public boolean wayOutsideBumper(PlacementRotaryArm rotaryArm){
+    return rotaryArm.getPositionPlacementArm() > Math.toRadians(40);
   }
   public boolean isMoving(PlacementRotaryArm rotaryArm){ // alternative to passedBumper
     return !rotaryArm.isStationary();

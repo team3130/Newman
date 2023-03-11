@@ -23,21 +23,20 @@ public class MidRotary extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MidRotary(PlacementRotaryArm subsystem, PlacementExtensionArm extension) {
-    m_placementRotaryArm = subsystem;
+  public MidRotary(PlacementRotaryArm rotary, PlacementExtensionArm extension) {
+    m_placementRotaryArm = rotary;
     m_placementExtensionArm = extension;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
-    addRequirements(extension);
+    addRequirements(rotary, extension);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timeRunning.reset();
+    //timeRunning.reset();
     m_placementRotaryArm.releaseBrake();
     m_placementRotaryArm.updateValues();
-    timeRunning.start();
+    //timeRunning.start();
     m_placementRotaryArm.makeSetpointMid();
   }
 
@@ -51,8 +50,8 @@ public class MidRotary extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    timeRunning.stop();
-    timeRunning.reset();
+   // timeRunning.stop();
+    // timeRunning.reset();
     m_placementRotaryArm.engageBrake();
   }
 

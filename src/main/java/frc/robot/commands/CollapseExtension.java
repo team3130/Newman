@@ -11,35 +11,33 @@ import frc.robot.subsystems.PlacementRotaryArm;
 /** An example command that uses an example subsystem. */
 public class CollapseExtension extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final PlacementExtensionArm m_placement;
-  private final PlacementRotaryArm m_placementRotary;
-  private boolean ran = false;
+  private final PlacementExtensionArm m_extension;
+  private final PlacementRotaryArm m_rotary;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public CollapseExtension(PlacementExtensionArm subsystem, PlacementRotaryArm sub) {
-    m_placement = subsystem;
-    m_placementRotary = sub;
+  public CollapseExtension(PlacementExtensionArm extension, PlacementRotaryArm rotary) {
+    m_extension = extension;
+    m_rotary = rotary;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
-    addRequirements(sub);
+    addRequirements(extension, rotary);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_placement.updateValues();
+    m_extension.updateValues();
 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!m_placement.brokeLimit()) {
-      m_placement.collapseArm();
+    if (!m_extension.brokeLimit()) {
+      m_extension.collapseArm();
     }
   }
 
