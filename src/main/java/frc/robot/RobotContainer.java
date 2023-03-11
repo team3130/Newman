@@ -140,7 +140,7 @@ public class RobotContainer {
     //new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ActuateHandGrabber(m_handGrabber));
     SmartDashboard.putData(new FlipFieldOriented(m_chassis));
 
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new ToggleTurtleMode(m_chassis));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RJOYSTICKPRESS).whileTrue(new ToggleTurtleMode(m_chassis));
 
     Shuffleboard.getTab("Test").add("Spin motor down", new zeroExtensionArm(m_extensionArm));
   }
