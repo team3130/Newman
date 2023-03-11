@@ -148,7 +148,7 @@ public class RobotContainer {
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new ActuateHandGrabber(m_handGrabber));
 
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new SpinHopper(m_hopper));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new ReverseHopper(m_hopper));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new ReverseHopper(m_hopper, m_beaterBar, m_pivot));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_POV_S).whileTrue(new ShootHopper(m_hopper));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new UnjamHopper(m_hopper));
 

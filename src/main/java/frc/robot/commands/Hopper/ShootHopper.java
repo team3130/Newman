@@ -30,7 +30,7 @@ public class ShootHopper extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_hopper.spinToShoot();
+    m_hopper.spitToHopperShoot();
   }
 
   // Called once the command ends or is interrupted.

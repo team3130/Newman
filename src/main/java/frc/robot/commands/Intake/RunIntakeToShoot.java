@@ -24,7 +24,7 @@ public class RunIntakeToShoot extends CommandBase {
     m_hopper = hopper;
     m_pivot = pivot;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_beaterBar);
+    addRequirements(m_beaterBar, m_hopper, m_pivot);
   }
 
   // Called when the command is initially scheduled.
@@ -36,15 +36,15 @@ public class RunIntakeToShoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_beaterBar.Spin();
+    m_beaterBar.spin();
     if (m_pivot.atMiddlePos() && !m_hopper.hasNards()){ //if pivot is at middle and the hopper is empty run hopper
-      m_hopper.spinHopper();
+      m_hopper.spinHopper(); //may need gentleSpin
     }
   }
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_beaterBar.Stop();
+    m_beaterBar.stop();
     m_hopper.stopHopper();
   }
 

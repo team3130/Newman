@@ -21,10 +21,11 @@ public class RunIntakeToPlace extends CommandBase {
    */
   public RunIntakeToPlace(IntakeBeaterBar beaterbar, IntakePivot pivot, Hopper hopper) {
     m_beaterBar = beaterbar;
-    m_hopper =hopper;
     m_pivot = pivot;
+    m_hopper = hopper;
+
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_beaterBar);
+    addRequirements(m_beaterBar, m_pivot, m_hopper);
   }
 
   // Called when the command is initially scheduled.
@@ -36,7 +37,7 @@ public class RunIntakeToPlace extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_beaterBar.Spin();
+    m_beaterBar.spin();
     if (m_pivot.atMiddlePos()){
       m_hopper.spinHopper();
     }
@@ -44,7 +45,7 @@ public class RunIntakeToPlace extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_beaterBar.Stop();
+    m_beaterBar.stop();
     m_hopper.stopHopper();
   }
 

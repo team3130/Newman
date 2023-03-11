@@ -7,7 +7,6 @@ package frc.robot.commands.Intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.IntakeBeaterBar;
-import frc.robot.subsystems.IntakePivot;
 
 /** An example command that uses an example subsystem. */
 public class IntakeToggleBeaterBar extends CommandBase {
@@ -29,10 +28,10 @@ public class IntakeToggleBeaterBar extends CommandBase {
   @Override
   public void initialize() {
     if(!m_beaterBar.isSpinning()){
-      m_beaterBar.Spin();
+      m_beaterBar.spin();
     }
     else{
-      m_beaterBar.Stop();
+      m_beaterBar.stop();
     }
   }
 
