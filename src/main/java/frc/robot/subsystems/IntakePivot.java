@@ -36,9 +36,9 @@ public class IntakePivot extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if(hitLimitSwitch(m_lowPosition)){lastLimitPosition = m_lowPosition;}
+    /*if(hitLimitSwitch(m_lowPosition)){lastLimitPosition = m_lowPosition;}
     if(hitLimitSwitch(m_middlePosition)){lastLimitPosition = m_middlePosition;}
-    if(hitLimitSwitch(m_highPosition)){lastLimitPosition = m_highPosition;}
+    if(hitLimitSwitch(m_highPosition)){lastLimitPosition = m_highPosition;}*/
   }
 
   public void goToNext(){
