@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.*;
@@ -61,14 +62,25 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    /* parallel commands
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).onTrue(Commands.parallel(new HighRotary(m_placementRotaryArm, m_placementExtensionArm), new ExtendExtension(m_placementExtensionArm, m_placementRotaryArm)));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).onTrue(Commands.parallel(new MidRotary(m_placementRotaryArm, m_placementExtensionArm), new IntermediateExtension(m_placementExtensionArm, m_placementRotaryArm)));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_A).onTrue(Commands.parallel(new LowRotary(m_placementRotaryArm, m_placementExtensionArm), new CollapseExtension(m_placementExtensionArm, m_placementRotaryArm)));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_X).onTrue(Commands.parallel(new ZeroRotary(m_placementRotaryArm, m_placementExtensionArm), new ZeroExtension(m_placementExtensionArm, m_placementRotaryArm)));
+*/
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ZeroWheels(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new Calibrate(m_placementRotaryArm));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new MidRotary(m_placementRotaryArm, m_placementExtensionArm));
+
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new HighRotary(m_placementRotaryArm, m_placementExtensionArm));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new ExtendExtension(m_placementExtensionArm, m_placementRotaryArm));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new CollapseExtension(m_placementExtensionArm, m_placementRotaryArm));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ZeroExtension(m_placementExtensionArm));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new MidRotary(m_placementRotaryArm, m_placementExtensionArm));
+    new JoystickButton(m_weaponsGamepad,Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new LowRotary(m_placementRotaryArm, m_placementExtensionArm));
+    new JoystickButton(m_weaponsGamepad,Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new ZeroRotary(m_placementRotaryArm, m_placementExtensionArm));
+
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new ExtendExtension(m_placementExtensionArm, m_placementRotaryArm));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new IntermediateExtension(m_placementExtensionArm, m_placementRotaryArm));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_POV_S).whileTrue(new CollapseExtension(m_placementExtensionArm, m_placementRotaryArm));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new ZeroExtension(m_placementExtensionArm));
     
     SmartDashboard.putData(new FlipFieldOrriented(m_chassis));
   }
