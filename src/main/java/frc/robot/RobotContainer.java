@@ -18,6 +18,10 @@ import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
 import frc.robot.commands.GoToOrigin;
+import frc.robot.commands.Hopper.ReverseHopper;
+import frc.robot.commands.Hopper.ShootHopper;
+import frc.robot.commands.Hopper.SpinHopper;
+import frc.robot.commands.Hopper.UnjamHopper;
 import frc.robot.commands.Intake.*;
 import frc.robot.commands.Placement.ActuateHandGrabber;
 import frc.robot.commands.Placement.MoveExtensionArm;
@@ -141,10 +145,17 @@ public class RobotContainer {
 
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new GoToOrigin(m_chassis, m_autonManager));
 
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ActuateHandGrabber(m_handGrabber));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new ActuateHandGrabber(m_handGrabber));
 
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new RunIntakeToPlace(m_beaterBar, m_pivot, m_hopper));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new GoToNextIntakePos(m_pivot));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new SpinHopper(m_hopper));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new ReverseHopper(m_hopper));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_POV_S).whileTrue(new ShootHopper(m_hopper));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new UnjamHopper(m_hopper));
+
+
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new RunIntakeToShoot(m_beaterBar, m_pivot, m_hopper));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new RunIntakeToPlace(m_beaterBar, m_pivot, m_hopper));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new GoToNextIntakePos(m_pivot));
 
 
     SmartDashboard.putData(new FlipFieldOriented(m_chassis));
