@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
+import frc.robot.commands.Chassis.ToggleTurtleMode;
 import frc.robot.commands.Chassis.ZeroEverything;
 import frc.robot.commands.GoToOrigin;
 import frc.robot.commands.Placement.ActuateHandGrabber;
@@ -136,8 +137,10 @@ public class RobotContainer {
 
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new GoToOrigin(m_chassis, m_autonManager));
 
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ActuateHandGrabber(m_handGrabber));
+    //new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ActuateHandGrabber(m_handGrabber));
     SmartDashboard.putData(new FlipFieldOriented(m_chassis));
+
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new ToggleTurtleMode(m_chassis));
 
     Shuffleboard.getTab("Test").add("Spin motor down", new zeroExtensionArm(m_extensionArm));
   }
