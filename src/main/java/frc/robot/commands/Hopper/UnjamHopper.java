@@ -25,12 +25,14 @@ public class UnjamHopper extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_hopper.alternateHopper();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    m_hopper.alternateHopper();
+  }
 
   // Called once the command ends or is interrupted.
   @Override

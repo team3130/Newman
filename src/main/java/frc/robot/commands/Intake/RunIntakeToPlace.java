@@ -42,6 +42,7 @@ public class RunIntakeToPlace extends CommandBase {
       m_hopper.spinHopper();
     }
   }
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
