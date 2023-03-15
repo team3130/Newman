@@ -1,80 +1,65 @@
 package frc.robot.supportingClasses.CvTele;
 
-import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GameElement {
     // local constants
     protected static class Constants {
-        public final static double heightGridDeadband = 0.1; // meters off the ground
-        public static final BoundingBox scoringStationBlue = new BoundingBox(0, 0, 1.35, 5.5);
-        public static final BoundingBox scoringStationRed = new BoundingBox(15, 0, 18, 5.5);
+        // public final static double heightGridDeadband = 0.1; // meters off the ground
+
+        // the bounding box that dictates the location of the blue scoring station in 3D space on the field
+        public static final BoundingBox scoringStationBlue = new BoundingBox(0, 0, 1.43, 5.5);
+        // the bounding box that dictates the location of the red scoring station in 3D space on the field
+        public static final BoundingBox scoringStationRed = new BoundingBox(14.55, 0, 18, 5.5);
+        // the bounding box that dictates the location of the red community station in 3D space on the field
         public static final BoundingBox communityStationRed = new BoundingBox(0, 5.5, 0.3, 10);
+        // the bounding box that dictates the location of the blue community station in 3D space on the field
         public static final BoundingBox communityStationBlue = new BoundingBox(16.2, 5.5, 17, 9);
-        public static final double[] redCubableXpositions = new double[] {
-                //TODO: find values
-        }; // the x position that you can score on cubes
 
-        public static final double[] redCubableYPositions = new double[] {
-                //TODO: find values
-        }; // the x position that you can score on cubes
+        public static final double[] yPositionsConesForColumnBounds = new double[] {
+            // 0    1    2
+            -1, 0.4, 0.9, 1000
+        }; // the y position that you can score on cones.
 
-        public static final double[] redConeableXpositions = new double[] {
-                //TODO: find values
-        }; // the x position that you can score on cones
+        public static final double[] yPositionsCubesForColumnBounds = new double[] {
+            // 0    1     2
+            -1, 0.5, 0.83, 1000
+        }; // the y position that you can score on cubes
 
-        public static final double[] redConeableYPositions = new double[] {
-                //TODO: find values
-        }; // the x position that you can score on cones
-
-        public static final double[] blueCubableXpositions = new double[] {
-                //TODO: find values
-        }; // the x position that you can score on cubes
-
-        public static final double[] blueCubableYPositions = new double[] {
-                //TODO: find values
-        }; // the x position that you can score on cubes
-
-        public static final double[] blueConeableXpositions = new double[] {
-                //TODO: find values
-        }; // the x position that you can score on cones
-
-        public static final double[] blueConeableYPositions = new double[] {
-                //TODO: find values
-        }; // the x position that you can score on cones
+        public static final double[] xPositionsForRowBounds = new double[] {
+            //0       1       2       3       4       5       6       7       8
+            0, 0.7875, 1.3465, 1.9055, 2.4645, 3.0235, 3.5825, 4.1415, 4.7005, 5.5
+        };
     }
 
     // an enum for the type of the game element
     public enum GameElementType {
         CONE,
         CUBE,
-        // either is a requisite type meant to be used as like it can be either cube or cone
+        // "Either" is a requisite type meant to be used as: can be either a cube or a cone
         EITHER,
     }
 
-    // the index will be the byte funny
-    protected final static double[][] positionsMap = new double[][] {
-            Constants.redCubableXpositions, Constants.redConeableXpositions,
-            Constants.blueCubableXpositions, Constants.blueConeableXpositions,
-            Constants.redCubableYPositions, Constants.redConeableYPositions,
-            Constants.blueCubableYPositions, Constants.blueConeableYPositions
-        };
+    protected Pose3d position; // the position of the bot on the field in 3D coordinate space
+    protected final GameElementType type; // the type of the game element: cube or cone
 
-    protected Pose3d position;
-    protected final GameElementType type;
-
-    protected static Alliance alliance = DriverStation.getAlliance();
+    protected final Alliance stationGameElementIsIn; // which alliance station the game element is in
+    protected final boolean isOnGround; // is the game element on the ground
+    protected final boolean inCommunityStation; // is the game element in a community station
+    protected final boolean onGrid; // is the game element on a grid
 
     protected final Alliance gridGameElementIsOn; // which grid the game element is on, Invalid for not on one
     protected final int xPositionOnGrid; // x coordinate of the game element on the grid (0 -> 8) -1 for not on grid
     protected final int yPositionOnGrid; // y coordinate of the game element on the grid (0 -> 2) -1 for not on grid
 
     /**
-     * Makes a new Game Element object
+     * Makes a new Game Element object.
      *
      * @param position position of the game element in 3D coordinate space
      * @param type whether the game element is a cone or not (false for cube)
@@ -83,11 +68,12 @@ public class GameElement {
         this.position = position;
         this.type = type;
 
-        if (alliance == Alliance.Invalid) {
-            alliance = DriverStation.getAlliance();
-        }
-
         gridGameElementIsOn = getWhatCommunityGridBoxIsObjectOn();
+        stationGameElementIsIn = getStationGameElementIsIn();
+
+        inCommunityStation = stationGameElementIsIn != Alliance.Invalid;
+        onGrid = gridGameElementIsOn != Alliance.Invalid;
+        isOnGround = !(inCommunityStation || onGrid);
 
         if (gridGameElementIsOn == Alliance.Invalid) {
             xPositionOnGrid = -1;
@@ -100,21 +86,37 @@ public class GameElement {
     }
 
     /**
+     * <p>gets the station that the game element is in using {@link Constants#scoringStationBlue} and {@link Constants#scoringStationRed}.
+     *  Both of these objects are Bounding boxes that are representative of the region they take up on the field.</p>
+     * <b> Needs to be run after {@link #position} is initialized.</b>
+     * @return the community station that the game element is in.
+     */
+    protected Alliance getStationGameElementIsIn() {
+        if (Constants.scoringStationBlue.isInBox(position)) {
+            return Alliance.Blue;
+        }
+        else if (Constants.scoringStationRed.isInBox(position)) {
+            return Alliance.Red;
+        }
+        else {
+            return Alliance.Invalid;
+        }
+    }
+
+    /**
      * Poses are in a different mathematical coordinate plane, so we have to switch the position we use
      * @return the y coordinate of the game element on the grid
      */
     protected int getYCoordOfGameElementOnGrid() {
         // the Y position is the column which is actually the Z coordinate to the bot
-        return binSearch(position.getZ(), positionsMap[determineArray(1, gridGameElementIsOn, type)]);
+        return binSearch(position.getZ(), (type == GameElementType.CONE ? Constants.yPositionsConesForColumnBounds : Constants.yPositionsCubesForColumnBounds));
     }
 
     /**
-     * Poses are in a different mathematical coordinate plane, so we have to switch the position we use
      * @return the x coordinate of the game element on the grid
      */
     protected int getXCoordOfGameElementOnGrid() {
-        // the X coordinate is a row which is actually the y position to the bot
-        return binSearch(position.getY(), positionsMap[determineArray(0, gridGameElementIsOn, type)]);
+        return binSearch(position.getX(), Constants.xPositionsForRowBounds);
     }
 
     /**
@@ -126,25 +128,6 @@ public class GameElement {
      */
     protected int binSearch(double key, double[] array) {
         return binSearch(key, 0, array.length, array);
-    }
-
-    //TODO: write a test case
-    /**
-     * Determines the array to use. by doing a mathematical binary search esc method
-     *
-     * @param xOrY (0 for x, 1 for y)
-     * @param alliance red for 0, blue for 1
-     * @param type cube for 0, cone for 1
-     * @return the index of the array we need to use
-     */
-    protected int determineArray(int xOrY, Alliance alliance, GameElementType type) {
-        // quick log base 2
-        int i = Integer.numberOfLeadingZeros(positionsMap.length);
-        int redOrBlue = alliance == Alliance.Red ? 0 : 1;
-        int cubeOrCone = type == GameElementType.CONE ? 0 : 1;
-
-        // believe it or not thi is a binary search lol
-        return xOrY * (i <<= 2) + redOrBlue * (i <<= 2) + cubeOrCone * (i << 2);
     }
 
     /**
@@ -233,23 +216,18 @@ public class GameElement {
      * @return the position of the key in the array
      */
     protected int binSearch(double key, int lowerBound, int upperBound, double[] array) {
-        char iterations = 0;
-
         // bin search go brrrrrrrr
-        while (lowerBound != upperBound || iterations > Math.log(array.length) + 1) {
+        while (lowerBound != upperBound) {
             int midPosition = (lowerBound + upperBound) / 2;
             // if the position is between the two options left
-            if (lowerBound == upperBound - 1 && key > array[lowerBound] && key < array[upperBound]) {
-                return lowerBound;
+            if (key > array[midPosition] && key < array[midPosition + 1]) {
+                return midPosition;
             }
             if (key < array[midPosition]) {
-                upperBound = midPosition - 1;
+                upperBound = midPosition;
             }
-            else if (key > array[midPosition]) {
-                lowerBound = midPosition + 1;
-            }
-            else {
-                return midPosition;
+            else if (key > array[midPosition + 1]) {
+                lowerBound = midPosition;
             }
         }
         return -1;
@@ -419,4 +397,27 @@ public class GameElement {
     public GameElementType getType() {
         return this.type;
     }
+
+    /**
+     * @return if the game element is on the ground
+     */
+    public boolean isOnGround() {
+        return isOnGround;
+    }
+
+    /**
+     * @return if "this" is on the grid or not
+     */
+    public boolean isOnGrid() {
+        return onGrid;
+    }
+
+    /**
+     * @return if "this" is in the community station
+     */
+    public boolean isInCommunityStation() {
+        return inCommunityStation;
+    }
+
+
 }

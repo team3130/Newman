@@ -6,7 +6,6 @@ import frc.robot.Newman_Constants.Constants;
 import frc.robot.Newman_Constants.Constants.Camera;
 import frc.robot.subsystems.Chassis;
 import frc.robot.supportingClasses.CvTele.GameElement.GameElementType;
-import frc.robot.supportingClasses.CvTele.GameElement.GameElementType.*;
 
 import java.util.ArrayList;
 import java.util.function.Predicate;
