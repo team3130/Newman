@@ -1,4 +1,4 @@
-package frc.robot.supportingClasses;
+package frc.robot.supportingClasses.Auton;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.HolonomicDriveController;

@@ -16,9 +16,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.Chassis;
-import frc.robot.supportingClasses.HolonomicControllerCommand;
-
-import java.util.List;
 
 /**
  * A class to generate our auton paths from PathPlanner

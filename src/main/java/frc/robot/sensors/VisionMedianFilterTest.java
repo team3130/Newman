@@ -1,7 +1,8 @@
-package frc.robot.supportingClasses;
+package frc.robot.sensors;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.supportingClasses.OdoPosition;
 import org.junit.jupiter.api.Test;
 
 class VisionMedianFilterTest {

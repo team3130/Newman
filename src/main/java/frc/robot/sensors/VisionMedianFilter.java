@@ -1,4 +1,4 @@
-package frc.robot.supportingClasses;
+package frc.robot.sensors;
 
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -7,6 +7,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.supportingClasses.OdoPosition;
 
 public class VisionMedianFilter implements Sendable {
     // hehe
@@ -61,7 +62,7 @@ public class VisionMedianFilter implements Sendable {
     }
 
     public OdoPosition getOdoPose(OdoPosition position) {
-        Pose2d pose = position.pose2d;
+        Pose2d pose = position.getPosition();
         x[head] = pose.getX();
         y[head] = pose.getY();
         yaw[head] = pose.getRotation().getRadians();

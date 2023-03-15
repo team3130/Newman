@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.Newman_Constants.Constants.Camera;
-import frc.robot.supportingClasses.VisionMedianFilter;
 import frc.robot.supportingClasses.OdoPosition;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
