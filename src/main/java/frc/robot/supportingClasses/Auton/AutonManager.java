@@ -234,6 +234,13 @@ public class AutonManager {
         return wrapCmd(autonCommand);
     }
 
+    public Command makePathToFrom(Pose2d start, Pose2d end) {
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(safe_constraints,
+                new PathPoint(start.getTranslation(), start.)
+        )
+
+    }
+
 
 
 }

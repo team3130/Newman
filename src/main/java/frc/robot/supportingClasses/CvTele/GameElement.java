@@ -36,6 +36,10 @@ public class GameElement {
             //0       1       2       3       4       5       6       7       8
             0, 0.7875, 1.3465, 1.9055, 2.4645, 3.0235, 3.5825, 4.1415, 4.7005, 5.5
         };
+
+        public static final double kXMultiplierForGrid = 1.8; // the x multiplier for getting the grid position: see ProjectRoot/Docs/RangeMultipliers.pdf
+        public static final double kYCubeMultiplierForGrid = 2.5; // the y multiplier for cubes for getting the grid position: see same as above
+        public static final double kYConeMultiplierForGrid = 2.5; // the y multiplier for cones for getting the grid position: see same as above
     }
 
     // an enum for the type of the game element
@@ -108,26 +112,32 @@ public class GameElement {
      * @return the y coordinate of the game element on the grid
      */
     protected int getYCoordOfGameElementOnGrid() {
-        // the Y position is the column which is actually the Z coordinate to the bot
-        return binSearch(position.getZ(), (type == GameElementType.CONE ? Constants.yPositionsConesForColumnBounds : Constants.yPositionsCubesForColumnBounds));
+        int result = (int) (position.getZ() * (
+                (type == GameElementType.CUBE) ? Constants.kYConeMultiplierForGrid : Constants.kYCubeMultiplierForGrid)
+        ); // z cause that's height
+
+        if (result < 0) {
+            return 0;
+        }
+        else if (result > 2) {
+            return 2;
+        }
+
+        return result;
     }
 
     /**
      * @return the x coordinate of the game element on the grid
      */
     protected int getXCoordOfGameElementOnGrid() {
-        return binSearch(position.getX(), Constants.xPositionsForRowBounds);
-    }
-
-    /**
-     * Wrapper for {@link #binSearch(double, int, int, double[])}. Performs a binary search of the whole passed in array
-     *
-     * @param key the key that is being searched
-     * @param array the array to binary search
-     * @return the value at the key
-     */
-    protected int binSearch(double key, double[] array) {
-        return binSearch(key, 0, array.length, array);
+        int result = (int) (position.getY() * Constants.kXMultiplierForGrid); // y is x coord post transform
+        if (result < 0) {
+            return 0;
+        }
+        else if (result > 8) {
+            return 8;
+        }
+        return result;
     }
 
     /**
@@ -202,35 +212,6 @@ public class GameElement {
             return Alliance.Red;
         }
         return Alliance.Invalid;
-    }
-
-
-    /**
-     * Performs a binary search. Helper method.
-     * Returns the left hand bound which should be the index in the overall grid.
-     *
-     * @param key the key to search for
-     * @param lowerBound the lowest element in the list or window you want to search through
-     * @param upperBound the highest element in the list or window you want to search through
-     * @param array the array you want to perform the search on
-     * @return the position of the key in the array
-     */
-    protected int binSearch(double key, int lowerBound, int upperBound, double[] array) {
-        // bin search go brrrrrrrr
-        while (lowerBound != upperBound) {
-            int midPosition = (lowerBound + upperBound) / 2;
-            // if the position is between the two options left
-            if (key > array[midPosition] && key < array[midPosition + 1]) {
-                return midPosition;
-            }
-            if (key < array[midPosition]) {
-                upperBound = midPosition;
-            }
-            else if (key > array[midPosition + 1]) {
-                lowerBound = midPosition;
-            }
-        }
-        return -1;
     }
 
     /**

@@ -46,13 +46,16 @@ public class GameElementManager {
     protected final int[] positionToRowCheckerPosition1 = new int[] {
         1, -1, -2, 1, -1, -2, 1, -1, -2,
         1, -1, -2, 1, -1, -2, 1, -1, -2,
-        1, -1, -2, 1, -1, -2, 1, -1, -2
+        1, -1, -2, 1, -1, -2, 1, -1, -2,
+
+
     }; // for check row, position0 is arg. technically could be 3 items but this way we can cut out the mod
     // 2, 1, -1
     protected final int[] positionToRowCheckerPosition2 = new int[] {
         2, 1, -1, 2, 1, -1, 2, 1, -1,
         2, 1, -1, 2, 1, -1, 2, 1, -1,
-        2, 1, -1, 2, 1, -1, 2, 1, -1
+        2, 1, -1, 2, 1, -1, 2, 1, -1,
+
     }; // for check row, position0 is arg. technically could be 3 items but this way we can cut out the mod
 
     /*
@@ -61,9 +64,9 @@ public class GameElementManager {
     2
      */
     protected final int[] positionToRowBonus = new int[] {
-            5, 5, 5, 5, 5, 5, 5, 5, 5,
+            2, 2, 2, 2, 2, 2, 2, 2, 2,
             3, 3, 3, 3, 3, 3, 3, 3, 3,
-            2, 2, 2, 2, 2, 2, 2, 2, 2
+            5, 5, 5, 5, 5, 5, 5, 5, 5,
     }; // for row bonus. top row is 5 points, middle is 3, and bottom is 2. could be 3 items but this is less math
 
 
@@ -186,6 +189,7 @@ public class GameElementManager {
     public void generatePath() {
         final int scoringPosition = this.getIdealScoringPosition();
         final GameElement toGet = getIdealNextElementToPickup(scoringPosition, m_chassis.getPose2d());
+
 
         state = UPDATE_TO_ADD;
     }
