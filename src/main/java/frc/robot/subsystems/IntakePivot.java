@@ -53,6 +53,13 @@ public class IntakePivot extends SubsystemBase {
       large.toggle(); //retract
     }
   }
+
+  public void toggleSmall(){
+    small.toggle();
+  }
+  public void toggleLarge(){
+    large.toggle();
+  }
   public boolean atMiddlePos(){
     if (small.get() && !large.get()){
       return true;
