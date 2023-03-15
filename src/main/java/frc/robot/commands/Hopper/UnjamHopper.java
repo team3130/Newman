@@ -16,10 +16,10 @@ public class UnjamHopper extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public UnjamHopper(Hopper subsystem) {
-    m_hopper = subsystem;
+  public UnjamHopper(Hopper hopper) {
+    m_hopper = hopper;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(hopper);
   }
 
   // Called when the command is initially scheduled.

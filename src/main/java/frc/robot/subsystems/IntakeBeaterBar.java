@@ -10,6 +10,8 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 
+import javax.naming.ldap.Control;
+
 public class IntakeBeaterBar extends SubsystemBase {
   private WPI_TalonSRX m_beaterBar;
   private double outputSpeed = 0.5;
@@ -22,7 +24,7 @@ public class IntakeBeaterBar extends SubsystemBase {
     m_beaterBar.setInverted(false);
   }
   public void spin() {
-    m_beaterBar.set(outputSpeed);
+    m_beaterBar.set(ControlMode.PercentOutput, outputSpeed);
   }
   public void reverse(){
     m_beaterBar.set(ControlMode.PercentOutput, -outputSpeed);
