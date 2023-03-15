@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.Balance;
 
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.sensors.Navx;
@@ -34,17 +34,25 @@ public class Balance extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    fVelocityTilt = new MedianFilter(10);
+    AccelerationTilt = 0;
+    prev = 0;
+
+    pitch = Math.toRadians(Navx.getPitch());
+    roll = Math.toRadians(Navx.getRoll());
+    direction = Math.atan2(Math.tan(pitch),Math.tan(roll));
   }
-  private double angle;
+
+  private double direction;
   private double pitch;
   private double roll;
   private double tilt;
-  private double accelerationPitch;
-  private double accelerationRoll;
-  private double accelerationTilt;
-  
-
+  private double velocityPitch;
+  private double velocityRoll;
+  private double VelocityTilt;
+  private double AccelerationTilt;
+  private MedianFilter fVelocityTilt;
+  private double prev;
   private static ShuffleboardTab tab = Shuffleboard.getTab("Chassis");
 
   private final GenericEntry P = tab.add("Balancer P", Constants.BalanceKp).getEntry();
@@ -52,33 +60,35 @@ public class Balance extends CommandBase {
   private final GenericEntry F = tab.add("Balancer F", Constants.BalanceKf).getEntry();
   private final GenericEntry getDirection = tab.add("Direction", 0).getEntry();
   private final GenericEntry getTilt = tab.add("Tilt", 0).getEntry();
-  private final GenericEntry getTiltAccel = tab.add("Tilt Accel", 0).getEntry();
-  private final GenericEntry minTilt = tab.add("Minimum Tilt", 0.5).getEntry();
+  private final GenericEntry getTiltVelocity = tab.add("Tilt Velocity", 0).getEntry();
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    angle = Navx.getAngle();
-    accelerationPitch = Math.toRadians(Navx.getPitchAccel());
-    accelerationRoll = Math.toRadians(Navx.getRollAccel());
+    velocityPitch = Math.toRadians(Navx.getPitchVelocity());
+    velocityRoll = Math.toRadians(Navx.getRollVelocity());
     pitch = Math.toRadians(Navx.getPitch());
     roll = Math.toRadians(Navx.getRoll());
 
     tilt = Math.atan(Math.sqrt(Math.pow(Math.tan(pitch),2) + Math.pow(Math.tan(roll),2)));
-    accelerationTilt = Math.atan(Math.sqrt(Math.pow(Math.tan(accelerationPitch),2) + Math.pow(Math.tan(accelerationRoll),2)));
-    getTilt.setDouble(tilt);
-    getTiltAccel.setDouble(accelerationTilt);
+    VelocityTilt = Math.atan(Math.sqrt(Math.pow(Math.tan(velocityPitch),2) + Math.pow(Math.tan(velocityRoll),2)));
 
-    MedianFilter fTilt = new MedianFilter(10);
-    // tilt = fTilt.calculate(tilt); 
-    MedianFilter fAccelerationTilt = new MedianFilter(10);
-    accelerationTilt = fAccelerationTilt.calculate(accelerationTilt);
+    VelocityTilt = fVelocityTilt.calculate(VelocityTilt);
+
+    if (prev != 0) 
+      AccelerationTilt = VelocityTilt - prev;
+    prev = VelocityTilt;
+
+    getTilt.setDouble(tilt);
+    getTiltVelocity.setDouble(VelocityTilt);
 
     //TODO: Tune PID values
-
-    double magnitude = D.getDouble(Constants.BalanceKd) * accelerationTilt + F.getDouble(Constants.BalanceKf);
+    double magnitude = 
+      P.getDouble(Constants.BalanceKp) * VelocityTilt + 
+      D.getDouble(Constants.BalanceKd) * AccelerationTilt + 
+      F.getDouble(Constants.BalanceKf);
     double direction = Math.atan2(Math.tan(pitch),Math.tan(roll)); 
-    getDirection.setDouble(direction*180/Math.PI);
+    getDirection.setDouble(direction * 180 / Math.PI);
 
     double x = magnitude * Math.cos(direction);
     double y = magnitude * Math.sin(direction);
@@ -90,19 +100,20 @@ public class Balance extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    angle = Navx.getAngle();
-
-    double direction = Math.atan2(Math.tan(pitch),Math.tan(roll));
-    
-    m_chassis.turnToAngle(angle + direction + Math.PI / 2);
+    SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(0,0,0));
+    m_chassis.setModuleStates(moduleStates);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (tilt < 0.1 && accelerationTilt < 0.1) {
+    if (tilt < 0.1 && VelocityTilt < 0.1) {
       return true;
     }
     return false;
+  }
+
+  public double getDirection() {
+    return direction;
   }
 }

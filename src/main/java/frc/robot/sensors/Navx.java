@@ -92,7 +92,7 @@ public class Navx {
      *
      * @return angle in degrees (-180, 180)
      */
-    public static double getPitchAccel() {
+    public static double getPitchVelocity() {
         if (m_bNavXPresent) {
             return m_navX.getRawGyroX();
         }
@@ -116,7 +116,7 @@ public class Navx {
      *
      * @return angle in degrees (-180, 180)
      */
-    public static double getRollAccel() {
+    public static double getRollVelocity() {
         if (m_bNavXPresent) {
             return m_navX.getRawGyroY();
         }
