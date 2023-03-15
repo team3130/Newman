@@ -2,45 +2,45 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Chassis;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.Hopper;
 
-/** An example command that uses an example subsystem. */
-public class ZeroWheels extends CommandBase {
-  private final Chassis m_chassis;
+/** A command to spin the hopper backwards */
+public class ReverseHopper extends CommandBase {
+  private final Hopper m_hopper;
+
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new ReverseHopper
    *
-   * @param chassis The subsystem used by this command.
+   * @param hopper the hopper subsystem
    */
-  public ZeroWheels(Chassis chassis) {
-    m_chassis = chassis;
+  public ReverseHopper(Hopper hopper) {
+    m_hopper = hopper;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(chassis);
+    addRequirements(hopper);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_hopper.reverseMotors();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    m_chassis.turnToAngle(0);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_chassis.stopModules();
+    m_hopper.hopperStop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_chassis.turnToAnglePIDIsDone();
+    return false;
   }
 }

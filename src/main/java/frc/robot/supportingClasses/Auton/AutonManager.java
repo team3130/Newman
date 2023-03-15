@@ -16,6 +16,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.Chassis;
+import frc.robot.supportingClasses.HolonomicControllerCommand;
+
+import java.util.List;
 
 /**
  * A class to generate our auton paths from PathPlanner
@@ -32,9 +35,10 @@ public class AutonManager {
     /**
      * Makes an object to make and manage auton paths.
      * Also calls {@link #populateChooser()}
+     *
      * @param chassis needs chassis so that commands made in here can use it
      */
-    public AutonManager(Chassis chassis){
+    public AutonManager(Chassis chassis) {
         this.m_autonChooser = new SendableChooser<>();
         this.m_chassis = chassis;
 
@@ -65,6 +69,7 @@ public class AutonManager {
 
     /**
      * what to command is currently selected on shuffleboard.
+     *
      * @return the command that is selected on shuffleboard
      */
     public Command pick() {
@@ -74,29 +79,30 @@ public class AutonManager {
     /**
      * Generates an AutonCommand object from a {@link PathPlannerTrajectory} trajectory.
      * Trajectory's can be loaded from path planner with
-     *  PathPlanner.loadPath(nameOfYourTrajectory, accelerationAndVelocityConstraints). For an example
-     *  see {@link #generate3MeterDrive()}.
+     * PathPlanner.loadPath(nameOfYourTrajectory, accelerationAndVelocityConstraints). For an example
+     * see {@link #generate3MeterDrive()}.
      * Trajectory's can be made from a list of points by passing in a list of positions:
-     *   The first {@link edu.wpi.first.math.geometry.Translation2d} is a translation that the bot should
-     *   follow
-     *  The second parameter is a {@link Rotation2d} rotation,
-     *      the rotation dictates the {@link edu.wpi.first.math.spline.Spline} that is made,
-     *      which is basically the rotation of the plane that intersects the wheels when the bot gets to a position
-     *      <a href=https://docs.google.com/presentation/d/1Us-ONi37lHcfJIlmSMmEISfco7uoSHt6dLa4VgWFYe8/edit?usp=sharing>
-     *          An explanation on holonomic rotation vs heading.
-     *          </a>
-     *  The third parameter is another {@link Rotation2d} rotation,
-     *      this rotation does not affect the path that the bot takes and instead is a holonomic rotation,
-     *      that dictates the direction that the chassis will face.
+     * The first {@link edu.wpi.first.math.geometry.Translation2d} is a translation that the bot should
+     * follow
+     * The second parameter is a {@link Rotation2d} rotation,
+     * the rotation dictates the {@link edu.wpi.first.math.spline.Spline} that is made,
+     * which is basically the rotation of the plane that intersects the wheels when the bot gets to a position
+     * <a href=https://docs.google.com/presentation/d/1Us-ONi37lHcfJIlmSMmEISfco7uoSHt6dLa4VgWFYe8/edit?usp=sharing>
+     * An explanation on holonomic rotation vs heading.
+     * </a>
+     * The third parameter is another {@link Rotation2d} rotation,
+     * this rotation does not affect the path that the bot takes and instead is a holonomic rotation,
+     * that dictates the direction that the chassis will face.
+     *
      * @param trajectory the trajectory from PathPlanner to follow
      * @return an {@link AutonCommand} object that contains an auton path to run as well as the start and end points
      */
     public AutonCommand autonCommandGenerator(PathPlannerTrajectory trajectory) {
-        PIDController xController = new PIDController(Constants.kPXController, Constants.kIXController,Constants.kDXController);
-        PIDController yController = new PIDController(Constants.kPYController, Constants.kIYController ,Constants.kDYController);
+        PIDController xController = new PIDController(Constants.kPXController, Constants.kIXController, Constants.kDXController);
+        PIDController yController = new PIDController(Constants.kPYController, Constants.kIYController, Constants.kDYController);
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(xController, yController, new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, 0, Constants.kThetaControllerConstraints));
 
-        KugelControllerCommand kugelControllerCommand = new KugelControllerCommand(
+        HolonomicControllerCommand holonomicControllerCommand = new HolonomicControllerCommand(
                 trajectory,
                 m_chassis::getPose2d,
                 m_chassis.getKinematics(),
@@ -105,14 +111,15 @@ public class AutonManager {
                 m_chassis);
 
 
-        return new AutonCommand(kugelControllerCommand, trajectory.getInitialPose(), trajectory.getEndState().poseMeters);
+        return new AutonCommand(holonomicControllerCommand, trajectory.getInitialPose(), trajectory.getEndState().poseMeters);
     }
 
     /**
      * Wraps the command with a call to reset odometry before running the {@param first} command
      * Then adds all the commands passed into restOfCommands
      * Finally wraps the end with a call to stop the swerve modules
-     * @param first the first command that you run with a pose for where you start
+     *
+     * @param first          the first command that you run with a pose for where you start
      * @param restOfCommands all the commands you want to run after the first one
      * @return the final command
      */
@@ -134,19 +141,21 @@ public class AutonManager {
      * Stops the modules when done
      * Only run if you are only following one path or only have one command
      * Overload of {@link #wrapCmd(AutonCommand, Command...)}
+     *
      * @param command first command to run in the group, should contain a start position
      * @return the final routine
      */
     public SequentialCommandGroup wrapCmd(AutonCommand command) {
-                return new SequentialCommandGroup(
-                    new InstantCommand(() -> m_chassis.resetOdometry(command.getStartPosition())),
-                    command.getCmd(),
-                    new InstantCommand(m_chassis::stopModules)
+        return new SequentialCommandGroup(
+                new InstantCommand(() -> m_chassis.resetOdometry(command.getStartPosition())),
+                command.getCmd(),
+                new InstantCommand(m_chassis::stopModules)
         );
     }
 
     /**
      * Generates a path to drive forward three meters and face 90 degrees clockwise
+     *
      * @return a sequentialCommandGroup to run on auton init
      */
     public Command generate3MeterDrive() {
@@ -163,7 +172,8 @@ public class AutonManager {
     /**
      * Example for how to generate a trajectory and generate a path from a list of {@link PathPoint} object
      * <a href=https://docs.google.com/document/d/1RInEhl8mW1UKMP4AbvWWiWmfI4klbDfyZLJbw1zbjDo/edit#heading=h.lie7pmqbolmu>
-     *     Explanation of PathPoint objects</a>
+     * Explanation of PathPoint objects</a>
+     *
      * @return the command generated
      */
     public Command generateExamplePathFromPoses() {
@@ -211,6 +221,7 @@ public class AutonManager {
 
     /**
      * This example trajectory is a question mark
+     *
      * @return the Question mark command
      */
     public Command generateExamplePathFromFile() {
@@ -234,13 +245,18 @@ public class AutonManager {
         return wrapCmd(autonCommand);
     }
 
+    /**
+     * Makes an auton path between two points
+     *
+     * @param start the start point in the trajectory it will generate
+     * @param end   the end point in the trajectory it will make
+     * @return a command that follows the specified auton path
+     */
     public Command makePathToFrom(Pose2d start, Pose2d end) {
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(safe_constraints,
-                new PathPoint(start.getTranslation(), start.)
-        )
+                new PathPoint(start.getTranslation(), new Rotation2d(), start.getRotation()),
+                new PathPoint(end.getTranslation(), new Rotation2d(), end.getRotation()));
 
+        return wrapCmd(autonCommandGenerator(trajectory));
     }
-
-
-
 }

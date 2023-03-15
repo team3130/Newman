@@ -7,16 +7,14 @@ package frc.robot.commands.Chassis;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Chassis;
-import frc.robot.subsystems.ExampleSubsystem;
 
-/** A command to zero the heading and encoders. */
-public class ZeroEverything extends InstantCommand {
-  private final Chassis m_subsystem; // chassis subsystem
+/** An example command that uses an example subsystem. */
+public class ZeroEverything extends CommandBase {
+  private final Chassis m_subsystem;
 
   /**
-   * Creates a new ZeroEverything command in order to reset navx heading and the encoders
+   * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
@@ -30,5 +28,19 @@ public class ZeroEverything extends InstantCommand {
   @Override
   public void initialize() {
     m_subsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {}
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
   }
 }

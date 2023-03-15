@@ -31,6 +31,10 @@ import frc.robot.subsystems.HandGrabber;
 import frc.robot.subsystems.RotaryArm;
 import frc.robot.subsystems.Hopper;
 import frc.robot.supportingClasses.Auton.AutonManager;
+import frc.robot.sensors.Limelight;
+import frc.robot.subsystems.*;
+import frc.robot.supportingClasses.Auton.AutonManager;
+import frc.robot.supportingClasses.OdoPosition;
 
 
 /**
@@ -44,23 +48,20 @@ public class RobotContainer {
    * Auton manager is the object that handles the loading of auton paths
    */
   protected AutonManager m_autonManager;
-
-  private static Joystick m_driverGamepad; // The controllers
-  private static Joystick m_weaponsGamepad; // The controllers
-
-  /**
-   * Subsystems
-   */
+  private static Joystick m_driverGamepad;
+  private static Joystick m_weaponsGamepad;
   private final Chassis m_chassis;
+  private final Limelight m_limelight;
   private final ExtensionArm m_extensionArm;
+
+  public Limelight getLimelight() {
+      return m_limelight;
+    }
+
   private final RotaryArm m_rotaryArm;
   private final HandGrabber m_handGrabber;
   private final Hopper m_hopper;
 
-  /**
-   * A getter for the chassis object in the container
-   * @return the Chassis subsystem
-   */
   public Chassis getChassis() {
     return m_chassis;
   }
@@ -79,7 +80,9 @@ public class RobotContainer {
     m_driverGamepad = new Joystick(0);
     m_weaponsGamepad = new Joystick(1);
 
-    m_chassis = new Chassis();
+    m_limelight = new Limelight();
+
+    m_chassis = new Chassis(m_limelight);
     m_extensionArm =  new ExtensionArm();
     m_rotaryArm = new RotaryArm();
     m_handGrabber = new HandGrabber();
@@ -120,7 +123,7 @@ public class RobotContainer {
     return m_driverGamepad;
   }
 
-  /**
+    /**
    * This shouldn't be necessary as we can just pass the initialized object,
    * However this can be here just in case we need it last minute
    * @return the weapons game pad
@@ -129,7 +132,6 @@ public class RobotContainer {
     return m_weaponsGamepad;
   }
 
-
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -137,7 +139,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ZeroWheels(m_chassis));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new FlipFieldOriented(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
 
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new GoToOrigin(m_chassis, m_autonManager));
@@ -151,10 +153,20 @@ public class RobotContainer {
   /**
    * Resets odometry to 0, 0, 0
    */
-  public void resetOdometry() {
-    m_chassis.resetOdometry(new Pose2d(0 ,0, new Rotation2d()));
-
+  public boolean resetOdometry() {
+    OdoPosition positionToResetTo = m_limelight.calculate();
+    if (positionToResetTo == null) {
+      return false;
+    }
+    m_chassis.resetOdometry(positionToResetTo.getPosition());
+    return true;
   }
+
+  public void resetOdometryWithoutApril() {
+    m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
+  }
+
+
 
   /**
    * Gets the selected auton command that is on shuffleboard
@@ -170,5 +182,4 @@ public class RobotContainer {
   public void zeroCommand() {
     CommandScheduler.getInstance().schedule(new zeroExtensionArm(m_extensionArm));
   }
-
 }
