@@ -42,6 +42,6 @@ public class ActuateHandGrabber extends InstantCommand {
   public boolean isFinished() {
     return false;
   }
-}
+
 
 }
