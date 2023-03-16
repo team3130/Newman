@@ -140,25 +140,27 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new ToggleSmall(m_pivot));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new ToggleLarge(m_pivot));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new ToggleSmall(m_pivot));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new ToggleLarge(m_pivot));
 
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new FlipFieldOriented(m_chassis));
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new ActuateHandGrabber(m_handGrabber));
 
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new GoToOrigin(m_chassis, m_autonManager));
+    //new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new FlipFieldOriented(m_chassis));
+    //new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
 
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new ActuateHandGrabber(m_handGrabber));
-
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new SpinHopper(m_hopper));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new ReverseHopper(m_hopper, m_beaterBar, m_pivot));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_POV_S).whileTrue(new ShootHopper(m_hopper));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new UnjamHopper(m_hopper));
+    //new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_
+    //Y).whileTrue(new GoToOrigin(m_chassis, m_autonManager));
 
 
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new RunIntakeToShoot(m_beaterBar, m_pivot, m_hopper));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new RunIntakeToPlace(m_beaterBar, m_pivot, m_hopper));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new GoToNextIntakePos(m_pivot));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new SpinHopper(m_hopper));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ReverseHopper(m_hopper, m_beaterBar, m_pivot));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ShootHopper(m_hopper));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new UnjamHopper(m_hopper));
+
+
+//    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new RunIntakeToShoot(m_beaterBar, m_pivot, m_hopper));
+//    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new RunIntakeToPlace(m_beaterBar, m_pivot, m_hopper));
+//    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new GoToNextIntakePos(m_pivot));
 
 
     SmartDashboard.putData(new FlipFieldOriented(m_chassis));

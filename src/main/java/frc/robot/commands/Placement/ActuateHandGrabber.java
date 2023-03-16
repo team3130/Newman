@@ -28,4 +28,20 @@ public class ActuateHandGrabber extends InstantCommand {
     // when button is pressed, hand is toggled
     m_handGrabber.toggleGrabber();
   }
+  @Override
+  public void execute() {
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
+}
+
 }

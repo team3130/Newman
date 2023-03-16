@@ -19,9 +19,10 @@ import frc.robot.Newman_Constants.Constants;
 public class Hopper extends SubsystemBase {
     protected final WPI_TalonSRX m_leftWheel; // the left wheel for hopper
     protected final WPI_TalonSRX m_rightWheel; // the right wheel for hopper
-    private double m_hopperSpeed = 0.45; // the left output speed
+    private double m_hopperSpeed = 0.5; // the left output speed
+    private double m_reverseHopperSpeed = -0.5;
     //private double m_rightHopperSpeed = m_leftHopperSpeed; //TODO double check gearing is the same
-    private double m_shootingOutputSpeed = -0.5;
+    private double m_shootingOutputSpeed = -0.75;
     private double m_gentleHopperSpeed = m_hopperSpeed * 0.75;
     private final DigitalInput breakbeam;
     private boolean beamBroke = false;
@@ -36,9 +37,9 @@ public class Hopper extends SubsystemBase {
         m_leftWheel.configFactoryDefault();
         m_rightWheel.configFactoryDefault();
         m_rightWheel.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
-        m_rightWheel.enableVoltageCompensation(true);
+        m_rightWheel.enableVoltageCompensation(false);
         m_leftWheel.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
-        m_leftWheel.enableVoltageCompensation(true);
+        m_leftWheel.enableVoltageCompensation(false);
 
         breakbeam = new DigitalInput(Constants.DIO_BreakBeam);
 
@@ -74,7 +75,7 @@ public class Hopper extends SubsystemBase {
 
     /** alternating directions to unjam pieces that have become lodged **/
     public void alternateHopper(){
-        m_leftWheel.set(ControlMode.PercentOutput,-m_hopperSpeed);
+        m_leftWheel.set(ControlMode.PercentOutput, -m_reverseHopperSpeed);
         m_rightWheel.set(ControlMode.PercentOutput, m_hopperSpeed);
     }
 
