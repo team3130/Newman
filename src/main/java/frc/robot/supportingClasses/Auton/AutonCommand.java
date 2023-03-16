@@ -11,14 +11,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class AutonCommand {
     protected Pose2d startPosition; // start position
     protected Pose2d endPosition; // end position
-    protected CommandBase cmd; // command to run
+    protected HolonomicControllerCommand cmd; // command to run
 
     /**
      * Constructs an Auton Command object without the end position
      * @param cmd command to run
      * @param startPosition the start position of the trajectory
      */
-    public AutonCommand(CommandBase cmd, Pose2d startPosition) {
+    public AutonCommand(HolonomicControllerCommand cmd, Pose2d startPosition) {
         this.cmd = cmd;
         this.startPosition = startPosition;
     }
@@ -29,7 +29,7 @@ public class AutonCommand {
      * @param startPosition the start position of the trajectory
      * @param endPosition the end position of the trajectory
      */
-    public AutonCommand(CommandBase cmd, Pose2d startPosition, Pose2d endPosition) {
+    public AutonCommand(HolonomicControllerCommand cmd, Pose2d startPosition, Pose2d endPosition) {
         this.cmd = cmd;
         this.startPosition = startPosition;
         this.endPosition = endPosition;

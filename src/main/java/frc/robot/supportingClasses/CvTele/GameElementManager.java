@@ -2,9 +2,13 @@ package frc.robot.supportingClasses.CvTele;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.Newman_Constants.Constants.Camera;
 import frc.robot.subsystems.Chassis;
+import frc.robot.supportingClasses.Auton.AutonManager;
 import frc.robot.supportingClasses.CvTele.GameElement.GameElementType;
 
 import java.util.ArrayList;
@@ -20,6 +24,8 @@ public class GameElementManager {
     protected final int clockTick;
     protected int lowerBound; // the lower bound of the moving window (basically head)
     protected int upperBound; // the upper bound of the moving window (basically capacity)
+
+    protected final AutonManager m_autonManager;
 
     // funny cached values basically maps
     /*
@@ -114,7 +120,7 @@ public class GameElementManager {
     /**
      * Makes a new GameElementManager
      */
-    public GameElementManager(Chassis chassis) {
+    public GameElementManager(Chassis chassis, AutonManager autonManager) {
         // cyclical queue stuff
         bucketSize = 128;
         clockTick = bucketSize - 1; // should be the closest value in cache
@@ -125,6 +131,7 @@ public class GameElementManager {
 
         // chassis
         m_chassis = chassis;
+        m_autonManager = autonManager;
 
         // active arrays
         gridBucketSize = 27;
@@ -189,7 +196,8 @@ public class GameElementManager {
     public void generatePath() {
         final int scoringPosition = this.getIdealScoringPosition();
         final GameElement toGet = getIdealNextElementToPickup(scoringPosition, m_chassis.getPose2d());
-
+        Command path = m_autonManager.makePathToFrom(m_chassis.getPose2d(), toGet.getPosition2D());
+        SequentialCommandGroup commandGroup = new SequentialCommandGroup(path);
 
         state = UPDATE_TO_ADD;
     }

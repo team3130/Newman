@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.Chassis;
+import frc.robot.supportingClasses.Auton.HolonomicControllerCommand.PathType;
 
 /**
  * A class to generate our auton paths from PathPlanner
@@ -91,10 +92,11 @@ public class AutonManager {
      * this rotation does not affect the path that the bot takes and instead is a holonomic rotation,
      * that dictates the direction that the chassis will face.
      *
-     * @param trajectory the trajectory from PathPlanner to follow
+     * @param trajectory the trajectory from PathPlanner to follow.
+     * @param type the type of path, whether you are going to pickup a game element, scoring, balancing, or just driving around
      * @return an {@link AutonCommand} object that contains an auton path to run as well as the start and end points
      */
-    public AutonCommand autonCommandGenerator(PathPlannerTrajectory trajectory) {
+    public AutonCommand autonCommandGenerator(PathPlannerTrajectory trajectory, PathType type) {
         PIDController xController = new PIDController(Constants.kPXController, Constants.kIXController, Constants.kDXController);
         PIDController yController = new PIDController(Constants.kPYController, Constants.kIYController, Constants.kDYController);
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(xController, yController, new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, 0, Constants.kThetaControllerConstraints));
@@ -105,10 +107,22 @@ public class AutonManager {
                 m_chassis.getKinematics(),
                 holonomicDriveController,
                 m_chassis::setModuleStates,
-                m_chassis);
+                m_chassis,
+                type
+                );
 
 
         return new AutonCommand(holonomicControllerCommand, trajectory.getInitialPose(), trajectory.getEndState().poseMeters);
+    }
+
+    /**
+     * Wrapper for {@link #autonCommandGenerator(PathPlannerTrajectory, PathType)}
+     *
+     * @param trajectory the trajectory from PathPlanner to follow.
+     * @return an {@link AutonCommand} object that contains an auton path to run as well as the start and end points
+     */
+    public AutonCommand autonCommandGenerator(PathPlannerTrajectory trajectory) {
+        return autonCommandGenerator(trajectory, PathType.OTHER);
     }
 
     /**
