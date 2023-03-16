@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.PlacementExtensionArm;
 import frc.robot.subsystems.PlacementRotaryArm;
 
@@ -30,6 +31,7 @@ public class RobotContainer {
   private final Chassis m_chassis = new Chassis();
   private final PlacementExtensionArm m_placementExtensionArm = new PlacementExtensionArm();
   private final PlacementRotaryArm m_placementRotaryArm = new PlacementRotaryArm();
+  private final Manipulator m_manipulator = new Manipulator();
 
 
   public Chassis getChassis() {
@@ -70,7 +72,10 @@ public class RobotContainer {
 */
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ZeroWheels(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new Calibrate(m_placementRotaryArm));
+    //new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new Calibrate(m_placementRotaryArm));
+
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new ToggleGrabber(m_manipulator));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ToggleBrake(m_placementRotaryArm));
 
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new HighRotary(m_placementRotaryArm, m_placementExtensionArm));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new MidRotary(m_placementRotaryArm, m_placementExtensionArm));
