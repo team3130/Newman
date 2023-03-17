@@ -39,11 +39,19 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [],
-        "executionBehavior": "parallel",
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 0.4581818181818309,
+      "names": [
+        "Intake",
+        "stop Intake"
+      ]
+    }
+  ]
 }
