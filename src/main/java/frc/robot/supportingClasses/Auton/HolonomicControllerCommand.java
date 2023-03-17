@@ -8,9 +8,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Newman_Constants.Constants;
+import com.pathplanner.lib.PathPlannerTrajectory.EventMarker;
+import frc.robot.subsystems.*;
 
+import java.util.ArrayList;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -31,14 +33,19 @@ public class HolonomicControllerCommand extends CommandBase {
 
   protected PathType m_pathType;
 
-    public HolonomicControllerCommand(PathPlannerTrajectory trajectory, Supplier<Pose2d> robotPose, SwerveDriveKinematics kinematics, HolonomicDriveController holonomicDriveController, Consumer<SwerveModuleState[]> states, Subsystem requirement, PathType type) {
+    public HolonomicControllerCommand(PathPlannerTrajectory trajectory, Supplier<Pose2d> robotPose,
+                                      SwerveDriveKinematics kinematics, HolonomicDriveController holonomicDriveController,
+                                      Consumer<SwerveModuleState[]> states, Chassis chassis, PathType type) {
         m_trajectory = trajectory;
         m_pose = robotPose;
         m_kinematics = kinematics;
         m_controller = holonomicDriveController;
         m_outputModuleStates = states;
-        m_requirements.add(requirement);
+        m_requirements.add(chassis);
+
         this.m_pathType = type;
+
+        markers = (ArrayList<EventMarker>) m_trajectory.getMarkers();
     }
 
     public void initialize() {
@@ -48,15 +55,21 @@ public class HolonomicControllerCommand extends CommandBase {
     }
 
     public void execute() {
-        double time = m_timer.get();
+        // the time at this instant
+        final double time = m_timer.get();
+        // the desired state we should be at
         PathPlannerTrajectory.PathPlannerState desiredState = (PathPlannerTrajectory.PathPlannerState) m_trajectory.sample(time);
 
+        // calculate the speeds and states of the motors
         ChassisSpeeds targetChassisSpeeds = m_controller.calculate(m_pose.get(), desiredState,
                 desiredState.holonomicRotation);
         SwerveModuleState[] targetModuleStates = m_kinematics.toSwerveModuleStates(targetChassisSpeeds);
 
+        // send the states to chassis
         m_outputModuleStates.accept(targetModuleStates);
+
     }
+
 
     public boolean inRange(Pose2d pose1, Pose2d pose2) {
         return Math.abs(pose1.getX() - pose2.getX()) < 0.1 &&
@@ -85,5 +98,13 @@ public class HolonomicControllerCommand extends CommandBase {
 
     public PathType getTypeOfPath() {
       return m_pathType;
+    }
+
+    public boolean isOptimized() {
+        return useOptimized;
+    }
+
+    public Timer getTimer() {
+        return m_timer;
     }
 }

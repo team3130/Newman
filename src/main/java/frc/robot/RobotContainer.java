@@ -52,7 +52,7 @@ public class RobotContainer {
     }
 
   private final RotaryArm m_rotaryArm;
-  private final HandGrabber m_handGrabber;
+  private final Manipulator m_manipulator;
   private final Hopper m_hopper;
 
   public Chassis getChassis() {
@@ -78,7 +78,7 @@ public class RobotContainer {
     m_chassis = new Chassis(m_limelight);
     m_extensionArm =  new ExtensionArm();
     m_rotaryArm = new RotaryArm();
-    m_handGrabber = new HandGrabber();
+    m_manipulator = new Manipulator();
     m_hopper = new Hopper();
 
     m_chassis.setDefaultCommand(new TeleopDrive(m_chassis, m_driverGamepad));
@@ -102,7 +102,7 @@ public class RobotContainer {
       tab.add(m_chassis);
       tab.add(m_extensionArm);
       tab.add(m_rotaryArm);
-      tab.add(m_handGrabber);
+      tab.add(m_manipulator);
       tab.add(m_hopper);
     }
   }
@@ -137,7 +137,7 @@ public class RobotContainer {
 
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new GoToOrigin(m_chassis, m_autonManager));
 
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ActuateHandGrabber(m_handGrabber));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ActuateHandGrabber(m_manipulator));
     SmartDashboard.putData(new FlipFieldOriented(m_chassis));
 
     Shuffleboard.getTab("Test").add("Spin motor down", new zeroExtensionArm(m_extensionArm));

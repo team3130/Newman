@@ -28,7 +28,7 @@ public class AutonManager {
     protected PathConstraints safe_constraints; // safe speeds for testing
     protected PathConstraints violent_constraints; // wild speeds for if we want to go brrrrrrrrr
 
-    private DriverStation.Alliance alliance;
+    private final DriverStation.Alliance alliance; // the alliance that we are starting on
 
     /**
      * Makes an object to make and manage auton paths.
@@ -111,8 +111,7 @@ public class AutonManager {
                 type
                 );
 
-
-        return new AutonCommand(holonomicControllerCommand, trajectory.getInitialPose(), trajectory.getEndState().poseMeters);
+        return new AutonCommand(holonomicControllerCommand, trajectory);
     }
 
     /**
