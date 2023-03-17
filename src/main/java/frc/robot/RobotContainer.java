@@ -87,13 +87,13 @@ public class RobotContainer {
     m_beaterBar = new IntakeBeaterBar();
     m_pivot = new IntakePivot();
 
+    m_autonManager = new AutonManager(m_chassis);
+
     m_chassis.setDefaultCommand(new TeleopDrive(m_chassis, m_driverGamepad));
 
-    // idk if this is right
     m_rotaryArm.setDefaultCommand(new MoveRotaryArm(m_rotaryArm, m_weaponsGamepad));
     m_extensionArm.setDefaultCommand(new MoveExtensionArm(m_extensionArm, m_weaponsGamepad));
 
-    m_autonManager = new AutonManager(m_chassis);
 
     configureButtonBindings();
     vomitShuffleBoardData();
@@ -165,7 +165,9 @@ public class RobotContainer {
 
     SmartDashboard.putData(new FlipFieldOriented(m_chassis));
 
-    Shuffleboard.getTab("Test").add("Spin motor down", new zeroExtensionArm(m_extensionArm));
+    if (Constants.debugMode) {
+      Shuffleboard.getTab("Test").add("Spin motor down", new zeroExtensionArm(m_extensionArm));
+    }
   }
 
   /**

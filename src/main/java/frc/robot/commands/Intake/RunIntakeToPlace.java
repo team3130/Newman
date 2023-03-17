@@ -9,18 +9,21 @@ import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.IntakeBeaterBar;
 import frc.robot.subsystems.IntakePivot;
 
-/** An example command that uses an example subsystem. */
+/** A command to run intake to the position we need to place game elements */
 public class RunIntakeToPlace extends CommandBase {
-  private final IntakeBeaterBar m_beaterBar;
-  private final Hopper m_hopper;
-  private final IntakePivot m_pivot;
-  /*
-   * Creates a new ExampleCommand.
+  private final IntakeBeaterBar m_beaterBar; // the beater bar will need to be running to place
+  private final Hopper m_hopper; // the hopper will need to be running to place
+  private final IntakePivot m_pivot; // the arm will need to be pivoted to a certain place
+
+  /**
+   * Creates a new RunIntakeToPlace command
    *
-   * @param subsystem The subsystem used by this command.
+   * @param beaterBar The IntakeBeaterBar subsystem
+   * @param pivot the pivot subsystem
+   * @param hopper the hopper subsystem
    */
-  public RunIntakeToPlace(IntakeBeaterBar beaterbar, IntakePivot pivot, Hopper hopper) {
-    m_beaterBar = beaterbar;
+  public RunIntakeToPlace(IntakeBeaterBar beaterBar, IntakePivot pivot, Hopper hopper) {
+    m_beaterBar = beaterBar;
     m_pivot = pivot;
     m_hopper = hopper;
 
@@ -37,8 +40,11 @@ public class RunIntakeToPlace extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // spin the beater bar
     m_beaterBar.spin();
-    if (m_pivot.atMiddlePos()){
+    // if we are at the middle position then spin hopper
+    //TODO: so if we aren't at the middle position hopper shouldn't run?
+    if (m_pivot.atMiddlePos()) {
       m_hopper.spinHopper();
     }
   }
@@ -46,6 +52,7 @@ public class RunIntakeToPlace extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    // stop the intake and hopper motors
     m_beaterBar.stop();
     m_hopper.stopHopper();
   }
@@ -53,6 +60,7 @@ public class RunIntakeToPlace extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    // never done, wait for button press
     return false;
   }
 }

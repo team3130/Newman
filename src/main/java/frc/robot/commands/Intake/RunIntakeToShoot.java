@@ -9,20 +9,24 @@ import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.IntakeBeaterBar;
 import frc.robot.subsystems.IntakePivot;
 
-/** An example command that uses an example subsystem. */
+/** A command to run intake in order to shoot the game element. */
 public class RunIntakeToShoot extends CommandBase {
   private final IntakeBeaterBar m_beaterBar;
   private final Hopper m_hopper;
   private final IntakePivot m_pivot;
-  /*
-   * Creates a new ExampleCommand.
+
+  /**
+   * Creates a new RunIntakeToShoot object
    *
-   * @param subsystem The subsystem used by this command.
+   * @param beaterBar The subsystem used by this command.
+   * @param pivot the pivoting subsystem for intake
+   * @param hopper the hopper subsystem
    */
-  public RunIntakeToShoot(IntakeBeaterBar beaterbar, IntakePivot pivot, Hopper hopper) {
-    m_beaterBar = beaterbar;
+  public RunIntakeToShoot(IntakeBeaterBar beaterBar, IntakePivot pivot, Hopper hopper) {
+    m_beaterBar = beaterBar;
     m_hopper = hopper;
     m_pivot = pivot;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_beaterBar, m_hopper, m_pivot);
   }
@@ -36,9 +40,10 @@ public class RunIntakeToShoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // spin beater bar regardless
     m_beaterBar.spin();
-    if (m_pivot.atMiddlePos() && !m_hopper.hasNards()){ //if pivot is at middle and the hopper is empty run hopper
-      m_hopper.spinHopper(); //may need gentleSpin
+    if (m_pivot.atMiddlePos() && !m_hopper.hasNards()) { // if pivot is at middle and the hopper is empty run hopper
+      m_hopper.spinHopper(); // may need gentleSpin
     }
   }
   // Called once the command ends or is interrupted.

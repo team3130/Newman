@@ -4,22 +4,20 @@
 
 package frc.robot.commands.Intake;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Hopper;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.IntakeBeaterBar;
 
-/** An example command that uses an example subsystem. */
-public class IntakeToggleBeaterBar extends CommandBase {
+/** A command to toggle the intake beater bar that uses Intake as the subsystem. */
+public class IntakeToggleBeaterBar extends InstantCommand {
   private final IntakeBeaterBar m_beaterBar;
-  private final Hopper m_hopper;
-  /*
-   * Creates a new ExampleCommand.
+
+  /**
+   * Creates a new IntakeToggleBeaterBar command
    *
-   * @param subsystem The subsystem used by this command.
+   * @param beaterBar The subsystem used by this command.
    */
-  public IntakeToggleBeaterBar(IntakeBeaterBar beaterbar, Hopper hopper) {
-    m_beaterBar = beaterbar;
-    m_hopper =hopper;
+  public IntakeToggleBeaterBar(IntakeBeaterBar beaterBar) {
+    m_beaterBar = beaterBar;;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_beaterBar);
   }
@@ -27,25 +25,11 @@ public class IntakeToggleBeaterBar extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(!m_beaterBar.isSpinning()){
+    if (!m_beaterBar.isSpinning()) {
       m_beaterBar.spin();
     }
-    else{
+    else {
       m_beaterBar.stop();
     }
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-  }
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
   }
 }
