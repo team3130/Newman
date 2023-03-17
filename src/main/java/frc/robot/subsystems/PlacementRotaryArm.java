@@ -151,7 +151,7 @@ public class PlacementRotaryArm extends SubsystemBase {
     brake.set(defaultState);
   }
   public double getFeedForward(double extensionLength, double placementAngle){
-    return Constants.kPercentOutputToHoldAtMaxExtension * extensionLength * Math.sin(placementAngle);
+    return Constants.kTorqueToPercentOutScalar * extensionLength * Math.sin(placementAngle);
   }
   public void gotoPos(double extensionLength, double placementAngle){ //does this need a time?
     rotaryMotor.set(ControlMode.PercentOutput, (getFeedForward(extensionLength, placementAngle)) + rotaryPID.calculate(placementAngle));
@@ -290,7 +290,7 @@ public class PlacementRotaryArm extends SubsystemBase {
    */
   public double calculateTorqueDueToGravity(double rotaryAngle, double extensionLength) {
     // magic scalar of voltage to torque * force *
-    double force = Constants.kAccelerationDueToGravity * Constants.kMassOfExtensionArm;
+    double force = Constants.kAccelerationDueToGravity /* Constants.kMassOfExtensionArm*/;
     // return the torque: radius * Force * sin(theta)
     return force * extensionLength * Math.sin(rotaryAngle);
   }
@@ -305,14 +305,14 @@ public class PlacementRotaryArm extends SubsystemBase {
 
     // the torque due to gravity - the upwards torque by the rotary arm
     return calculateTorqueDueToGravity(rotaryArm, extensionArmLength)
-            -Math.abs(calculateSpringExtensionArmTorque(
+/*            -Math.abs(calculateSpringExtensionArmTorque(
                     calculateExtensionArmSpringLength(extensionArmLength, rotaryArm),
                     rotaryArm)
-            );
+            )*/;
   }
 
   public double getStaticGain(double extensionArmLength) {
-    return getNetTorqueOnArm(extensionArmLength) * Constants.kTorqueToPercentOutScalar;
+    return Math.sin(getPositionPlacementArm()) * extensionArmLength * Constants.kTorqueToPercentOutScalar;
   }
 
 }
