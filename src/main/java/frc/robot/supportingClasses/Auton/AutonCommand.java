@@ -11,6 +11,7 @@ import frc.robot.subsystems.*;
 import com.pathplanner.lib.PathPlannerTrajectory.EventMarker;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Stores the command to run as well as the start and end position of the bot as {@link Pose2d} objects.
@@ -40,6 +41,9 @@ public class AutonCommand extends CommandBase {
 
     protected Timer m_timer; // timer from the holonomic drive command
 
+    protected CommandBase toRunRightNow; // the command to run at the moment
+    protected HashMap<String, CommandBase> maps;
+
     /**
      * Constructs an Auton Command object without the end position
      * @param cmd command to run
@@ -56,7 +60,7 @@ public class AutonCommand extends CommandBase {
 
     /**
      * THE CONSTRUCTOR for auton command
-     * @param cmd command that will be ran during auton
+     * @param cmd command that will be run during auton
      * @param startPosition the start position of the command
      * @param endPosition the end position of the command
      * @param trajectory the trajectory that we will follow
@@ -114,8 +118,14 @@ public class AutonCommand extends CommandBase {
         this(cmd, trajectory, null);
     }
 
+    /**
+     * Wrapper constructor
+     * @param cmd auton path command
+     * @param trajectory auton path
+     * @param chassis chassis subsystem
+     */
     public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory, Chassis chassis) {
-        this(cmd, trajectory, null, null, null, null, null, null, null);
+        this(cmd, trajectory, null, null, null, null, chassis);
     }
 
     /**
@@ -204,20 +214,6 @@ public class AutonCommand extends CommandBase {
         return true;
     }
 
-
-    /**
-     * constructs the auton command
-     * @param cmd command to run
-     * @param startPosition the start position of the trajectory
-     * @param endPosition the end position of the trajectory
-     */
-    public AutonCommand(HolonomicControllerCommand cmd, Pose2d startPosition, Pose2d endPosition) {
-        this.cmd = cmd;
-        this.startPosition = startPosition;
-        this.endPosition = endPosition;
-        trajectory = null;
-    }
-
     /**
      * @return the final position in the trajectory
      */
@@ -296,16 +292,27 @@ public class AutonCommand extends CommandBase {
     public void execute() {
         cmd.execute();
 
-        PathPlannerTrajectory.EventMarker closest;
-        // event markers
-        if (useOptimized) {
-            closest = findClosestWithOptimized();
-        }
-        else {
-            closest = findClosestWithBinSearch();
+        if (toRunRightNow != null) {
+            toRunRightNow.execute();
+            if (toRunRightNow.isFinished()) {
+                toRunRightNow.end(false);
+                toRunRightNow = null;
+            }
         }
 
-        // use the marker
+        if (m_timer.get() > markerEndTime) {
+            toRunRightNow.end(true);
 
+            PathPlannerTrajectory.EventMarker closest;
+            // event markers
+            if (useOptimized) {
+                closest = findClosestWithOptimized();
+            } else {
+                closest = findClosestWithBinSearch();
+            }
+
+            // use the marker
+            toRunRightNow = maps.get(closest.names.get(0));
+        }
     }
 }
