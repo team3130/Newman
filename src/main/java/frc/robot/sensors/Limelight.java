@@ -21,7 +21,7 @@ import java.io.IOException;
 
 public class Limelight {
 
-    PhotonCamera camera;
+    protected PhotonCamera camera;
 
     protected final GenericEntry nXCameraToTarget;
     protected final GenericEntry nYCameraToTarget;

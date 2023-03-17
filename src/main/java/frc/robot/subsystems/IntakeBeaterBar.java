@@ -13,7 +13,7 @@ import frc.robot.Newman_Constants.Constants;
 public class IntakeBeaterBar extends SubsystemBase {
   private final WPI_TalonSRX m_beaterBar;
 
-  private double outputSpeed = 0.5;
+  private double outputSpeed = 0.75;
 
   public IntakeBeaterBar() {
     m_beaterBar = new WPI_TalonSRX(Constants.CAN_SpinnyBar);
@@ -21,7 +21,7 @@ public class IntakeBeaterBar extends SubsystemBase {
     m_beaterBar.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
     m_beaterBar.enableVoltageCompensation(true);
 
-    m_beaterBar.setInverted(false);
+    m_beaterBar.setInverted(true);
   }
 
   /**
