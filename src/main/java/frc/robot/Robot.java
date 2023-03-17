@@ -15,7 +15,8 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   private boolean first = true;
 
-  private  boolean Counterreset = false;
+  private boolean Counterreset = false;
+
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
@@ -33,61 +34,68 @@ public class Robot extends TimedRobot {
         timer.stop();
         Counterreset = true;
       } else {
-<<<<<<< Updated upstream
         if (first) {
           m_robotContainer.resetOdometryWithoutApril();
           first = false;
-=======
-        if (Counterreset = false){
-          m_robotContainer.resetOdometryWithoutApril();
->>>>>>> Stashed changes
+          if (Counterreset = false) {
+            m_robotContainer.resetOdometryWithoutApril();
+          }
         }
-      }
+      }}
+    }
+
+    @Override
+    public void disabledInit () {
+    }
+
+    @Override
+    public void disabledPeriodic () {
+    }
+
+    @Override
+    public void disabledExit () {
+    }
+
+    @Override
+    public void autonomousInit () {
+      CommandScheduler.getInstance().cancelAll();
+    }
+
+    @Override
+    public void autonomousPeriodic () {
+    }
+
+    @Override
+    public void autonomousExit () {
+    }
+
+    @Override
+    public void teleopInit () {
+      CommandScheduler.getInstance().cancelAll();
+      m_robotContainer.zeroCommand();
+    }
+
+    @Override
+    public void teleopPeriodic () {
+
+    }
+
+    @Override
+    public void teleopExit () {
+    }
+
+    @Override
+    public void testInit () {
+      CommandScheduler.getInstance().cancelAll();
+    }
+
+    @Override
+    public void testPeriodic () {
+    }
+
+    @Override
+    public void testExit () {
     }
   }
 
-  @Override
-  public void disabledInit() {}
 
-  @Override
-  public void disabledPeriodic() {}
-
-  @Override
-  public void disabledExit() {}
-
-  @Override
-  public void autonomousInit() {
-    CommandScheduler.getInstance().cancelAll();
-  }
-
-  @Override
-  public void autonomousPeriodic() {}
-
-  @Override
-  public void autonomousExit() {}
-
-  @Override
-  public void teleopInit() {
-    CommandScheduler.getInstance().cancelAll();
-    m_robotContainer.zeroCommand();
-  }
-
-  @Override
-  public void teleopPeriodic() {
-
-  }
-
-  @Override
-  public void teleopExit() {}
-
-  @Override
-  public void testInit() {
-    CommandScheduler.getInstance().cancelAll();
-  }
-
-  @Override
-  public void testPeriodic() {}
-
-  @Override
-  public void testExit() {}
-}
