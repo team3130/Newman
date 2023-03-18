@@ -33,8 +33,8 @@ public class Robot extends TimedRobot {
         timer.stop();
       }
     }
-
-    m_robotContainer.getLimelight().outputToShuffleBoard();
+/*
+    m_robotContainer.getLimelight().outputToShuffleBoard();*/
   }
 
   @Override
@@ -49,7 +49,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     CommandScheduler.getInstance().cancelAll();
-    CommandScheduler.getInstance().schedule(new ParallelRaceGroup(m_robotContainer.getAutonCmd(), new AprilTagvsReal(m_robotContainer.getChassis(), m_robotContainer.getLimelight())));
   }
 
   @Override
