@@ -34,7 +34,7 @@ public class Manipulator extends SubsystemBase {
   /**
    * Toggles the grabber between true and false
    */
-  public void toggleGrabber(){
+  public void toggleManipulator(){
     grabber.toggle();
   }
 

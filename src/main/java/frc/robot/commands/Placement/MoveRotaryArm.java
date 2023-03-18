@@ -7,12 +7,12 @@ package frc.robot.commands.Placement;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Newman_Constants.Constants;
-import frc.robot.subsystems.RotaryArm;
+import frc.robot.subsystems.PlacementRotaryArm;
 
 /** An example command that uses an example subsystem. */
 public class MoveRotaryArm extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final RotaryArm m_rotaryArm;
+  private final PlacementRotaryArm m_rotaryArm;
 
   public Joystick m_xboxController;
   /**
@@ -20,7 +20,7 @@ public class MoveRotaryArm extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveRotaryArm(RotaryArm subsystem, Joystick m_xboxController) {
+  public MoveRotaryArm(PlacementRotaryArm subsystem, Joystick m_xboxController) {
     // specify whether rotary arm should be lowered or raised by setting the direction parameter as either -1 or 1, respectively
     m_rotaryArm = subsystem;
     this.m_xboxController = m_xboxController;
@@ -40,7 +40,7 @@ public class MoveRotaryArm extends CommandBase {
     double y = m_xboxController.getRawAxis(Constants.Buttons.LST_AXS_RJOYSTICKY); // inverted?
     y = y * Math.abs(y);
 
-    if (Math.abs(y) < Constants.kDeadband || (y < 0 && m_rotaryArm.hitLimitSwitch())) {
+    if (Math.abs(y) < Constants.kDeadband) {
       y = 0;
     }
     m_rotaryArm.rotateRotaryArm(y); //that max is currently bs

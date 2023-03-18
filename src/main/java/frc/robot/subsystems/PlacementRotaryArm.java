@@ -11,6 +11,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -83,21 +85,6 @@ public class PlacementRotaryArm extends SubsystemBase {
   public ProfiledPIDController rotaryPID = new ProfiledPIDController(placementRotaryArmP, placementRotaryArmI,
           placementRotaryArmD, rotaryArmConstraints);
 
-    /**
-   * update the output speed, usually from network tables
-   * @param newSpeed the new speed to set the output speed to
-   */
-  protected void updateOutputSpeed(double newSpeed) {
-    outputSpeed = newSpeed;
-  }
-
-  /**
-   * @return the output speed for the rotary arm
-   */
-  protected double getOutputSpeed() {
-    return outputSpeed;
-  }
-
 
   public PlacementRotaryArm() {
     rotaryMotor = new WPI_TalonFX(Constants.CAN_RotaryArm);
@@ -130,9 +117,52 @@ public class PlacementRotaryArm extends SubsystemBase {
     positionMap.put(Position.ZERO, zeroPosition);
   }
 
+  /**
+   * This method will be called once per scheduler run
+   */
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  public void periodic() {}
+
+  /**
+   * Rotates the rotary arm
+   * @param scalar value that scales the output speed from shuffleboard
+   */
+  public void rotateRotaryArm(double scalar){
+    rotaryMotor.set(outputSpeed * scalar);
+  }
+
+  /**
+   * This method will be called once per scheduler run during simulation
+   */
+  @Override
+  public void simulationPeriodic() {}
+
+  /**
+   * update the output speed, usually from network tables
+   * @param newSpeed the new speed to set the output speed to
+   */
+  protected void updateOutputSpeed(double newSpeed) {
+    outputSpeed = newSpeed;
+  }
+
+  /**
+   * @return the output speed for the rotary arm
+   */
+  protected double getOutputSpeed() {
+    return outputSpeed;
+  }
+
+  /**
+   * Initializes the sendable builder to put on shuffleboard
+   * @param builder sendable builder
+   */
+  public void initSendable(SendableBuilder builder) {
+    builder.setSmartDashboardType("Rotary arm");
+    builder.addDoubleProperty("Rotary % output", this::getOutputSpeed, this::updateOutputSpeed);
+  }
+
+  public void stop() {
+    rotaryMotor.set(0);
   }
 
   public void toggleBrake(){
@@ -225,14 +255,6 @@ public class PlacementRotaryArm extends SubsystemBase {
     return rotaryMotor.getSelectedSensorVelocity() < -deadband;
   }
 
-  public void stop() {
-    rotaryMotor.set(ControlMode.PercentOutput, 0);
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
 
   /**
    * calculates the length of the placement spring

@@ -7,7 +7,6 @@ package frc.robot.commands.Placement;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Newman_Constants.Constants;
-import frc.robot.subsystems.ExtensionArm;
 import frc.robot.subsystems.PlacementExtensionArm;
 
 /** A command to move the extension arm based off the joysticks */
@@ -38,7 +37,7 @@ public class MoveExtensionArm extends CommandBase {
     double y = m_xboxController.getRawAxis(1); // inverted?
     y =y * Math.abs(y);
 
-    if (Math.abs(y) < Constants.kDeadband || (y > 0 && m_extensionArm.hitLimitSwitch())) {
+    if (Math.abs(y) < Constants.kDeadband) {
       y = 0;
     }
     m_extensionArm.spinExtensionArm(y); //that max is currently bs

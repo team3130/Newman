@@ -5,7 +5,6 @@
 package frc.robot.commands.Placement;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.HandGrabber;
 import frc.robot.subsystems.Manipulator;
 
 /** A command to actuate the manipulator that uses manipulator. */
@@ -27,7 +26,7 @@ public class ActuateHandGrabber extends InstantCommand {
   @Override
   public void initialize() {
     // when button is pressed, hand is toggled
-    m_handGrabber.toggleGrabber();
+    m_handGrabber.toggleManipulator();
   }
   @Override
   public void execute() {

@@ -12,7 +12,7 @@ import frc.robot.Newman_Constants.Constants;
 
 public class Robot extends TimedRobot {
   private Timer timer;
-  private RobotContainer.RobotContainer m_robotContainer;
+  private RobotContainer m_robotContainer;
   private boolean first = true;
 
   private boolean Counterreset = false;

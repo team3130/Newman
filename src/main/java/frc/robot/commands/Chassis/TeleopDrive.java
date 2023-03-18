@@ -10,10 +10,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Newman_Constants.Constants;
-<<<<<<< HEAD:src/main/java/frc/robot/commands/Chassis/TeleopDrive.java
-=======
-import frc.robot.RobotContainer;
->>>>>>> automatedPlacement:src/main/java/frc/robot/commands/TeleopDrive.java
 import frc.robot.subsystems.Chassis;
 
 /** A command to drive in teleop */
