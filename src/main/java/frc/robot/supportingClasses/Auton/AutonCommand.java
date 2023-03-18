@@ -1,14 +1,12 @@
 package frc.robot.supportingClasses.Auton;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPlannerTrajectory.EventMarker;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.*;
-import com.pathplanner.lib.PathPlannerTrajectory.EventMarker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,27 +34,15 @@ public class AutonCommand extends CommandBase {
     protected boolean useOptimized = false; // whether to use optimized stuffs for bin search
     protected double magicScalar; // the magic scalar for the optimization
 
-    protected double markerStartTime; // the start time of the current marker we are in
-    protected double markerEndTime; // the end time of the current marker we are in
+    protected double markerTime; // the end time of the current marker we are in
 
-    protected Timer m_timer; // timer from the holonomic drive command
+    protected final Timer m_timer; // timer from the holonomic drive command
 
-    protected CommandBase toRunRightNow; // the command to run at the moment
-    protected HashMap<String, CommandBase> maps;
+    protected final HashMap<EventMarker, CommandBase> markerToCommandMap; // the marker's mapped to the command to run
+    
 
-    /**
-     * Constructs an Auton Command object without the end position
-     * @param cmd command to run
-     * @param startPosition the start position of the trajectory
-     */
-    public AutonCommand(HolonomicControllerCommand cmd, Pose2d startPosition) {
-        this.cmd = cmd;
-        this.startPosition = startPosition;
-        endPosition = null;
-        trajectory = null;
-        markers = null;
-        m_timer = cmd.getTimer();
-    }
+    // parallel command group
+    protected CommandBase[] runningRightNow = new CommandBase[5];
 
     /**
      * THE CONSTRUCTOR for auton command
@@ -82,6 +68,32 @@ public class AutonCommand extends CommandBase {
         m_chassis = chassis;
         m_manipulator = manipulator;
         m_hopper = hopper;
+        m_timer = cmd.getTimer();
+
+        markerToCommandMap = new HashMap<>();
+
+        //TODO: fill in when everything else is done
+/*        PlaceGameElement placeGameElement = new PlaceGameElement(m_rotaryArm, m_extensionArm, m_manipulator);
+        ZeroArm zeroArm = new ZeroArm(m_rotaryArm, m_extensionArm);
+        IntakeOffGround intakeOffGround = new IntakeOffGround();
+
+
+        markerToCommandMap.put("place", placeGameElement);
+        markerToCommandMap.put("zero-arm", zeroArm);
+        markerToCommandMap.put("intake", intakeOffGround);*/
+
+    }
+
+    /**
+     * Map each marker to a specific command
+     */
+    public void mapMarkersToCommands() {
+        for (EventMarker marker : markers) {
+            String name = marker.names.get(0);
+            if (name.contains("intake")) {
+                markerToCommandMap.put(name, )
+            }
+        }
     }
 
     /**
@@ -290,9 +302,11 @@ public class AutonCommand extends CommandBase {
 
     @Override
     public void execute() {
+        // autony execute
         cmd.execute();
 
         if (toRunRightNow != null) {
+            // if there is a command that we are supposed to run right now, then run it until it ends
             toRunRightNow.execute();
             if (toRunRightNow.isFinished()) {
                 toRunRightNow.end(false);
@@ -300,7 +314,7 @@ public class AutonCommand extends CommandBase {
             }
         }
 
-        if (m_timer.get() > markerEndTime) {
+        if (m_timer.get() > markerTime && haveNotScheduledForTime(markerTime)) {
             toRunRightNow.end(true);
 
             PathPlannerTrajectory.EventMarker closest;
@@ -311,8 +325,33 @@ public class AutonCommand extends CommandBase {
                 closest = findClosestWithBinSearch();
             }
 
+            if (closest != current) {
+
+            }
+
             // use the marker
-            toRunRightNow = maps.get(closest.names.get(0));
+            toRunRightNow = markerToCommandMap.get(closest.names.get(0));
         }
+    }
+
+    @Override
+    public boolean isFinished() {
+        boolean runningIsDone = true;
+        for (CommandBase command : runningRightNow) {
+            if (!command.isFinished()) {
+                runningIsDone = false;
+            }
+        }
+        return cmd.isFinished() && runningIsDone;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        cmd.end(interrupted);
+
+        for (CommandBase command : runningRightNow) {
+            command.end(interrupted);
+        }
+
     }
 }
