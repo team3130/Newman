@@ -43,10 +43,15 @@ public class IntakePivot extends SubsystemBase {
       // the next state is large and small extended
       extendLarge();
     }
-    else if (smallIsExtended() && largeIsExtended()) { // at high
-      // current logic has the next state being all the way retracted is this the desired effect or do they want mid?
-      retractSmall();
+  }
+
+  public void goToPrevious(){
+    if (smallIsExtended() && largeIsExtended()){ // at retracted which is in the bot
+      // the next state is large retracted and small extended
       retractLarge();
+    }
+    else if (!largeIsExtended() && smallIsExtended()){
+      retractSmall();
     }
   }
 

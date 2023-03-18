@@ -140,8 +140,8 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new ToggleSmall(m_pivot));
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new ToggleLarge(m_pivot));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).onTrue(new GoToNextIntakePos(m_pivot));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RBUMPER).onTrue(new GoToPreviousPos(m_pivot));
 
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_WINDOW).whileTrue(new ActuateHandGrabber(m_handGrabber));
 
