@@ -16,6 +16,8 @@ import frc.robot.Newman_Constants.Constants;
 public class RotaryArm extends SubsystemBase {
   private double outputSpeed = 0.6; // the speed we will run the rotary arm at
   private final WPI_TalonFX rotaryArmMotor; // motor for the rotary arm
+  private final DigitalInput m_LimitSwitch;
+
 
   /**
    * Constructs a rotary arm in brake mode with 9 volts, voltage compensation
@@ -25,6 +27,7 @@ public class RotaryArm extends SubsystemBase {
     rotaryArmMotor.configFactoryDefault();
     rotaryArmMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
     rotaryArmMotor.enableVoltageCompensation(true);
+    m_LimitSwitch = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
     rotaryArmMotor.setInverted(true);
     rotaryArmMotor.setNeutralMode(NeutralMode.Brake);
   }
