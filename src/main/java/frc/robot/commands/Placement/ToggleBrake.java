@@ -4,44 +4,43 @@
 
 package frc.robot.commands.Placement;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.PlacementRotaryArm;
 
-/** A command to actuate the manipulator that uses manipulator. */
-public class ActuateHandGrabber extends InstantCommand {
-  private final Manipulator m_handGrabber;
+/** An example command that uses an example subsystem. */
+public class ToggleBrake extends CommandBase {
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private final PlacementRotaryArm m_rotary;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ActuateHandGrabber(Manipulator subsystem) {
-    m_handGrabber = subsystem;
+  public ToggleBrake(PlacementRotaryArm rotary) {
+    m_rotary = rotary;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(rotary);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // when button is pressed, hand is toggled
-    m_handGrabber.toggleManipulator();
+    m_rotary.toggleBrake();
   }
+
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;
   }
-
-
 }

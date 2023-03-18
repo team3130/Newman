@@ -17,22 +17,21 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Newman_Constants.Constants;
-import frc.robot.commands.*;
 import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
-import frc.robot.commands.Chassis.ZeroWheels;
 import frc.robot.commands.Hopper.ReverseHopper;
-import frc.robot.commands.Hopper.ShootHopper;
 import frc.robot.commands.Hopper.SpinHopper;
 import frc.robot.commands.Hopper.UnjamHopper;
-import frc.robot.commands.Intake.*;
+import frc.robot.commands.Intake.GoToNextIntakePos;
+import frc.robot.commands.Intake.GoToPreviousPos;
+import frc.robot.commands.Intake.RunIntakeToPlace;
+import frc.robot.commands.Manipulator.ToggleGrabber;
 import frc.robot.commands.Placement.*;
 import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.AutonManager;
-import frc.robot.supportingClasses.OdoPosition;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -48,22 +47,13 @@ public class RobotContainer {
   private static Joystick m_driverGamepad;
   private static Joystick m_weaponsGamepad;
   private final Chassis m_chassis;
-  private final Limelight m_limelight;
   private final PlacementExtensionArm m_placementExtensionArm = new PlacementExtensionArm();
   private final PlacementRotaryArm m_placementRotaryArm = new PlacementRotaryArm();
   private final Manipulator m_manipulator = new Manipulator();
 
-  public Limelight getLimelight() {
-    return m_limelight;
-  }
-
   private final Hopper m_hopper;
   private final IntakePivot m_pivot;
   private final IntakeBeaterBar m_beaterBar;
-
-  public Chassis getChassis() {
-    return m_chassis;
-  }
 
 
   /**
@@ -74,7 +64,7 @@ public class RobotContainer {
     m_driverGamepad = new Joystick(0);
     m_weaponsGamepad = new Joystick(1);
 
-    m_limelight = new Limelight();
+    Limelight m_limelight = new Limelight();
 
     m_chassis = new Chassis(m_limelight);
     m_hopper = new Hopper();
@@ -140,33 +130,21 @@ public class RobotContainer {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).onTrue(new GoToNextIntakePos(m_pivot));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RBUMPER).onTrue(new GoToPreviousPos(m_pivot));
 
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_WINDOW).whileTrue(new ActuateHandGrabber(m_manipulator));
-
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new ZeroWheels(m_chassis));
-
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new FlipFieldOriented(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
-
-    //new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_
-    //Y).whileTrue(new GoToOrigin(m_chassis, m_autonManager));
 
 
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new SpinHopper(m_hopper));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ReverseHopper(m_hopper, m_beaterBar, m_pivot));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ShootHopper(m_hopper));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new UnjamHopper(m_hopper));
-
-
-//    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new RunIntakeToShoot(m_beaterBar, m_pivot, m_hopper));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new RunIntakeToPlace(m_beaterBar, m_pivot, m_hopper));
-//    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new GoToNextIntakePos(m_pivot));
-
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).onTrue(new ToggleGrabber(m_manipulator));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ToggleBrake(m_placementRotaryArm));
 
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_WINDOW).onTrue(new ToggleGrabber(m_manipulator));
+
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new RunIntakeToPlace(m_beaterBar, m_pivot, m_hopper));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new HighRotary(m_placementRotaryArm, m_placementExtensionArm));
     new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new MidRotary(m_placementRotaryArm, m_placementExtensionArm));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new LowRotary(m_placementRotaryArm, m_placementExtensionArm));
+    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new LowRotary(m_placementRotaryArm, m_placementExtensionArm));
 
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new ExtendExtension(m_placementExtensionArm, m_placementRotaryArm));
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_S).whileTrue(new CollapseExtension(m_placementExtensionArm, m_placementRotaryArm));
@@ -214,7 +192,4 @@ public class RobotContainer {
     CommandScheduler.getInstance().schedule(new zeroExtensionArm(m_placementExtensionArm));
   }
 
-  public void resetOdometryWithoutAprilTags() {
-    m_chassis.resetOdometry(new Pose2d());
-  }
 }
