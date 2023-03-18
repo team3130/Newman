@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 
 /**
- * The subsystem for the rotary arM
+ * The subsystem for the rotary arm
  */
 public class RotaryArm extends SubsystemBase {
   private double outputSpeed = 0.6; // the speed we will run the rotary arm at
