@@ -22,8 +22,6 @@ public class Hopper extends SubsystemBase {
 
     private double m_shootingOutputSpeed = -0.75;
 
-    private final DigitalInput breakbeam;
-
 
     /**
      * Constructs a hopper with 9 volts of voltage compensation on the motors.
@@ -36,9 +34,7 @@ public class Hopper extends SubsystemBase {
         //m_rightWheel.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
         //m_rightWheel.enableVoltageCompensation(false);
         //m_leftWheel.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
-        //m_leftWheel.enableVoltageCompensation(false);
-
-        breakbeam = new DigitalInput(Constants.DIO_BreakBeam);
+        //m_leftWheel.enableVoltageCompensation(false);\
 
 
         m_leftWheel.setInverted(true);
@@ -52,10 +48,6 @@ public class Hopper extends SubsystemBase {
     public void spinHopper() {
         m_leftWheel.set(ControlMode.PercentOutput, m_hopperSpeed);
         m_rightWheel.set(ControlMode.PercentOutput, m_hopperSpeed);
-    }
-
-    public boolean hasNards() {
-        return !breakbeam.get();
     }
 
     /** spin fast enough to shoot **/
@@ -132,7 +124,6 @@ public class Hopper extends SubsystemBase {
 
         builder.addDoubleProperty("Hopper spinning %", this::getSpinSpeed, this::updateSpinSpeed);
         builder.addDoubleProperty("Hopper shooting %", this::getShootSpeed, this::updateShootSpeed);
-        builder.addBooleanProperty("break beam", this::hasNards, null);
 
     }
 }

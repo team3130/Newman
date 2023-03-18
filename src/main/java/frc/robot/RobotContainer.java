@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -198,5 +199,9 @@ public class RobotContainer {
   public void zeroCommand() {
     CommandScheduler.getInstance().schedule(new zeroExtensionArm(m_extensionArm));
     CommandScheduler.getInstance().schedule(new zeroRotaryArm(m_rotaryArm));
+  }
+
+  public void resetOdometryWithoutAprilTags() {
+    m_chassis.resetOdometry(new Pose2d());
   }
 }

@@ -15,6 +15,7 @@ import frc.robot.Newman_Constants.Constants;
 public class Robot extends TimedRobot {
   private Timer timer;
   private RobotContainer m_robotContainer;
+  boolean hasBeenReset = false;
 
   @Override
   public void robotInit() {
@@ -31,6 +32,10 @@ public class Robot extends TimedRobot {
       if (m_robotContainer.resetOdometry()) {
         timer.reset();
         timer.stop();
+      }
+      else if (!hasBeenReset) {
+        m_robotContainer.resetOdometryWithoutAprilTags()
+        hasBeenReset = true;
       }
     }
 /*
