@@ -20,6 +20,7 @@ public class JoystickTrigger extends Trigger {
     public JoystickTrigger(GenericHID joystick, int axisNumber) {
         this.stick = joystick;
         this.axis = axisNumber;
+        threshold = 0.1;
     }
 
     /**
