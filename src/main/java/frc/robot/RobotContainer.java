@@ -19,11 +19,14 @@ import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
+import frc.robot.commands.Chassis.ZeroWheels;
 import frc.robot.commands.GoToOrigin;
-import frc.robot.commands.Placement.ActuateHandGrabber;
-import frc.robot.commands.Placement.MoveExtensionArm;
-import frc.robot.commands.Placement.MoveRotaryArm;
-import frc.robot.commands.Placement.zeroExtensionArm;
+import frc.robot.commands.Hopper.ReverseHopper;
+import frc.robot.commands.Hopper.ShootHopper;
+import frc.robot.commands.Hopper.SpinHopper;
+import frc.robot.commands.Hopper.UnjamHopper;
+import frc.robot.commands.Intake.*;
+import frc.robot.commands.Placement.*;
 import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.AutonManager;
@@ -53,6 +56,8 @@ public class RobotContainer {
   private final RotaryArm m_rotaryArm;
   private final HandGrabber m_handGrabber;
   private final Hopper m_hopper;
+  private final IntakePivot m_pivot;
+  private final IntakeBeaterBar m_beaterBar;
 
   public Chassis getChassis() {
     return m_chassis;
@@ -79,14 +84,16 @@ public class RobotContainer {
     m_rotaryArm = new RotaryArm();
     m_handGrabber = new HandGrabber();
     m_hopper = new Hopper();
+    m_beaterBar = new IntakeBeaterBar();
+    m_pivot = new IntakePivot();
+
+    m_autonManager = new AutonManager(m_chassis);
 
     m_chassis.setDefaultCommand(new TeleopDrive(m_chassis, m_driverGamepad));
 
-    // idk if this is right
     m_rotaryArm.setDefaultCommand(new MoveRotaryArm(m_rotaryArm, m_weaponsGamepad));
     m_extensionArm.setDefaultCommand(new MoveExtensionArm(m_extensionArm, m_weaponsGamepad));
 
-    m_autonManager = new AutonManager(m_chassis);
 
     configureButtonBindings();
     vomitShuffleBoardData();
@@ -99,10 +106,13 @@ public class RobotContainer {
     if (Constants.debugMode) {
       ShuffleboardTab tab = Shuffleboard.getTab("Subsystems");
       tab.add(m_chassis);
-      tab.add(m_extensionArm);
+/*      tab.add(m_extensionArm);
       tab.add(m_rotaryArm);
       tab.add(m_handGrabber);
       tab.add(m_hopper);
+      tab.add(m_pivot);
+      tab.add(m_beaterBar);*/
+      m_chassis.shuffleboardVom(Shuffleboard.getTab("Swerve Modules"));
     }
   }
 
@@ -131,26 +141,48 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).onTrue(new GoToNextIntakePos(m_pivot));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RBUMPER).onTrue(new GoToPreviousPos(m_pivot));
+
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_WINDOW).whileTrue(new ActuateHandGrabber(m_handGrabber));
+
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new ZeroWheels(m_chassis));
+
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new FlipFieldOriented(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
 
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new GoToOrigin(m_chassis, m_autonManager));
+    //new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_
+    //Y).whileTrue(new GoToOrigin(m_chassis, m_autonManager));
 
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ActuateHandGrabber(m_handGrabber));
+
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new SpinHopper(m_hopper));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ReverseHopper(m_hopper, m_beaterBar, m_pivot));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ShootHopper(m_hopper));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new UnjamHopper(m_hopper));
+
+
+//    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new RunIntakeToShoot(m_beaterBar, m_pivot, m_hopper));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new RunIntakeToPlace(m_beaterBar, m_pivot, m_hopper));
+//    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new GoToNextIntakePos(m_pivot));
+
+
     SmartDashboard.putData(new FlipFieldOriented(m_chassis));
 
-    Shuffleboard.getTab("Test").add("Spin motor down", new zeroExtensionArm(m_extensionArm));
+    if (Constants.debugMode) {
+      Shuffleboard.getTab("Test").add("Spin motor down", new zeroExtensionArm(m_extensionArm));
+      Shuffleboard.getTab("Test").add("Spin rotary arm back", new zeroRotaryArm(m_rotaryArm));
+    }
   }
 
   /**
    * Resets odometry to 0, 0, 0
    */
   public boolean resetOdometry() {
-    OdoPosition positionToResetTo = m_limelight.calculate();
+/*    OdoPosition positionToResetTo = m_limelight.calculate();
     if (positionToResetTo == null) {
       return false;
     }
-    m_chassis.resetOdometry(positionToResetTo.getPosition());
+    m_chassis.resetOdometry(positionToResetTo.getPosition());*/
     return true;
   }
 
@@ -173,5 +205,10 @@ public class RobotContainer {
    */
   public void zeroCommand() {
     CommandScheduler.getInstance().schedule(new zeroExtensionArm(m_extensionArm));
+    CommandScheduler.getInstance().schedule(new zeroRotaryArm(m_rotaryArm));
+  }
+
+  public void resetOdometryWithoutAprilTags() {
+    m_chassis.resetOdometry(new Pose2d());
   }
 }
