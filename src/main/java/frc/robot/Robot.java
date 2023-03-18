@@ -29,12 +29,14 @@ public class Robot extends TimedRobot {
       if (m_robotContainer.resetOdometry()) {
         timer.reset();
         timer.stop();
-      } else {
+      }
+      else {
         if (first) {
           m_robotContainer.resetOdometryWithoutApril();
           first = false;
         }
-      }}
+      }
+    }
     }
 
     @Override

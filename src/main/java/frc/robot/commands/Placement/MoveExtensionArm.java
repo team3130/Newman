@@ -35,9 +35,9 @@ public class MoveExtensionArm extends CommandBase {
   @Override
   public void execute() {
     double y = m_xboxController.getRawAxis(1); // inverted?
-    y =y * Math.abs(y);
+    y = y * Math.abs(y);
 
-    if (Math.abs(y) < Constants.kDeadband) {
+    if (Math.abs(y) < Constants.kDeadband || (m_extensionArm.brokeLimit() && y > 0)) {
       y = 0;
     }
     m_extensionArm.spinExtensionArm(y); //that max is currently bs

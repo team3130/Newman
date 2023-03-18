@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -135,6 +136,14 @@ public class PlacementExtensionArm extends SubsystemBase {
     if (l_placementExtensionArmS_Strength != n_placementExtensionArmS_Strength.getDouble(sStrengthPlacementExtensionArm)){
       extensionMotor.configMotionSCurveStrength(0, (int) n_placementExtensionArmS_Strength.getDouble(sStrengthPlacementExtensionArm));
     }
+  }
+
+  public void initSendable(SendableBuilder builder) {
+    builder.addDoubleProperty("rotary length", this::getRawTicks, null);
+  }
+
+  public double getRawTicks() {
+    return extensionMotor.getSelectedSensorPosition();
   }
 
     /**

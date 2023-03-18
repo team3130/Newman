@@ -32,6 +32,7 @@ import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.AutonManager;
+import frc.robot.supportingClasses.OdoPosition;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -54,6 +55,7 @@ public class RobotContainer {
   private final Hopper m_hopper;
   private final IntakePivot m_pivot;
   private final IntakeBeaterBar m_beaterBar;
+  private Limelight m_limelight;
 
 
   /**
@@ -64,7 +66,7 @@ public class RobotContainer {
     m_driverGamepad = new Joystick(0);
     m_weaponsGamepad = new Joystick(1);
 
-    Limelight m_limelight = new Limelight();
+    m_limelight = new Limelight();
 
     m_chassis = new Chassis(m_limelight);
     m_hopper = new Hopper();
@@ -90,13 +92,13 @@ public class RobotContainer {
     if (Constants.debugMode) {
       ShuffleboardTab tab = Shuffleboard.getTab("Subsystems");
       tab.add(m_chassis);
-/*      tab.add(m_extensionArm);
-      tab.add(m_rotaryArm);
-      tab.add(m_handGrabber);
+      tab.add(m_placementExtensionArm);
+      tab.add(m_placementRotaryArm);
+      tab.add(m_manipulator);
       tab.add(m_hopper);
       tab.add(m_pivot);
-      tab.add(m_beaterBar);*/
-      m_chassis.shuffleboardVom(Shuffleboard.getTab("Swerve Modules"));
+      tab.add(m_beaterBar);
+      //m_chassis.shuffleboardVom(Shuffleboard.getTab("Swerve Modules"));
     }
   }
 
@@ -142,9 +144,9 @@ public class RobotContainer {
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_WINDOW).onTrue(new ToggleGrabber(m_manipulator));
 
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new RunIntakeToPlace(m_beaterBar, m_pivot, m_hopper));
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new HighRotary(m_placementRotaryArm, m_placementExtensionArm));
-    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new MidRotary(m_placementRotaryArm, m_placementExtensionArm));
-    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new LowRotary(m_placementRotaryArm, m_placementExtensionArm));
+    // new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new HighRotary(m_placementRotaryArm, m_placementExtensionArm));
+    // new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new MidRotary(m_placementRotaryArm, m_placementExtensionArm));
+    // new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new LowRotary(m_placementRotaryArm, m_placementExtensionArm));
 
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new ExtendExtension(m_placementExtensionArm, m_placementRotaryArm));
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_S).whileTrue(new CollapseExtension(m_placementExtensionArm, m_placementRotaryArm));
@@ -163,11 +165,11 @@ public class RobotContainer {
    * Resets odometry to 0, 0, 0
    */
   public boolean resetOdometry() {
-/*    OdoPosition positionToResetTo = m_limelight.calculate();
+     OdoPosition positionToResetTo = m_limelight.calculate();
     if (positionToResetTo == null) {
       return false;
     }
-    m_chassis.resetOdometry(positionToResetTo.getPosition());*/
+    m_chassis.resetOdometry(positionToResetTo.getPosition());
     return true;
   }
 
@@ -190,6 +192,7 @@ public class RobotContainer {
    */
   public void zeroCommand() {
     CommandScheduler.getInstance().schedule(new zeroExtensionArm(m_placementExtensionArm));
+    CommandScheduler.getInstance().schedule(new AutoZeroPlacement(m_placementRotaryArm));
   }
 
 }

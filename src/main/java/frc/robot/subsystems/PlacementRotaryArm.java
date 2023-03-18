@@ -23,6 +23,7 @@ import frc.robot.Newman_Constants.Constants;
 import java.util.HashMap;
 
 public class PlacementRotaryArm extends SubsystemBase {
+
   public enum Position {
     ZERO, LOW, MID, HIGH
   }
@@ -35,9 +36,9 @@ public class PlacementRotaryArm extends SubsystemBase {
   private double lowPosition = Math.PI/6;
   private double midPosition = Math.PI/4;
   private double highPosition = Math.PI /2;
+  private DigitalInput limitSwitch;
 
   private double outputSpeed = 0.6; // the speed we will run the rotary arm at
-
 
   private double positionDeadband = Math.toRadians(2.5);
 
@@ -106,6 +107,8 @@ public class PlacementRotaryArm extends SubsystemBase {
     n_placementRotaryArmI = Placement.add("i", placementRotaryArmI).getEntry();
     n_placementRotaryArmD = Placement.add("d", placementRotaryArmD).getEntry();
 
+    limitSwitch = new DigitalInput(Constants.ROTARY_ARM_LIMIT_SWITCH);
+
     //n_placementRotaryArmFUp = Placement.add("f up", placementRotaryArmFUp).getEntry();
     //n_placementRotaryArmFDown = Placement.add("f down", placementRotaryArmFDown).getEntry();
     //n_placementRotaryArmS_Strength = Placement.add("s strength", sStrengthRotaryPlacementArm).getEntry();
@@ -115,6 +118,10 @@ public class PlacementRotaryArm extends SubsystemBase {
     positionMap.put(Position.MID, midPosition);
     positionMap.put(Position.HIGH, highPosition);
     positionMap.put(Position.ZERO, zeroPosition);
+  }
+
+    public void resetEncoder() {
+    rotaryMotor.getSelectedSensorPosition(0);
   }
 
   /**
@@ -136,6 +143,14 @@ public class PlacementRotaryArm extends SubsystemBase {
    */
   @Override
   public void simulationPeriodic() {}
+
+  public boolean brokeLimit() {
+    return !limitSwitch.get();
+  }
+
+  public void spin(double v) {
+    rotaryMotor.set(ControlMode.PercentOutput, v);
+  }
 
   /**
    * update the output speed, usually from network tables
@@ -159,6 +174,12 @@ public class PlacementRotaryArm extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     builder.setSmartDashboardType("Rotary arm");
     builder.addDoubleProperty("Rotary % output", this::getOutputSpeed, this::updateOutputSpeed);
+    builder.addBooleanProperty("rotary arm", this::brokeLimit, null);
+    builder.addDoubleProperty("rotary length", this::getRawTicks, null);
+  }
+
+  public double getRawTicks() {
+    return rotaryMotor.getSelectedSensorPosition();
   }
 
   public void stop() {
@@ -329,6 +350,10 @@ public class PlacementRotaryArm extends SubsystemBase {
 
   public double getStaticGain(double extensionArmLength) {
     return Math.sin(getPositionPlacementArm()) * extensionArmLength * Constants.kTorqueToPercentOutScalar;
+  }
+
+  public boolean pastLimit() {
+    return rotaryMotor.getSelectedSensorPosition() > Constants.kMaxRotaryLength;
   }
 
 }

@@ -40,10 +40,8 @@ public class RunIntakeToPlace extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // spin the beater bar
 
     // if we are at the middle position then spin hopper
-    //TODO: so if we aren't at the middle position hopper shouldn't run?
     if (m_pivot.atMiddlePos()) {
       m_hopper.spinHopper();
     }

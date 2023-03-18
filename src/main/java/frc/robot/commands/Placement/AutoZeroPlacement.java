@@ -4,54 +4,50 @@
 
 package frc.robot.commands.Placement;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.PlacementExtensionArm;
 import frc.robot.subsystems.PlacementRotaryArm;
 
 /** An example command that uses an example subsystem. */
-public class ExtendExtension extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final PlacementExtensionArm m_placementExtension;
-  private final PlacementRotaryArm m_placementRotary;
-  private boolean ran = false;
+public class AutoZeroPlacement extends CommandBase {
+  private final PlacementRotaryArm m_placementRotaryArm;
 
   /**
    * Creates a new ExampleCommand.
    *
-   * @param extension The subsystem used by this command.
+   * @param subsystem The subsystem used by this command.
    */
-  public ExtendExtension(PlacementExtensionArm extension, PlacementRotaryArm rotary) {
-    m_placementExtension = extension;
-    m_placementRotary = rotary;
+  public AutoZeroPlacement(PlacementRotaryArm subsystem) {
+    m_placementRotaryArm = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(extension, rotary);
+    addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_placementExtension.updateValues();
+    m_placementRotaryArm.releaseBrake();
+    m_placementRotaryArm.spin(-0.1);
 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_placementExtension.outsideBumper(m_placementRotary)) { //may need way outside bumper
-      m_placementExtension.extendArm();
-    }
   }
-
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
+  public void end(boolean interupted) {
+    m_placementRotaryArm.engageBrake();
+    m_placementRotaryArm.resetEncoder();
 
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_placementRotaryArm.brokeLimit();
   }
 }

@@ -13,8 +13,6 @@ import frc.robot.Newman_Constants.Constants;
 public class IntakeBeaterBar extends SubsystemBase {
   private final WPI_TalonSRX m_beaterBar;
 
-  private double outputSpeed = 0.75;
-
   public IntakeBeaterBar() {
     m_beaterBar = new WPI_TalonSRX(Constants.CAN_SpinnyBar);
     m_beaterBar.configFactoryDefault();
@@ -25,31 +23,17 @@ public class IntakeBeaterBar extends SubsystemBase {
   }
 
   /**
-   * Spin the intake at {@link #outputSpeed}
+   * Spin the intake at 100 %
    */
   public void spin() {
-    m_beaterBar.set(ControlMode.PercentOutput, outputSpeed);
+    m_beaterBar.set(ControlMode.PercentOutput, 1);
   }
 
   /**
    * Reverse the intake at the same speed
    */
   public void reverse(){
-    m_beaterBar.set(ControlMode.PercentOutput, -outputSpeed);
-  }
-
-  /**
-   * @return whatever the current set speed is for intake
-   */
-  public double getOutputSpeed(){
-    return outputSpeed;
-  }
-
-  /*
-   * @param newSpeed the new speed to spin the intake at
-   */
-  public void updateOutputSpeed(double newSpeed) {
-    outputSpeed = newSpeed;
+    m_beaterBar.set(ControlMode.PercentOutput, -1);
   }
 
   /**
@@ -74,11 +58,5 @@ public class IntakeBeaterBar extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
-  }
-
-  @Override
-  public void initSendable(SendableBuilder builder) {
-    builder.setSmartDashboardType("Intake");
-    builder.addDoubleProperty("Intake %", this::getOutputSpeed, this::updateOutputSpeed);
   }
 }
