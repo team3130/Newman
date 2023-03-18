@@ -24,10 +24,7 @@ import frc.robot.commands.Hopper.ShootHopper;
 import frc.robot.commands.Hopper.SpinHopper;
 import frc.robot.commands.Hopper.UnjamHopper;
 import frc.robot.commands.Intake.*;
-import frc.robot.commands.Placement.ActuateHandGrabber;
-import frc.robot.commands.Placement.MoveExtensionArm;
-import frc.robot.commands.Placement.MoveRotaryArm;
-import frc.robot.commands.Placement.zeroExtensionArm;
+import frc.robot.commands.Placement.*;
 import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.AutonManager;
@@ -171,6 +168,7 @@ public class RobotContainer {
 
     if (Constants.debugMode) {
       Shuffleboard.getTab("Test").add("Spin motor down", new zeroExtensionArm(m_extensionArm));
+      Shuffleboard.getTab("Test").add("Spin rotary arm back", new zeroRotaryArm(m_rotaryArm));
     }
   }
 
@@ -199,5 +197,6 @@ public class RobotContainer {
    */
   public void zeroCommand() {
     CommandScheduler.getInstance().schedule(new zeroExtensionArm(m_extensionArm));
+    CommandScheduler.getInstance().schedule(new zeroRotaryArm(m_rotaryArm));
   }
 }

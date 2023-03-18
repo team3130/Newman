@@ -16,7 +16,7 @@ import frc.robot.Newman_Constants.Constants;
  */
 public class RotaryArm extends SubsystemBase {
   private double outputSpeed = 0.6; // the speed we will run the rotary arm at
-  private final WPI_TalonFX rotaryArmMotor; // motor for the rotary arm
+  private final WPI_TalonFX m_rotaryArmMotor; // motor for the rotary arm
   private final DigitalInput m_LimitSwitch;
 
 
@@ -25,13 +25,16 @@ public class RotaryArm extends SubsystemBase {
    * Constructs a rotary arm in brake mode with 9 volts, voltage compensation
    */
   public RotaryArm() {
-    rotaryArmMotor = new WPI_TalonFX(Constants.CAN_RotaryArm);
-    rotaryArmMotor.configFactoryDefault();
-    rotaryArmMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
-    rotaryArmMotor.enableVoltageCompensation(true);
-    m_LimitSwitch = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
-    rotaryArmMotor.setInverted(true);
-    rotaryArmMotor.setNeutralMode(NeutralMode.Brake);
+    m_rotaryArmMotor = new WPI_TalonFX(Constants.CAN_RotaryArm);
+    m_rotaryArmMotor.configFactoryDefault();
+
+    m_rotaryArmMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
+    m_rotaryArmMotor.enableVoltageCompensation(true);
+
+    m_rotaryArmMotor.setInverted(true);
+    m_rotaryArmMotor.setNeutralMode(NeutralMode.Brake);
+
+    m_LimitSwitch = new DigitalInput(Constants.ROTARY_ARM_LIMIT_SWITCH);
   }
 
   /**
@@ -45,7 +48,7 @@ public class RotaryArm extends SubsystemBase {
    * @param scalar value that scales the output speed from shuffleboard
    */
   public void rotateRotaryArm(double scalar){
-    rotaryArmMotor.set(outputSpeed * scalar);
+    m_rotaryArmMotor.set(outputSpeed * scalar);
   }
 
   /**
@@ -80,5 +83,9 @@ public class RotaryArm extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     builder.setSmartDashboardType("Rotary arm");
     builder.addDoubleProperty("Rotary % output", this::getOutputSpeed, this::updateOutputSpeed);
+  }
+
+  public void stop() {
+    m_rotaryArmMotor.set(0);
   }
 }
