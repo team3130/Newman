@@ -35,14 +35,16 @@ public class ExtensionArm extends SubsystemBase {
   public ExtensionArm() {
     extensionMotor = new WPI_TalonSRX(Constants.CAN_ExtensionArm);
     extensionMotor.configFactoryDefault();
-    extensionMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
 
+    extensionMotor.configVoltageCompSaturation(Constants.kMaxExtensionArmVoltage);
     extensionMotor.enableVoltageCompensation(true);
-    m_LimitSwitch = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
 
-    extensionMotor.enableVoltageCompensation(false); //TODO: change when we get falcon
     extensionMotor.setInverted(false);
     extensionMotor.setNeutralMode(NeutralMode.Brake);
+
+    m_LimitSwitch = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
+
+
   }
 
   /**

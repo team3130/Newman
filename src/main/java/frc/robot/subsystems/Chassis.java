@@ -306,6 +306,9 @@ public class Chassis extends SubsystemBase {
 
     public void shuffleboardVom(ShuffleboardTab tab) {
         tab.add(modules[0]);
+        tab.add(modules[1]);
+        tab.add(modules[2]);
+        tab.add(modules[3]);
     }
 
     /**

@@ -28,7 +28,7 @@ public class RotaryArm extends SubsystemBase {
     m_rotaryArmMotor = new WPI_TalonFX(Constants.CAN_RotaryArm);
     m_rotaryArmMotor.configFactoryDefault();
 
-    m_rotaryArmMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
+    m_rotaryArmMotor.configVoltageCompSaturation(Constants.kMaxRotaryArmVoltage);
     m_rotaryArmMotor.enableVoltageCompensation(true);
 
     m_rotaryArmMotor.setInverted(true);

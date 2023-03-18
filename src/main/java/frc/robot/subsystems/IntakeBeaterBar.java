@@ -18,7 +18,7 @@ public class IntakeBeaterBar extends SubsystemBase {
   public IntakeBeaterBar() {
     m_beaterBar = new WPI_TalonSRX(Constants.CAN_SpinnyBar);
     m_beaterBar.configFactoryDefault();
-    m_beaterBar.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
+    m_beaterBar.configVoltageCompSaturation(Constants.kMaxVoltageIntakeBeaterBar);
     m_beaterBar.enableVoltageCompensation(true);
 
     m_beaterBar.setInverted(true);

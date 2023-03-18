@@ -65,6 +65,7 @@ public class SwerveModule implements Sendable {
 
         String name = this.getClass().getSimpleName();
         name = name.substring(name.lastIndexOf('.') + 1);
+        name += " " + side;
         SendableRegistry.addLW(this, name, name);
     }
 
@@ -239,7 +240,7 @@ public class SwerveModule implements Sendable {
      */
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.setSmartDashboardType("SwerveModule");
+        builder.setSmartDashboardType("Swerve Module " + side);
 
         builder.addDoubleProperty("Drive position", this::getDrivePosition, null);
         builder.addDoubleProperty("Drive velocity", this::getDriveVelocity, null);
