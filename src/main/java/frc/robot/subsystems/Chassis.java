@@ -12,7 +12,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.sensors.Limelight;
@@ -304,6 +304,10 @@ public class Chassis extends SubsystemBase {
         return m_odometry.getEstimatedPosition().getRotation().getDegrees();
     }
 
+    public void shuffleboardVom(ShuffleboardTab tab) {
+        tab.add(modules[0]);
+    }
+
     /**
      * Initializes the data we send on shuffleboard
      * Calls the default init sendable for Subsystem Bases
@@ -311,9 +315,6 @@ public class Chassis extends SubsystemBase {
      */
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Chassis");
-
-        // add each submodule as a child
-        Arrays.stream(modules).forEach(SmartDashboard::putData);
 
         // add field relative
         builder.addBooleanProperty("fieldRelative", this::getFieldRelative, this::setWhetherFieldOriented);

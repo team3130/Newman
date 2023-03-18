@@ -38,9 +38,9 @@ public class MoveRotaryArm extends CommandBase {
   @Override
   public void execute() {
     double y = m_xboxController.getRawAxis(Constants.Buttons.LST_AXS_RJOYSTICKY); // inverted?
-    y *= Math.abs(y);
+    y =y * Math.abs(y);
 
-    if (Math.abs(y) < Constants.kDeadband) {
+    if (Math.abs(y) < Constants.kDeadband || (y > 0 && m_rotaryArm.hitLimitSwitch())) {
       y = 0;
     }
     m_rotaryArm.rotateRotaryArm(y); //that max is currently bs

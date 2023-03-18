@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 
@@ -16,8 +17,11 @@ import frc.robot.Newman_Constants.Constants;
 public class RotaryArm extends SubsystemBase {
   private double outputSpeed = 0.6; // the speed we will run the rotary arm at
   private final WPI_TalonFX rotaryArmMotor; // motor for the rotary arm
+  private final DigitalInput m_LimitSwitch;
+
 
   /**
+   *
    * Constructs a rotary arm in brake mode with 9 volts, voltage compensation
    */
   public RotaryArm() {
@@ -25,6 +29,7 @@ public class RotaryArm extends SubsystemBase {
     rotaryArmMotor.configFactoryDefault();
     rotaryArmMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
     rotaryArmMotor.enableVoltageCompensation(true);
+    m_LimitSwitch = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
     rotaryArmMotor.setInverted(true);
     rotaryArmMotor.setNeutralMode(NeutralMode.Brake);
   }
@@ -48,6 +53,10 @@ public class RotaryArm extends SubsystemBase {
    */
   @Override
   public void simulationPeriodic() {}
+
+  public boolean hitLimitSwitch() {
+    return !m_LimitSwitch.get();
+  }
 
   /**
    * update the output speed, usually from network tables
