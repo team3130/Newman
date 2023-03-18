@@ -37,9 +37,6 @@ public class Robot extends TimedRobot {
         if (first) {
           m_robotContainer.resetOdometryWithoutApril();
           first = false;
-          if (Counterreset = false) {
-            m_robotContainer.resetOdometryWithoutApril();
-          }
         }
       }}
     }
