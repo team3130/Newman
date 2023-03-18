@@ -33,10 +33,10 @@ public class Hopper extends SubsystemBase {
         m_rightWheel = new WPI_TalonSRX(Constants.CAN_hopperright);
         m_leftWheel.configFactoryDefault();
         m_rightWheel.configFactoryDefault();
-        m_rightWheel.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
-        m_rightWheel.enableVoltageCompensation(false);
-        m_leftWheel.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
-        m_leftWheel.enableVoltageCompensation(false);
+        //m_rightWheel.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
+        //m_rightWheel.enableVoltageCompensation(false);
+        //m_leftWheel.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
+        //m_leftWheel.enableVoltageCompensation(false);
 
         breakbeam = new DigitalInput(Constants.DIO_BreakBeam);
 
