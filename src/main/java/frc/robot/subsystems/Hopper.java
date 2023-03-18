@@ -22,7 +22,7 @@ public class Hopper extends SubsystemBase {
     private double m_hopperSpeed = 0.5; // the left output speed
     private double m_reverseHopperSpeed = -0.5;
     //private double m_rightHopperSpeed = m_leftHopperSpeed; //TODO double check gearing is the same
-    private double m_shootingOutputSpeed = -0.75;
+    private double m_shootingOutputSpeed = -1;
     private double m_gentleHopperSpeed = m_hopperSpeed * 0.75;
     private final DigitalInput breakbeam;
     private boolean beamBroke = false;
@@ -36,10 +36,10 @@ public class Hopper extends SubsystemBase {
         m_rightWheel = new WPI_TalonSRX(Constants.CAN_hopperright);
         m_leftWheel.configFactoryDefault();
         m_rightWheel.configFactoryDefault();
-        m_rightWheel.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
-        m_rightWheel.enableVoltageCompensation(false);
-        m_leftWheel.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
-        m_leftWheel.enableVoltageCompensation(false);
+        //m_rightWheel.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
+        //m_rightWheel.enableVoltageCompensation(false);
+        //m_leftWheel.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
+        //m_leftWheel.enableVoltageCompensation(false);
 
         breakbeam = new DigitalInput(Constants.DIO_BreakBeam);
 
