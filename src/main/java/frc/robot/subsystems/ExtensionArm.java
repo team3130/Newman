@@ -15,10 +15,7 @@ import frc.robot.Newman_Constants.Constants;
  * Extension arm is the punchy arm on the robot
  */
 public class ExtensionArm extends SubsystemBase {
-  /**
-   * Speed to run the motor at by default, can be changed in shuffleboard
-   */
-  private static double extensionArmSpeed = 1;
+
 
   /**
    * The motor/speed controller for the mechanism
@@ -53,51 +50,7 @@ public class ExtensionArm extends SubsystemBase {
   @Override
   public void periodic() {}
 
-  /**
-   * spins the extension arm
-   * @param scalar to scale the output speed
-   */
-  public void spinExtensionArm(double scalar) {
-    extensionMotor.set(scalar);
-  }
 
-  /**
-   * This method will be called once per scheduler run during simulation
-   */
-  @Override
-  public void simulationPeriodic() {}
-
-  /**
-   * Whether we hit the limit switch.
-   * If we hit the limit switch you are completely retracted.
-   * @return whether we hit the limit switch
-   */
-  public boolean hitLimitSwitch() {
-    return !m_LimitSwitch.get();
-  }
-
-  /**
-   * Stops the devices connected to this subsystem
-   */
-  public void stop() {
-    extensionMotor.set(0);
-  }
-
-  /**
-   * returns the speed we are currently running the motor at.
-   * @return the control speed of the motor
-   */
-  public double getSpeed() {
-    return extensionArmSpeed;
-  }
-
-  /**
-   * Setter for the speed
-   * @param newSpeed speed to set the arm to when we run it
-   */
-  public void updateSpeed(double newSpeed) {
-    extensionArmSpeed = newSpeed;
-  }
 
   /**
    * Initializes the sendable object in order to update the variables.

@@ -6,17 +6,18 @@ package frc.robot.commands.Placement;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.HandGrabber;
+import frc.robot.subsystems.Manipulator;
 
 /** A command to actuate the manipulator that uses manipulator. */
 public class ActuateHandGrabber extends InstantCommand {
-  private final HandGrabber m_handGrabber;
+  private final Manipulator m_handGrabber;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ActuateHandGrabber(HandGrabber subsystem) {
+  public ActuateHandGrabber(Manipulator subsystem) {
     m_handGrabber = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);

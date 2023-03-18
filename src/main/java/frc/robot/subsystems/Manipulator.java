@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -12,13 +11,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 
-
-/**
- * A subsystem for manipulator.
- * Contains a Solenoid for the pneumatic pistons at the end of the mechanism.
- * Implements the Sendable object so that we can hurl data onto shuffleboard.
- */
-public class HandGrabber extends SubsystemBase {
+public class Manipulator extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   private final Solenoid grabber;
   /**
@@ -29,7 +22,7 @@ public class HandGrabber extends SubsystemBase {
   /**
    * Constructs a HandGrabber object that initializes the solenoid and sets it to its default value
    */
-  public HandGrabber() {
+  public Manipulator() {
     grabber = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM , Constants.PNM_Grabber);
     // default
     grabber.set(defaultState);
@@ -108,5 +101,4 @@ public class HandGrabber extends SubsystemBase {
     builder.setSmartDashboardType("Manipulator");
     builder.addBooleanProperty("grabber state", this::getState, this::setState);
   }
-
 }
