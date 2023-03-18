@@ -44,8 +44,6 @@ public class HolonomicControllerCommand extends CommandBase {
         m_requirements.add(chassis);
 
         this.m_pathType = type;
-
-        markers = (ArrayList<EventMarker>) m_trajectory.getMarkers();
     }
 
     public void initialize() {
@@ -98,10 +96,6 @@ public class HolonomicControllerCommand extends CommandBase {
 
     public PathType getTypeOfPath() {
       return m_pathType;
-    }
-
-    public boolean isOptimized() {
-        return useOptimized;
     }
 
     public Timer getTimer() {
