@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import frc.robot.Newman_Constants.Constants ;
 
 
@@ -61,6 +62,10 @@ public class SwerveModule implements Sendable {
         this.side = side;
 
         resetEncoders();
+
+        String name = this.getClass().getSimpleName();
+        name = name.substring(name.lastIndexOf('.') + 1);
+        SendableRegistry.addLW(this, name, name);
     }
 
     /**
