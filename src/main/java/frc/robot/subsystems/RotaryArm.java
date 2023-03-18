@@ -49,6 +49,10 @@ public class RotaryArm extends SubsystemBase {
   @Override
   public void simulationPeriodic() {}
 
+  public boolean hitLimitSwitch() {
+    return !m_LimitSwitch.get();
+  }
+
   /**
    * update the output speed, usually from network tables
    * @param newSpeed the new speed to set the output speed to
