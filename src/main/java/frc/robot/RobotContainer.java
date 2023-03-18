@@ -185,6 +185,12 @@ public class RobotContainer {
     return true;
   }
 
+  public void resetOdometryWithoutApril() {
+    m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
+  }
+
+
+
   /**
    * Gets the selected auton command that is on shuffleboard
    * @return the auton routine
