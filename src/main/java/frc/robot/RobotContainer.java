@@ -17,6 +17,7 @@ import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
+import frc.robot.commands.Chassis.ZeroWheels;
 import frc.robot.commands.GoToOrigin;
 import frc.robot.commands.Hopper.ReverseHopper;
 import frc.robot.commands.Hopper.ShootHopper;
@@ -106,12 +107,13 @@ public class RobotContainer {
     if (Constants.debugMode) {
       ShuffleboardTab tab = Shuffleboard.getTab("Subsystems");
       tab.add(m_chassis);
-      tab.add(m_extensionArm);
+/*      tab.add(m_extensionArm);
       tab.add(m_rotaryArm);
       tab.add(m_handGrabber);
       tab.add(m_hopper);
       tab.add(m_pivot);
-      tab.add(m_beaterBar);
+      tab.add(m_beaterBar);*/
+      m_chassis.shuffleboardVom(Shuffleboard.getTab("Swerve Modules"));
     }
   }
 
@@ -145,8 +147,10 @@ public class RobotContainer {
 
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_WINDOW).whileTrue(new ActuateHandGrabber(m_handGrabber));
 
-    //new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new FlipFieldOriented(m_chassis));
-    //new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new ZeroWheels(m_chassis));
+
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new FlipFieldOriented(m_chassis));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
 
     //new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_
     //Y).whileTrue(new GoToOrigin(m_chassis, m_autonManager));

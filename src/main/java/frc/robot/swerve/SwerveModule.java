@@ -8,11 +8,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Newman_Constants.Constants ;
 
 
@@ -42,7 +39,7 @@ public class SwerveModule implements Sendable {
 
         m_absoluteEncoder = new CANCoder(Constants.CANCoders[side]);
 
-        turningPidController = new PIDController(Constants.SwerveKp, Constants.SwerveKi, Constants.SwerveKd);
+        turningPidController = new PIDController(Constants.SwerveKpFrontRight, Constants.SwerveKiFrontRight, Constants.SwerveKdFrontRight);
 
         m_steerMotor.configFactoryDefault();
         m_steerMotor.setNeutralMode(NeutralMode.Brake);
@@ -215,6 +212,14 @@ public class SwerveModule implements Sendable {
         return turningPidController.getD();
     }
 
+    public void setPValue(double newP) {
+        turningPidController.setP(newP);
+    }
+
+    public void setDValue(double newD) {
+        turningPidController.setD(newD);
+    }
+
     /**
      * The string representation of the swerve module
      * @return "Swerve module side: " + sideNumber: int
@@ -229,11 +234,14 @@ public class SwerveModule implements Sendable {
      */
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.setSmartDashboardType("Swerve Module");
+        builder.setSmartDashboardType("SwerveModule");
+
         builder.addDoubleProperty("Drive position", this::getDrivePosition, null);
         builder.addDoubleProperty("Drive velocity", this::getDriveVelocity, null);
         builder.addDoubleProperty("Steer position", this::getTurningPosition, null);
         builder.addDoubleProperty("Steer velocity", this::getTurningVelocity, null);
         builder.addDoubleProperty("Absolute encoder position", this::getAbsoluteEncoderRad, null);
+        builder.addDoubleProperty("Swerve P " + side, this::getPValue, this::setPValue);
+        builder.addDoubleProperty("Swerve D " + side, this::getDValue, this::setDValue);
     }
 }
