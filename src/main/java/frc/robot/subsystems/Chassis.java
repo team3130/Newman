@@ -159,10 +159,10 @@ public class Chassis extends SubsystemBase {
     @Override
     public void periodic() {
         updateOdometryFromSwerve();
-        OdoPosition position = refreshPosition();
+/*        OdoPosition position = refreshPosition();
         if (position != null) {
             updateOdometryFromAprilTags(position);
-        }
+        }*/
         // field2d.setRobotPose(m_odometry.getEstimatedPosition());
     }
 

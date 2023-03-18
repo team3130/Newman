@@ -46,7 +46,7 @@ public class IntakePivot extends SubsystemBase {
   }
 
   public void goToPrevious(){
-    if (smallIsExtended() && largeIsExtended()){ // at retracted which is in the bot
+    if (smallIsExtended() && largeIsExtended()){ // at extended which is outside of the bot
       // the next state is large retracted and small extended
       retractLarge();
     }
