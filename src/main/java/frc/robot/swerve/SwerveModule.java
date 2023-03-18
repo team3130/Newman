@@ -218,10 +218,18 @@ public class SwerveModule implements Sendable {
         return turningPidController.getD();
     }
 
+    /**
+     * Setter for the P value
+     * @param newP the new p value
+     */
     public void setPValue(double newP) {
         turningPidController.setP(newP);
     }
 
+    /**
+     * Setter for dervy derv
+     * @param newD the new D value
+     */
     public void setDValue(double newD) {
         turningPidController.setD(newD);
     }
