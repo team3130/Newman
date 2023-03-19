@@ -17,9 +17,6 @@ import frc.robot.Newman_Constants.Constants;
 public class Hopper extends SubsystemBase {
     protected final WPI_TalonSRX m_leftWheel; // the left wheel for hopper
     protected final WPI_TalonSRX m_rightWheel; // the right wheel for hopper
-    private double m_hopperSpeed = 0.5; // the left output speed
-
-    private double m_shootingOutputSpeed = -0.75;
 
 
     /**
@@ -30,10 +27,10 @@ public class Hopper extends SubsystemBase {
         m_rightWheel = new WPI_TalonSRX(Constants.CAN_hopperright);
         m_leftWheel.configFactoryDefault();
         m_rightWheel.configFactoryDefault();
-        //m_rightWheel.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
-        //m_rightWheel.enableVoltageCompensation(false);
-        //m_leftWheel.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
-        //m_leftWheel.enableVoltageCompensation(false);\
+        m_rightWheel.configVoltageCompSaturation(Constants.kMaxVoltageHopper);
+        m_rightWheel.enableVoltageCompensation(true);
+        m_leftWheel.configVoltageCompSaturation(Constants.kMaxVoltageHopper);
+        m_leftWheel.enableVoltageCompensation(true);
 
 
         m_leftWheel.setInverted(true);
@@ -42,31 +39,26 @@ public class Hopper extends SubsystemBase {
     }
 
     /**
-     * spin the motor at the set speed which can be updated from shuffleboard or with the {@link #updateSpinSpeed(double speed)} method
+     * spin the motor at 100%
      */
     public void spinHopper() {
-        m_leftWheel.set(ControlMode.PercentOutput, m_hopperSpeed);
-        m_rightWheel.set(ControlMode.PercentOutput, m_hopperSpeed);
+        m_leftWheel.set(ControlMode.PercentOutput, 0.75);
+        m_rightWheel.set(ControlMode.PercentOutput, 0.75);
     }
 
-    /** spin fast enough to shoot **/
-    public void spitToHopperShoot(){
-        m_leftWheel.set(ControlMode.PercentOutput, m_shootingOutputSpeed);
-        m_rightWheel.set(ControlMode.PercentOutput, m_shootingOutputSpeed);
-    }
 
     /** alternating directions to unjam pieces that have become lodged **/
     public void alternateHopper(){
-        m_leftWheel.set(ControlMode.PercentOutput, -m_hopperSpeed);
-        m_rightWheel.set(ControlMode.PercentOutput, m_hopperSpeed);
+        m_leftWheel.set(ControlMode.PercentOutput, -1);
+        m_rightWheel.set(ControlMode.PercentOutput, 1);
     }
 
     /**
      * Reverse the direction of the hopper motors to feed out
      */
     public void spitToDumpHopper() {
-        m_leftWheel.set(ControlMode.PercentOutput, -m_hopperSpeed);
-        m_rightWheel.set(ControlMode.PercentOutput, -m_hopperSpeed);
+        m_leftWheel.set(ControlMode.PercentOutput, -1);
+        m_rightWheel.set(ControlMode.PercentOutput, -1);
     }
 
     /**
@@ -75,30 +67,6 @@ public class Hopper extends SubsystemBase {
     public void stopHopper() {
         m_leftWheel.set(ControlMode.PercentOutput, 0);
         m_rightWheel.set(ControlMode.PercentOutput, 0);
-    }
-
-    /**
-     * setter for the output speed.
-     * The right side is geared wrong, so it needs to run at 4x the left side
-     * @param newSpeed to run the motors at
-     */
-    public void updateSpinSpeed(double newSpeed) {
-        m_hopperSpeed = newSpeed;
-    }
-
-    public void updateShootSpeed(double newSpeed) {
-        m_shootingOutputSpeed = newSpeed;
-    }
-
-    /**
-     * @return the left side set speed
-     */
-    public double getSpinSpeed() {
-        return m_hopperSpeed;
-    }
-
-    public double getShootSpeed(){
-        return m_shootingOutputSpeed;
     }
 
     /**
@@ -120,9 +88,5 @@ public class Hopper extends SubsystemBase {
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Hopper");
-
-        builder.addDoubleProperty("Hopper spinning %", this::getSpinSpeed, this::updateSpinSpeed);
-        builder.addDoubleProperty("Hopper shooting %", this::getShootSpeed, this::updateShootSpeed);
-
     }
 }

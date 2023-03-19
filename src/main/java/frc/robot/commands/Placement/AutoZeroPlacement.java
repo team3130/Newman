@@ -2,43 +2,52 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Intake;
+package frc.robot.commands.Placement;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IntakePivot;
+import frc.robot.subsystems.PlacementExtensionArm;
+import frc.robot.subsystems.PlacementRotaryArm;
 
 /** An example command that uses an example subsystem. */
-public class ToggleSmall extends CommandBase {
-  private final IntakePivot m_pivot;
+public class AutoZeroPlacement extends CommandBase {
+  private final PlacementRotaryArm m_placementRotaryArm;
 
-  /*
+  /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ToggleSmall(IntakePivot pivot) {
-    m_pivot = pivot;
+  public AutoZeroPlacement(PlacementRotaryArm subsystem) {
+    m_placementRotaryArm = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(pivot);
+    addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_pivot.toggleSmall();
+    m_placementRotaryArm.releaseBrake();
+    m_placementRotaryArm.spin(-0.1);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interupted) {
+    m_placementRotaryArm.engageBrake();
+    m_placementRotaryArm.resetEncoder();
+
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_placementRotaryArm.brokeLimit();
   }
 }

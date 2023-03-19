@@ -37,9 +37,10 @@ public class ExtendExtension extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_placementExtension.outsideBumper(m_placementRotary)) //may need way outside bumper
-    m_placementExtension.extendArm();
+    if (m_placementExtension.outsideBumper(m_placementRotary)) { //may need way outside bumper
+      m_placementExtension.extendArm();
     }
+  }
 
 
   // Called once the command ends or is interrupted.

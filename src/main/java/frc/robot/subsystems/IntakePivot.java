@@ -12,47 +12,21 @@ import frc.robot.Newman_Constants.Constants;
 
 public class IntakePivot extends SubsystemBase {
   private final Solenoid small;
-  private final Solenoid large;
 
   private final boolean defaultStateSmall;
-  private final boolean defaultStateLarge;
 
   public IntakePivot() {
     small = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM , Constants.PNM_SmallSolenoid);
-    large = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM, Constants.PNM_LargeSolenoid);
 
     // default should be whatever retracted is (false?)
     defaultStateSmall = false;
-    defaultStateLarge = false;
 
     small.set(defaultStateSmall);
-    large.set(defaultStateLarge);
   }
 
   @Override
   public void periodic() {
 
-  }
-
-  public void goToNext(){
-    if (!smallIsExtended() && !largeIsExtended()){ // at retracted which is in the bot
-      // the next state is large retracted and small extended
-      extendSmall();
-    }
-    else if (smallIsExtended() && !largeIsExtended()){ // at mid-position
-      // the next state is large and small extended
-      extendLarge();
-    }
-  }
-
-  public void goToPrevious(){
-    if (smallIsExtended() && largeIsExtended()){ // at extended which is outside of the bot
-      // the next state is large retracted and small extended
-      retractLarge();
-    }
-    else if (!largeIsExtended() && smallIsExtended()){
-      retractSmall();
-    }
   }
 
   /**
@@ -63,32 +37,12 @@ public class IntakePivot extends SubsystemBase {
   }
 
   /**
-   * Toggles the large pneumatic
-   */
-  public void toggleLarge(){
-    large.toggle();
-  }
-
-  /**
    * Extends the small pneumatic (opposite of retracted which we are saying is the default state)
    */
   public void extendSmall() {
     small.set(!defaultStateSmall);
   }
 
-  /**
-   * Extends the large pneumatic (opposite of retracted which we are saying is the default state)
-   */
-  public void extendLarge() {
-    large.set(!defaultStateLarge);
-  }
-
-  /**
-   * Retracts the large pneumatic (same as the default state)
-   */
-  public void retractLarge() {
-    large.set(defaultStateLarge);
-  }
 
   /**
    * Retracts the small pneumatic (same as the default state)
@@ -98,32 +52,10 @@ public class IntakePivot extends SubsystemBase {
   }
 
   /**
-   * @return if we are at the middle position or not
-   */
-  public boolean atMiddlePos(){
-    return smallIsExtended() && !largeIsExtended();
-  }
-
-  /**
-   * @return the state of the large pneumatic (retracted should be false)
-   */
-  private boolean largeIsExtended() {
-    return large.get() ^ defaultStateLarge;
-  }
-
-  /**
    * @return the state of the small pneumatic (retracted should be false)
    */
-  private boolean smallIsExtended() {
+  public boolean isExtended() {
     return small.get() ^ defaultStateSmall;
-  }
-
-  /**
-   * setter for the large pneumatic
-   * @param state false is retracted, true is extended
-   */
-  private void setLargeState(boolean state) {
-    large.set(state ^ defaultStateLarge);
   }
 
   /**
@@ -142,7 +74,6 @@ public class IntakePivot extends SubsystemBase {
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-    builder.addBooleanProperty("large solenoid", this::largeIsExtended, this::setLargeState);
-    builder.addBooleanProperty("small solenoid", this::smallIsExtended, this::setSmallState);
+    builder.addBooleanProperty("small solenoid", this::isExtended, this::setSmallState);
   }
 }
