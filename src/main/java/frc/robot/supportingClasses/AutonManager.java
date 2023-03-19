@@ -247,6 +247,22 @@ public class AutonManager {
         return wrapCmd(autonCommand);
     }
 
+    public CommandBase makeCmdToGoToPlace(Pose2d current) {
+        Pose2d positionToGoTo = null;
+        double y_value = Constants.yPositionsForRowBounds[(int) (current.getY() * 2.5)] / 2;
+        positionToGoTo = new Pose2d(current.getX(), y_value, new Rotation2d());
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(safe_constraints,
+                new PathPoint(
+                        current.getTranslation(),
+                        new Rotation2d(0), m_chassis.getRotation2d()
+                ),
+
+                new PathPoint(new Translation2d(current.getX(), y_value), new Rotation2d(), new Rotation2d()));
+
+        AutonCommand command = autonCommandGenerator(trajectory);
+        return wrapCmd(command);
+    }
+
 
 
 }
