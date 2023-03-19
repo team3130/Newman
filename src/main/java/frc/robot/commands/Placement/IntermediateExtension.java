@@ -18,7 +18,7 @@ public class IntermediateExtension extends CommandBase {
   /**
    * Creates a new ExampleCommand.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param extension The subsystem used by this command.
    */
   public IntermediateExtension(PlacementExtensionArm extension, PlacementRotaryArm rotary) {
     m_placementExtension = extension;
