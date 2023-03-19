@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Newman_Constants.Constants;
@@ -183,8 +184,7 @@ public class RobotContainer {
    * Schedules a command to zero the extension arm
    */
   public void zeroCommand() {
-    CommandScheduler.getInstance().schedule(new zeroExtensionArm(m_placementExtensionArm));
-    CommandScheduler.getInstance().schedule(new AutoZeroPlacement(m_placementRotaryArm));
+    CommandScheduler.getInstance().schedule(new SequentialCommandGroup(new zeroExtensionArm(m_placementExtensionArm), new AutoZeroPlacement(m_placementRotaryArm)));
   }
 
 }
