@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakePivot;
 
 /** An example command that uses an example subsystem. */
-public class ToggleSmall extends CommandBase {
+public class ToggleIntake extends CommandBase {
   private final IntakePivot m_pivot;
 
   /*
@@ -16,7 +16,7 @@ public class ToggleSmall extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ToggleSmall(IntakePivot pivot) {
+  public ToggleIntake(IntakePivot pivot) {
     m_pivot = pivot;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(pivot);
