@@ -15,7 +15,7 @@ import java.util.HashMap;
 /**
  * Stores the command to run as well as the start and end position of the bot as {@link Pose2d} objects.
  * objects of this class are frequently used for re-setting odometry to a position.
- *
+ * <p>
  * Also has capabilities of running along a trajectory.
  */
 public class AutonCommand extends CommandBase {
@@ -39,11 +39,12 @@ public class AutonCommand extends CommandBase {
 
     protected final Timer m_timer; // timer from the holonomic drive command
 
-    protected final HashMap<EventMarker, CommandBase> markerToCommandMap; // the marker's mapped to the command to run
+    protected final HashMap<EventMarker, CommandBase> markerToCommandMap; // the marker's mapped to the command to run\
+    protected final CommandBase[] markerToCommandOptimizedMap; // the optimized map for markers
 
     protected EventMarker current; // current
 
-    protected CommandBase RUN_INTAKE, PLACE; // 
+    protected CommandBase RUN_INTAKE, PLACE; // commands necessary
 
     // parallel command group
     protected CommandBase[] runningRightNow = new CommandBase[5];
@@ -81,6 +82,8 @@ public class AutonCommand extends CommandBase {
 
         RUN_INTAKE = new RunIntakeToPlace(intakeBeaterBar, intakePivot, hopper);
 
+        markerToCommandOptimizedMap = new CommandBase[markers.size()];
+
 
         //TODO: fill in when everything else is done
 /*        PlaceGameElement placeGameElement = new PlaceGameElement(m_rotaryArm, m_extensionArm, m_manipulator);
@@ -97,12 +100,45 @@ public class AutonCommand extends CommandBase {
     /**
      * Map each marker to a specific command
      */
-    public void mapMarkersToCommands() {
+    protected void mapMarkersToCommands() {
         for (EventMarker marker : markers) {
             String name = marker.names.get(0);
             if (name.contains("intake")) {
-                markerToCommandMap.put(marker, );
+                markerToCommandMap.put(marker, RUN_INTAKE);
             }
+            else {
+                markerToCommandMap.put(marker, PLACE);
+            }
+        }
+    }
+
+    /**
+     * Uses optimized "map"
+     */
+    protected void mapMarkersToCommandsOptimized() {
+        for (EventMarker marker : markers) {
+            CommandBase toAssign;
+            if (marker.names.get(0).contains("intake")) {
+                toAssign = RUN_INTAKE;
+            }
+            else {
+                toAssign = PLACE;
+            }
+            markerToCommandOptimizedMap[(int) (marker.timeSeconds * magicScalar)] = toAssign;
+        }
+    }
+
+    /**
+     * Uses optimized map if possible to get the command from the marker
+     * @param marker a marker from the available markers
+     * @return the command from whichever map we are supposed to use rn
+     */
+    protected CommandBase getCommandFromMap(EventMarker marker) {
+        if (useOptimized) {
+            return markerToCommandOptimizedMap[(int) (marker.timeSeconds * magicScalar)];
+        }
+        else {
+            return markerToCommandMap.get(marker);
         }
     }
 
@@ -315,12 +351,12 @@ public class AutonCommand extends CommandBase {
         // autony execute
         cmd.execute();
 
-        for (CommandBase command : runningRightNow) {
+        for (int i = 0; i < runningRightNow.length; i++) {
             // if there is a command that we are supposed to run right now, then run it until it ends
-            toRunRightNow.execute();
-            if (toRunRightNow.isFinished()) {
-                toRunRightNow.end(false);
-                toRunRightNow = null;
+            runningRightNow[i].execute();
+            if (runningRightNow[i].isFinished()) {
+                runningRightNow[i].end(false);
+                runningRightNow[i] = null;
             }
         }
 
@@ -333,7 +369,11 @@ public class AutonCommand extends CommandBase {
         }
 
         if (closest != current) {
-
+            CommandBase toAdd = getCommandFromMap(closest);
+            if (closest.names.get(0).contains("end")) {
+                
+            }
+            current = closest;
         }
 
             // use the marker
