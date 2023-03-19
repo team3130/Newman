@@ -40,6 +40,7 @@ public class MoveExtensionArm extends CommandBase {
     if (Math.abs(y) < Constants.kDeadband || (m_extensionArm.brokeLimit() && y > 0)) {
       y = 0;
     }
+
     m_extensionArm.spinExtensionArm(y); //that max is currently bs
 
   }

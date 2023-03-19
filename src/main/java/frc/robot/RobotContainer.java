@@ -55,7 +55,7 @@ public class RobotContainer {
   private final Hopper m_hopper;
   private final IntakePivot m_pivot;
   private final IntakeBeaterBar m_beaterBar;
-  private Limelight m_limelight;
+  private final Limelight m_limelight;
 
 
   /**
@@ -144,9 +144,9 @@ public class RobotContainer {
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_WINDOW).onTrue(new ToggleGrabber(m_manipulator));
 
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).whileTrue(new RunIntakeToPlace(m_beaterBar, m_pivot, m_hopper));
-    // new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new HighRotary(m_placementRotaryArm, m_placementExtensionArm));
-    // new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new MidRotary(m_placementRotaryArm, m_placementExtensionArm));
-    // new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new LowRotary(m_placementRotaryArm, m_placementExtensionArm));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new HighRotary(m_placementRotaryArm, m_placementExtensionArm));
+    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new MidRotary(m_placementRotaryArm, m_placementExtensionArm));
+    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new LowRotary(m_placementRotaryArm, m_placementExtensionArm));
 
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new ExtendExtension(m_placementExtensionArm, m_placementRotaryArm));
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_S).whileTrue(new CollapseExtension(m_placementExtensionArm, m_placementRotaryArm));

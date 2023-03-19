@@ -174,8 +174,9 @@ public class PlacementRotaryArm extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     builder.setSmartDashboardType("Rotary arm");
     builder.addDoubleProperty("Rotary % output", this::getOutputSpeed, this::updateOutputSpeed);
-    builder.addBooleanProperty("rotary arm", this::brokeLimit, null);
+    builder.addBooleanProperty("lim switch", this::brokeLimit, null);
     builder.addDoubleProperty("rotary length", this::getRawTicks, null);
+    builder.addDoubleProperty("rotary angle", this::getPositionPlacementArm, null);
   }
 
   public double getRawTicks() {

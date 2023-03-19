@@ -15,13 +15,13 @@ public class MidRotary extends CommandBase {
   private final PlacementRotaryArm m_placementRotaryArm;
   private final PlacementExtensionArm m_placementExtensionArm;
 
-  private double positionDeadband =Math.toRadians(2.5);
+  private double positionDeadband = Math.toRadians(2.5);
   private Timer timeRunning = new Timer();
 
   /**
    * Creates a new ExampleCommand.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param rotary The subsystem used by this command.
    */
   public MidRotary(PlacementRotaryArm rotary, PlacementExtensionArm extension) {
     m_placementRotaryArm = rotary;
