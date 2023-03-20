@@ -147,7 +147,7 @@ public class PlacementExtensionArm extends SubsystemBase {
   }
 
   public void initSendable(SendableBuilder builder) {
-    builder.addDoubleProperty("rotary length", this::getRawTicks, null);
+    builder.addDoubleProperty("extension length", this::getRawTicks, null);
   }
 
   public double getRawTicks() {
