@@ -51,6 +51,7 @@ public class ZeroRotary extends CommandBase {
   public void end(boolean interupted) {
     // timeRunning.stop();
     // timeRunning.reset();
+    m_placementRotaryArm.resetEncoder();
     m_placementRotaryArm.engageBrake();
 
   }

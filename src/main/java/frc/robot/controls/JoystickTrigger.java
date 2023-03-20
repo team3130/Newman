@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+import java.util.function.BooleanSupplier;
+
 public class JoystickTrigger extends Trigger {
 
     private GenericHID stick;
@@ -18,6 +20,7 @@ public class JoystickTrigger extends Trigger {
      * @param axisNumber The axis number of the trigger
      */
     public JoystickTrigger(GenericHID joystick, int axisNumber) {
+        super(() -> joystick.getRawAxis(axisNumber) > 0.15);
         this.stick = joystick;
         this.axis = axisNumber;
         threshold = 0.15;

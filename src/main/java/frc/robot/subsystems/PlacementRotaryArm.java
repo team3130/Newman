@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -97,7 +98,8 @@ public class PlacementRotaryArm extends SubsystemBase {
     //rotaryMotor.config_kD(0, placementRotaryArmD);
     //rotaryMotor.config_kF(0, placementRotaryArmFUp);
     //rotaryMotor.configMotionSCurveStrength(0, sStrengthRotaryPlacementArm);
-    rotaryMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
+    rotaryMotor.configVoltageCompSaturation(Constants.kMaxRotaryArmVoltage);
+    rotaryMotor.setNeutralMode(NeutralMode.Brake);
     rotaryMotor.enableVoltageCompensation(true);
     rotaryPID.setTolerance(Math.toRadians(2));
 
@@ -121,7 +123,7 @@ public class PlacementRotaryArm extends SubsystemBase {
   }
 
     public void resetEncoder() {
-    rotaryMotor.getSelectedSensorPosition(0);
+    rotaryMotor.setSelectedSensorPosition(0);
   }
 
   /**
@@ -177,6 +179,7 @@ public class PlacementRotaryArm extends SubsystemBase {
     builder.addBooleanProperty("lim switch", this::brokeLimit, null);
     builder.addDoubleProperty("rotary length", this::getRawTicks, null);
     builder.addDoubleProperty("rotary angle", this::getPositionPlacementArm, null);
+    builder.addBooleanProperty("Brake", this::getBrake, null);
   }
 
   public double getRawTicks() {
@@ -185,6 +188,10 @@ public class PlacementRotaryArm extends SubsystemBase {
 
   public void stop() {
     rotaryMotor.set(0);
+  }
+
+  public boolean getBrake() {
+    return brake.get();
   }
 
   public void toggleBrake(){

@@ -42,8 +42,8 @@ public class Hopper extends SubsystemBase {
      * spin the motor at 100%
      */
     public void spinHopper() {
-        m_leftWheel.set(ControlMode.PercentOutput, 0.75);
-        m_rightWheel.set(ControlMode.PercentOutput, 0.75);
+        m_leftWheel.set(ControlMode.PercentOutput, 1);
+        m_rightWheel.set(ControlMode.PercentOutput, 1);
     }
 
 

@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -49,8 +50,6 @@ public class PlacementExtensionArm extends SubsystemBase {
 
   public int sStrengthPlacementExtensionArm = 0;
 
-
-
   public PlacementExtensionArm() {
     extensionMotor = new WPI_TalonFX(Constants.CAN_ExtensionArm);
     extensionMotor.configFactoryDefault();
@@ -62,8 +61,9 @@ public class PlacementExtensionArm extends SubsystemBase {
     extensionMotor.configMotionAcceleration(Constants.kMaxAccelerationPlacementExtensionArm);
     extensionMotor.configMotionSCurveStrength(sStrengthPlacementExtensionArm);
 
+    extensionMotor.setNeutralMode(NeutralMode.Brake);
 
-    extensionMotor.configVoltageCompSaturation(Constants.kMaxSteerVoltage);
+    extensionMotor.configVoltageCompSaturation(Constants.kMaxExtensionArmVoltage);
     extensionMotor.enableVoltageCompensation(true);
 
     m_limitSwitch = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
@@ -100,6 +100,7 @@ public class PlacementExtensionArm extends SubsystemBase {
   public void stopArm(){
     extensionMotor.set(ControlMode.PercentOutput, 0);
   }
+
   public void dumbPower(){
     extensionMotor.set(ControlMode.PercentOutput, 0.2);
   }

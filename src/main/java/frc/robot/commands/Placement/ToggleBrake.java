@@ -5,18 +5,19 @@
 package frc.robot.commands.Placement;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.PlacementRotaryArm;
 
 /** An example command that uses an example subsystem. */
-public class ToggleBrake extends CommandBase {
+public class ToggleBrake extends InstantCommand {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final PlacementRotaryArm m_rotary;
 
   /**
    * Creates a new ExampleCommand.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param rotary The subsystem used by this command.
    */
   public ToggleBrake(PlacementRotaryArm rotary) {
     m_rotary = rotary;
@@ -30,17 +31,4 @@ public class ToggleBrake extends CommandBase {
     m_rotary.toggleBrake();
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
 }
