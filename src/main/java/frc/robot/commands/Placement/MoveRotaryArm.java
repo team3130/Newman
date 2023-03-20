@@ -21,8 +21,11 @@ public class MoveRotaryArm extends CommandBase {
 
   private final GenericEntry success;
 
-  private double lastSpeed = -1;
-  private double lastTorque = -1;
+  private final double[] speeds;
+  private final double[] torques;
+
+  private int capacity = -1;
+  private int head = 0;
 
   public Joystick m_xboxController;
   /**
@@ -38,6 +41,9 @@ public class MoveRotaryArm extends CommandBase {
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_rotaryArm);
+
+    speeds = new double[7];
+    torques = new double[7];
 
     success = Shuffleboard.getTab("Test").add("kV", 0).getEntry();
   }
@@ -75,15 +81,34 @@ public class MoveRotaryArm extends CommandBase {
     }
   }
 
+  /**
+   * gets the velocity gain?????
+   */
   public void middleMan() {
       final double torque = m_rotaryArm.getPositionPlacementArm() * m_extensionArm.getPositionPlacementArm();
       final double currentSpeed = m_rotaryArm.getSpeedPlacementArm();
-      if (Math.abs(currentSpeed - lastSpeed) <= 0.025 && Math.abs((currentSpeed / torque) - (lastSpeed / lastTorque)) <= 0.05) {
-        success.setDouble(currentSpeed / torque);
-      }
 
-      lastTorque = torque;
-      lastSpeed = currentSpeed;
+      if (head + speeds.length == capacity - 1) {
+        boolean worked = true;
+        for (int i = head + 1; i != capacity; i++) {
+          double lastSpeed = speeds[i - 1];
+          double lastTorque = torques[i - 1];
+          if (!(Math.abs(speeds[i] - lastSpeed) <= 0.025 && Math.abs((speeds[i] / torques[i]) - (lastSpeed / lastTorque)) <= 0.05)) {
+            worked = false;
+            break;
+          }
+        }
+        if (worked) {
+          success.setDouble(speeds[head % speeds.length] / torques[head % speeds.length]);
+        }
+        speeds[++capacity] = currentSpeed;
+        torques[capacity] = torque;
+        head++;
+      }
+      else {
+        speeds[++capacity] = currentSpeed;
+        torques[capacity] = torque;
+      }
   }
 
 
