@@ -62,18 +62,16 @@ public class Chassis extends SubsystemBase {
         modules[Constants.Side.RIGHT_FRONT] = new SwerveModule(Constants.Side.RIGHT_FRONT);
         modules[Constants.Side.RIGHT_BACK] = new SwerveModule(Constants.Side.RIGHT_BACK);
 
-        zeroHeading();
-
         // odometry wrapper class that has functionality for cameras that report position with latency
         m_odometry = new SwerveDrivePoseEstimator(m_kinematics, startingRotation, generatePoses(), startingPos);
 
         m_limelight = limelight;
-    }
+  }
 
     /**
-     * If the PID controllers of the {@link SwerveModule}'s are all done
-     * @return whether the wheels are zereod/PID controllers are done
-     */
+    * If the PID controllers of the {@link SwerveModule}'s are all done
+    * @return whether the wheels are zereod/PID controllers are done
+    */
     public boolean turnToAnglePIDIsDone() {
         return modules[Constants.Side.LEFT_FRONT].PIDisDone() &&
         modules[Constants.Side.LEFT_BACK].PIDisDone() &&
