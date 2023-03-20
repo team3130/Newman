@@ -4,13 +4,11 @@
 
 package frc.robot.commands.Placement;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.PlacementExtensionArm;
 import frc.robot.subsystems.PlacementRotaryArm;
 
 /** An example command that uses an example subsystem. */
-public class AutoZeroPlacement extends CommandBase {
+public class AutoZeroRotryArm extends CommandBase {
   private final PlacementRotaryArm m_placementRotaryArm;
 
   /**
@@ -18,7 +16,7 @@ public class AutoZeroPlacement extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public AutoZeroPlacement(PlacementRotaryArm subsystem) {
+  public AutoZeroRotryArm(PlacementRotaryArm subsystem) {
     m_placementRotaryArm = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);

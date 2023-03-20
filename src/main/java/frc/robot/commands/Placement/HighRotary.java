@@ -20,7 +20,7 @@ public class HighRotary extends CommandBase {
   /**
    * Creates a new ExampleCommand.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param rotary The subsystem used by this command.
    */
   public HighRotary(PlacementRotaryArm rotary, PlacementExtensionArm extension) {
     m_placementRotaryArm = rotary;
@@ -43,6 +43,9 @@ public class HighRotary extends CommandBase {
   public void execute() {
     m_placementRotaryArm.gotoPos(m_placementExtensionArm.getPositionPlacementArm(),
             m_placementRotaryArm.getPositionPlacementArm());
+    if (m_placementExtensionArm.outsideBumper(m_placementRotaryArm)) {
+      m_placementExtensionArm.extendArm();
+    }
   }
 
     // Called once the command ends or is interrupted.

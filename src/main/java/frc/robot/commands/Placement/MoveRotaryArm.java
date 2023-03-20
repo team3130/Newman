@@ -37,7 +37,7 @@ public class MoveRotaryArm extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double y = m_xboxController.getRawAxis(Constants.Buttons.LST_AXS_RJOYSTICKY); // inverted?
+    double y = -m_xboxController.getRawAxis(Constants.Buttons.LST_AXS_RJOYSTICKY); // inverted?
     y = y * Math.abs(y);
 
     if (Math.abs(y) < Constants.kDeadband || (m_rotaryArm.brokeLimit()) && y < 0) {
@@ -47,6 +47,14 @@ public class MoveRotaryArm extends CommandBase {
     if (m_rotaryArm.pastLimit() && y > 0) {
       y = 0;
     }
+
+/*    if (y == 0) {
+      m_rotaryArm.engageBrake();
+    }
+    else {
+      m_rotaryArm.releaseBrake();
+    }*/
+
     m_rotaryArm.rotateRotaryArm(y); //that max is currently bs
   }
 
