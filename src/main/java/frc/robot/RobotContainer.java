@@ -156,6 +156,7 @@ public class RobotContainer {
     if (Constants.debugMode) {
       Shuffleboard.getTab("Test").add("Spin motor down", new zeroExtensionArm(m_placementExtensionArm));
     }
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new Balance(m_chassis));
   }
 
   /**
