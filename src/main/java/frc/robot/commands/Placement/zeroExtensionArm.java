@@ -5,6 +5,7 @@
 package frc.robot.commands.Placement;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.PlacementExtensionArm;
 import frc.robot.subsystems.PlacementRotaryArm;
 
@@ -39,6 +40,11 @@ public class zeroExtensionArm extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_extensionArm.stop();
+    if (Math.abs(m_extensionArm.getPositionPlacementArm()) >(Constants.kMaxExtensionLength * 1.25)) {
+      m_extensionArm.setSign(-1);
+    }
+    m_extensionArm.resetEncoders();
+
   }
 
   // Returns true when the command should end.
