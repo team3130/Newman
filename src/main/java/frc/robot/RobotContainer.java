@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Newman_Constants.Constants;
-import frc.robot.commands.Balance.Balance;
+import frc.robot.commands.Balance.Balancing;
 import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.GoToClosestPlaceToPlace;
 import frc.robot.commands.Chassis.TeleopDrive;
@@ -132,7 +132,7 @@ public class RobotContainer {
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new FlipFieldOriented(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new GoToClosestPlaceToPlace(m_chassis, m_autonManager));
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new Balance(m_chassis));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new Balancing(m_chassis));
 
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new SpinHopper(m_hopper));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ReverseHopper(m_hopper, m_pivot));
