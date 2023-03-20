@@ -10,6 +10,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -194,5 +196,8 @@ public class PlacementExtensionArm extends SubsystemBase {
 
   public void resetEncoders() {
     extensionMotor.setSelectedSensorPosition(0);
+  }
+  public static void RumbleFullPower(Joystick gamepad){
+    gamepad.setRumble(GenericHID.RumbleType.kBothRumble,1);
   }
 }
