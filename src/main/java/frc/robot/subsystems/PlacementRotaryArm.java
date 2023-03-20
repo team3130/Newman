@@ -32,7 +32,7 @@ public class PlacementRotaryArm extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   private WPI_TalonFX rotaryMotor;
   private Solenoid brake;
-  private boolean defaultState=false;
+  private boolean defaultState=true;
   private double zeroPosition = 0;
   private double lowPosition = Math.PI/6;
   private double midPosition = Math.PI/4;
