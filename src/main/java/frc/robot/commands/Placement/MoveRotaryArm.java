@@ -85,7 +85,7 @@ public class MoveRotaryArm extends CommandBase {
    * gets the velocity gain?????
    */
   public void middleMan() {
-      final double torque = m_rotaryArm.getPositionPlacementArm() * m_extensionArm.getPositionPlacementArm();
+      final double torque = Math.sin(m_rotaryArm.getPositionPlacementArm()) * m_extensionArm.getPositionPlacementArm();
       final double currentSpeed = m_rotaryArm.getSpeedPlacementArm();
 
       if (head + speeds.length == capacity - 1) {
