@@ -200,9 +200,11 @@ public class PlacementRotaryArm extends SubsystemBase {
   public void engageBrake(){
     brake.set(!defaultState);
   }
+
   public void releaseBrake(){
     brake.set(defaultState);
   }
+
   public double getFeedForward(double extensionLength, double placementAngle){
     return Constants.kTorqueToPercentOutScalar * extensionLength * Math.sin(placementAngle);
   }

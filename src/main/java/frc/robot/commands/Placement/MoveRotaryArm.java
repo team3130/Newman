@@ -76,7 +76,7 @@ public class MoveRotaryArm extends CommandBase {
 
     m_rotaryArm.rotateRotaryArm(y); //that max is currently bs
 
-    if (Constants.debugMode) {
+    if (Constants.debugMode && y > 0) {
       middleMan();
     }
   }
@@ -101,13 +101,13 @@ public class MoveRotaryArm extends CommandBase {
         if (worked) {
           success.setDouble(speeds[head % speeds.length] / torques[head % speeds.length]);
         }
-        speeds[++capacity] = currentSpeed;
-        torques[capacity] = torque;
+        speeds[(++capacity % speeds.length)] = currentSpeed;
+        torques[(capacity% speeds.length)] = torque;
         head++;
       }
       else {
-        speeds[++capacity] = currentSpeed;
-        torques[capacity] = torque;
+        speeds[(++capacity% speeds.length)] = currentSpeed;
+        torques[(capacity % speeds.length)] = torque;
       }
   }
 
