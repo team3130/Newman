@@ -75,7 +75,7 @@ public class RobotContainer {
 
     m_chassis.setDefaultCommand(new TeleopDrive(m_chassis, m_driverGamepad));
 
-    m_placementRotaryArm.setDefaultCommand(new MoveRotaryArm(m_placementRotaryArm, m_weaponsGamepad));
+    m_placementRotaryArm.setDefaultCommand(new MoveRotaryArm(m_placementRotaryArm, m_placementExtensionArm, m_weaponsGamepad));
     m_placementExtensionArm.setDefaultCommand(new MoveExtensionArm(m_placementExtensionArm, m_weaponsGamepad));
 
 

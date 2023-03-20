@@ -4,15 +4,25 @@
 
 package frc.robot.commands.Placement;
 
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.subsystems.PlacementExtensionArm;
 import frc.robot.subsystems.PlacementRotaryArm;
 
 /** An example command that uses an example subsystem. */
 public class MoveRotaryArm extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final PlacementRotaryArm m_rotaryArm;
+  private final PlacementExtensionArm m_extensionArm;
+
+  private final GenericEntry success;
+
+  private double lastSpeed = -1;
+  private double lastTorque = -1;
 
   public Joystick m_xboxController;
   /**
@@ -20,13 +30,16 @@ public class MoveRotaryArm extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveRotaryArm(PlacementRotaryArm subsystem, Joystick m_xboxController) {
+  public MoveRotaryArm(PlacementRotaryArm subsystem, PlacementExtensionArm extensionArm, Joystick m_xboxController) {
     // specify whether rotary arm should be lowered or raised by setting the direction parameter as either -1 or 1, respectively
     m_rotaryArm = subsystem;
     this.m_xboxController = m_xboxController;
+    m_extensionArm = extensionArm;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_rotaryArm);
+
+    success = Shuffleboard.getTab("Test").add("kV", 0).getEntry();
   }
 
   // Called when the command is initially scheduled.
@@ -56,6 +69,21 @@ public class MoveRotaryArm extends CommandBase {
     }*/
 
     m_rotaryArm.rotateRotaryArm(y); //that max is currently bs
+
+    if (Constants.debugMode) {
+      middleMan();
+    }
+  }
+
+  public void middleMan() {
+      final double torque = m_rotaryArm.getPositionPlacementArm() * m_extensionArm.getPositionPlacementArm();
+      final double currentSpeed = m_rotaryArm.getSpeedPlacementArm();
+      if (Math.abs(currentSpeed - lastSpeed) <= 0.025 && Math.abs((currentSpeed / torque) - (lastSpeed / lastTorque)) <= 0.05) {
+        success.setDouble(currentSpeed / torque);
+      }
+
+      lastTorque = torque;
+      lastSpeed = currentSpeed;
   }
 
 
