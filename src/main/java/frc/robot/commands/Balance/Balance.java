@@ -34,7 +34,7 @@ public class Balance extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    fVelocityTilt = new MedianFilter(10);
+    fVelocityTilt = new MedianFilter(5);
     AccelerationTilt = 0;
     prev = 0;
 
