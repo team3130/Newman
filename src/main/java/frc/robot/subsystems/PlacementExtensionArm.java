@@ -59,8 +59,8 @@ public class PlacementExtensionArm extends SubsystemBase {
     extensionMotor.config_kI(0,placementExtensionArmI);
     extensionMotor.config_kD(0,placementExtensionArmD);
 
-    extensionMotor.setInverted(true);
-    extensionMotor.setSensorPhase(true);
+    extensionMotor.setInverted(false);
+    extensionMotor.setSensorPhase(false);
 
     extensionMotor.configMotionCruiseVelocity(Constants.kMaxVelocityPlacementExtensionArm);
     extensionMotor.configMotionAcceleration(Constants.kMaxAccelerationPlacementExtensionArm);
