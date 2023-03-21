@@ -37,7 +37,7 @@ public class MoveExtensionArm extends CommandBase {
     double y = -m_xboxController.getRawAxis(1); // inverted?
     y = y * Math.abs(y);
 
-    if (Math.abs(y) < Constants.kDeadband || (m_extensionArm.brokeLimit() && y > 0)) {
+    if (Math.abs(y) < Constants.kDeadband || m_extensionArm.brokeLimit()){
       y = 0;
     }
 
@@ -45,8 +45,10 @@ public class MoveExtensionArm extends CommandBase {
       y = 0;
     }
 
+    if (m_extensionArm.brokeLimit()){
+      m_extensionArm.RumbleFullPower(m_xboxController);
+    }
     m_extensionArm.spinExtensionArm(y); //that max is currently bs
-
   }
 
   // Called once the command ends or is interrupted.
