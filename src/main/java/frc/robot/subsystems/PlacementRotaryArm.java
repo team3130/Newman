@@ -8,8 +8,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -207,7 +205,7 @@ public class PlacementRotaryArm extends SubsystemBase {
   }
 
   public double getFeedForward(double extensionLength, double placementAngle){
-    return Constants.kTorqueToPercentOutScalar * extensionLength * Math.sin(placementAngle);
+    return Constants.kRotaryStaticGain * extensionLength * Math.sin(placementAngle);
   }
 
   public void gotoPos(double extensionLength, double placementAngle){ // does this need a time?
@@ -298,7 +296,7 @@ public class PlacementRotaryArm extends SubsystemBase {
   }
 
   public double getStaticGain(double extensionArmLength) {
-    return Math.sin(getPositionPlacementArmAngle()) * extensionArmLength * Constants.kTorqueToPercentOutScalar;
+    return Math.sin(getPositionPlacementArmAngle()) * extensionArmLength * Constants.kRotaryStaticGain;
   }
 
   public boolean pastLimit() {

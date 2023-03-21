@@ -124,7 +124,15 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-//    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue((SequentialCommandGroup(new ToggleGrabber(m_manipulator), new MidRotary(m_placementRotaryArm, m_placementExtensionArm), new IntermediateExtension(m_placementExtensionArm, m_placementRotaryArm)));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(
+            new SequentialCommandGroup(
+                    new ToggleGrabber(m_manipulator),
+                    new ZeroExtension(m_placementExtensionArm),
+                    new AutoZeroRotryArm(m_placementRotaryArm),
+                    new MidRotary(m_placementRotaryArm, m_placementExtensionArm),
+                    new IntermediateExtension(m_placementExtensionArm, m_placementRotaryArm))
+    );
+
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RBUMPER).onTrue(new ToggleIntake(m_pivot));
 
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new FlipFieldOriented(m_chassis));
@@ -188,7 +196,11 @@ public class RobotContainer {
    * Schedules a command to zero the extension arm
    */
   public void zeroCommand() {
-    CommandScheduler.getInstance().schedule(new SequentialCommandGroup(new zeroExtensionArm(m_placementExtensionArm), new AutoZeroRotryArm(m_placementRotaryArm)));
+    CommandScheduler.getInstance().schedule(
+            new SequentialCommandGroup(
+                    new zeroExtensionArm(m_placementExtensionArm),
+                    new AutoZeroRotryArm(m_placementRotaryArm)
+            ));
   }
 
 }

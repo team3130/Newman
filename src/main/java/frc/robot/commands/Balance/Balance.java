@@ -23,7 +23,7 @@ public class Balance extends CommandBase {
   /**
    * Creates a new ExampleCommand.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param chassis The subsystem used by this command.
    */
   public Balance(Chassis chassis) {
     m_chassis = chassis;

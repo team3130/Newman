@@ -28,7 +28,7 @@ public class RileyPark extends CommandBase {
   @Override
   public void initialize() {}
 
-  private double direction;
+  private final double direction;
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

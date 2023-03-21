@@ -43,7 +43,7 @@ public class MidRotary extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_placementRotaryArm.gotoPos(m_placementExtensionArm.getPositionPlacementArmExtension(),
+    m_placementRotaryArm.gotoPos(m_placementExtensionArm.getPositionPlacementArm(),
             m_placementRotaryArm.getPositionPlacementArmAngle());
   }
 

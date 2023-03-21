@@ -113,11 +113,11 @@ public class PlacementExtensionArm extends SubsystemBase {
   }
 
   public boolean outsideBumper(PlacementRotaryArm rotaryArm) {
-    return rotaryArm.getPositionPlacementArm() > Math.toRadians(30);
+    return rotaryArm.getPositionPlacementArmAngle() > Math.toRadians(30);
   }
 
   public boolean wayOutsideBumper(PlacementRotaryArm rotaryArm) {
-    return rotaryArm.getPositionPlacementArm() > Math.toRadians(40);
+    return rotaryArm.getPositionPlacementArmAngle() > Math.toRadians(40);
   }
 
   public boolean isMoving(PlacementRotaryArm rotaryArm) { // alternative to passedBumper
@@ -153,7 +153,7 @@ public class PlacementExtensionArm extends SubsystemBase {
 
   public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty("extension length", this::getRawTicks, null);
-    builder.addDoubleProperty("Extension length", this::getPositionPlacementArmExtension, null);
+    builder.addDoubleProperty("Extension length", this::getPositionPlacementArm, null);
   }
 
   public double getRawTicks() {
