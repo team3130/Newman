@@ -57,6 +57,6 @@ public class LowRotary extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_placementRotaryArm.isAtPosition(PlacementRotaryArm.Position.LOW);
+    return m_placementRotaryArm.isAtPosition();
   }
 }

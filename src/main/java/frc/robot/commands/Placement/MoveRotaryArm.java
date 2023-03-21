@@ -66,13 +66,6 @@ public class MoveRotaryArm extends CommandBase {
       y = 0;
     }
 
-/*    if (y == 0) {
-      m_rotaryArm.engageBrake();
-    }
-    else {
-      m_rotaryArm.releaseBrake();
-    }*/
-
     m_rotaryArm.rotateRotaryArm(y); //that max is currently bs
 
     if (Constants.debugMode && y > 0) {

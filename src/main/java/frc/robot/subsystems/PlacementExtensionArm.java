@@ -39,9 +39,9 @@ public class PlacementExtensionArm extends SubsystemBase {
   public GenericEntry n_placementExtensionArmS_Strength;
   public double l_placementExtensionArmS_Strength;
 
-  public GenericEntry n_collapsedPosition;
-  public GenericEntry n_intermediatePosition;
-  public GenericEntry n_extendedPosition;
+  public final GenericEntry n_collapsedPosition;
+  public final GenericEntry n_intermediatePosition;
+  public final GenericEntry n_extendedPosition;
   public double collapsedPosition = 0;
   public double intermediatePosition = 1;
   public double extendedPosition = 2;
@@ -73,7 +73,6 @@ public class PlacementExtensionArm extends SubsystemBase {
 
     m_limitSwitch = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
 
-
     Placement = Shuffleboard.getTab("Extension Arm");
     n_placementExtensionArmP = Placement.add("p", placementExtensionArmP).getEntry();
     n_placementExtensionArmI = Placement.add("i", placementExtensionArmI).getEntry();
@@ -93,40 +92,46 @@ public class PlacementExtensionArm extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void extendArm(){
+  public void extendArm() {
     extensionMotor.set(ControlMode.MotionMagic, n_extendedPosition.getDouble(n_extendedPosition.getDouble(extendedPosition)));
   }
-  public void intermediateArm(){
+
+  public void intermediateArm() {
     extensionMotor.set(ControlMode.MotionMagic, n_intermediatePosition.getDouble(n_intermediatePosition.getDouble(intermediatePosition)));
   }
-  public void collapseArm(){
+
+  public void collapseArm() {
     extensionMotor.set(ControlMode.MotionMagic, n_collapsedPosition.getDouble(n_collapsedPosition.getDouble(collapsedPosition)));
   }
-  public void stopArm(){
+
+  public void stopArm() {
     extensionMotor.set(ControlMode.PercentOutput, 0);
   }
 
-  public void dumbPower(){
+  public void dumbPower() {
     extensionMotor.set(ControlMode.PercentOutput, 0.2);
   }
 
-  public boolean outsideBumper(PlacementRotaryArm rotaryArm){
-    return rotaryArm.getPositionPlacementArmAngle() > Math.toRadians(30);
-  }
-  public boolean wayOutsideBumper(PlacementRotaryArm rotaryArm){
-    return rotaryArm.getPositionPlacementArmAngle() > Math.toRadians(40);
+  public boolean outsideBumper(PlacementRotaryArm rotaryArm) {
+    return rotaryArm.getPositionPlacementArm() > Math.toRadians(30);
   }
 
-  public boolean isMoving(PlacementRotaryArm rotaryArm){ // alternative to passedBumper
+  public boolean wayOutsideBumper(PlacementRotaryArm rotaryArm) {
+    return rotaryArm.getPositionPlacementArm() > Math.toRadians(40);
+  }
+
+  public boolean isMoving(PlacementRotaryArm rotaryArm) { // alternative to passedBumper
     return !rotaryArm.isStationary();
   }
 
-  public double getPositionPlacementArmExtension() {
+  public double getPositionPlacementArm() {
     return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition();
   }
-  public double getSpeedPlacementArm(){
+
+  public double getSpeedPlacementArm() {
     return 10 * Constants.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorVelocity();
   }
+
   public boolean brokeLimit() {
     return !m_limitSwitch.get();
   }
