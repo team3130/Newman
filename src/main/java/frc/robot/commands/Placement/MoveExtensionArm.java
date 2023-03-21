@@ -47,6 +47,7 @@ public class MoveExtensionArm extends CommandBase {
 
     if (m_extensionArm.brokeLimit()){
       m_extensionArm.RumbleFullPower(m_xboxController);
+      m_extensionArm.resetEncoders(); 
     }
     m_extensionArm.spinExtensionArm(y); //that max is currently bs
   }
