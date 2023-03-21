@@ -5,7 +5,6 @@
 package frc.robot.commands.Placement;
 
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -42,8 +41,8 @@ public class MoveRotaryArm extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_rotaryArm);
 
-    speeds = new double[7];
-    torques = new double[7];
+    speeds = new double[10];
+    torques = new double[10];
 
     success = Shuffleboard.getTab("Test").add("kV", 0).getEntry();
   }
@@ -77,29 +76,31 @@ public class MoveRotaryArm extends CommandBase {
     m_rotaryArm.rotateRotaryArm(y); //that max is currently bs
 
     if (Constants.debugMode && y > 0) {
-      middleMan();
+      middleMan(y);
     }
   }
 
   /**
    * gets the velocity gain?????
    */
-  public void middleMan() {
-      final double torque = Math.sin(m_rotaryArm.getPositionPlacementArm()) * m_extensionArm.getPositionPlacementArm();
+  public void middleMan(double main) {
+      final double torque = Math.sin(m_rotaryArm.getPositionPlacementArmAngle()) * m_extensionArm.getPositionPlacementArmExtension();
       final double currentSpeed = m_rotaryArm.getSpeedPlacementArm();
 
       if (head + speeds.length == capacity - 1) {
         boolean worked = true;
         for (int i = head + 1; i != capacity; i++) {
-          double lastSpeed = speeds[i - 1];
-          double lastTorque = torques[i - 1];
-          if (!(Math.abs(speeds[i] - lastSpeed) <= 0.025 && Math.abs((speeds[i] / torques[i]) - (lastSpeed / lastTorque)) <= 0.05)) {
+          double lastSpeed = speeds[(i - 1) % speeds.length];
+          double lastTorque = torques[(i - 1) % speeds.length];
+          if (!(
+                  Math.abs(speeds[(i) % speeds.length] - lastSpeed) <= 0.025 &&
+                          Math.abs((speeds[i % speeds.length] / torques[i % speeds.length]) - (lastSpeed / lastTorque)) <= 0.05)) {
             worked = false;
             break;
           }
         }
         if (worked) {
-          success.setDouble(speeds[head % speeds.length] / torques[head % speeds.length]);
+          success.setDouble(main / (torque * currentSpeed));
         }
         speeds[(++capacity % speeds.length)] = currentSpeed;
         torques[(capacity% speeds.length)] = torque;

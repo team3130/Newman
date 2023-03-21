@@ -34,10 +34,14 @@ public class MoveExtensionArm extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double y = m_xboxController.getRawAxis(1); // inverted?
+    double y = -m_xboxController.getRawAxis(1); // inverted?
     y = y * Math.abs(y);
 
     if (Math.abs(y) < Constants.kDeadband || (m_extensionArm.brokeLimit() && y > 0)) {
+      y = 0;
+    }
+
+    if (Math.abs(m_extensionArm.getRawTicks()) > Math.abs(Constants.kMaxExtensionLength) && y < 0) {
       y = 0;
     }
 

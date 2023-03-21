@@ -49,7 +49,6 @@ public class PlacementExtensionArm extends SubsystemBase {
   public double placementExtensionArmD = 0;
 
   public int sStrengthPlacementExtensionArm = 0;
-  public int sign = 1;
 
   public PlacementExtensionArm() {
     extensionMotor = new WPI_TalonFX(Constants.CAN_ExtensionArm);
@@ -57,6 +56,9 @@ public class PlacementExtensionArm extends SubsystemBase {
     extensionMotor.config_kP(0,placementExtensionArmP);
     extensionMotor.config_kI(0,placementExtensionArmI);
     extensionMotor.config_kD(0,placementExtensionArmD);
+
+    extensionMotor.setInverted(true);
+    extensionMotor.setSensorPhase(true);
 
     extensionMotor.configMotionCruiseVelocity(Constants.kMaxVelocityPlacementExtensionArm);
     extensionMotor.configMotionAcceleration(Constants.kMaxAccelerationPlacementExtensionArm);
@@ -90,39 +92,35 @@ public class PlacementExtensionArm extends SubsystemBase {
   }
 
   public void extendArm(){
-    extensionMotor.set(ControlMode.MotionMagic, n_extendedPosition.getDouble(n_extendedPosition.getDouble(extendedPosition)) * sign);
+    extensionMotor.set(ControlMode.MotionMagic, n_extendedPosition.getDouble(n_extendedPosition.getDouble(extendedPosition)));
   }
   public void intermediateArm(){
-    extensionMotor.set(ControlMode.MotionMagic, n_intermediatePosition.getDouble(n_intermediatePosition.getDouble(intermediatePosition)) * sign);
+    extensionMotor.set(ControlMode.MotionMagic, n_intermediatePosition.getDouble(n_intermediatePosition.getDouble(intermediatePosition)));
   }
   public void collapseArm(){
-    extensionMotor.set(ControlMode.MotionMagic, n_collapsedPosition.getDouble(n_collapsedPosition.getDouble(collapsedPosition)) * sign);
+    extensionMotor.set(ControlMode.MotionMagic, n_collapsedPosition.getDouble(n_collapsedPosition.getDouble(collapsedPosition)));
   }
   public void stopArm(){
     extensionMotor.set(ControlMode.PercentOutput, 0);
   }
 
   public void dumbPower(){
-    extensionMotor.set(ControlMode.PercentOutput, 0.2 * sign);
+    extensionMotor.set(ControlMode.PercentOutput, 0.2);
   }
 
   public boolean outsideBumper(PlacementRotaryArm rotaryArm){
-    return rotaryArm.getPositionPlacementArm() > Math.toRadians(30);
+    return rotaryArm.getPositionPlacementArmAngle() > Math.toRadians(30);
   }
   public boolean wayOutsideBumper(PlacementRotaryArm rotaryArm){
-    return rotaryArm.getPositionPlacementArm() > Math.toRadians(40);
-  }
-
-  public void setSign(int newSign) {
-      sign = newSign;
+    return rotaryArm.getPositionPlacementArmAngle() > Math.toRadians(40);
   }
 
   public boolean isMoving(PlacementRotaryArm rotaryArm){ // alternative to passedBumper
     return !rotaryArm.isStationary();
   }
 
-  public double getPositionPlacementArm(){
-    return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition() * sign;
+  public double getPositionPlacementArmExtension() {
+    return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition();
   }
   public double getSpeedPlacementArm(){
     return 10 * Constants.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorVelocity();
@@ -148,6 +146,7 @@ public class PlacementExtensionArm extends SubsystemBase {
 
   public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty("extension length", this::getRawTicks, null);
+    builder.addDoubleProperty("Extension length", this::getPositionPlacementArmExtension, null);
   }
 
   public double getRawTicks() {
@@ -159,7 +158,7 @@ public class PlacementExtensionArm extends SubsystemBase {
    * @param scalar to scale the output speed
    */
   public void spinExtensionArm(double scalar) {
-    extensionMotor.set(scalar * sign);
+    extensionMotor.set(scalar);
   }
 
   /**
@@ -194,5 +193,9 @@ public class PlacementExtensionArm extends SubsystemBase {
 
   public void resetEncoders() {
     extensionMotor.setSelectedSensorPosition(0);
+  }
+
+  public double getPositionPlacementArmExtensionRaw() {
+    return extensionMotor.getSelectedSensorPosition();
   }
 }

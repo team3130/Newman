@@ -19,10 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Balance.Balancing;
-import frc.robot.commands.Chassis.FlipFieldOriented;
-import frc.robot.commands.Chassis.GoToClosestPlaceToPlace;
-import frc.robot.commands.Chassis.TeleopDrive;
-import frc.robot.commands.Chassis.ZeroEverything;
+import frc.robot.commands.Chassis.*;
 import frc.robot.commands.Hopper.ReverseHopper;
 import frc.robot.commands.Hopper.SpinHopper;
 import frc.robot.commands.Hopper.UnjamHopper;
@@ -96,7 +93,7 @@ public class RobotContainer {
       tab.add(m_manipulator);
       tab.add(m_hopper);
       tab.add(m_pivot);
-      //m_chassis.shuffleboardVom(Shuffleboard.getTab("Swerve Modules"));
+      m_chassis.shuffleboardVom(Shuffleboard.getTab("Swerve Modules"));
     }
   }
 
@@ -127,11 +124,12 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+//    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue((SequentialCommandGroup(new ToggleGrabber(m_manipulator), new MidRotary(m_placementRotaryArm, m_placementExtensionArm), new IntermediateExtension(m_placementExtensionArm, m_placementRotaryArm)));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RBUMPER).onTrue(new ToggleIntake(m_pivot));
 
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new FlipFieldOriented(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ZeroEverything(m_chassis));
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new GoToClosestPlaceToPlace(m_chassis, m_autonManager));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new ZeroWheels(m_chassis));
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new Balancing(m_chassis));
 
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new SpinHopper(m_hopper));

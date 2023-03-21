@@ -103,6 +103,7 @@ public class PlacementRotaryArm extends SubsystemBase {
     rotaryMotor.enableVoltageCompensation(true);
     rotaryPID.setTolerance(Math.toRadians(2));
 
+    rotaryMotor.setSensorPhase(true);
 
     Placement = Shuffleboard.getTab("rotary arm");
     n_placementRotaryArmP = Placement.add("p", placementRotaryArmP).getEntry();
@@ -178,7 +179,7 @@ public class PlacementRotaryArm extends SubsystemBase {
     builder.addDoubleProperty("Rotary % output", this::getOutputSpeed, this::updateOutputSpeed);
     builder.addBooleanProperty("lim switch", this::brokeLimit, null);
     builder.addDoubleProperty("rotary length", this::getRawTicks, null);
-    builder.addDoubleProperty("rotary angle", this::getPositionPlacementArm, null);
+    builder.addDoubleProperty("rotary angle", this::getPositionPlacementArmAngle, null);
     builder.addBooleanProperty("Brake", this::getBrake, null);
   }
 
@@ -191,7 +192,7 @@ public class PlacementRotaryArm extends SubsystemBase {
   }
 
   public boolean getBrake() {
-    return brake.get();
+    return brake.get() ^ defaultState;
   }
 
   public void toggleBrake(){
@@ -222,7 +223,7 @@ public class PlacementRotaryArm extends SubsystemBase {
   }
   public void makeSetpointZero(){rotaryPID.setGoal(zeroPosition);}
 
-  public double getPositionPlacementArm(){
+  public double getPositionPlacementArmAngle(){
     return Constants.kTicksToRadiansRotaryPlacementArm * rotaryMotor.getSelectedSensorPosition();
   }
   public double getSpeedPlacementArm(){
@@ -348,7 +349,7 @@ public class PlacementRotaryArm extends SubsystemBase {
    * @return the net torque
    */
   public double getNetTorqueOnArm(double extensionArmLength) {
-    double rotaryArm = getPositionPlacementArm();
+    double rotaryArm = getPositionPlacementArmAngle();
 
     // the torque due to gravity - the upwards torque by the rotary arm
     return calculateTorqueDueToGravity(rotaryArm, extensionArmLength)
@@ -359,11 +360,11 @@ public class PlacementRotaryArm extends SubsystemBase {
   }
 
   public double getStaticGain(double extensionArmLength) {
-    return Math.sin(getPositionPlacementArm()) * extensionArmLength * Constants.kTorqueToPercentOutScalar;
+    return Math.sin(getPositionPlacementArmAngle()) * extensionArmLength * Constants.kTorqueToPercentOutScalar;
   }
 
   public boolean pastLimit() {
-    return rotaryMotor.getSelectedSensorPosition() > Constants.kMaxRotaryLength;
+    return getPositionPlacementArmAngle() > Constants.kMaxRotaryLength;
   }
 
 }
