@@ -14,6 +14,8 @@ public class MoveExtensionArm extends CommandBase {
   private final PlacementExtensionArm m_extensionArm;
   public Joystick m_xboxController;
 
+  public boolean Flag = false;
+
   /**
    * Creates a new Move Extension Arm command.
    *
@@ -22,6 +24,7 @@ public class MoveExtensionArm extends CommandBase {
   public MoveExtensionArm(PlacementExtensionArm subsystem, Joystick m_xboxController) {
     m_extensionArm = subsystem;
     this.m_xboxController = m_xboxController;
+    boolean flag = false;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_extensionArm);
   }
@@ -47,9 +50,17 @@ public class MoveExtensionArm extends CommandBase {
 
     if (m_extensionArm.brokeLimit()){
       m_extensionArm.RumbleFullPower(m_xboxController);
-      m_extensionArm.resetEncoders(); 
+
+     if (!Flag) {
+       m_extensionArm.resetEncoders();
+       Flag = true;
+     }
     }
     m_extensionArm.spinExtensionArm(y); //that max is currently bs
+
+    if (!m_extensionArm.brokeLimit() &&  Flag){
+      Flag = false;
+    }
   }
 
   // Called once the command ends or is interrupted.
