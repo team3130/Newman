@@ -40,7 +40,7 @@ public class SwerveModule implements Sendable {
 
         m_absoluteEncoder = new CANCoder(Constants.CANCoders[side]);
 
-        turningPidController = new PIDController(Constants.SwerveKpFrontRight, Constants.SwerveKiFrontRight, Constants.SwerveKdFrontRight);
+        turningPidController = new PIDController(Constants.SwerveKp[side], Constants.SwerveKi[side], Constants.SwerveKd[side]);
 
         m_steerMotor.configFactoryDefault();
         m_steerMotor.setNeutralMode(NeutralMode.Brake);
@@ -55,7 +55,7 @@ public class SwerveModule implements Sendable {
         m_driveMotor.setInverted(false);
 
         turningPidController.enableContinuousInput(-Math.PI, Math.PI); // wrap for circles
-        turningPidController.setTolerance(0.003); // at position tolerance
+        turningPidController.setTolerance(0.0025, 0.05); // at position tolerance
 
         absoluteEncoderOffset = Constants.kCanCoderOffsets[side];
 
@@ -234,6 +234,14 @@ public class SwerveModule implements Sendable {
         turningPidController.setD(newD);
     }
 
+    public void setIValue(double newI) {
+        turningPidController.setI(newI);
+    }
+
+    public double getIValue() {
+        return turningPidController.getI();
+    }
+
     /**
      * The string representation of the swerve module
      * @return "Swerve module side: " + sideNumber: int
@@ -249,13 +257,18 @@ public class SwerveModule implements Sendable {
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Swerve Module " + side);
-        /*
-        builder.addDoubleProperty("Drive position", this::getDrivePosition, null);
-        builder.addDoubleProperty("Drive velocity", this::getDriveVelocity, null);
+/*        builder.addDoubleProperty("Drive position", this::getDrivePosition, null);
+        builder.addDoubleProperty("Drive velocity", this::getDriveVelocity, null);*/
         builder.addDoubleProperty("Steer position", this::getTurningPosition, null);
-        builder.addDoubleProperty("Steer velocity", this::getTurningVelocity, null);*/
-        // builder.addDoubleProperty("Absolute encoder position", this::getAbsoluteEncoderRad, null);
+/*        builder.addDoubleProperty("Steer velocity", this::getTurningVelocity, null);
+        builder.addDoubleProperty("Steer relative", this::getRelativePositionDegrees, null);
+        builder.addDoubleProperty("Absolute encoder position", this::getAbsoluteEncoderDegrees, null);*/
         builder.addDoubleProperty("Swerve P " + side, this::getPValue, this::setPValue);
+        builder.addDoubleProperty("Swerve I " + side, this::getIValue, this::setIValue);
         builder.addDoubleProperty("Swerve D " + side, this::getDValue, this::setDValue);
+    }
+
+    public double getRelativePositionDegrees() {
+        return Math.toDegrees(getTurningPosition());
     }
 }

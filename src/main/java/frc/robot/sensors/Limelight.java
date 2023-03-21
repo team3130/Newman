@@ -77,14 +77,6 @@ public class Limelight {
     }
 
     /**
-     * TODO: remove this is as it is bad practice to return the pipeline result, only coordinates should be returned by this class as that is it's function
-     * @return the latest camera result
-     */
-    public PhotonPipelineResult getLatestResult() {
-        return camera.getLatestResult();
-    }
-
-    /**
      * @return the x position of the camera relative to the april tag
      */
     public double getX(){

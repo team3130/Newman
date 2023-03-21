@@ -82,7 +82,6 @@ public class Balance extends CommandBase {
     getTilt.setDouble(tilt);
     getTiltVelocity.setDouble(VelocityTilt);
 
-    //TODO: Tune PID values
     double magnitude = 
       P.getDouble(Constants.BalanceKp) * VelocityTilt + 
       D.getDouble(Constants.BalanceKd) * AccelerationTilt + 
