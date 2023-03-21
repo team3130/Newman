@@ -201,7 +201,8 @@ public class PlacementExtensionArm extends SubsystemBase {
   public void resetEncoders() {
     extensionMotor.setSelectedSensorPosition(0);
   }
-  public static void RumbleFullPower(Joystick gamepad){
+
+  public void RumbleFullPower(Joystick gamepad){
     gamepad.setRumble(GenericHID.RumbleType.kBothRumble,1);
   }
 
