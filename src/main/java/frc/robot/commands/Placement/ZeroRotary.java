@@ -42,7 +42,7 @@ public class ZeroRotary extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_placementRotaryArm.gotoPos(m_placementExtensionArm.getPositionPlacementArmExtension(),
+    m_placementRotaryArm.gotoPos(m_placementExtensionArm.getPositionPlacementArm(),
             m_placementRotaryArm.getPositionPlacementArmAngle());
   }
 
@@ -59,6 +59,6 @@ public class ZeroRotary extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_placementRotaryArm.isAtPosition(PlacementRotaryArm.Position.ZERO);
+    return m_placementRotaryArm.isAtPosition();
   }
 }
