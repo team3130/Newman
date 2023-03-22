@@ -28,11 +28,14 @@ import frc.robot.commands.Hopper.UnjamHopper;
 import frc.robot.commands.Intake.ToggleIntake;
 import frc.robot.commands.Manipulator.ToggleGrabber;
 import frc.robot.commands.Placement.*;
+import frc.robot.commands.Placement.ManualControl.MoveExtensionArm;
+import frc.robot.commands.Placement.ManualControl.MoveRotaryArm;
+import frc.robot.commands.Placement.presets.MidRotary;
 import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
-import frc.robot.supportingClasses.AutonManager;
-import frc.robot.supportingClasses.OdoPosition;
+import frc.robot.supportingClasses.Auton.AutonManager;
+import frc.robot.supportingClasses.Vision.OdoPosition;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -48,8 +51,8 @@ public class RobotContainer {
   private static Joystick m_driverGamepad;
   private static Joystick m_weaponsGamepad;
   private final Chassis m_chassis;
-  private final PlacementExtensionArm m_placementExtensionArm = new PlacementExtensionArm();
-  private final PlacementRotaryArm m_placementRotaryArm = new PlacementRotaryArm();
+  private final ExtensionArm m_ExtensionArm = new ExtensionArm();
+  private final RotaryArm m_RotaryArm = new RotaryArm();
   private final Manipulator m_manipulator = new Manipulator();
 
   private final Hopper m_hopper;
@@ -75,8 +78,8 @@ public class RobotContainer {
 
     m_chassis.setDefaultCommand(new TeleopDrive(m_chassis, m_driverGamepad));
 
-    m_placementRotaryArm.setDefaultCommand(new MoveRotaryArm(m_placementRotaryArm, m_placementExtensionArm, m_weaponsGamepad));
-    m_placementExtensionArm.setDefaultCommand(new MoveExtensionArm(m_placementExtensionArm, m_weaponsGamepad));
+    m_RotaryArm.setDefaultCommand(new MoveRotaryArm(m_RotaryArm, m_ExtensionArm, m_weaponsGamepad));
+    m_ExtensionArm.setDefaultCommand(new MoveExtensionArm(m_ExtensionArm, m_weaponsGamepad));
 
 
     configureButtonBindings();
@@ -90,8 +93,8 @@ public class RobotContainer {
     if (Constants.debugMode) {
       ShuffleboardTab tab = Shuffleboard.getTab("Subsystems");
       tab.add(m_chassis);
-      tab.add(m_placementExtensionArm);
-      tab.add(m_placementRotaryArm);
+      tab.add(m_ExtensionArm);
+      tab.add(m_RotaryArm);
       tab.add(m_manipulator);
       tab.add(m_hopper);
       tab.add(m_pivot);
@@ -129,10 +132,10 @@ public class RobotContainer {
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(
             new SequentialCommandGroup(
                     new ToggleGrabber(m_manipulator),
-                    new ZeroExtension(m_placementExtensionArm),
-                    new AutoZeroRotryArm(m_placementRotaryArm),
-                    new MidRotary(m_placementRotaryArm, m_placementExtensionArm),
-                    new IntermediateExtension(m_placementExtensionArm, m_placementRotaryArm))
+                    new AutoZeroExtensionArm(m_ExtensionArm),
+                    new AutoZeroRotryArm(m_RotaryArm),
+                    new MidRotary(m_RotaryArm, m_ExtensionArm),
+                    new IntermediateExtension(m_ExtensionArm, m_RotaryArm))
     );
 
     //Driver Gamepad:
@@ -154,31 +157,31 @@ public class RobotContainer {
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new UnjamHopper(m_hopper));
 
     //Placement
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).onTrue(new ToggleBrake(m_placementRotaryArm));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).onTrue(new ToggleBrake(m_RotaryArm));
     new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).onTrue(new ToggleGrabber(m_manipulator));
-    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new ZeroExtension(m_placementExtensionArm));
-    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new AutoZeroRotryArm(m_placementRotaryArm));
+    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new AutoZeroExtensionArm(m_ExtensionArm));
+    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new AutoZeroRotryArm(m_RotaryArm));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new SequentialCommandGroup(
-            new ZeroExtension(m_placementExtensionArm),
-            new AutoZeroRotryArm(m_placementRotaryArm))
+            new AutoZeroExtensionArm(m_ExtensionArm),
+            new AutoZeroRotryArm(m_RotaryArm))
     );
 
     /*
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new HighRotary(m_placementRotaryArm, m_placementExtensionArm));
-    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new MidRotary(m_placementRotaryArm, m_placementExtensionArm));
-    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new LowRotary(m_placementRotaryArm, m_placementExtensionArm));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new HighRotary(m_RotaryArm, m_ExtensionArm));
+    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new MidRotary(m_RotaryArm, m_ExtensionArm));
+    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new LowRotary(m_RotaryArm, m_ExtensionArm));
     */
 
     /*
-    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new ExtendExtension(m_placementExtensionArm, m_placementRotaryArm));
-    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_S).whileTrue(new CollapseExtension(m_placementExtensionArm, m_placementRotaryArm));
-    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new IntermediateExtension(m_placementExtensionArm, m_placementRotaryArm));
+    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new ExtendExtension(m_ExtensionArm, m_RotaryArm));
+    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_S).whileTrue(new CollapseExtension(m_ExtensionArm, m_RotaryArm));
+    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new IntermediateExtension(m_ExtensionArm, m_RotaryArm));
     */
 
     SmartDashboard.putData(new FlipFieldOriented(m_chassis));
 
     if (Constants.debugMode) {
-      Shuffleboard.getTab("Test").add("Spin motor down", new zeroExtensionArm(m_placementExtensionArm));
+      Shuffleboard.getTab("Test").add("Spin motor down", new AutoZeroExtensionArm(m_ExtensionArm));
     }
   }
 
@@ -214,8 +217,8 @@ public class RobotContainer {
   public void zeroCommand() {
     CommandScheduler.getInstance().schedule(
             new SequentialCommandGroup(
-                    new zeroExtensionArm(m_placementExtensionArm),
-                    new AutoZeroRotryArm(m_placementRotaryArm)
+                    new AutoZeroExtensionArm(m_ExtensionArm),
+                    new AutoZeroRotryArm(m_RotaryArm)
             ));
   }
 

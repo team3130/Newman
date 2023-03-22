@@ -21,7 +21,7 @@ import frc.robot.Newman_Constants.Constants;
 
 import java.util.HashMap;
 
-public class PlacementRotaryArm extends SubsystemBase {
+public class RotaryArm extends SubsystemBase {
 
   public enum Position {
     ZERO, LOW, MID, HIGH
@@ -81,11 +81,12 @@ public class PlacementRotaryArm extends SubsystemBase {
           new TrapezoidProfile.State(highPosition, 0));
           */
 
+  // the profiled pid controller for rotary arm
   public ProfiledPIDController rotaryPID = new ProfiledPIDController(placementRotaryArmP, placementRotaryArmI,
           placementRotaryArmD, rotaryArmConstraints);
 
 
-  public PlacementRotaryArm() {
+  public RotaryArm() {
     rotaryMotor = new WPI_TalonFX(Constants.CAN_RotaryArm);
     rotaryMotor.configFactoryDefault();
     brake = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM, Constants.PNM_Brake);
@@ -120,7 +121,10 @@ public class PlacementRotaryArm extends SubsystemBase {
     positionMap.put(Position.ZERO, zeroPosition);
   }
 
-    public void resetEncoder() {
+  /**
+   * Reset the encoder position to 0
+   */
+  public void resetEncoder() {
     rotaryMotor.setSelectedSensorPosition(0);
   }
 
@@ -180,51 +184,92 @@ public class PlacementRotaryArm extends SubsystemBase {
     builder.addBooleanProperty("Brake", this::getBrake, null);
   }
 
+  /**
+   * @return gets the angle of the rotary arm in raw ticks
+   */
   public double getRawTicks() {
     return rotaryMotor.getSelectedSensorPosition();
   }
 
+  /**
+   * Stop the motor
+   */
   public void stop() {
     rotaryMotor.set(0);
   }
 
+  /**
+   * @return Whether we are broke or not using default state
+   */
   public boolean getBrake() {
     return brake.get() ^ defaultState;
   }
 
+  /**
+   * Toggles the brake
+   */
   public void toggleBrake(){
     brake.toggle();
   }
 
+  /**
+   * Engage brake using bitwise Xor default state
+   */
   public void engageBrake(){
     brake.set(true ^ defaultState);
   }
 
+  /**
+   * release the brake using bitwise Xor default state
+   */
   public void releaseBrake(){
     brake.set(false ^ defaultState);
   }
 
-  public double getFeedForward(double extensionLength, double placementAngle){
-    return Constants.kRotaryStaticGain * extensionLength * Math.sin(placementAngle);
+  /**
+   * Calculates the feed forward gain
+   * @param extensionLength the length of the extension arm
+   * @return the static feed forward gain
+   */
+  public double getFeedForward(double extensionLength){
+    return Constants.kRotaryStaticGain * extensionLength * Math.sin(getPositionPlacementArmAngle());
   }
 
-  public void gotoPos(double extensionLength, double placementAngle){ // does this need a time?
-    rotaryMotor.set(ControlMode.PercentOutput, (getFeedForward(extensionLength, placementAngle)) + rotaryPID.calculate(placementAngle));
+  /**
+   * Go to position specified in the set point of the controller
+   * @param extensionLength the length of the extension arm
+   */
+  public void gotoPos(double extensionLength) {
+    rotaryMotor.set(ControlMode.PercentOutput, rotaryPID.calculate(getPositionPlacementArmAngle() + (getFeedForward(extensionLength))));
   }
 
+  /**
+   * Make the setpoint for the controller low
+   */
   public void makeSetpointLow(){
     rotaryPID.setGoal(lowPosition);
   }
 
+  /**
+   * make the setpoint for the controller mid
+   */
   public void makeSetpointMid(){
     rotaryPID.setGoal(midPosition);
   }
 
+  /**
+   * make the setpoint for the controller high
+   */
   public void makeSetpointHigh(){
     rotaryPID.setGoal(highPosition);
   }
 
+  /**
+   * make the setpoint for the controller 0
+   */
   public void makeSetpointZero(){rotaryPID.setGoal(zeroPosition);}
+
+  public void resetController() {}
 
   public double getPositionPlacementArmAngle(){
     return Constants.kTicksToRadiansRotaryPlacementArm * rotaryMotor.getSelectedSensorPosition();
@@ -301,6 +346,10 @@ public class PlacementRotaryArm extends SubsystemBase {
 
   public boolean pastLimit() {
     return getPositionPlacementArmAngle() > Constants.kMaxRotaryLength;
+  }
+
+  public boolean outsideBumper() {
+    return this.getPositionPlacementArmAngle() > Math.toRadians(30);
   }
 
 }

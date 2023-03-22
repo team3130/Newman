@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Placement;
+package frc.robot.commands.Placement.ManualControl;
 
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.networktables.GenericEntry;
@@ -10,14 +10,14 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Newman_Constants.Constants;
-import frc.robot.subsystems.PlacementExtensionArm;
-import frc.robot.subsystems.PlacementRotaryArm;
+import frc.robot.subsystems.ExtensionArm;
+import frc.robot.subsystems.RotaryArm;
 
 /** An example command that uses an example subsystem. */
 public class MoveRotaryArm extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final PlacementRotaryArm m_rotaryArm;
-  private final PlacementExtensionArm m_extensionArm;
+  private final RotaryArm m_rotaryArm;
+  private final ExtensionArm m_extensionArm;
 
   private final GenericEntry success;
 
@@ -33,7 +33,7 @@ public class MoveRotaryArm extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveRotaryArm(PlacementRotaryArm subsystem, PlacementExtensionArm extensionArm, Joystick m_xboxController) {
+  public MoveRotaryArm(RotaryArm subsystem, ExtensionArm extensionArm, Joystick m_xboxController) {
     // specify whether rotary arm should be lowered or raised by setting the direction parameter as either -1 or 1, respectively
     m_rotaryArm = subsystem;
     this.m_xboxController = m_xboxController;
@@ -44,7 +44,7 @@ public class MoveRotaryArm extends CommandBase {
 
     speeds = new double[10];
 
-    success = Shuffleboard.getTab("Test").add("kV", 0).getEntry();
+    success = Shuffleboard.getTab("Test").add("rotary kV", 0).getEntry();
 
     filter = new MedianFilter(7);
   }
@@ -79,7 +79,7 @@ public class MoveRotaryArm extends CommandBase {
    * gets the velocity gain?????
    */
   public void middleMan(double main) {
-      final double torque = Math.sin(m_rotaryArm.getPositionPlacementArmAngle()) * m_extensionArm.getPositionPlacementArm();
+      final double torque = Math.sin(m_rotaryArm.getPositionPlacementArmAngle()) * m_extensionArm.getPositionMeters();
       final double currentSpeed = m_rotaryArm.getSpeedPlacementArm();
 
       if (head + speeds.length == capacity - 1) {

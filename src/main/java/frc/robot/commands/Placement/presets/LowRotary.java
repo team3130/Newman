@@ -2,27 +2,32 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Placement;
+package frc.robot.commands.Placement.presets;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.PlacementExtensionArm;
-import frc.robot.subsystems.PlacementRotaryArm;
+import frc.robot.subsystems.ExtensionArm;
+import frc.robot.subsystems.RotaryArm;
 
-/** An example command that uses an example subsystem. */
+/** A preset for scoring. */
 public class LowRotary extends CommandBase {
-  private final PlacementRotaryArm m_placementRotaryArm;
-  private final PlacementExtensionArm m_placementExtensionArm;
+  // the subsystem rotary arm
+  private final RotaryArm m_RotaryArm;
+
+  //
+  private final ExtensionArm m_ExtensionArm;
+  // a timer for how long the command has been running
   private Timer timeRunning = new Timer();
 
   /**
    * Creates a new ExampleCommand.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param rotary The subsystem used by this command.
+   * @param extension not the subsystem of the command, just used for torque
    */
-  public LowRotary(PlacementRotaryArm rotary, PlacementExtensionArm extension) {
-    m_placementRotaryArm = rotary;
-    m_placementExtensionArm = extension;
+  public LowRotary(RotaryArm rotary, ExtensionArm extension) {
+    m_RotaryArm = rotary;
+    m_ExtensionArm = extension;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(rotary, extension);
   }
@@ -31,18 +36,17 @@ public class LowRotary extends CommandBase {
   @Override
   public void initialize() {
     //timeRunning.reset();
-    m_placementRotaryArm.releaseBrake();
-    m_placementRotaryArm.updateValues();
+    m_RotaryArm.releaseBrake();
+    m_RotaryArm.updateValues();
     //timeRunning.start();
-    m_placementRotaryArm.makeSetpointLow();
+    m_RotaryArm.makeSetpointLow();
 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_placementRotaryArm.gotoPos(m_placementExtensionArm.getPositionPlacementArm(),
-            m_placementRotaryArm.getPositionPlacementArmAngle());
+    m_RotaryArm.gotoPos(m_ExtensionArm.getPositionMeters());
   }
 
   // Called once the command ends or is interrupted.
@@ -50,13 +54,13 @@ public class LowRotary extends CommandBase {
   public void end(boolean interupted) {
    // timeRunning.stop();
    // timeRunning.reset();
-    m_placementRotaryArm.engageBrake();
+    m_RotaryArm.engageBrake();
 
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_placementRotaryArm.isAtPosition();
+    return m_RotaryArm.isAtPosition();
   }
 }

@@ -5,20 +5,19 @@
 package frc.robot.commands.Placement;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.PlacementExtensionArm;
-
+import frc.robot.subsystems.ExtensionArm;
 
 
 /** A command to zero the extension arm stops when it hits the limit switch uses extension */
-public class zeroExtensionArm extends CommandBase {
-  private final PlacementExtensionArm m_extensionArm;
+public class AutoZeroExtensionArm extends CommandBase {
+  private final ExtensionArm m_extensionArm;
 
   /**
-   * Creates a new zeroExtensionArm.
+   * Creates a new AutoZeroExtensionArm.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public zeroExtensionArm(PlacementExtensionArm subsystem) {
+  public AutoZeroExtensionArm(ExtensionArm subsystem) {
     m_extensionArm = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_extensionArm);

@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.sensors.Limelight;
 import frc.robot.sensors.Navx;
-import frc.robot.supportingClasses.OdoPosition;
+import frc.robot.supportingClasses.Vision.OdoPosition;
 import frc.robot.swerve.SwerveModule;
 
 import java.util.Arrays;
@@ -340,6 +340,11 @@ public class Chassis extends SubsystemBase {
         builder.addDoubleProperty("X position", this::getX, null);
         builder.addDoubleProperty("Y position", this::getY, null);
         builder.addDoubleProperty("rotation", this::getYaw, null);
+        builder.addDoubleProperty("max speed read", this::getMaxSpeedRead, null);
+    }
+
+    public double getMaxSpeedRead() {
+        return maxSpeedRead;
     }
 
     /**

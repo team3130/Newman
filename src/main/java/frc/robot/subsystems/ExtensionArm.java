@@ -10,25 +10,37 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.supportingClasses.Gains.AccelerationManager;
 
-public class PlacementExtensionArm extends SubsystemBase {
-  /** Creates a new ExampleSubsystem. */
+/**
+ * The extension arm subsystem for the placement mechanism
+ */
+public class ExtensionArm extends SubsystemBase {
+  // the motor controller
   private final WPI_TalonFX extensionMotor;
+  // limit switch which is at our 0 point for the extension arm
   private final DigitalInput m_limitSwitch;
 
-    /**
+  private SimpleWidget n_velocityGain = Shuffleboard.getTab("Test").add("extension kV", 0);
+
+  // the acceleration manager
+  private final AccelerationManager accelerationManager;
+
+  /**
    * Speed to run the motor at by default, can be changed in shuffleboard
    */
   private static double extensionArmSpeed = 1;
 
 
-  //general
+  /**
+   * Network table variables
+   */
   public ShuffleboardTab Placement;
   public GenericEntry n_placementExtensionArmP;
   public double l_placementExtensionArmP;
@@ -46,13 +58,19 @@ public class PlacementExtensionArm extends SubsystemBase {
   public double intermediatePosition = 1;
   public double extendedPosition = 2;
 
+  /**
+   * The PID values for the extension arm controller
+   */
   public double placementExtensionArmP = 5.12295e-5 / 2;
   public double placementExtensionArmI = 0;
   public double placementExtensionArmD = 0;
 
   public int sStrengthPlacementExtensionArm = 0;
 
-  public PlacementExtensionArm() {
+  /**
+   * Creates a new extension arm subsystem object
+   */
+  public ExtensionArm() {
     extensionMotor = new WPI_TalonFX(Constants.CAN_ExtensionArm);
     extensionMotor.configFactoryDefault();
     extensionMotor.config_kP(0,placementExtensionArmP);
@@ -78,12 +96,13 @@ public class PlacementExtensionArm extends SubsystemBase {
     n_placementExtensionArmI = Placement.add("i", placementExtensionArmI).getEntry();
     n_placementExtensionArmD = Placement.add("d", placementExtensionArmD).getEntry();
 
-
     n_collapsedPosition = Placement.add("collapses position", collapsedPosition).getEntry();
     n_intermediatePosition = Placement.add("intermediate positon", intermediatePosition).getEntry();
     n_extendedPosition = Placement.add("extended position", extendedPosition).getEntry();
 
     n_placementExtensionArmS_Strength = Placement.add("s strength", sStrengthPlacementExtensionArm).getEntry();
+
+    accelerationManager = new AccelerationManager();
 
   }
 
@@ -92,50 +111,79 @@ public class PlacementExtensionArm extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
+  /**
+   * Extend the arm
+   */
   public void extendArm() {
     extensionMotor.set(ControlMode.MotionMagic, n_extendedPosition.getDouble(n_extendedPosition.getDouble(extendedPosition)));
   }
 
+  /**
+   * The intermediate position to extend the arm to
+   */
   public void intermediateArm() {
     extensionMotor.set(ControlMode.MotionMagic, n_intermediatePosition.getDouble(n_intermediatePosition.getDouble(intermediatePosition)));
   }
 
+  /**
+   * collapse the arm, can be replaced with zero?
+   */
   public void collapseArm() {
     extensionMotor.set(ControlMode.MotionMagic, n_collapsedPosition.getDouble(n_collapsedPosition.getDouble(collapsedPosition)));
   }
 
-  public void stopArm() {
+  /**
+   * Stop the arm
+   */
+  public void stop() {
     extensionMotor.set(ControlMode.PercentOutput, 0);
   }
 
+  /**
+   * give the extension a dumb power of 20% of {@link Constants#kMaxExtensionArmVoltage}
+   */
   public void dumbPower() {
     extensionMotor.set(ControlMode.PercentOutput, 0.2);
   }
 
-  public boolean outsideBumper(PlacementRotaryArm rotaryArm) {
-    return rotaryArm.getPositionPlacementArmAngle() > Math.toRadians(30);
-  }
-
-  public boolean wayOutsideBumper(PlacementRotaryArm rotaryArm) {
-    return rotaryArm.getPositionPlacementArmAngle() > Math.toRadians(40);
-  }
-
-  public boolean isMoving(PlacementRotaryArm rotaryArm) { // alternative to passedBumper
-    return !rotaryArm.isStationary();
-  }
-
-  public double getPositionPlacementArm() {
+  /**
+   * @return the position of the extension arm in meters
+   */
+  public double getPositionMeters() {
     return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition();
   }
 
-  public double getSpeedPlacementArm() {
+  /**
+   * @return the position of the extension arm in ticks. Max length should be {@link Constants#kMaxExtensionLength}
+   */
+  public double getPositionTicks() {
+    return extensionMotor.getSelectedSensorPosition();
+  }
+
+  /**
+   * @return the speed of the extension arm in meters per second
+   */
+  public double getSpeedMetersPerSecond() {
     return 10 * Constants.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorVelocity();
   }
 
+  /**
+   * @return the speed of the mechanism in ticks per second
+   */
+  public double getSpeedTicksPerSecond() {
+    return 10 * extensionMotor.getSelectedSensorVelocity();
+  }
+
+  /**
+   * @return Whether the extension arm is at the limit switch
+   */
   public boolean brokeLimit() {
     return !m_limitSwitch.get();
   }
 
+  /**
+   * update values on shuffleboard
+   */
   public void updateValues(){
     if (l_placementExtensionArmP != n_placementExtensionArmP.getDouble(placementExtensionArmP)){
       extensionMotor.config_kP(0, n_placementExtensionArmP.getDouble(placementExtensionArmP));
@@ -152,12 +200,8 @@ public class PlacementExtensionArm extends SubsystemBase {
   }
 
   public void initSendable(SendableBuilder builder) {
-    builder.addDoubleProperty("extension length", this::getRawTicks, null);
-    builder.addDoubleProperty("Extension length", this::getPositionPlacementArm, null);
-  }
-
-  public double getRawTicks() {
-    return extensionMotor.getSelectedSensorPosition();
+    builder.addDoubleProperty("extension length", this::getPositionTicks, null);
+    builder.addDoubleProperty("Extension length", this::getPositionMeters, null);
   }
 
     /**
@@ -165,6 +209,7 @@ public class PlacementExtensionArm extends SubsystemBase {
    * @param scalar to scale the output speed
    */
   public void spinExtensionArm(double scalar) {
+    accelerationManager.update(getSpeedMetersPerSecond(), Timer.getFPGATimestamp());
     extensionMotor.set(scalar);
   }
 
@@ -173,14 +218,6 @@ public class PlacementExtensionArm extends SubsystemBase {
    */
   @Override
   public void simulationPeriodic() {}
-
-
-  /**
-   * Stops the devices connected to this subsystem
-   */
-  public void stop() {
-    extensionMotor.set(0);
-  }
 
   /**
    * returns the speed we are currently running the motor at.
@@ -198,15 +235,15 @@ public class PlacementExtensionArm extends SubsystemBase {
     extensionArmSpeed = newSpeed;
   }
 
+  /**
+   * Reset the extension motor encoders
+   */
   public void resetEncoders() {
     extensionMotor.setSelectedSensorPosition(0);
-  }
-
-  public void RumbleFullPower(Joystick gamepad){
-    gamepad.setRumble(GenericHID.RumbleType.kBothRumble,1);
   }
 
   public double getPositionPlacementArmExtensionRaw() {
     return extensionMotor.getSelectedSensorPosition();
   }
+
 }

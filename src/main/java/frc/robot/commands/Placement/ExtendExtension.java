@@ -5,22 +5,22 @@
 package frc.robot.commands.Placement;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.PlacementExtensionArm;
-import frc.robot.subsystems.PlacementRotaryArm;
+import frc.robot.subsystems.ExtensionArm;
+import frc.robot.subsystems.RotaryArm;
 
 /** An example command that uses an example subsystem. */
 public class ExtendExtension extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final PlacementExtensionArm m_placementExtension;
-  private final PlacementRotaryArm m_placementRotary;
+  private final ExtensionArm m_placementExtension;
+  private final RotaryArm m_placementRotary;
   private boolean ran = false;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new Extend Extension command
    *
    * @param extension The subsystem used by this command.
    */
-  public ExtendExtension(PlacementExtensionArm extension, PlacementRotaryArm rotary) {
+  public ExtendExtension(ExtensionArm extension, RotaryArm rotary) {
     m_placementExtension = extension;
     m_placementRotary = rotary;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -37,7 +37,7 @@ public class ExtendExtension extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_placementExtension.outsideBumper(m_placementRotary)) { //may need way outside bumper
+    if (m_placementRotary.outsideBumper()) { //may need way outside bumper
       m_placementExtension.extendArm();
     }
   }
