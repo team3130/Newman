@@ -59,9 +59,10 @@ public class AutonManager {
         // m_autonChooser.addOption("Question mark", generateExamplePathFromFile());
         // m_autonChooser.addOption("player side", generatepWeekZeroPath());
         // m_autonChooser.addOption("far side", generatepWeekZeroPath2());
-        m_autonChooser.addOption("feelin spicy", generateExamplePathFromPoses());
-        m_autonChooser.addOption("circuit", complexPathTest());
-        m_autonChooser.addOption("AprilTagTesting",aprilTagTesting());
+        // m_autonChooser.addOption("feelin spicy", generateExamplePathFromPoses());
+        // m_autonChooser.addOption("circuit", complexPathTest());
+        // m_autonChooser.addOption("AprilTagTesting",aprilTagTesting());
+        m_autonChooser.addOption("Default path", generateExamplePathFromPoses());
     }
 
     /**
@@ -177,7 +178,7 @@ public class AutonManager {
                 new PathPoint(
                         new Translation2d(0, 0),
                         new Rotation2d(), new Rotation2d()),
-                new PathPoint(new Translation2d(2, 0), new Rotation2d(), new Rotation2d(Math.toRadians(90)))
+                new PathPoint(new Translation2d(2, 0), new Rotation2d(), new Rotation2d(0))
         );
 
         AutonCommand command = autonCommandGenerator(trajectory);

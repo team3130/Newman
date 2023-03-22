@@ -17,6 +17,8 @@ public class GoToHighSchoring extends CommandBase {
   private final ExtensionArm m_extensionArm;
   private final Timer timeRunning = new Timer();
 
+  private boolean hasStartedExtended;
+
   /**
    * Creates a new command that runs the preset to get to high rotary
    *
@@ -38,12 +40,17 @@ public class GoToHighSchoring extends CommandBase {
     m_rotaryArm.updateValues();
   //  timeRunning.start();
     m_rotaryArm.makeSetpointHigh();
-    m_extensionArm.extendArmFull();
+    hasStartedExtended = false;
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     m_rotaryArm.gotoPos(m_extensionArm.getPositionMeters());
+
+    if (m_rotaryArm.outsideBumper() && !hasStartedExtended) { //may need way outside bumper
+      m_extensionArm.extendArmFull();
+      hasStartedExtended = true;
+    }
   }
 
     // Called once the command ends or is interrupted.
