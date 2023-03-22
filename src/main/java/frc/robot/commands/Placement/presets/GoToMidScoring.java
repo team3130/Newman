@@ -17,7 +17,7 @@ public class GoToMidScoring extends CommandBase {
 
   private final double positionDeadband = Math.toRadians(2.5);
   private final Timer timeRunning = new Timer();
-
+  private boolean hasStartedExtended;
   /**
    * Creates a new ExampleCommand.
    *
@@ -38,12 +38,18 @@ public class GoToMidScoring extends CommandBase {
     m_RotaryArm.updateValues();
     //timeRunning.start();
     m_RotaryArm.makeSetpointMid();
+    hasStartedExtended = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     m_RotaryArm.gotoPos(m_ExtensionArm.getPositionMeters());
+
+    if(m_RotaryArm.outsideBumper() && !hasStartedExtended) {
+      m_ExtensionArm.intermediateArm();
+      hasStartedExtended = true;
+    }
   }
 
   // Called once the command ends or is interrupted.

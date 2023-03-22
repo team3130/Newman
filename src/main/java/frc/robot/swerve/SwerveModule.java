@@ -8,9 +8,11 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.Newman_Constants.Constants;
 
 
@@ -259,13 +261,17 @@ public class SwerveModule implements Sendable {
         builder.setSmartDashboardType("Swerve Module " + side);
 /*        builder.addDoubleProperty("Drive position", this::getDrivePosition, null);
         builder.addDoubleProperty("Drive velocity", this::getDriveVelocity, null);*/
-        builder.addDoubleProperty("Steer position", this::getRelDegrees, null);
+        builder.addDoubleProperty("Steer position", this::getSteerPositionWrapped, null);
 /*        builder.addDoubleProperty("Steer velocity", this::getTurningVelocity, null);
         builder.addDoubleProperty("Steer relative", this::getRelativePositionDegrees, null);
         builder.addDoubleProperty("Absolute encoder position", this::getAbsoluteEncoderDegrees, null);*/
         builder.addDoubleProperty("Swerve P " + side, this::getPValue, this::setPValue);
         builder.addDoubleProperty("Swerve I " + side, this::getIValue, this::setIValue);
         builder.addDoubleProperty("Swerve D " + side, this::getDValue, this::setDValue);
+    }
+
+    public double getSteerPositionWrapped() {
+        return Math.IEEEremainder(getRelDegrees(), 360);
     }
 
     public double getRelativePositionDegrees() {
