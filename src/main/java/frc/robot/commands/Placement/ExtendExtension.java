@@ -38,7 +38,7 @@ public class ExtendExtension extends CommandBase {
   @Override
   public void execute() {
     if (m_placementRotary.outsideBumper()) { //may need way outside bumper
-      m_placementExtension.extendArm();
+      m_placementExtension.extendArmFull();
     }
   }
 

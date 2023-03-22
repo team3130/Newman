@@ -30,7 +30,7 @@ import frc.robot.commands.Manipulator.ToggleGrabber;
 import frc.robot.commands.Placement.*;
 import frc.robot.commands.Placement.ManualControl.MoveExtensionArm;
 import frc.robot.commands.Placement.ManualControl.MoveRotaryArm;
-import frc.robot.commands.Placement.presets.MidRotary;
+import frc.robot.commands.Placement.presets.GoToMidScoring;
 import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
@@ -134,7 +134,7 @@ public class RobotContainer {
                     new ToggleGrabber(m_manipulator),
                     new AutoZeroExtensionArm(m_ExtensionArm),
                     new AutoZeroRotryArm(m_RotaryArm),
-                    new MidRotary(m_RotaryArm, m_ExtensionArm),
+                    new GoToMidScoring(m_RotaryArm, m_ExtensionArm),
                     new IntermediateExtension(m_ExtensionArm, m_RotaryArm))
     );
 
@@ -167,9 +167,9 @@ public class RobotContainer {
     );
 
     /*
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new HighRotary(m_RotaryArm, m_ExtensionArm));
-    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new MidRotary(m_RotaryArm, m_ExtensionArm));
-    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new LowRotary(m_RotaryArm, m_ExtensionArm));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new GoToHighSchoring(m_RotaryArm, m_ExtensionArm));
+    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToMidScoring(m_RotaryArm, m_ExtensionArm));
+    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToLowScoring(m_RotaryArm, m_ExtensionArm));
     */
 
     /*

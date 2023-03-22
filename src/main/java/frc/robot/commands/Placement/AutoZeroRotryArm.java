@@ -37,10 +37,9 @@ public class AutoZeroRotryArm extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interupted) {
+  public void end(boolean interrupted) {
     m_RotaryArm.engageBrake();
     m_RotaryArm.resetEncoder();
-
   }
 
   // Returns true when the command should end.

@@ -60,7 +60,7 @@ public class MoveRotaryArm extends CommandBase {
     double y = -m_xboxController.getRawAxis(Constants.Buttons.LST_AXS_RJOYSTICKY); // inverted?
     y = y * Math.abs(y);
 
-    if (Math.abs(y) < Constants.kDeadband || (m_rotaryArm.brokeLimit()) && y < 0) {
+    if (Math.abs(y) < Constants.kDeadband || m_rotaryArm.brakeIsEnabled() ||  (m_rotaryArm.brokeLimit()) && y < 0) {
       y = 0;
     }
 

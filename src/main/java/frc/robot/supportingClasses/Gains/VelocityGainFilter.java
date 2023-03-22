@@ -4,8 +4,11 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 public class VelocityGainFilter {
     // the backbone data structure
@@ -21,21 +24,36 @@ public class VelocityGainFilter {
     // whether we have gotten enough data to fill our array yet
     protected boolean hasFilled;
 
+    protected final SimpleWidget n_velocityGain;
+
+    protected Supplier<Double> velocitySupplier;
+
+    protected AccelerationManager accelerationManager;
+
+    protected StatsResult result;
+
     /**
      * Makes a new circular array
      * @param bucketSize size of the bucket for the circular array
+     * @param mechanismName the name of the mechanism for what shoes up on shuffleboard
+     * @param velocitySupplier the supplier to get the velocity
      */
-    public VelocityGainFilter(int bucketSize) {
+    public VelocityGainFilter(int bucketSize, String mechanismName, Supplier<Double> velocitySupplier, AccelerationManager accelerationManager) {
         data = new GainData[bucketSize];
         floor = 0;
         capacity = -1;
         this.bucketSize = bucketSize;
+
+        n_velocityGain = Shuffleboard.getTab("Test").add(mechanismName + " kV", 0);
+
+        this.velocitySupplier = velocitySupplier;
+        this.accelerationManager = accelerationManager;
     }
 
     /**
-     * @return an object that is the result of this instance
+     * update the stats object
      */
-    public StatsResult getResult() {
+    public void updateResults() {
         /*GainData[] dataCopy = new GainData[bucketSize * 3];
         int shift = bucketSize;
         for (int i = floor; i < capacity; i++) {
@@ -70,7 +88,7 @@ public class VelocityGainFilter {
         }
         final double standardDeviation = totalForStandardDeviation / dataCopy.length;
 
-        return new StatsResult(median, standardDeviation, average);
+        result.updateAll(median, standardDeviation, average);
     }
 
 
@@ -80,8 +98,17 @@ public class VelocityGainFilter {
      * @param percentOutput the percent output at that instant
      * @param time the time at that instant
      */
-    public void add(double velocity,double percentOutput, double time) {
+    public void add(double velocity, double percentOutput, double time) {
         add(new GainData(velocity, percentOutput, time));
+    }
+
+    public void update(double percentOutput) {
+        if (Math.abs(accelerationManager.getAcceleration()) <= 250) {
+            add(velocitySupplier.get(), percentOutput, Timer.getFPGATimestamp());
+            if (hasFilled) {
+                updateResults();
+            }
+        }
     }
 
     /**
@@ -159,10 +186,10 @@ public class VelocityGainFilter {
     /**
      * A class to store results
      */
-    protected class StatsResult implements Sendable {
-        protected final double median;
-        protected final double standardDeviation;
-        protected final double average;
+    protected static class StatsResult implements Sendable {
+        protected double median;
+        protected double standardDeviation;
+        protected double average;
 
         /**
          * Creates a new stats result
@@ -197,6 +224,39 @@ public class VelocityGainFilter {
          */
         public double getAverage() {
             return average;
+        }
+
+        /**
+         * @param median new median
+         */
+        public void setMedian(double median) {
+            this.median = median;
+        }
+
+        /**
+         * @param standardDeviation new standard deviation
+         */
+        public void setStandardDeviation(double standardDeviation) {
+            this.standardDeviation = standardDeviation;
+        }
+
+        /**
+         * @param average new Average
+         */
+        public void setAverage(double average) {
+            this.average = average;
+        }
+
+        /**
+         * Update all the stats values
+         * @param median the new median
+         * @param standardDeviation the new standard deviation
+         * @param mean the new mean
+         */
+        public void updateAll(double median, double standardDeviation, double mean) {
+            setMedian(median);
+            setAverage(mean);
+            setStandardDeviation(standardDeviation);
         }
 
         /**

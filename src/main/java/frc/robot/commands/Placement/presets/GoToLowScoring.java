@@ -9,21 +9,23 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ExtensionArm;
 import frc.robot.subsystems.RotaryArm;
 
-/** An example command that uses an example subsystem. */
-public class MidRotary extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+/** A preset for scoring. */
+public class GoToLowScoring extends CommandBase {
+  // the subsystem rotary arm
   private final RotaryArm m_RotaryArm;
-  private final ExtensionArm m_ExtensionArm;
 
-  private final double positionDeadband = Math.toRadians(2.5);
-  private final Timer timeRunning = new Timer();
+  //
+  private final ExtensionArm m_ExtensionArm;
+  // a timer for how long the command has been running
+  private Timer timeRunning = new Timer();
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param rotary The subsystem used by this command.
+   * @param extension not the subsystem of the command, just used for torque
    */
-  public MidRotary(RotaryArm rotary, ExtensionArm extension) {
+  public GoToLowScoring(RotaryArm rotary, ExtensionArm extension) {
     m_RotaryArm = rotary;
     m_ExtensionArm = extension;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -37,7 +39,8 @@ public class MidRotary extends CommandBase {
     m_RotaryArm.releaseBrake();
     m_RotaryArm.updateValues();
     //timeRunning.start();
-    m_RotaryArm.makeSetpointMid();
+    m_RotaryArm.makeSetpointLow();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -48,10 +51,11 @@ public class MidRotary extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
+  public void end(boolean interupted) {
    // timeRunning.stop();
-    // timeRunning.reset();
+   // timeRunning.reset();
     m_RotaryArm.engageBrake();
+
   }
 
   // Returns true when the command should end.

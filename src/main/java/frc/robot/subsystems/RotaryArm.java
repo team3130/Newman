@@ -181,7 +181,7 @@ public class RotaryArm extends SubsystemBase {
     builder.addBooleanProperty("lim switch", this::brokeLimit, null);
     builder.addDoubleProperty("rotary length", this::getRawTicks, null);
     builder.addDoubleProperty("rotary angle", this::getPositionPlacementArmAngle, null);
-    builder.addBooleanProperty("Brake", this::getBrake, null);
+    builder.addBooleanProperty("Brake", this::brakeIsEnabled, null);
   }
 
   /**
@@ -201,7 +201,7 @@ public class RotaryArm extends SubsystemBase {
   /**
    * @return Whether we are broke or not using default state
    */
-  public boolean getBrake() {
+  public boolean brakeIsEnabled() {
     return brake.get() ^ defaultState;
   }
 
@@ -215,7 +215,9 @@ public class RotaryArm extends SubsystemBase {
   /**
    * Engage brake using bitwise Xor default state
    */
-  public void engageBrake(){
+  public void engageBrake() {
+    // we shouldn't spin the motor when we engage the brake
+    rotaryMotor.set(ControlMode.PercentOutput, 0);
     brake.set(true ^ defaultState);
   }
 
@@ -322,10 +324,6 @@ public class RotaryArm extends SubsystemBase {
 
   public double getLowPosition(){
     return lowPosition;
-  }
-
-  public void runAtPercentOutput(double output) {
-    rotaryMotor.set(ControlMode.PercentOutput, output);
   }
 
   public boolean goingUp() {

@@ -11,7 +11,7 @@ import frc.robot.subsystems.RotaryArm;
 
 
 /** A preset command to go to the high position for the rotary arm */
-public class HighRotary extends CommandBase {
+public class GoToHighSchoring extends CommandBase {
   // required subsystem
   private final RotaryArm m_rotaryArm;
   private final ExtensionArm m_extensionArm;
@@ -23,7 +23,7 @@ public class HighRotary extends CommandBase {
    * @param rotary The rotary subsystem which this command requires
    * @param extension the extension arm subsystem which this command requires
    */
-  public HighRotary(RotaryArm rotary, ExtensionArm extension) {
+  public GoToHighSchoring(RotaryArm rotary, ExtensionArm extension) {
     m_rotaryArm = rotary;
     m_extensionArm = extension;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -38,20 +38,20 @@ public class HighRotary extends CommandBase {
     m_rotaryArm.updateValues();
   //  timeRunning.start();
     m_rotaryArm.makeSetpointHigh();
+    m_extensionArm.extendArmFull();
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     m_rotaryArm.gotoPos(m_extensionArm.getPositionMeters());
-    if (m_rotaryArm.outsideBumper()) {
-      m_extensionArm.extendArm();
-    }
   }
 
     // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_rotaryArm.stop();
     m_rotaryArm.engageBrake();
+    m_extensionArm.stop();
   //  timeRunning.stop();
    // timeRunning.reset();
   }

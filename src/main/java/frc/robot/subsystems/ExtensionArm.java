@@ -13,10 +13,10 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.supportingClasses.Gains.AccelerationManager;
+import frc.robot.supportingClasses.Gains.VelocityGainFilter;
 
 /**
  * The extension arm subsystem for the placement mechanism
@@ -26,8 +26,6 @@ public class ExtensionArm extends SubsystemBase {
   private final WPI_TalonFX extensionMotor;
   // limit switch which is at our 0 point for the extension arm
   private final DigitalInput m_limitSwitch;
-
-  private SimpleWidget n_velocityGain = Shuffleboard.getTab("Test").add("extension kV", 0);
 
   // the acceleration manager
   private final AccelerationManager accelerationManager;
@@ -67,6 +65,8 @@ public class ExtensionArm extends SubsystemBase {
 
   public int sStrengthPlacementExtensionArm = 0;
 
+  protected final VelocityGainFilter gainFilter;
+
   /**
    * Creates a new extension arm subsystem object
    */
@@ -103,7 +103,7 @@ public class ExtensionArm extends SubsystemBase {
     n_placementExtensionArmS_Strength = Placement.add("s strength", sStrengthPlacementExtensionArm).getEntry();
 
     accelerationManager = new AccelerationManager();
-
+    gainFilter = new VelocityGainFilter(9, "extension", this::getSpeedTicksPerSecond, accelerationManager);
   }
 
   @Override
@@ -112,24 +112,24 @@ public class ExtensionArm extends SubsystemBase {
   }
 
   /**
-   * Extend the arm
+   * Extend the arm all the way out
    */
-  public void extendArm() {
-    extensionMotor.set(ControlMode.MotionMagic, n_extendedPosition.getDouble(n_extendedPosition.getDouble(extendedPosition)));
+  public void extendArmFull() {
+    extensionMotor.set(ControlMode.MotionMagic, n_extendedPosition.getDouble(extendedPosition));
   }
 
   /**
    * The intermediate position to extend the arm to
    */
   public void intermediateArm() {
-    extensionMotor.set(ControlMode.MotionMagic, n_intermediatePosition.getDouble(n_intermediatePosition.getDouble(intermediatePosition)));
+    extensionMotor.set(ControlMode.MotionMagic, n_intermediatePosition.getDouble(intermediatePosition));
   }
 
   /**
    * collapse the arm, can be replaced with zero?
    */
   public void collapseArm() {
-    extensionMotor.set(ControlMode.MotionMagic, n_collapsedPosition.getDouble(n_collapsedPosition.getDouble(collapsedPosition)));
+    extensionMotor.set(ControlMode.MotionMagic, n_collapsedPosition.getDouble(collapsedPosition));
   }
 
   /**
@@ -204,12 +204,14 @@ public class ExtensionArm extends SubsystemBase {
     builder.addDoubleProperty("Extension length", this::getPositionMeters, null);
   }
 
-    /**
+  /**
    * spins the extension arm
    * @param scalar to scale the output speed
    */
   public void spinExtensionArm(double scalar) {
-    accelerationManager.update(getSpeedMetersPerSecond(), Timer.getFPGATimestamp());
+    if (Constants.debugMode) {
+      accelerationManager.update(getSpeedMetersPerSecond(), Timer.getFPGATimestamp());
+    }
     extensionMotor.set(scalar);
   }
 
@@ -240,10 +242,6 @@ public class ExtensionArm extends SubsystemBase {
    */
   public void resetEncoders() {
     extensionMotor.setSelectedSensorPosition(0);
-  }
-
-  public double getPositionPlacementArmExtensionRaw() {
-    return extensionMotor.getSelectedSensorPosition();
   }
 
 }
