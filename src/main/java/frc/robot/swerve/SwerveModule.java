@@ -259,7 +259,7 @@ public class SwerveModule implements Sendable {
         builder.setSmartDashboardType("Swerve Module " + side);
 /*        builder.addDoubleProperty("Drive position", this::getDrivePosition, null);
         builder.addDoubleProperty("Drive velocity", this::getDriveVelocity, null);*/
-        builder.addDoubleProperty("Steer position", this::getTurningPosition, null);
+        builder.addDoubleProperty("Steer position", this::getRelDegrees, null);
 /*        builder.addDoubleProperty("Steer velocity", this::getTurningVelocity, null);
         builder.addDoubleProperty("Steer relative", this::getRelativePositionDegrees, null);
         builder.addDoubleProperty("Absolute encoder position", this::getAbsoluteEncoderDegrees, null);*/
@@ -269,6 +269,10 @@ public class SwerveModule implements Sendable {
     }
 
     public double getRelativePositionDegrees() {
+        return Math.toDegrees(getTurningPosition());
+    }
+
+    public double getRelDegrees() {
         return Math.toDegrees(getTurningPosition());
     }
 }

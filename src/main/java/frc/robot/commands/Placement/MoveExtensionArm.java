@@ -14,7 +14,7 @@ public class MoveExtensionArm extends CommandBase {
   private final PlacementExtensionArm m_extensionArm;
   public Joystick m_xboxController;
 
-  public boolean flag = false;
+  public boolean justHitLimit = false;
 
   /**
    * Creates a new Move Extension Arm command.
@@ -40,27 +40,28 @@ public class MoveExtensionArm extends CommandBase {
     double y = -m_xboxController.getRawAxis(1); // inverted?
     y = y * Math.abs(y);
 
-    if (Math.abs(y) < Constants.kDeadband || m_extensionArm.brokeLimit()){
+    if (Math.abs(y) < Constants.kDeadband || (m_extensionArm.brokeLimit() && y < 0)) {
       y = 0;
     }
 
-    if (Math.abs(m_extensionArm.getRawTicks()) > Math.abs(Constants.kMaxExtensionLength) && y < 0) {
+    if (Math.abs(m_extensionArm.getRawTicks()) > Math.abs(Constants.kMaxExtensionLength) && y > 0) {
       y = 0;
     }
 
-    if (m_extensionArm.brokeLimit()){
+    if (m_extensionArm.brokeLimit()) {
       m_extensionArm.RumbleFullPower(m_xboxController);
-
-     if (!flag) {
-       m_extensionArm.resetEncoders();
-       flag = true;
-     }
+       if (!justHitLimit) {
+         m_extensionArm.resetEncoders();
+         justHitLimit = true;
+       }
     }
+    else {
+      if (justHitLimit) {
+        justHitLimit = false;
+      }
+    }
+
     m_extensionArm.spinExtensionArm(y); //that max is currently bs
-
-    if (!m_extensionArm.brokeLimit() && flag){
-      flag = false;
-    }
   }
 
   // Called once the command ends or is interrupted.
