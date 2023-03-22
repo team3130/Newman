@@ -7,8 +7,7 @@ public class Balancing extends SequentialCommandGroup {
     /**
      * Creates a new ComplexAuto.
      *
-     * @param drive The drive subsystem this command will run on
-     * @param hatch The hatch subsystem this command will run on
+     * @param chassis The drive subsystem this command will run on
      */
     public Balancing(Chassis chassis) {
         Balance balance = new Balance(chassis);
