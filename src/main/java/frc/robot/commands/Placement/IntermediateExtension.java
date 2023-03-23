@@ -13,6 +13,7 @@ public class IntermediateExtension extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ExtensionArm m_extension;
   private final RotaryArm m_rotary;
+  private boolean ran = false;
 
 
   /**
@@ -32,13 +33,15 @@ public class IntermediateExtension extends CommandBase {
   @Override
   public void initialize() {
     m_extension.updateValues();
+    ran = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_rotary.outsideBumper()) {
+    if (!ran && m_rotary.outsideBumper()) {
       m_extension.intermediateArm();
+      ran = true;
     }
   }
 
@@ -51,7 +54,6 @@ public class IntermediateExtension extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //TODO: needs isFinished logic
-    return false;
+    return m_extension.atPosition();
   }
 }

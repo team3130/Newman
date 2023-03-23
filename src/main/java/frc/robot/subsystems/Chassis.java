@@ -152,14 +152,6 @@ public class Chassis extends SubsystemBase {
       m_odometry.updateWithTime(Timer.getFPGATimestamp(), Navx.getRotation(), generatePoses());
     }
 
-    public void listener() {
-        for (SwerveModule module : modules) {
-            if (maxSpeedRead < module.getDriveVelocity()) {
-                maxSpeedRead = module.getDriveVelocity();
-            }
-        }
-    }
-
 
     /**
      * subsystem looped call made by the scheduler.
@@ -168,15 +160,13 @@ public class Chassis extends SubsystemBase {
     @Override
     public void periodic() {
         updateOdometryFromSwerve();
-        if (Constants.debugMode) {
-            listener();
-        }
-/*        OdoPosition position = refreshPosition();
+
+        OdoPosition position = refreshPosition();
         if (position != null) {
-            updateOdometryFromAprilTags(position);
-        }*/
-        // field2d.setRobotPose(m_odometry.getEstimatedPosition()
-        // );
+            updateOdometryFromVision(position);
+        }
+/*         field2d.setRobotPose(m_odometry.getEstimatedPosition()
+         );*/
     }
 
   /**

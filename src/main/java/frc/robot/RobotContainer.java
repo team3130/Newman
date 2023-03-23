@@ -22,6 +22,8 @@ import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
 import frc.robot.commands.Chassis.ZeroWheels;
+import frc.robot.commands.Chassis.presets.GoToClosestPlaceToPlace;
+import frc.robot.commands.Chassis.presets.GoToHumanPlayerStation;
 import frc.robot.commands.Hopper.ReverseHopper;
 import frc.robot.commands.Hopper.SpinHopper;
 import frc.robot.commands.Hopper.UnjamHopper;
@@ -140,14 +142,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(
-            new SequentialCommandGroup(
-                    new ToggleGrabber(m_manipulator),
-                    new AutoZeroExtensionArm(m_ExtensionArm),
-                    new AutoZeroRotryArm(m_RotaryArm),
-                    new GoToMidScoring(m_RotaryArm, m_ExtensionArm),
-                    new IntermediateExtension(m_ExtensionArm, m_RotaryArm))
-    );
 
     //Driver Gamepad:
     //Intake
@@ -159,6 +153,10 @@ public class RobotContainer {
     new POVButton(m_driverGamepad, Constants.Buttons.LST_POV_W).whileTrue(new ZeroWheels(m_chassis));
     //new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new Balancing(m_chassis));
 
+    if (Constants.debugMode) {
+      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
+      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlaceToPlace(m_chassis, m_autonManager));
+    }
 
     //Weapons Gamepad:
 
@@ -168,6 +166,14 @@ public class RobotContainer {
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new UnjamHopper(m_hopper));
 
     //Placement
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(
+            new SequentialCommandGroup(
+                    new ToggleGrabber(m_manipulator),
+                    new AutoZeroExtensionArm(m_ExtensionArm),
+                    new AutoZeroRotryArm(m_RotaryArm),
+                    new GoToMidScoring(m_RotaryArm, m_ExtensionArm),
+                    new IntermediateExtension(m_ExtensionArm, m_RotaryArm))
+    );
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).onTrue(new ToggleBrake(m_RotaryArm));
     new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).onTrue(new ToggleGrabber(m_manipulator));
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new AutoZeroExtensionArm(m_ExtensionArm));
