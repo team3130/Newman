@@ -54,14 +54,14 @@ public class ExtensionArm extends SubsystemBase {
   public final GenericEntry n_extendedPosition;
   public double collapsedPosition = 0;
   public double intermediatePosition = 1;
-  public double extendedPosition = 2;
+  public double extendedPosition = 175000;
 
   /**
    * The PID values for the extension arm controller
    */
   public double placementExtensionArmP = 1;
   public double placementExtensionArmI = 0;
-  public double placementExtensionArmD = 0;
+  public double placementExtensionArmD = 0.05;
 
   public int sStrengthPlacementExtensionArm = 0;
 
@@ -115,7 +115,7 @@ public class ExtensionArm extends SubsystemBase {
    * Extend the arm all the way out
    */
   public void extendArmFull() {
-    extensionMotor.set(ControlMode.MotionMagic, n_extendedPosition.getDouble(extendedPosition));
+    extensionMotor.set(ControlMode.MotionMagic, extendedPosition);
   }
 
   /**
@@ -184,7 +184,7 @@ public class ExtensionArm extends SubsystemBase {
   /**
    * update values on shuffleboard
    */
-  public void updateValues(){
+  public void updateValues() {
     if (l_placementExtensionArmP != n_placementExtensionArmP.getDouble(placementExtensionArmP)){
       extensionMotor.config_kP(0, n_placementExtensionArmP.getDouble(placementExtensionArmP));
     }

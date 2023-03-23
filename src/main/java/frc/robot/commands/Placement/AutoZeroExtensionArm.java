@@ -37,7 +37,9 @@ public class AutoZeroExtensionArm extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_extensionArm.stop();
-    m_extensionArm.resetEncoders();
+    if (!interrupted) {
+      m_extensionArm.resetEncoders();
+    }
 
   }
 
