@@ -1,4 +1,4 @@
-package frc.robot.supportingClasses;
+package frc.robot.supportingClasses.Vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 

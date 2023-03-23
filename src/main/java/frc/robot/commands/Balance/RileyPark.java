@@ -2,42 +2,40 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Placement;
+package frc.robot.commands.Balance;
 
+import frc.robot.sensors.Navx;
+import frc.robot.subsystems.Chassis;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.PlacementExtensionArm;
 
 /** An example command that uses an example subsystem. */
-public class ZeroExtension extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final PlacementExtensionArm m_placementExtensionArm;
-  private boolean broke = false;
+public class RileyPark extends CommandBase {
+  private final Chassis m_chassis;
 
-  /**
+  /*
    * Creates a new ExampleCommand.
    *
-   * @param extension The subsystem used by this command.
+   * @param subsystem The subsystem used by this command.
    */
-  public ZeroExtension(PlacementExtensionArm extension) {
-    m_placementExtensionArm = extension;
+  public RileyPark(Chassis chassis, double direction) {
+    m_chassis = chassis;
+    this.direction = direction;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(extension);
+    addRequirements(chassis);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    broke = false;
-    m_placementExtensionArm.dumbPower();
-  }
+  public void initialize() {}
+
+  private final double direction;
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_placementExtensionArm.brokeLimit() ) {
-      m_placementExtensionArm.stopArm();
-      broke = true;
-    }
+    double angle = Navx.getAngle();
+    
+    m_chassis.turnToAngle(angle + direction + Math.PI / 2);
   }
 
   // Called once the command ends or is interrupted.
@@ -47,6 +45,6 @@ public class ZeroExtension extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return broke;
+    return false;
   }
 }

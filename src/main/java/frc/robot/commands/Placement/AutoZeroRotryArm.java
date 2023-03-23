@@ -5,19 +5,19 @@
 package frc.robot.commands.Placement;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.PlacementRotaryArm;
+import frc.robot.subsystems.RotaryArm;
 
 /** An example command that uses an example subsystem. */
 public class AutoZeroRotryArm extends CommandBase {
-  private final PlacementRotaryArm m_placementRotaryArm;
+  private final RotaryArm m_RotaryArm;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public AutoZeroRotryArm(PlacementRotaryArm subsystem) {
-    m_placementRotaryArm = subsystem;
+  public AutoZeroRotryArm(RotaryArm subsystem) {
+    m_RotaryArm = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -25,8 +25,8 @@ public class AutoZeroRotryArm extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_placementRotaryArm.releaseBrake();
-    m_placementRotaryArm.spin(-0.1);
+    m_RotaryArm.releaseBrake();
+    m_RotaryArm.spin(-0.1);
 
   }
 
@@ -37,15 +37,14 @@ public class AutoZeroRotryArm extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interupted) {
-    m_placementRotaryArm.engageBrake();
-    m_placementRotaryArm.resetEncoder();
-
+  public void end(boolean interrupted) {
+    m_RotaryArm.engageBrake();
+    m_RotaryArm.resetEncoder();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_placementRotaryArm.brokeLimit();
+    return m_RotaryArm.brokeLimit();
   }
 }

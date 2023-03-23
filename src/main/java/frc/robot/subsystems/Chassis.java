@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.sensors.Limelight;
 import frc.robot.sensors.Navx;
-import frc.robot.supportingClasses.OdoPosition;
+import frc.robot.supportingClasses.Vision.OdoPosition;
 import frc.robot.swerve.SwerveModule;
 
 import java.util.Arrays;
@@ -39,6 +39,8 @@ public class Chassis extends SubsystemBase {
 
     /** limelight object */
     private final Limelight m_limelight;
+
+    private double maxSpeedRead = 0;
 
     /**
      * Makes a chassis that starts at 0, 0, 0
@@ -62,18 +64,16 @@ public class Chassis extends SubsystemBase {
         modules[Constants.Side.RIGHT_FRONT] = new SwerveModule(Constants.Side.RIGHT_FRONT);
         modules[Constants.Side.RIGHT_BACK] = new SwerveModule(Constants.Side.RIGHT_BACK);
 
-        zeroHeading();
-
         // odometry wrapper class that has functionality for cameras that report position with latency
         m_odometry = new SwerveDrivePoseEstimator(m_kinematics, startingRotation, generatePoses(), startingPos);
 
         m_limelight = limelight;
-    }
+  }
 
     /**
-     * If the PID controllers of the {@link SwerveModule}'s are all done
-     * @return whether the wheels are zereod/PID controllers are done
-     */
+    * If the PID controllers of the {@link SwerveModule}'s are all done
+    * @return whether the wheels are zereod/PID controllers are done
+    */
     public boolean turnToAnglePIDIsDone() {
         return modules[Constants.Side.LEFT_FRONT].PIDisDone() &&
         modules[Constants.Side.LEFT_BACK].PIDisDone() &&
@@ -152,6 +152,14 @@ public class Chassis extends SubsystemBase {
       m_odometry.updateWithTime(Timer.getFPGATimestamp(), Navx.getRotation(), generatePoses());
     }
 
+    public void listener() {
+        for (SwerveModule module : modules) {
+            if (maxSpeedRead < module.getDriveVelocity()) {
+                maxSpeedRead = module.getDriveVelocity();
+            }
+        }
+    }
+
 
     /**
      * subsystem looped call made by the scheduler.
@@ -160,11 +168,15 @@ public class Chassis extends SubsystemBase {
     @Override
     public void periodic() {
         updateOdometryFromSwerve();
+        if (Constants.debugMode) {
+            listener();
+        }
 /*        OdoPosition position = refreshPosition();
         if (position != null) {
             updateOdometryFromAprilTags(position);
         }*/
-        // field2d.setRobotPose(m_odometry.getEstimatedPosition());
+        // field2d.setRobotPose(m_odometry.getEstimatedPosition()
+        // );
     }
 
   /**
@@ -328,6 +340,11 @@ public class Chassis extends SubsystemBase {
         builder.addDoubleProperty("X position", this::getX, null);
         builder.addDoubleProperty("Y position", this::getY, null);
         builder.addDoubleProperty("rotation", this::getYaw, null);
+        builder.addDoubleProperty("max speed read", this::getMaxSpeedRead, null);
+    }
+
+    public double getMaxSpeedRead() {
+        return maxSpeedRead;
     }
 
     /**

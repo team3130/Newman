@@ -8,8 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -23,31 +22,30 @@ import frc.robot.Newman_Constants.Constants;
 
 import java.util.HashMap;
 
-public class PlacementRotaryArm extends SubsystemBase {
+public class RotaryArm extends SubsystemBase {
 
   public enum Position {
     ZERO, LOW, MID, HIGH
   }
 
   /** Creates a new ExampleSubsystem. */
-  private WPI_TalonFX rotaryMotor;
-  private Solenoid brake;
-  private boolean defaultState=false;
-  private double zeroPosition = 0;
-  private double lowPosition = Math.PI/6;
-  private double midPosition = Math.PI/4;
-  private double highPosition = Math.PI /2;
-  private DigitalInput limitSwitch;
+  private final WPI_TalonFX rotaryMotor;
+  private final Solenoid brake;
+  private final boolean defaultState = true;
+  private final double zeroPosition = 0;
+  private final double lowPosition = Math.PI/6;
+  private final double midPosition = Math.PI/4;
+  private final double highPosition = Math.PI /2;
+  private final DigitalInput limitSwitch;
 
+  protected MechanismLigament2d ligament;
   private double outputSpeed = 0.6; // the speed we will run the rotary arm at
 
-  private double positionDeadband = Math.toRadians(2.5);
+  private final long deadband = 100;
 
-  private long deadband = 100;
+  private final HashMap<Position, Double> positionMap;
 
-  private HashMap<Position, Double> positionMap;
-
-  private double placementRotaryArmP = 5.12295e-5 / 2;
+  private double placementRotaryArmP = 8;
   private double placementRotaryArmI = 0;
   private double placementRotaryArmD = 0;
 
@@ -61,6 +59,7 @@ public class PlacementRotaryArm extends SubsystemBase {
   private double l_placementRotaryArmI;
   private GenericEntry n_placementRotaryArmD;
   private double l_placementRotaryArmD;
+
   /*private GenericEntry n_placementRotaryArmFUp;
   private double l_placementRotaryArmFUp;
   private GenericEntry n_placementRotaryArmFDown;
@@ -84,11 +83,12 @@ public class PlacementRotaryArm extends SubsystemBase {
           new TrapezoidProfile.State(highPosition, 0));
           */
 
+  // the profiled pid controller for rotary arm
   public ProfiledPIDController rotaryPID = new ProfiledPIDController(placementRotaryArmP, placementRotaryArmI,
           placementRotaryArmD, rotaryArmConstraints);
 
 
-  public PlacementRotaryArm() {
+  public RotaryArm(MechanismLigament2d ligament) {
     rotaryMotor = new WPI_TalonFX(Constants.CAN_RotaryArm);
     rotaryMotor.configFactoryDefault();
     brake = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM, Constants.PNM_Brake);
@@ -103,6 +103,7 @@ public class PlacementRotaryArm extends SubsystemBase {
     rotaryMotor.enableVoltageCompensation(true);
     rotaryPID.setTolerance(Math.toRadians(2));
 
+    rotaryMotor.setSensorPhase(true);
 
     Placement = Shuffleboard.getTab("rotary arm");
     n_placementRotaryArmP = Placement.add("p", placementRotaryArmP).getEntry();
@@ -111,18 +112,23 @@ public class PlacementRotaryArm extends SubsystemBase {
 
     limitSwitch = new DigitalInput(Constants.ROTARY_ARM_LIMIT_SWITCH);
 
-    //n_placementRotaryArmFUp = Placement.add("f up", placementRotaryArmFUp).getEntry();
-    //n_placementRotaryArmFDown = Placement.add("f down", placementRotaryArmFDown).getEntry();
-    //n_placementRotaryArmS_Strength = Placement.add("s strength", sStrengthRotaryPlacementArm).getEntry();
+    // n_placementRotaryArmFUp = Placement.add("f up", placementRotaryArmFUp).getEntry();
+    // n_placementRotaryArmFDown = Placement.add("f down", placementRotaryArmFDown).getEntry();
+    // n_placementRotaryArmS_Strength = Placement.add("s strength", sStrengthRotaryPlacementArm).getEntry();
 
     positionMap = new HashMap<>();
     positionMap.put(Position.LOW, lowPosition);
     positionMap.put(Position.MID, midPosition);
     positionMap.put(Position.HIGH, highPosition);
     positionMap.put(Position.ZERO, zeroPosition);
+
+    this.ligament = ligament;
   }
 
-    public void resetEncoder() {
+  /**
+   * Reset the encoder position to 0
+   */
+  public void resetEncoder() {
     rotaryMotor.setSelectedSensorPosition(0);
   }
 
@@ -130,7 +136,9 @@ public class PlacementRotaryArm extends SubsystemBase {
    * This method will be called once per scheduler run
    */
   @Override
-  public void periodic() {}
+  public void periodic() {
+    ligament.setAngle(getAngleRotaryArm());
+  }
 
   /**
    * Rotates the rotary arm
@@ -178,54 +186,107 @@ public class PlacementRotaryArm extends SubsystemBase {
     builder.addDoubleProperty("Rotary % output", this::getOutputSpeed, this::updateOutputSpeed);
     builder.addBooleanProperty("lim switch", this::brokeLimit, null);
     builder.addDoubleProperty("rotary length", this::getRawTicks, null);
-    builder.addDoubleProperty("rotary angle", this::getPositionPlacementArm, null);
-    builder.addBooleanProperty("Brake", this::getBrake, null);
+    builder.addDoubleProperty("rotary angle", this::getPositionPlacementArmAngle, null);
+    builder.addBooleanProperty("Brake", this::brakeIsEnabled, null);
   }
 
+  /**
+   * @return gets the angle of the rotary arm in raw ticks
+   */
   public double getRawTicks() {
     return rotaryMotor.getSelectedSensorPosition();
   }
 
+  /**
+   * Stop the motor
+   */
   public void stop() {
     rotaryMotor.set(0);
   }
 
-  public boolean getBrake() {
-    return brake.get();
+  /**
+   * @return Whether we are broke or not using default state
+   */
+  public boolean brakeIsEnabled() {
+    return brake.get() ^ defaultState;
   }
 
+  /**
+   * Toggles the brake
+   */
   public void toggleBrake(){
     brake.toggle();
   }
-  public void engageBrake(){
-    brake.set(!defaultState);
+
+  /**
+   * Engage brake using bitwise Xor default state
+   */
+  public void engageBrake() {
+    // we shouldn't spin the motor when we engage the brake
+    rotaryMotor.set(ControlMode.PercentOutput, 0);
+    brake.set(true ^ defaultState);
   }
+
+  /**
+   * release the brake using bitwise Xor default state
+   */
   public void releaseBrake(){
-    brake.set(defaultState);
+    brake.set(false ^ defaultState);
   }
-  public double getFeedForward(double extensionLength, double placementAngle){
-    return Constants.kTorqueToPercentOutScalar * extensionLength * Math.sin(placementAngle);
+
+  /**
+   * Calculates the feed forward gain
+   * @param extensionLength the length of the extension arm
+   * @return the static feed forward gain
+   */
+  public double getFeedForward(double extensionLength){
+    return Constants.kRotaryStaticGain * extensionLength * Math.sin(getPositionPlacementArmAngle());
   }
-  public void gotoPos(double extensionLength, double placementAngle){ //does this need a time?
-    rotaryMotor.set(ControlMode.PercentOutput, (getFeedForward(extensionLength, placementAngle)) + rotaryPID.calculate(placementAngle));
+
+  /**
+   * Go to position specified in the set point of the controller
+   * @param extensionLength the length of the extension arm
+   */
+  public void gotoPos(double extensionLength) {
+    rotaryMotor.set(ControlMode.PercentOutput, rotaryPID.calculate(getPositionPlacementArmAngle() + (getFeedForward(extensionLength))));
   }
+
+  /**
+   * Make the setpoint for the controller low
+   */
   public void makeSetpointLow(){
     rotaryPID.setGoal(lowPosition);
   }
+
+  /**
+   * make the setpoint for the controller mid
+   */
   public void makeSetpointMid(){
     rotaryPID.setGoal(midPosition);
   }
+
+  /**
+   * make the setpoint for the controller high
+   */
   public void makeSetpointHigh(){
     rotaryPID.setGoal(highPosition);
   }
+
+  /**
+   * make the setpoint for the controller 0
+   */
   public void makeSetpointZero(){rotaryPID.setGoal(zeroPosition);}
 
-  public double getPositionPlacementArm(){
+  public void resetController() {}
+
+  public double getPositionPlacementArmAngle(){
     return Constants.kTicksToRadiansRotaryPlacementArm * rotaryMotor.getSelectedSensorPosition();
   }
+
   public double getSpeedPlacementArm(){
     return 10 * Constants.kTicksToRadiansRotaryPlacementArm * rotaryMotor.getSelectedSensorVelocity();
   }
+
   public void updateValues(){
     if (l_placementRotaryArmP != n_placementRotaryArmP.getDouble(placementRotaryArmP)){
       rotaryPID.setP(n_placementRotaryArmP.getDouble(placementRotaryArmP));
@@ -255,21 +316,20 @@ public class PlacementRotaryArm extends SubsystemBase {
     */
   }
 
-  public boolean isAtPosition(Position position) {
+  public boolean isAtPosition() {
     return rotaryPID.atSetpoint();
   }
+
   public double getMidPosition(){
     return midPosition;
   }
+
   public double getHighPosition(){
     return highPosition;
   }
+
   public double getLowPosition(){
     return lowPosition;
-  }
-
-  public void runAtPercentOutput(double output) {
-    rotaryMotor.set(ControlMode.PercentOutput, output);
   }
 
   public boolean goingUp() {
@@ -284,84 +344,23 @@ public class PlacementRotaryArm extends SubsystemBase {
     return rotaryMotor.getSelectedSensorVelocity() < -deadband;
   }
 
-
-  /**
-   * calculates the length of the placement spring
-   * @param length extension arm length
-   * @param angle rotary angle
-   * @return A translation of the springs direction and magnitude
-   */
-  public Translation2d calculateExtensionArmSpringLength(double length, double angle) {
-      double xSpring = length * Math.cos(angle);
-      double ySpring = length * Math.sin(angle);
-
-      return new Translation2d(
-              Math.sqrt(Math.pow(xSpring - Constants.kExtensionArmSpringXPosition, 2) + Math.pow(ySpring - Constants.kExtensionArmSpringYPosition, 2)),
-              new Rotation2d(Math.atan2(ySpring - Constants.kExtensionArmSpringYPosition, xSpring - Constants.kExtensionArmSpringXPosition))
-      );
-  }
-
-  /**
-  * Calculates the torque of the spring extension arm
-  *
-  * @param springStretch the result of {@link #calculateExtensionArmSpringLength} resembles the line that the spring
-  *                      makes in the coordinate system: rotary arm axle is 0,0
-  * @param rotaryAngle The angle of the rotary arm
-  * @return the torque that the spring exerts on the rotary arm
-  */
-  public double calculateSpringExtensionArmTorque(Translation2d springStretch, double rotaryAngle) {
-    // angle between where the force is pointing and the normal of the arm
-     double thetaToNormal = springStretch.getAngle().getRadians() - rotaryAngle;
-     // Hookes law
-     double force = Constants.kExtensionArmSpringConstant * springStretch.getNorm();
-     // torque formula: radius * force * sin(theta) where theta is the angle of the force to the normal of the arm
-     return Constants.kExtensionArmSpringMountPosition * force * Math.sin(thetaToNormal);
-  }
-
-  /**
-   * <p>
-   *     Calculates the torque due to gravity that the axle currently experiences (without the spring).
-   * </p>
-   *
-   * <p>
-   * With standard feedforward you can have a second static gain called kG which is the gravity gain.
-   * For us the amount of torque that the motor needs to produce isn't constant due to the torque changing.
-   * Not only does the torque change because of the angle of the arm, the torque also changes due to the radius changing.
-   * </p>
-   *
-   * @param rotaryAngle the angle of the rotary arm
-   * @param extensionLength the length of the extension arm
-   * @return the torque on the arm due to gravity
-   */
-  public double calculateTorqueDueToGravity(double rotaryAngle, double extensionLength) {
-    // magic scalar of voltage to torque * force *
-    double force = Constants.kAccelerationDueToGravity /* Constants.kMassOfExtensionArm*/;
-    // return the torque: radius * Force * sin(theta)
-    return force * extensionLength * Math.sin(rotaryAngle);
-  }
-
-  /**
-   * gets the net torque on the arm without a magic scalar
-   * @param extensionArmLength the length of the extension arm
-   * @return the net torque
-   */
-  public double getNetTorqueOnArm(double extensionArmLength) {
-    double rotaryArm = getPositionPlacementArm();
-
-    // the torque due to gravity - the upwards torque by the rotary arm
-    return calculateTorqueDueToGravity(rotaryArm, extensionArmLength)
-/*            -Math.abs(calculateSpringExtensionArmTorque(
-                    calculateExtensionArmSpringLength(extensionArmLength, rotaryArm),
-                    rotaryArm)
-            )*/;
-  }
-
   public double getStaticGain(double extensionArmLength) {
-    return Math.sin(getPositionPlacementArm()) * extensionArmLength * Constants.kTorqueToPercentOutScalar;
+    return Math.sin(getPositionPlacementArmAngle()) * extensionArmLength * Constants.kRotaryStaticGain;
   }
 
   public boolean pastLimit() {
-    return rotaryMotor.getSelectedSensorPosition() > Constants.kMaxRotaryLength;
+    return getPositionPlacementArmAngle() > Constants.kMaxRotaryLength;
+  }
+
+  public boolean outsideBumper() {
+    return this.getPositionPlacementArmAngle() > Math.toRadians(30);
+  }
+
+  /**
+   * @return gets the angle of the rotary arm
+   */
+  public double getAngleRotaryArm(){
+    return Constants.kTicksToRadiansRotaryPlacementArm * rotaryMotor.getSelectedSensorPosition();
   }
 
 }

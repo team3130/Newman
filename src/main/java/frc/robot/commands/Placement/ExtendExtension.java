@@ -5,47 +5,44 @@
 package frc.robot.commands.Placement;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.PlacementExtensionArm;
-import frc.robot.subsystems.PlacementRotaryArm;
+import frc.robot.subsystems.ExtensionArm;
+import frc.robot.subsystems.RotaryArm;
 
 /** An example command that uses an example subsystem. */
 public class ExtendExtension extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final PlacementExtensionArm m_placementExtension;
-  private final PlacementRotaryArm m_placementRotary;
-  private boolean ran = false;
+  private final ExtensionArm m_placementExtension;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new Extend Extension command
    *
    * @param extension The subsystem used by this command.
    */
-  public ExtendExtension(PlacementExtensionArm extension, PlacementRotaryArm rotary) {
+  public ExtendExtension(ExtensionArm extension) {
     m_placementExtension = extension;
-    m_placementRotary = rotary;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(extension, rotary);
+    addRequirements(extension);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     m_placementExtension.updateValues();
+    m_placementExtension.extendArmFull();
 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_placementExtension.outsideBumper(m_placementRotary)) { //may need way outside bumper
-      m_placementExtension.extendArm();
-    }
+
   }
 
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_placementExtension.stop();
 
   }
 

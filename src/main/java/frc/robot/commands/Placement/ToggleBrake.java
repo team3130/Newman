@@ -4,22 +4,20 @@
 
 package frc.robot.commands.Placement;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.Manipulator;
-import frc.robot.subsystems.PlacementRotaryArm;
+import frc.robot.subsystems.RotaryArm;
 
 /** An example command that uses an example subsystem. */
 public class ToggleBrake extends InstantCommand {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final PlacementRotaryArm m_rotary;
+  private final RotaryArm m_rotary;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param rotary The subsystem used by this command.
    */
-  public ToggleBrake(PlacementRotaryArm rotary) {
+  public ToggleBrake(RotaryArm rotary) {
     m_rotary = rotary;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(rotary);

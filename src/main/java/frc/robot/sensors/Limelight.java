@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.Newman_Constants.Constants.Camera;
-import frc.robot.supportingClasses.VisionMedianFilter;
-import frc.robot.supportingClasses.OdoPosition;
+import frc.robot.supportingClasses.Vision.VisionMedianFilter;
+import frc.robot.supportingClasses.Vision.OdoPosition;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -74,14 +74,6 @@ public class Limelight {
         nYCameraToTarget.setDouble(translation.getY());
 
         nsuccessfulImageReads.setInteger(successfulUpdates);
-    }
-
-    /**
-     * TODO: remove this is as it is bad practice to return the pipeline result, only coordinates should be returned by this class as that is it's function
-     * @return the latest camera result
-     */
-    public PhotonPipelineResult getLatestResult() {
-        return camera.getLatestResult();
     }
 
     /**

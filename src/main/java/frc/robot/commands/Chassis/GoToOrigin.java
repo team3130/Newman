@@ -6,7 +6,7 @@ package frc.robot.commands.Chassis;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Chassis;
-import frc.robot.supportingClasses.AutonManager;
+import frc.robot.supportingClasses.Auton.AutonManager;
 
 /** A command to go to whatever origin is */
 public class GoToOrigin extends CommandBase {

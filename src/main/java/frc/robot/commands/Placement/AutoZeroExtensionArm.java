@@ -4,24 +4,21 @@
 
 package frc.robot.commands.Placement;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Newman_Constants.Constants;
-import frc.robot.subsystems.PlacementExtensionArm;
+import frc.robot.subsystems.ExtensionArm;
 
-/** A command to move the extension arm based off the joysticks */
-public class MoveExtensionArm extends CommandBase {
-  private final PlacementExtensionArm m_extensionArm;
-  public Joystick m_xboxController;
+
+/** A command to zero the extension arm stops when it hits the limit switch uses extension */
+public class AutoZeroExtensionArm extends CommandBase {
+  private final ExtensionArm m_extensionArm;
 
   /**
-   * Creates a new Move Extension Arm command.
+   * Creates a new AutoZeroExtensionArm.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveExtensionArm(PlacementExtensionArm subsystem, Joystick m_xboxController) {
+  public AutoZeroExtensionArm(ExtensionArm subsystem) {
     m_extensionArm = subsystem;
-    this.m_xboxController = m_xboxController;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_extensionArm);
   }
@@ -29,31 +26,27 @@ public class MoveExtensionArm extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_extensionArm.spinExtensionArm(-1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    double y = m_xboxController.getRawAxis(1); // inverted?
-    y = y * Math.abs(y);
-
-    if (Math.abs(y) < Constants.kDeadband || (m_extensionArm.brokeLimit() && y > 0)) {
-      y = 0;
-    }
-
-    m_extensionArm.spinExtensionArm(y); //that max is currently bs
-
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_extensionArm.stop();
+    if (!interrupted) {
+      m_extensionArm.resetEncoders();
+    }
+
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_extensionArm.brokeLimit();
   }
+
 }

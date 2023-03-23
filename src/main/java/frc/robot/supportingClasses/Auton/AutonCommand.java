@@ -1,4 +1,4 @@
-package frc.robot.supportingClasses;
+package frc.robot.supportingClasses.Auton;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.EventMarker;

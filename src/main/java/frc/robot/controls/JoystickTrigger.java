@@ -45,7 +45,7 @@ public class JoystickTrigger extends Trigger {
         return stick.getRawAxis(axis) > threshold;
     }
 
-    /**
+    /*
      * Starts the given command when the button is first pressed, and cancels it when it is released,
      * but does not start it again if it ends or is otherwise interrupted.
      *
