@@ -36,6 +36,9 @@ import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.Auton.AutonManager;
 import frc.robot.supportingClasses.Vision.OdoPosition;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -51,8 +54,8 @@ public class RobotContainer {
   private static Joystick m_driverGamepad;
   private static Joystick m_weaponsGamepad;
   private final Chassis m_chassis;
-  private final ExtensionArm m_ExtensionArm = new ExtensionArm();
-  private final RotaryArm m_RotaryArm = new RotaryArm();
+  private final ExtensionArm m_ExtensionArm;
+  private final RotaryArm m_RotaryArm;
   private final Manipulator m_manipulator = new Manipulator();
 
   private final Hopper m_hopper;
@@ -73,6 +76,14 @@ public class RobotContainer {
     m_chassis = new Chassis(m_limelight);
     m_hopper = new Hopper();
     m_pivot = new IntakePivot();
+
+    Mechanism2d arm = new Mechanism2d(4, 2);
+    MechanismRoot2d root = arm.getRoot("arm", 5, 5);
+    MechanismLigament2d zero = new MechanismLigament2d("retracted", Constants.kExtensionArmLengthExtended / 2, -90);
+    root.append(zero);
+    
+    m_ExtensionArm = new ExtensionArm(zero);
+    m_RotaryArm = new RotaryArm(zero);
 
     m_autonManager = new AutonManager(m_chassis);
 

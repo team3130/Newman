@@ -356,4 +356,11 @@ public class RotaryArm extends SubsystemBase {
     return this.getPositionPlacementArmAngle() > Math.toRadians(30);
   }
 
+  /**
+   * @return gets the angle of the rotary arm
+   */
+  public double getAngleRotaryArm(){
+    return Constants.kTicksToRadiansRotaryPlacementArm * rotaryMotor.getSelectedSensorPosition();
+  }
+
 }

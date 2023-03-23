@@ -256,4 +256,11 @@ public class ExtensionArm extends SubsystemBase {
   public boolean atPosition() {
     return extensionMotor.isMotionProfileFinished() && extensionMotor.getSelectedSensorPosition() == Constants.kMaxExtensionLength; //TODO: better is finished logic
   }
+
+  /**
+   * @return the length of the extension arm
+   */
+  public double getLengthExtensionArm(){
+    return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition() + Constants.kExtensionArmLengthRetracted;
+  }
 }
