@@ -43,7 +43,7 @@ public class RotaryArm extends SubsystemBase {
 
   private final HashMap<Position, Double> positionMap;
 
-  private double placementRotaryArmP = 5.12295e-5 / 2;
+  private double placementRotaryArmP = 8;
   private double placementRotaryArmI = 0;
   private double placementRotaryArmD = 0;
 

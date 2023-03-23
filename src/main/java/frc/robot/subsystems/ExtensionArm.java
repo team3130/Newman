@@ -59,7 +59,7 @@ public class ExtensionArm extends SubsystemBase {
   /**
    * The PID values for the extension arm controller
    */
-  public double placementExtensionArmP = 5.12295e-5 / 2;
+  public double placementExtensionArmP = 1;
   public double placementExtensionArmI = 0;
   public double placementExtensionArmD = 0;
 
@@ -244,4 +244,7 @@ public class ExtensionArm extends SubsystemBase {
     extensionMotor.setSelectedSensorPosition(0);
   }
 
+  public boolean atPosition() {
+    return extensionMotor.isMotionProfileFinished() && extensionMotor.getSelectedSensorPosition() == Constants.kMaxExtensionLength; //TODO: better is finished logic
+  }
 }
