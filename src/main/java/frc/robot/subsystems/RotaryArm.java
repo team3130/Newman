@@ -33,9 +33,9 @@ public class RotaryArm extends SubsystemBase {
   private final Solenoid brake;
   private final boolean defaultState = true;
   private final double zeroPosition = 0;
-  private final double lowPosition = Math.PI/6;
-  private final double midPosition = Math.PI/4;
-  private final double highPosition = Math.PI /2;
+  private final double lowPosition = Math.PI / 6;
+  private final double midPosition = Math.PI / 4;
+  private final double highPosition = Math.toRadians(100);
   private final DigitalInput limitSwitch;
 
   protected MechanismLigament2d ligament;
@@ -45,9 +45,9 @@ public class RotaryArm extends SubsystemBase {
 
   private final HashMap<Position, Double> positionMap;
 
-  private double placementRotaryArmP = 8;
+  private double placementRotaryArmP = 0.6;
   private double placementRotaryArmI = 0;
-  private double placementRotaryArmD = 0;
+  private double placementRotaryArmD = 0.05;
 
   //private double placementRotaryArmFDown = 0;
   //private double placementRotaryArmFUp = 0;
@@ -59,6 +59,8 @@ public class RotaryArm extends SubsystemBase {
   private double l_placementRotaryArmI;
   private GenericEntry n_placementRotaryArmD;
   private double l_placementRotaryArmD;
+
+  private ShuffleboardTab n_TestTab = Shuffleboard.getTab("Test");
 
   /*private GenericEntry n_placementRotaryArmFUp;
   private double l_placementRotaryArmFUp;
@@ -121,6 +123,8 @@ public class RotaryArm extends SubsystemBase {
     positionMap.put(Position.MID, midPosition);
     positionMap.put(Position.HIGH, highPosition);
     positionMap.put(Position.ZERO, zeroPosition);
+
+    n_TestTab.add(rotaryPID);
 
     this.ligament = ligament;
   }
@@ -248,7 +252,14 @@ public class RotaryArm extends SubsystemBase {
    * @param extensionLength the length of the extension arm
    */
   public void gotoPos(double extensionLength) {
-    rotaryMotor.set(ControlMode.PercentOutput, rotaryPID.calculate(getPositionPlacementArmAngle() + (getFeedForward(extensionLength))));
+    double output = rotaryPID.calculate(getPositionPlacementArmAngle()) + getFeedForward(extensionLength);
+    double setpoint = rotaryPID.getGoal().position;
+    System.out.println("angle: " + getAngleRotaryArm());
+    System.out.println("setpoint: " + setpoint);
+    System.out.println("output: " + output);
+/*    System.out.println("extension length: " + extensionLength);
+    System.out.println("FF: " + getFeedForward((extensionLength)));*/
+    rotaryMotor.set(ControlMode.PercentOutput, output);
   }
 
   /**
@@ -274,6 +285,7 @@ public class RotaryArm extends SubsystemBase {
    * make the setpoint for the controller high
    */
   public void makeSetpointHigh(){
+    resetPIDController();
     rotaryPID.setGoal(highPosition);
   }
 
@@ -328,7 +340,7 @@ public class RotaryArm extends SubsystemBase {
   }
 
   public boolean isAtPosition() {
-    return rotaryPID.atSetpoint();
+    return rotaryPID.atGoal();
   }
 
   public double getMidPosition(){

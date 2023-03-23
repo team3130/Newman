@@ -15,7 +15,6 @@ public class GoToMidScoring extends CommandBase {
   private final RotaryArm m_RotaryArm;
   private final ExtensionArm m_ExtensionArm;
 
-  private final double positionDeadband = Math.toRadians(2.5);
   private final Timer timeRunning = new Timer();/*
   private boolean hasStartedExtended;*/
   /**
@@ -37,7 +36,7 @@ public class GoToMidScoring extends CommandBase {
     m_RotaryArm.releaseBrake();
     m_RotaryArm.updateValues();
     //timeRunning.start();
-    m_RotaryArm.makeSetpointMid();/*
+    m_RotaryArm.makeSetpointHigh();/*
     hasStartedExtended = false;*/
   }
 
@@ -63,6 +62,7 @@ public class GoToMidScoring extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    System.out.println(m_RotaryArm.isAtPosition());
     return m_RotaryArm.isAtPosition();
   }
 }
