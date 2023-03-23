@@ -6,11 +6,16 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.DoNothing;
 import frc.robot.commands.Hopper.SpinHopper;
+import frc.robot.commands.Manipulator.ToggleGrabber;
+import frc.robot.commands.Placement.*;
 import frc.robot.subsystems.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Function;
 
 /**
  * Stores the command to run as well as the start and end position of the bot as {@link Pose2d} objects.
@@ -37,15 +42,14 @@ public class AutonCommand extends CommandBase {
 
     protected final Timer m_timer; // timer from the holonomic drive command
 
-    protected final HashMap<EventMarker, CommandBase> markerToCommandMap; // the marker's mapped to the command to run\
-    protected final CommandBase[] markerToCommandOptimizedMap; // the optimized map for markers
+    protected final HashMap<EventMarker, Integer> markerToCommandMap; // the marker's mapped to the command to run
+    protected final ArrayList<Integer> indicesToRun = new ArrayList<>(5); // what indices of commands run right now
+
+    protected final Function<EventMarker, Integer> getOptimizedIndex;
 
     protected EventMarker current; // current
 
-    protected CommandBase HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH; // commands necessary
-
-    // parallel command group
-    protected CommandBase[] runningRightNow = new CommandBase[5];
+    protected CommandBase[] commands; // commands necessary
 
     /**
      * THE CONSTRUCTOR for auton command
@@ -76,24 +80,36 @@ public class AutonCommand extends CommandBase {
 
         markerToCommandMap = new HashMap<>();
 
-        markerToCommandOptimizedMap = new CommandBase[markers.size()];
+        CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null, PLACE_HIGH = null, DO_NOTHING = null;
 
         if (hopper != null) {
             HOPPER = new SpinHopper(m_hopper);
         }
 
-        if (m_rotaryArm != null)
+        if (m_rotaryArm != null && m_extensionArm != null && m_manipulator != null) {
+            PLACE_LOW = new SequentialCommandGroup(
+                    new ToggleGrabber(m_manipulator), new LowRotary(m_rotaryArm, m_extensionArm),
+                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new ZeroExtension(m_extensionArm)
+            );
 
-        //TODO: fill in when everything else is done
-/*        PlaceGameElement placeGameElement = new PlaceGameElement(m_rotaryArm, m_extensionArm, m_manipulator);
-        ZeroArm zeroArm = new ZeroArm(m_rotaryArm, m_extensionArm);
-        IntakeOffGround intakeOffGround = new IntakeOffGround();
+            PLACE_MID = new SequentialCommandGroup(
+                    new ToggleGrabber(m_manipulator), new MidRotary(m_rotaryArm, m_extensionArm),
+                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new ZeroExtension(m_extensionArm)
+            );
 
+            PLACE_HIGH = new SequentialCommandGroup(
+                    new ToggleGrabber(m_manipulator), new HighRotary(m_rotaryArm, m_extensionArm),
+                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new ZeroExtension(m_extensionArm)
+            );
 
-        markerToCommandMap.put("place", placeGameElement);
-        markerToCommandMap.put("zero-arm", zeroArm);
-        markerToCommandMap.put("intake", intakeOffGround);*/
+            DO_NOTHING = new DoNothing();
+        }
 
+        commands = new CommandBase[] {HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH, DO_NOTHING};
+
+        getOptimizedIndex = (EventMarker marker) -> (int) (marker.timeSeconds * magicScalar);
+
+        mapMarkersToCommands();
     }
 
     /**
@@ -103,34 +119,21 @@ public class AutonCommand extends CommandBase {
         for (EventMarker marker : markers) {
             String name = marker.names.get(0).toLowerCase();
             if (name.contains("intake")) {
-                markerToCommandMap.put(marker, HOPPER);
+                markerToCommandMap.put(marker, 0);
             } else if (name.contains("place")) {
                 if (name.contains("low")) {
-                    markerToCommandMap.put(marker, PLACE_LOW);
+                    markerToCommandMap.put(marker, 1);
                 }
                 if (name.contains("mid")) {
-                    markerToCommandMap.put(marker, PLACE_MID);
+                    markerToCommandMap.put(marker, 2);
                 }
                 if (name.contains("high")) {
-                    markerToCommandMap.put(marker, PLACE_HIGH);
+                    markerToCommandMap.put(marker, 3);
                 }
             }
-        }
-    }
-
-    /**
-     * Uses optimized "map"
-     */
-    protected void mapMarkersToCommandsOptimized() {
-        for (EventMarker marker : markers) {
-            CommandBase toAssign;
-            if (marker.names.get(0).contains("intake")) {
-                toAssign = HOPPER;
-            }
             else {
-                toAssign = PLACE;
+                markerToCommandMap.put(marker, 4);
             }
-            markerToCommandOptimizedMap[(int) (marker.timeSeconds * magicScalar)] = toAssign;
         }
     }
 
@@ -141,10 +144,10 @@ public class AutonCommand extends CommandBase {
      */
     protected CommandBase getCommandFromMap(EventMarker marker) {
         if (useOptimized) {
-            return markerToCommandOptimizedMap[(int) (marker.timeSeconds * magicScalar)];
+            return commands[getOptimizedIndex.apply(marker)];
         }
         else {
-            return markerToCommandMap.get(marker);
+            return commands[markerToCommandMap.get(marker)];
         }
     }
 
@@ -234,7 +237,7 @@ public class AutonCommand extends CommandBase {
     }
 
     /**
-     * Needs to be ran in its own thread or at least one that wasn't made by the scheduler.
+     * Needs to be run in its own thread or at least one that wasn't made by the scheduler.
      * Speeds up logic by not needing a binary search
      *
      * @return if it can be optimized or not.
@@ -345,7 +348,7 @@ public class AutonCommand extends CommandBase {
     }
 
     /**
-     * The initialize portion of the command that runs once when it is scheduled
+     * To initialize portion of the command that runs once when it is scheduled
      */
     @Override
     public void initialize() {
@@ -357,12 +360,12 @@ public class AutonCommand extends CommandBase {
         // autony execute
         cmd.execute();
 
-        for (int i = 0; i < runningRightNow.length; i++) {
+        for (int i = 0; i < indicesToRun.size(); i++) {
             // if there is a command that we are supposed to run right now, then run it until it ends
-            runningRightNow[i].execute();
-            if (runningRightNow[i].isFinished()) {
-                runningRightNow[i].end(false);
-                runningRightNow[i] = null;
+            commands[indicesToRun.get(i)].execute();
+            if (commands[indicesToRun.get(i)].isFinished()) {
+                commands[indicesToRun.get(i)].end(false);
+                indicesToRun.remove(indicesToRun.get(i));
             }
         }
 
@@ -378,10 +381,10 @@ public class AutonCommand extends CommandBase {
             CommandBase toAdd = getCommandFromMap(closest);
             if (closest.names.get(0).contains("end")) {
                 toAdd.end(true);
-                // remove running right now
-                for (int i = 0; i < runningRightNow.length; i++) {
-                    if (runningRightNow[i] == toAdd) {
-                        runningRightNow = null;
+                // remove marker running right now
+                for (int i = 0; i < indicesToRun.size(); i++) {
+                    if (commands[indicesToRun.get(i)] == toAdd) {
+                        indicesToRun.remove(i--);
                     }
                 }
             }
@@ -390,17 +393,14 @@ public class AutonCommand extends CommandBase {
             }
             current = closest;
         }
-
-            // use the marker
-            toRunRightNow = markerToCommandMap.get(closest.names.get(0));
-        }
     }
+
 
     @Override
     public boolean isFinished() {
         boolean runningIsDone = true;
-        for (CommandBase command : runningRightNow) {
-            if (!command.isFinished()) {
+        for (int index : indicesToRun) {
+            if (!commands[index].isFinished()) {
                 runningIsDone = false;
             }
         }
@@ -411,8 +411,8 @@ public class AutonCommand extends CommandBase {
     public void end(boolean interrupted) {
         cmd.end(interrupted);
 
-        for (CommandBase command : runningRightNow) {
-            command.end(interrupted);
+        for (int index : indicesToRun) {
+            commands[index].end(interrupted);
         }
 
     }
