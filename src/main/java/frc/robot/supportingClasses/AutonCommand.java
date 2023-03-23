@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.commands.Intake.RunIntakeToPlace;
+import frc.robot.commands.Hopper.SpinHopper;
 import frc.robot.subsystems.*;
 
 import java.util.ArrayList;
@@ -29,8 +29,6 @@ public class AutonCommand extends CommandBase {
     protected final PlacementRotaryArm m_rotaryArm; // the rotary arm subsystem
     protected final Manipulator m_manipulator; // the manipulator subsystem
     protected final PlacementExtensionArm m_extensionArm; // the extension arm subsystem
-    protected final IntakeBeaterBar intakeBeaterBar;
-    protected final IntakePivot intakePivot;
 
     protected final ArrayList<EventMarker> markers; // the markers for other events
 
@@ -44,7 +42,7 @@ public class AutonCommand extends CommandBase {
 
     protected EventMarker current; // current
 
-    protected CommandBase RUN_INTAKE, PLACE; // commands necessary
+    protected CommandBase HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH; // commands necessary
 
     // parallel command group
     protected CommandBase[] runningRightNow = new CommandBase[5];
@@ -62,7 +60,8 @@ public class AutonCommand extends CommandBase {
      * @param hopper the hopper subsystem
      */
     public AutonCommand(HolonomicControllerCommand cmd, Pose2d startPosition, Pose2d endPosition, PathPlannerTrajectory trajectory,
-                        PlacementRotaryArm rotaryArm, PlacementExtensionArm extensionArm, Chassis chassis, Manipulator manipulator, Hopper hopper, IntakePivot intakePivot, IntakeBeaterBar intakeBeaterBar) {
+                        PlacementRotaryArm rotaryArm, PlacementExtensionArm extensionArm, Chassis chassis, Manipulator manipulator,
+                        Hopper hopper) {
         this.cmd = cmd;
         this.trajectory = trajectory;
         this.endPosition = endPosition;
@@ -77,13 +76,13 @@ public class AutonCommand extends CommandBase {
 
         markerToCommandMap = new HashMap<>();
 
-        this.intakeBeaterBar = intakeBeaterBar;
-        this.intakePivot = intakePivot;
-
-        RUN_INTAKE = new RunIntakeToPlace(intakeBeaterBar, intakePivot, hopper);
-
         markerToCommandOptimizedMap = new CommandBase[markers.size()];
 
+        if (hopper != null) {
+            HOPPER = new SpinHopper(m_hopper);
+        }
+
+        if (m_rotaryArm != null)
 
         //TODO: fill in when everything else is done
 /*        PlaceGameElement placeGameElement = new PlaceGameElement(m_rotaryArm, m_extensionArm, m_manipulator);
@@ -102,12 +101,19 @@ public class AutonCommand extends CommandBase {
      */
     protected void mapMarkersToCommands() {
         for (EventMarker marker : markers) {
-            String name = marker.names.get(0);
+            String name = marker.names.get(0).toLowerCase();
             if (name.contains("intake")) {
-                markerToCommandMap.put(marker, RUN_INTAKE);
-            }
-            else {
-                markerToCommandMap.put(marker, PLACE);
+                markerToCommandMap.put(marker, HOPPER);
+            } else if (name.contains("place")) {
+                if (name.contains("low")) {
+                    markerToCommandMap.put(marker, PLACE_LOW);
+                }
+                if (name.contains("mid")) {
+                    markerToCommandMap.put(marker, PLACE_MID);
+                }
+                if (name.contains("high")) {
+                    markerToCommandMap.put(marker, PLACE_HIGH);
+                }
             }
         }
     }
@@ -119,7 +125,7 @@ public class AutonCommand extends CommandBase {
         for (EventMarker marker : markers) {
             CommandBase toAssign;
             if (marker.names.get(0).contains("intake")) {
-                toAssign = RUN_INTAKE;
+                toAssign = HOPPER;
             }
             else {
                 toAssign = PLACE;
@@ -152,7 +158,7 @@ public class AutonCommand extends CommandBase {
      * @param chassis the chassis subsystem
      */
     public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory, PlacementRotaryArm rotate, PlacementExtensionArm extendy, Manipulator manipulator, Hopper hopper, Chassis chassis) {
-        this(cmd, trajectory.getInitialPose(), trajectory.getEndState().poseMeters, trajectory, rotate, extendy, chassis, manipulator, hopper, null, null);
+        this(cmd, trajectory.getInitialPose(), trajectory.getEndState().poseMeters, trajectory, rotate, extendy, chassis, manipulator, hopper);
     }
 
     /**
@@ -164,7 +170,7 @@ public class AutonCommand extends CommandBase {
      */
     public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory, PlacementRotaryArm rotate, PlacementExtensionArm extendy, Manipulator manipulator) {
         this(cmd, trajectory.getInitialPose(), trajectory.getEndState().poseMeters, trajectory, rotate,
-                extendy, null, manipulator, null, null, null);
+                extendy, null, manipulator, null);
     }
 
     /**
@@ -371,7 +377,16 @@ public class AutonCommand extends CommandBase {
         if (closest != current) {
             CommandBase toAdd = getCommandFromMap(closest);
             if (closest.names.get(0).contains("end")) {
-                
+                toAdd.end(true);
+                // remove running right now
+                for (int i = 0; i < runningRightNow.length; i++) {
+                    if (runningRightNow[i] == toAdd) {
+                        runningRightNow = null;
+                    }
+                }
+            }
+            else {
+                toAdd.initialize();
             }
             current = closest;
         }
