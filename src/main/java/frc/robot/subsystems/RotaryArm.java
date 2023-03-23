@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -37,6 +38,7 @@ public class RotaryArm extends SubsystemBase {
   private final double highPosition = Math.PI /2;
   private final DigitalInput limitSwitch;
 
+  protected MechanismLigament2d ligament;
   private double outputSpeed = 0.6; // the speed we will run the rotary arm at
 
   private final long deadband = 100;
@@ -86,7 +88,7 @@ public class RotaryArm extends SubsystemBase {
           placementRotaryArmD, rotaryArmConstraints);
 
 
-  public RotaryArm() {
+  public RotaryArm(MechanismLigament2d ligament) {
     rotaryMotor = new WPI_TalonFX(Constants.CAN_RotaryArm);
     rotaryMotor.configFactoryDefault();
     brake = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM, Constants.PNM_Brake);
@@ -119,6 +121,8 @@ public class RotaryArm extends SubsystemBase {
     positionMap.put(Position.MID, midPosition);
     positionMap.put(Position.HIGH, highPosition);
     positionMap.put(Position.ZERO, zeroPosition);
+
+    this.ligament = ligament;
   }
 
   /**
@@ -132,7 +136,9 @@ public class RotaryArm extends SubsystemBase {
    * This method will be called once per scheduler run
    */
   @Override
-  public void periodic() {}
+  public void periodic() {
+    ligament.setAngle(getAngleRotaryArm());
+  }
 
   /**
    * Rotates the rotary arm

@@ -11,6 +11,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,6 +27,8 @@ public class ExtensionArm extends SubsystemBase {
   private final WPI_TalonFX extensionMotor;
   // limit switch which is at our 0 point for the extension arm
   private final DigitalInput m_limitSwitch;
+
+  protected MechanismLigament2d ligament;
 
   // the acceleration manager
   private final AccelerationManager accelerationManager;
@@ -68,9 +71,12 @@ public class ExtensionArm extends SubsystemBase {
   protected final VelocityGainFilter gainFilter;
 
   /**
-   * Creates a new extension arm subsystem object
+   * Initializes the extension arm and configures the necessary device settings.
+   * Motors are set to: Factory default, then given 9 volts of voltage compensation, and put in brake mode
+   *
+   * @param ligament the ligament object that is on smart-dashboard
    */
-  public ExtensionArm() {
+  public ExtensionArm(MechanismLigament2d ligament) {
     extensionMotor = new WPI_TalonFX(Constants.CAN_ExtensionArm);
     extensionMotor.configFactoryDefault();
     extensionMotor.config_kP(0,placementExtensionArmP);
@@ -104,11 +110,14 @@ public class ExtensionArm extends SubsystemBase {
 
     accelerationManager = new AccelerationManager();
     gainFilter = new VelocityGainFilter(9, "extension", this::getSpeedTicksPerSecond, accelerationManager);
+
+    this.ligament = ligament;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    ligament.setLength(getLengthExtensionArm());
   }
 
   /**
