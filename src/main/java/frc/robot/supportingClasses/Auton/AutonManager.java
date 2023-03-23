@@ -107,7 +107,7 @@ public class AutonManager {
                 m_chassis);
 
 
-        return new AutonCommand(holonomicControllerCommand, trajectory.getInitialPose(), trajectory.getEndState().poseMeters);
+        return new AutonCommand(holonomicControllerCommand, trajectory);
     }
 
     /**

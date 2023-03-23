@@ -22,26 +22,15 @@ public class HolonomicControllerCommand extends CommandBase {
   protected final HolonomicDriveController m_controller;
   protected final Consumer<SwerveModuleState[]> m_outputModuleStates;
 
-  public enum PathType {
-      PICKING_UP_GAME_ELEMENT,
-      SCORING,
-      BALANCING,
-      OTHER // <- shouldn't use this one
-  }
-
-  protected PathType m_pathType;
-
     public HolonomicControllerCommand(PathPlannerTrajectory trajectory, Supplier<Pose2d> robotPose,
                                       SwerveDriveKinematics kinematics, HolonomicDriveController holonomicDriveController,
-                                      Consumer<SwerveModuleState[]> states, Chassis chassis, PathType type) {
+                                      Consumer<SwerveModuleState[]> states, Chassis chassis) {
         m_trajectory = trajectory;
         m_pose = robotPose;
         m_kinematics = kinematics;
         m_controller = holonomicDriveController;
         m_outputModuleStates = states;
         m_requirements.add(chassis);
-
-        this.m_pathType = type;
     }
 
     public void initialize() {
@@ -90,10 +79,6 @@ public class HolonomicControllerCommand extends CommandBase {
 
     public double getTimeUntilEnd() {
         return m_trajectory.getTotalTimeSeconds() - m_timer.get();
-    }
-
-    public PathType getTypeOfPath() {
-      return m_pathType;
     }
 
     public Timer getTimer() {

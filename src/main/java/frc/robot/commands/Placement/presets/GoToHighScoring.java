@@ -11,7 +11,7 @@ import frc.robot.subsystems.RotaryArm;
 
 
 /** A preset command to go to the high position for the rotary arm */
-public class GoToHighSchoring extends CommandBase {
+public class GoToHighScoring extends CommandBase {
   // required subsystem
   private final RotaryArm m_rotaryArm;
   private final ExtensionArm m_extensionArm;
@@ -25,7 +25,7 @@ public class GoToHighSchoring extends CommandBase {
    * @param rotary The rotary subsystem which this command requires
    * @param extension the extension arm subsystem which this command requires
    */
-  public GoToHighSchoring(RotaryArm rotary, ExtensionArm extension) {
+  public GoToHighScoring(RotaryArm rotary, ExtensionArm extension) {
     m_rotaryArm = rotary;
     m_extensionArm = extension;
     // Use addRequirements() here to declare subsystem dependencies.

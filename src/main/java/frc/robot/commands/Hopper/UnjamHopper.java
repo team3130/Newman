@@ -14,7 +14,7 @@ public class UnjamHopper extends CommandBase {
   /**
    * Creates a new ExampleCommand.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param hopper The subsystem used by this command.
    */
   public UnjamHopper(Hopper hopper) {
     m_hopper = hopper;

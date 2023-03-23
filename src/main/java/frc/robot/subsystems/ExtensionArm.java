@@ -261,6 +261,6 @@ public class ExtensionArm extends SubsystemBase {
    * @return the length of the extension arm
    */
   public double getLengthExtensionArm(){
-    return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition() + Constants.kExtensionArmLengthRetracted;
+    return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition() + Constants.kExtensionArmLengthExtended;
   }
 }

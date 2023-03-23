@@ -10,7 +10,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DoNothing;
 import frc.robot.commands.Hopper.SpinHopper;
 import frc.robot.commands.Manipulator.ToggleGrabber;
-import frc.robot.commands.Placement.*;
+import frc.robot.commands.Placement.AutoZeroExtensionArm;
+import frc.robot.commands.Placement.AutoZeroRotryArm;
+import frc.robot.commands.Placement.presets.GoToHighScoring;
+import frc.robot.commands.Placement.presets.GoToLowScoring;
+import frc.robot.commands.Placement.presets.GoToMidScoring;
 import frc.robot.subsystems.*;
 
 import java.util.ArrayList;
@@ -31,9 +35,9 @@ public class AutonCommand extends CommandBase {
 
     protected final Chassis m_chassis; // the chassis subsystem
     protected final Hopper m_hopper; // the hopper subsystem
-    protected final PlacementRotaryArm m_rotaryArm; // the rotary arm subsystem
+    protected final RotaryArm m_rotaryArm; // the rotary arm subsystem
     protected final Manipulator m_manipulator; // the manipulator subsystem
-    protected final PlacementExtensionArm m_extensionArm; // the extension arm subsystem
+    protected final ExtensionArm m_extensionArm; // the extension arm subsystem
 
     protected final ArrayList<EventMarker> markers; // the markers for other events
 
@@ -64,7 +68,7 @@ public class AutonCommand extends CommandBase {
      * @param hopper the hopper subsystem
      */
     public AutonCommand(HolonomicControllerCommand cmd, Pose2d startPosition, Pose2d endPosition, PathPlannerTrajectory trajectory,
-                        PlacementRotaryArm rotaryArm, PlacementExtensionArm extensionArm, Chassis chassis, Manipulator manipulator,
+                        RotaryArm rotaryArm, ExtensionArm extensionArm, Chassis chassis, Manipulator manipulator,
                         Hopper hopper) {
         this.cmd = cmd;
         this.trajectory = trajectory;
@@ -88,18 +92,18 @@ public class AutonCommand extends CommandBase {
 
         if (m_rotaryArm != null && m_extensionArm != null && m_manipulator != null) {
             PLACE_LOW = new SequentialCommandGroup(
-                    new ToggleGrabber(m_manipulator), new LowRotary(m_rotaryArm, m_extensionArm),
-                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new ZeroExtension(m_extensionArm)
+                    new ToggleGrabber(m_manipulator), new GoToLowScoring(m_rotaryArm, m_extensionArm),
+                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
             );
 
             PLACE_MID = new SequentialCommandGroup(
-                    new ToggleGrabber(m_manipulator), new MidRotary(m_rotaryArm, m_extensionArm),
-                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new ZeroExtension(m_extensionArm)
+                    new ToggleGrabber(m_manipulator), new GoToMidScoring(m_rotaryArm, m_extensionArm),
+                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
             );
 
             PLACE_HIGH = new SequentialCommandGroup(
-                    new ToggleGrabber(m_manipulator), new HighRotary(m_rotaryArm, m_extensionArm),
-                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new ZeroExtension(m_extensionArm)
+                    new ToggleGrabber(m_manipulator), new GoToHighScoring(m_rotaryArm, m_extensionArm),
+                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
             );
 
             DO_NOTHING = new DoNothing();
@@ -160,7 +164,7 @@ public class AutonCommand extends CommandBase {
      * @param manipulator the manipulator subsystem
      * @param chassis the chassis subsystem
      */
-    public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory, PlacementRotaryArm rotate, PlacementExtensionArm extendy, Manipulator manipulator, Hopper hopper, Chassis chassis) {
+    public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory, RotaryArm rotate, ExtensionArm extendy, Manipulator manipulator, Hopper hopper, Chassis chassis) {
         this(cmd, trajectory.getInitialPose(), trajectory.getEndState().poseMeters, trajectory, rotate, extendy, chassis, manipulator, hopper);
     }
 
@@ -171,7 +175,7 @@ public class AutonCommand extends CommandBase {
      * @param rotate the rotary arm subsystem
      * @param extendy the extension arm subsystem
      */
-    public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory, PlacementRotaryArm rotate, PlacementExtensionArm extendy, Manipulator manipulator) {
+    public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory, RotaryArm rotate, ExtensionArm extendy, Manipulator manipulator) {
         this(cmd, trajectory.getInitialPose(), trajectory.getEndState().poseMeters, trajectory, rotate,
                 extendy, null, manipulator, null);
     }
