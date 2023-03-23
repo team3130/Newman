@@ -15,7 +15,6 @@ public class GoToHighScoring extends CommandBase {
   // required subsystem
   private final RotaryArm m_rotaryArm;
   private final ExtensionArm m_extensionArm;
-  private final Timer timeRunning = new Timer();
 
   private boolean hasStartedExtended;
 
@@ -35,10 +34,7 @@ public class GoToHighScoring extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-   // timeRunning.reset();
     m_rotaryArm.releaseBrake();
-    m_rotaryArm.updateValues();
-  //  timeRunning.start();
     m_rotaryArm.makeSetpointHigh();
     hasStartedExtended = false;
   }
@@ -59,8 +55,6 @@ public class GoToHighScoring extends CommandBase {
     m_rotaryArm.stop();
     m_rotaryArm.engageBrake();
     m_extensionArm.stop();
-  //  timeRunning.stop();
-   // timeRunning.reset();
   }
 
   // Returns true when the command should end.

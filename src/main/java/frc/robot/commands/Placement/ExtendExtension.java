@@ -6,7 +6,6 @@ package frc.robot.commands.Placement;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ExtensionArm;
-import frc.robot.subsystems.RotaryArm;
 
 /** An example command that uses an example subsystem. */
 public class ExtendExtension extends CommandBase {
@@ -29,7 +28,6 @@ public class ExtendExtension extends CommandBase {
   public void initialize() {
     m_placementExtension.updateValues();
     m_placementExtension.extendArmFull();
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.

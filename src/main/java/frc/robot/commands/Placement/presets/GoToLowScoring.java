@@ -4,7 +4,6 @@
 
 package frc.robot.commands.Placement.presets;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ExtensionArm;
 import frc.robot.subsystems.RotaryArm;
@@ -14,10 +13,7 @@ public class GoToLowScoring extends CommandBase {
   // the subsystem rotary arm
   private final RotaryArm m_RotaryArm;
 
-  //
   private final ExtensionArm m_ExtensionArm;
-  // a timer for how long the command has been running
-  private Timer timeRunning = new Timer();
 
   /**
    * Creates a new ExampleCommand.
@@ -37,7 +33,6 @@ public class GoToLowScoring extends CommandBase {
   public void initialize() {
     //timeRunning.reset();
     m_RotaryArm.releaseBrake();
-    m_RotaryArm.updateValues();
     //timeRunning.start();
     m_RotaryArm.makeSetpointLow();
 
@@ -52,8 +47,6 @@ public class GoToLowScoring extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interupted) {
-   // timeRunning.stop();
-   // timeRunning.reset();
     m_RotaryArm.engageBrake();
 
   }
