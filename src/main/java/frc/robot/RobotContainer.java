@@ -24,6 +24,7 @@ import frc.robot.commands.Chassis.ZeroEverything;
 import frc.robot.commands.Chassis.ZeroWheels;
 import frc.robot.commands.Chassis.presets.GoToClosestPlaceToPlace;
 import frc.robot.commands.Chassis.presets.GoToHumanPlayerStation;
+import frc.robot.commands.Hopper.ReverseHopper;
 import frc.robot.commands.Hopper.SpinHopper;
 import frc.robot.commands.Intake.ToggleIntake;
 import frc.robot.commands.Manipulator.ToggleGrabber;
@@ -180,7 +181,8 @@ public class RobotContainer {
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new AutoZeroRotryArm(m_RotaryArm));*/
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new GoToHighScoring(m_rotaryArm, m_extensionArm));
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new GoToMidScoring(m_rotaryArm, m_extensionArm));
-    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_S).whileTrue(new GoToLowScoring(m_rotaryArm, m_extensionArm));
+    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToLowScoring(m_rotaryArm, m_extensionArm));
+    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_S).whileTrue(new ReverseHopper(m_hopper, m_pivot));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new SequentialCommandGroup(
             new AutoZeroExtensionArm(m_extensionArm),
             new AutoZeroRotryArm(m_rotaryArm))

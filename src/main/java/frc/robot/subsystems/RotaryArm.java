@@ -237,7 +237,7 @@ public class RotaryArm extends SubsystemBase {
   }
 
   public boolean pastLimit() {
-    return getPositionPlacementArmAngle() > Constants.kMaxRotaryLength;
+    return getPositionPlacementArmAngle() > Math.toRadians(110);
   }
 
   public boolean outsideBumper() {
