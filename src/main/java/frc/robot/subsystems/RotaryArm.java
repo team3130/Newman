@@ -262,7 +262,12 @@ public class RotaryArm extends SubsystemBase {
    * make the setpoint for the controller mid
    */
   public void makeSetpointMid(){
+    resetPIDController();
     rotaryPID.setGoal(midPosition);
+  }
+
+  public void resetPIDController() {
+    rotaryPID.reset(getPositionPlacementArmAngle(), getSpeedPlacementArm());
   }
 
   /**
@@ -275,14 +280,20 @@ public class RotaryArm extends SubsystemBase {
   /**
    * make the setpoint for the controller 0
    */
-  public void makeSetpointZero(){rotaryPID.setGoal(zeroPosition);}
+  public void makeSetpointZero() {
+    rotaryPID.setGoal(zeroPosition);
+  }
 
-  public void resetController() {}
-
+  /**
+   * @return position of the placement arm in radians
+   */
   public double getPositionPlacementArmAngle(){
     return Constants.kTicksToRadiansRotaryPlacementArm * rotaryMotor.getSelectedSensorPosition();
   }
 
+  /**
+   * @return the speed of the placement arm in rads/sec
+   */
   public double getSpeedPlacementArm(){
     return 10 * Constants.kTicksToRadiansRotaryPlacementArm * rotaryMotor.getSelectedSensorVelocity();
   }

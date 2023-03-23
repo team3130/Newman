@@ -36,7 +36,9 @@ public class ExtensionArm extends SubsystemBase {
   /**
    * Speed to run the motor at by default, can be changed in shuffleboard
    */
-  private static double extensionArmSpeed = 1;
+  private double extensionArmSpeed = 1;
+
+  private double currentSetpoint = 0;
 
 
   /**
@@ -52,19 +54,9 @@ public class ExtensionArm extends SubsystemBase {
   public GenericEntry n_placementExtensionArmS_Strength;
   public double l_placementExtensionArmS_Strength;
 
-  public final GenericEntry n_collapsedPosition;
-  public final GenericEntry n_intermediatePosition;
-  public final GenericEntry n_extendedPosition;
-  public double collapsedPosition = 0;
-  public double intermediatePosition = 1;
-  public double extendedPosition = 175000;
-
-  /**
-   * The PID values for the extension arm controller
-   */
-  public double placementExtensionArmP = 1;
-  public double placementExtensionArmI = 0;
-  public double placementExtensionArmD = 0.05;
+  public final double collapsedPosition = 0;
+  public final double intermediatePosition = Constants.kMaxExtensionLength / 2;
+  public final double extendedPosition = Constants.kMaxExtensionLength;
 
   public int sStrengthPlacementExtensionArm = 0;
 
@@ -79,9 +71,9 @@ public class ExtensionArm extends SubsystemBase {
   public ExtensionArm(MechanismLigament2d ligament) {
     extensionMotor = new WPI_TalonFX(Constants.CAN_ExtensionArm);
     extensionMotor.configFactoryDefault();
-    extensionMotor.config_kP(0,placementExtensionArmP);
-    extensionMotor.config_kI(0,placementExtensionArmI);
-    extensionMotor.config_kD(0,placementExtensionArmD);
+    extensionMotor.config_kP(0,Constants.kExtensionArmP);
+    extensionMotor.config_kI(0,Constants.kExtensionArmI);
+    extensionMotor.config_kD(0,Constants.kExtensionArmD);
 
     extensionMotor.setInverted(false);
     extensionMotor.setSensorPhase(false);
@@ -98,13 +90,9 @@ public class ExtensionArm extends SubsystemBase {
     m_limitSwitch = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
 
     Placement = Shuffleboard.getTab("Extension Arm");
-    n_placementExtensionArmP = Placement.add("p", placementExtensionArmP).getEntry();
-    n_placementExtensionArmI = Placement.add("i", placementExtensionArmI).getEntry();
-    n_placementExtensionArmD = Placement.add("d", placementExtensionArmD).getEntry();
-
-    n_collapsedPosition = Placement.add("collapses position", collapsedPosition).getEntry();
-    n_intermediatePosition = Placement.add("intermediate positon", intermediatePosition).getEntry();
-    n_extendedPosition = Placement.add("extended position", extendedPosition).getEntry();
+    n_placementExtensionArmP = Placement.add("p", Constants.kExtensionArmP).getEntry();
+    n_placementExtensionArmI = Placement.add("i", Constants.kExtensionArmI).getEntry();
+    n_placementExtensionArmD = Placement.add("d", Constants.kExtensionArmD).getEntry();
 
     n_placementExtensionArmS_Strength = Placement.add("s strength", sStrengthPlacementExtensionArm).getEntry();
 
@@ -124,6 +112,7 @@ public class ExtensionArm extends SubsystemBase {
    * Extend the arm all the way out
    */
   public void extendArmFull() {
+    currentSetpoint = extendedPosition;
     extensionMotor.set(ControlMode.MotionMagic, extendedPosition);
   }
 
@@ -131,14 +120,16 @@ public class ExtensionArm extends SubsystemBase {
    * The intermediate position to extend the arm to
    */
   public void intermediateArm() {
-    extensionMotor.set(ControlMode.MotionMagic, n_intermediatePosition.getDouble(intermediatePosition));
+    currentSetpoint = intermediatePosition;
+    extensionMotor.set(ControlMode.MotionMagic, intermediatePosition);
   }
 
   /**
    * collapse the arm, can be replaced with zero?
    */
   public void collapseArm() {
-    extensionMotor.set(ControlMode.MotionMagic, n_collapsedPosition.getDouble(collapsedPosition));
+    currentSetpoint = collapsedPosition;
+    extensionMotor.set(ControlMode.MotionMagic, collapsedPosition);
   }
 
   /**
@@ -194,16 +185,20 @@ public class ExtensionArm extends SubsystemBase {
    * update values on shuffleboard
    */
   public void updateValues() {
-    if (l_placementExtensionArmP != n_placementExtensionArmP.getDouble(placementExtensionArmP)){
-      extensionMotor.config_kP(0, n_placementExtensionArmP.getDouble(placementExtensionArmP));
+    if (l_placementExtensionArmP != n_placementExtensionArmP.getDouble(Constants.kExtensionArmP)){
+      l_placementExtensionArmP = Constants.kExtensionArmP;
+      extensionMotor.config_kP(0, l_placementExtensionArmP);
     }
-    if (l_placementExtensionArmI != n_placementExtensionArmI.getDouble(placementExtensionArmI)){
-      extensionMotor.config_kI(0, n_placementExtensionArmI.getDouble(placementExtensionArmI));
+    if (l_placementExtensionArmI != n_placementExtensionArmI.getDouble(Constants.kExtensionArmI)){
+            l_placementExtensionArmI = Constants.kExtensionArmI;
+      extensionMotor.config_kI(0, l_placementExtensionArmI);
     }
-    if (l_placementExtensionArmD != n_placementExtensionArmD.getDouble(placementExtensionArmD)){
-      extensionMotor.config_kD(0, n_placementExtensionArmD.getDouble(placementExtensionArmD));
+    if (l_placementExtensionArmD != n_placementExtensionArmD.getDouble(Constants.kExtensionArmD)){
+      l_placementExtensionArmD = Constants.kExtensionArmD;
+      extensionMotor.config_kD(0, l_placementExtensionArmD);
     }
     if (l_placementExtensionArmS_Strength != n_placementExtensionArmS_Strength.getDouble(sStrengthPlacementExtensionArm)){
+      l_placementExtensionArmS_Strength = n_placementExtensionArmS_Strength.getDouble(sStrengthPlacementExtensionArm);
       extensionMotor.configMotionSCurveStrength(0, (int) n_placementExtensionArmS_Strength.getDouble(sStrengthPlacementExtensionArm));
     }
   }
@@ -254,7 +249,7 @@ public class ExtensionArm extends SubsystemBase {
   }
 
   public boolean atPosition() {
-    return extensionMotor.isMotionProfileFinished() && extensionMotor.getSelectedSensorPosition() == Constants.kMaxExtensionLength; //TODO: better is finished logic
+    return extensionMotor.isMotionProfileFinished() && extensionMotor.getSelectedSensorPosition() == currentSetpoint; //TODO: better is finished logic
   }
 
   /**
