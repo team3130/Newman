@@ -44,21 +44,23 @@ public class ExtensionArm extends SubsystemBase {
   /**
    * Network table variables
    */
-  public ShuffleboardTab Placement;
-  public GenericEntry n_placementExtensionArmP;
-  public double l_placementExtensionArmP;
-  public GenericEntry n_placementExtensionArmI;
-  public double l_placementExtensionArmI;
-  public GenericEntry n_placementExtensionArmD;
-  public double l_placementExtensionArmD;
-  public GenericEntry n_placementExtensionArmS_Strength;
-  public double l_placementExtensionArmS_Strength;
+  private ShuffleboardTab Placement;
+  private GenericEntry n_placementExtensionArmP;
+  private double l_placementExtensionArmP;
+  private GenericEntry n_placementExtensionArmI;
+  private double l_placementExtensionArmI;
+  private GenericEntry n_placementExtensionArmD;
+  private double l_placementExtensionArmD;
+  private GenericEntry n_placementExtensionArmS_Strength;
+  private double l_placementExtensionArmS_Strength;
 
-  public final double collapsedPosition = 0;
-  public final double intermediatePosition = Constants.kMaxExtensionLength / 2;
-  public final double extendedPosition = Constants.kMaxExtensionLength;
+  private final double collapsedPosition = 0;
+  private final double intermediatePosition = Constants.kMaxExtensionLength / 2;
+  private final double extendedPosition = Constants.kMaxExtensionLength;
 
-  public int sStrengthPlacementExtensionArm = 0;
+  private final double positionDeadband = 1000;
+
+  private int sStrengthPlacementExtensionArm = 0;
 
   protected final VelocityGainFilter gainFilter;
 
@@ -249,7 +251,7 @@ public class ExtensionArm extends SubsystemBase {
   }
 
   public boolean atPosition() {
-    return extensionMotor.isMotionProfileFinished() && extensionMotor.getSelectedSensorPosition() == currentSetpoint; //TODO: better is finished logic
+    return extensionMotor.isMotionProfileFinished() && Math.abs(extensionMotor.getSelectedSensorPosition() - currentSetpoint) <= positionDeadband; //TODO: better is finished logic
   }
 
   /**
