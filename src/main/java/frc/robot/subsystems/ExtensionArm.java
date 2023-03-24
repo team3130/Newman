@@ -40,7 +40,6 @@ public class ExtensionArm extends SubsystemBase {
 
   private double currentSetpoint = 0;
 
-
   /**
    * Network table variables
    */
@@ -58,11 +57,12 @@ public class ExtensionArm extends SubsystemBase {
   private final double intermediatePosition = Constants.kMaxExtensionLength / 2;
   private final double extendedPosition = Constants.kMaxExtensionLength;
 
+  public double armSpeed = 0;
+  public int sStrengthPlacementExtensionArm = 0;
   private final double positionDeadband = 1000;
 
-  private int sStrengthPlacementExtensionArm = 0;
-
   protected final VelocityGainFilter gainFilter;
+
 
   /**
    * Initializes the extension arm and configures the necessary device settings.
@@ -104,13 +104,37 @@ public class ExtensionArm extends SubsystemBase {
     this.ligament = ligament;
   }
 
+  private double getSmartSpeed(double y){
+
+    if (y < 0) {
+      if (brokeLimit()) {
+        resetEncoders();
+        y = 0;
+      }
+    } else if (y > 0) {
+      if (getPositionTicks() >= Math.abs(Constants.kMaxExtensionLength)) {
+        y = 0;
+      }
+    }
+    return y;
+  }
+
+  /* If the Arm is retracting and hits the limit switch we reset encoder's and
+  stop the arm from further retracting to prevent the motor from breaking the arm.
+  We also need to check if the arm is at max extension. If so then we stop the motors*/
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     ligament.setLength(getLengthExtensionArm());
+    double y = getSmartSpeed(armSpeed);
+    if (y != armSpeed) {
+      // It's updated so update the motor
+      spinExtensionArm(y);
+    }
   }
 
-  /**
+
+  /*
    * Extend the arm all the way out
    */
   public void extendArmFull() {
@@ -215,11 +239,14 @@ public class ExtensionArm extends SubsystemBase {
    * @param scalar to scale the output speed
    */
   public void spinExtensionArm(double scalar) {
+    scalar = getSmartSpeed(scalar);
     if (Constants.debugMode) {
       accelerationManager.update(getSpeedMetersPerSecond(), Timer.getFPGATimestamp());
     }
     extensionMotor.set(scalar);
+    armSpeed = scalar;
   }
+
 
   /**
    * This method will be called once per scheduler run during simulation
@@ -260,4 +287,5 @@ public class ExtensionArm extends SubsystemBase {
   public double getLengthExtensionArm(){
     return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition() + Constants.kExtensionArmLengthExtended;
   }
+
 }
