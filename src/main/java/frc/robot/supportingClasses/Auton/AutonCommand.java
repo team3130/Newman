@@ -84,6 +84,8 @@ public class AutonCommand extends CommandBase {
 
         markerToCommandMap = new HashMap<>();
 
+        m_requirements.add(m_chassis);
+
         CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null, PLACE_HIGH = null, DO_NOTHING = null;
 
         if (hopper != null) {

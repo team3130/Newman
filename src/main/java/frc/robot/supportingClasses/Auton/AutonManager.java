@@ -114,7 +114,7 @@ public class AutonManager {
                 m_chassis);
 
 
-        return new AutonCommand(holonomicControllerCommand, trajectory);
+        return new AutonCommand(holonomicControllerCommand, trajectory, m_chassis);
     }
 
     /**
@@ -274,7 +274,8 @@ public class AutonManager {
 
     private CommandBase generateMovOutOfStart() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("MoveOutOfStart", safe_constraints);
-        return new SequentialCommandGroup(new ToggleIntake(m_intake), wrapCmd(autonCommandGenerator(trajectory)));
+        CommandBase command = wrapCmd(autonCommandGenerator(trajectory));
+        return new SequentialCommandGroup(new ToggleIntake(m_intake), command);
     }
 
 
