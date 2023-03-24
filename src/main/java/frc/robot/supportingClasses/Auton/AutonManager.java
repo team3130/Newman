@@ -15,7 +15,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.commands.Intake.ToggleIntake;
 import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.IntakePivot;
 
 /**
  * A class to generate our auton paths from PathPlanner
@@ -29,12 +31,14 @@ public class AutonManager {
 
     private DriverStation.Alliance alliance;
 
+    protected IntakePivot m_intake;
+
     /**
      * Makes an object to make and manage auton paths.
      * Also calls {@link #populateChooser()}
      * @param chassis needs chassis so that commands made in here can use it
      */
-    public AutonManager(Chassis chassis){
+    public AutonManager(Chassis chassis, IntakePivot intake){
         this.m_autonChooser = new SendableChooser<>();
         this.m_chassis = chassis;
 
@@ -46,6 +50,8 @@ public class AutonManager {
         populateChooser();
 
         alliance = DriverStation.getAlliance();
+
+        m_intake = intake;
     }
 
     /**
@@ -62,6 +68,7 @@ public class AutonManager {
         // m_autonChooser.addOption("feelin spicy", generateExamplePathFromPoses());
         // m_autonChooser.addOption("circuit", complexPathTest());
         // m_autonChooser.addOption("AprilTagTesting",aprilTagTesting());
+        m_autonChooser.addOption("move out of start", generateMovOutOfStart());
         m_autonChooser.addOption("Default path", generateExamplePathFromPoses());
     }
 
@@ -265,6 +272,10 @@ public class AutonManager {
         return wrapCmd(command);
     }
 
+    private CommandBase generateMovOutOfStart() {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("MoveOutOfStart", safe_constraints);
+        return new SequentialCommandGroup(new ToggleIntake(m_intake), wrapCmd(autonCommandGenerator(trajectory)));
+    }
 
 
 }
