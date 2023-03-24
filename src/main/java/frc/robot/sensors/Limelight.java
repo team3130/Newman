@@ -24,10 +24,6 @@ public class Limelight {
 
     protected PhotonCamera camera;
 
-    protected final GenericEntry nXCameraToTarget;
-    protected final GenericEntry nYCameraToTarget;
-    protected final GenericEntry nsuccessfulImageReads;
-
     private static ShuffleboardTab tab = Shuffleboard.getTab("PhotonCamera");
     AprilTagFieldLayout aprilTagFieldLayout;
     VisionMedianFilter filter;
@@ -38,62 +34,22 @@ public class Limelight {
     public Limelight() {
         camera = new PhotonCamera("OV5647");
 
-        try {
-            aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
-        } catch(IOException e){
-            DriverStation.reportError("error loading field position file", false);
+        if(camera.isConnected()) {
+
+            try {
+                aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+            } catch (IOException e) {
+                DriverStation.reportError("error loading field position file", false);
+            }
+
+            filter = new VisionMedianFilter(Camera.kMedianFilterWindowSize);
+
+            if (Constants.debugMode) {
+                SmartDashboard.putData(filter);
+            }
         }
-
-        filter = new VisionMedianFilter(Camera.kMedianFilterWindowSize);
-
-        if (Constants.debugMode) {
-            SmartDashboard.putData(filter);
-        }
-
-        nXCameraToTarget = tab.add("X Camera to target", 0).getEntry();
-        nYCameraToTarget = tab.add("Y camera to target", 0).getEntry();
-
-        nsuccessfulImageReads = tab.add("Successful image reads", 0).getEntry();
     }
-
-    /**
-     * method to write generic entry changes
-     * TODO: Remove before comp
-     */
-    public void outputToShuffleBoard(){
-        PhotonPipelineResult result = camera.getLatestResult();
-
-        if (!result.hasTargets()) {
-            return;
-        }
-        PhotonTrackedTarget target = result.getBestTarget();
-
-        Transform3d transformation = target.getBestCameraToTarget();
-
-        Translation2d translation = transformation.getTranslation().toTranslation2d();
-        nXCameraToTarget.setDouble(translation.getX());
-        nYCameraToTarget.setDouble(translation.getY());
-
-        nsuccessfulImageReads.setInteger(successfulUpdates);
-    }
-
-    /**
-     * @return the x position of the camera relative to the april tag
-     */
-    public double getX(){
-        PhotonPipelineResult result = camera.getLatestResult();
-        if (!result.hasTargets()) {
-            return Double.MAX_VALUE;
-        }
-        PhotonTrackedTarget target = result.getBestTarget();
-
-        Transform3d transformation = target.getBestCameraToTarget();
-
-        Translation2d translation = transformation.getTranslation().toTranslation2d();
-        return translation.getX();
-    }
-
-
+    
     /**
      * Calculates the position of the bot relative to an april tag.
      * That calculation is then given to {@link VisionMedianFilter}.
@@ -103,6 +59,9 @@ public class Limelight {
      * @return the filtered camera position
      */
     public OdoPosition calculate() {
+        if (!camera.isConnected()) {
+            return null;
+        }
         // the most recent result as read by the camera
         PhotonPipelineResult result = camera.getLatestResult();
 
@@ -147,14 +106,6 @@ public class Limelight {
         }
         // returns the last filtered value that we checked in the above for loop
         return best;
-    }
-
-
-    /**
-     * @return the number of successful images we have read
-     */
-    public int getNumberOfSuccesses() {
-        return successfulUpdates;
     }
 
 }
