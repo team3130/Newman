@@ -94,7 +94,7 @@ public class Navx {
      */
     public static double getPitchVelocity() {
         if (m_bNavXPresent) {
-            return m_navX.getRawGyroX();
+            return -m_navX.getRawGyroY();
         }
         return Double.NaN;
     }
@@ -118,7 +118,7 @@ public class Navx {
      */
     public static double getRollVelocity() {
         if (m_bNavXPresent) {
-            return m_navX.getRawGyroY();
+            return -m_navX.getRawGyroZ();
         }
         return Double.NaN;
     }
