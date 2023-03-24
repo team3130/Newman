@@ -64,7 +64,7 @@ public class TeleopDrive extends CommandBase {
     }
     theta = Math.abs(theta) > Constants.kDeadband ? theta : 0.0;
     
-    if ((DriverStation.getMatchType() == DriverStation.MatchType.Qualification || DriverStation.getMatchType() == DriverStation.MatchType.Elimination) && DriverStation.getAlliance() == DriverStation.Alliance.Red && m_chassis.getFieldRelative()) {
+    if (/*(DriverStation.getMatchType() == DriverStation.MatchType.Qualification || DriverStation.getMatchType() == DriverStation.MatchType.Elimination || DriverStation.getMatchType() == DriverStation.MatchType.Practice) &&*/ DriverStation.getAlliance() == DriverStation.Alliance.Red && m_chassis.getFieldRelative()) {
       y = -y;
       x = -x;
     }

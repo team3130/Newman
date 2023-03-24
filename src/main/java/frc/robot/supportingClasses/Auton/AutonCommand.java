@@ -18,7 +18,6 @@ import frc.robot.commands.Placement.presets.GoToMidScoring;
 import frc.robot.subsystems.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -86,35 +85,17 @@ public class AutonCommand extends CommandBase {
 
         markerToCommandMap = new HashMap<>();
 
-        CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null, PLACE_HIGH = null, DO_NOTHING = null;
+        if (chassis != null) {
+            m_requirements.add(chassis);
+        }
 
         if (hopper != null) {
-            HOPPER = new SpinHopper(m_hopper);
             m_requirements.add(m_hopper);
         }
 
         if (m_rotaryArm != null && m_extensionArm != null && m_manipulator != null) {
-            PLACE_LOW = new SequentialCommandGroup(
-                    new ToggleGrabber(m_manipulator), new GoToLowScoring(m_rotaryArm, m_extensionArm),
-                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
-            );
-
-            PLACE_MID = new SequentialCommandGroup(
-                    new ToggleGrabber(m_manipulator), new GoToMidScoring(m_rotaryArm, m_extensionArm),
-                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
-            );
-
-            PLACE_HIGH = new SequentialCommandGroup(
-                    new ToggleGrabber(m_manipulator), new GoToHighScoring(m_rotaryArm, m_extensionArm),
-                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
-            );
-
-            DO_NOTHING = new DoNothing();
-
             m_requirements.addAll(List.of(m_rotaryArm, m_extensionArm, m_manipulator));
         }
-
-        commands = new CommandBase[] {HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH, DO_NOTHING};
 
         getOptimizedIndex = (EventMarker marker) -> (int) (marker.timeSeconds * magicScalar);
 
@@ -150,20 +131,6 @@ public class AutonCommand extends CommandBase {
     }
 
     /**
-     * Uses optimized map if possible to get the command from the marker
-     * @param marker a marker from the available markers
-     * @return the command from whichever map we are supposed to use rn
-     */
-    protected CommandBase getCommandFromMap(EventMarker marker) {
-        if (useOptimized) {
-            return commands[getOptimizedIndex.apply(marker)];
-        }
-        else {
-            return commands[markerToCommandMap.get(marker)];
-        }
-    }
-
-    /**
      * The second to last constructor for auton command
      * @param cmd the command to follow in auton
      * @param trajectory the trajectory that the command is following
@@ -183,9 +150,9 @@ public class AutonCommand extends CommandBase {
      * @param rotate the rotary arm subsystem
      * @param extendy the extension arm subsystem
      */
-    public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory, RotaryArm rotate, ExtensionArm extendy, Manipulator manipulator) {
+    public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory, Chassis chassis, RotaryArm rotate, ExtensionArm extendy, Manipulator manipulator) {
         this(cmd, trajectory.getInitialPose(), trajectory.getEndState().poseMeters, trajectory, rotate,
-                extendy, null, manipulator, null);
+                extendy, chassis, manipulator, null);
     }
 
     /**
@@ -364,6 +331,33 @@ public class AutonCommand extends CommandBase {
      */
     @Override
     public void initialize() {
+        CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null, PLACE_HIGH = null, DO_NOTHING = null;
+
+        if (m_hopper != null) {
+            HOPPER = new SpinHopper(m_hopper);
+        }
+
+        if (m_rotaryArm != null && m_extensionArm != null && m_manipulator != null) {
+            PLACE_LOW = new SequentialCommandGroup(
+                    new ToggleGrabber(m_manipulator), new GoToLowScoring(m_rotaryArm, m_extensionArm),
+                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
+            );
+
+            PLACE_MID = new SequentialCommandGroup(
+                    new ToggleGrabber(m_manipulator), new GoToMidScoring(m_rotaryArm, m_extensionArm),
+                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
+            );
+
+            PLACE_HIGH = new SequentialCommandGroup(
+                    new ToggleGrabber(m_manipulator), new GoToHighScoring(m_rotaryArm, m_extensionArm),
+                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
+            );
+
+            DO_NOTHING = new DoNothing();
+        }
+
+        commands = new CommandBase[] {HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH, DO_NOTHING};
+
         cmd.initialize();
     }
 
@@ -389,30 +383,41 @@ public class AutonCommand extends CommandBase {
             closest = findClosestWithBinSearch();
         }
 
-        System.out.println(Arrays.toString(closest.names.toArray()));
-
         if (closest != current) {
-            CommandBase toAdd = getCommandFromMap(closest);
+            int toAdd = getIndexFromMap(closest);
             if (closest.names.get(0).contains("end")) {
-                toAdd.end(true);
+                 commands[toAdd].end(true);
                 // remove marker running right now
                 for (int i = 0; i < indicesToRun.size(); i++) {
-                    if (commands[indicesToRun.get(i)] == toAdd) {
+                    if (commands[indicesToRun.get(i)] == commands[toAdd]) {
                         indicesToRun.remove(i--);
                     }
                 }
             }
             else {
-                toAdd.initialize();
+                commands[toAdd].initialize();
                 if (useOptimized) {
-                    indicesToRun.add(getOptimizedIndex.apply(closest));
+                    indicesToRun.add(toAdd);
                 }
                 else {
-                    indicesToRun.add(markerToCommandMap.get(closest));
+                    indicesToRun.add(toAdd);
                 }
             }
             current = closest;
         }
+    }
+
+    private int getIndexFromMap(EventMarker marker) {
+        if (marker == null) {
+            return commands.length - 1;
+        }
+        if (useOptimized) {
+            return getOptimizedIndex.apply(marker);
+        }
+        else {
+            return markerToCommandMap.get(marker);
+        }
+
     }
 
 

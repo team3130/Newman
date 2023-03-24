@@ -33,20 +33,16 @@ public class Limelight {
 
     public Limelight() {
         camera = new PhotonCamera("OV5647");
+        try {
+            aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+        } catch (IOException e) {
+            DriverStation.reportError("error loading field position file", false);
+        }
 
-        if(camera.isConnected()) {
+        filter = new VisionMedianFilter(Camera.kMedianFilterWindowSize);
 
-            try {
-                aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
-            } catch (IOException e) {
-                DriverStation.reportError("error loading field position file", false);
-            }
-
-            filter = new VisionMedianFilter(Camera.kMedianFilterWindowSize);
-
-            if (Constants.debugMode) {
-                SmartDashboard.putData(filter);
-            }
+        if (Constants.debugMode) {
+            SmartDashboard.putData(filter);
         }
     }
 

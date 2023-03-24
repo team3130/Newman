@@ -105,7 +105,6 @@ public class ExtensionArm extends SubsystemBase {
   }
 
   private double getSmartSpeed(double y){
-
     if (y < 0) {
       if (brokeLimit()) {
         resetEncoders();

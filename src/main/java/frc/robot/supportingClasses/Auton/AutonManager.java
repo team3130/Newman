@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Intake.ToggleIntake;
 import frc.robot.commands.Manipulator.ToggleGrabber;
+import frc.robot.commands.Placement.AutoZeroExtensionArm;
 import frc.robot.commands.Placement.presets.GoToHighScoring;
 import frc.robot.subsystems.*;
 
@@ -81,6 +82,7 @@ public class AutonManager {
         m_autonChooser.addOption("Intake spit", actuateIntake());
         m_autonChooser.addOption("top dumb", generateTopDumb());
         m_autonChooser.addOption("bottom dumb", generateBottomDumb());
+        m_autonChooser.addOption("mid placement start top", generateMidPlaceTopStart());
         if (Constants.debugMode) {
             m_autonChooser.addOption("marker path <- not for comp", generateMarkerPath());
         }
@@ -115,11 +117,17 @@ public class AutonManager {
      * @return an {@link AutonCommand} object that contains an auton path to run as well as the start and end points
      */
     public AutonCommand autonCommandGenerator(PathPlannerTrajectory trajectory) {
+        return new AutonCommand(holonomicControllerGenerator(trajectory), trajectory, m_chassis);
+    }
+
+    public HolonomicControllerCommand holonomicControllerGenerator(PathPlannerTrajectory trajectory) {
         PIDController xController = new PIDController(Constants.kPXController, Constants.kIXController,Constants.kDXController);
         PIDController yController = new PIDController(Constants.kPYController, Constants.kIYController ,Constants.kDYController);
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(xController, yController, new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, 0, Constants.kThetaControllerConstraints));
 
-        HolonomicControllerCommand holonomicControllerCommand = new HolonomicControllerCommand(
+        trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
+
+        return new HolonomicControllerCommand(
                 trajectory,
                 m_chassis::getPose2d,
                 m_chassis.getKinematics(),
@@ -127,25 +135,10 @@ public class AutonManager {
                 m_chassis::setModuleStates,
                 m_chassis);
 
-
-        return new AutonCommand(holonomicControllerCommand, trajectory);
     }
 
     public AutonCommand autonCommandGeneratorPlacement(PathPlannerTrajectory trajectory) {
-        PIDController xController = new PIDController(Constants.kPXController, Constants.kIXController,Constants.kDXController);
-        PIDController yController = new PIDController(Constants.kPYController, Constants.kIYController ,Constants.kDYController);
-        HolonomicDriveController holonomicDriveController = new HolonomicDriveController(xController, yController, new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, 0, Constants.kThetaControllerConstraints));
-
-        HolonomicControllerCommand holonomicControllerCommand = new HolonomicControllerCommand(
-                trajectory,
-                m_chassis::getPose2d,
-                m_chassis.getKinematics(),
-                holonomicDriveController,
-                m_chassis::setModuleStates,
-                m_chassis);
-
-
-        return new AutonCommand(holonomicControllerCommand, trajectory, rotary, extension, m_manipulator);
+        return new AutonCommand(holonomicControllerGenerator(trajectory), trajectory, m_chassis, rotary, extension, m_manipulator);
     }
 
     /**
@@ -223,7 +216,6 @@ public class AutonManager {
     }
 
     public Command aprilTagTesting(){
-
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(safe_constraints, new PathPoint(
                 new Translation2d(0, 0), new Rotation2d(), new Rotation2d()),
                 new PathPoint( new Translation2d(-3, 0),  new Rotation2d(), new Rotation2d()));
@@ -334,7 +326,7 @@ public class AutonManager {
     private CommandBase generateMoveOutAndClamp() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("clamp and move out", safe_constraints);
         CommandBase command = wrapCmd(autonCommandGenerator(trajectory));
-        return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), command, new GoToHighScoring(rotary, extension));
+        return new SequentialCommandGroup(new AutoZeroExtensionArm(extension), new ToggleGrabber(m_manipulator), command, new GoToHighScoring(rotary, extension));
     }
 
     public CommandBase actuateIntake() {
@@ -359,4 +351,10 @@ public class AutonManager {
         return wrapCmd(command);
     }
 
+
+    public CommandBase generateMidPlaceTopStart() {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("place mid top", safe_constraints);
+        AutonCommand command = autonCommandGeneratorPlacement(trajectory);
+        return wrapCmd(command);
+    }
 }

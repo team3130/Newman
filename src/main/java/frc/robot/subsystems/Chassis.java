@@ -12,7 +12,10 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.sensors.Limelight;
@@ -42,6 +45,8 @@ public class Chassis extends SubsystemBase {
 
     private double maxSpeedRead = 0;
 
+    private Field2d field;
+
     /**
      * Makes a chassis that starts at 0, 0, 0
      */
@@ -68,6 +73,9 @@ public class Chassis extends SubsystemBase {
         m_odometry = new SwerveDrivePoseEstimator(m_kinematics, startingRotation, generatePoses(), startingPos);
 
         m_limelight = limelight;
+
+        field = new Field2d();
+        Shuffleboard.getTab("Comp").add("field", field);
   }
 
     /**
@@ -165,8 +173,7 @@ public class Chassis extends SubsystemBase {
         if (position != null) {
             updateOdometryFromVision(position);
         }
-/*         field2d.setRobotPose(m_odometry.getEstimatedPosition()
-         );*/
+         field.setRobotPose(m_odometry.getEstimatedPosition());
     }
 
   /**

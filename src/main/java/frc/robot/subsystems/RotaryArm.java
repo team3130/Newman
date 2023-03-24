@@ -9,10 +9,12 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
@@ -23,6 +25,8 @@ public class RotaryArm extends SubsystemBase {
   private final boolean defaultState = true;
 
   private final DigitalInput limitSwitch;
+
+  protected final GenericEntry n_brake;
 
   protected MechanismLigament2d ligament;
   private double outputSpeed = 0.6; // the speed we will run the rotary arm at
@@ -52,6 +56,8 @@ public class RotaryArm extends SubsystemBase {
     limitSwitch = new DigitalInput(Constants.ROTARY_ARM_LIMIT_SWITCH);
 
     this.ligament = ligament;
+
+    n_brake = Shuffleboard.getTab("Comp").add("Brake indicator", false).getEntry();
   }
 
   /**
@@ -67,6 +73,7 @@ public class RotaryArm extends SubsystemBase {
   @Override
   public void periodic() {
     ligament.setAngle(getAngleRotaryArm());
+    n_brake.setBoolean(brakeIsEnabled());
   }
 
   /**
