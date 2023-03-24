@@ -57,19 +57,14 @@ public class HolonomicControllerCommand extends CommandBase {
 
 
     public boolean inRange(Pose2d pose1, Pose2d pose2) {
-        return Math.abs(pose1.getX() - pose2.getX()) < 0.1 &&
-                Math.abs(pose1.getY() - pose2.getY()) < 0.1 &&
+        return Math.abs(pose1.getX() - pose2.getX()) < 0.25 &&
+                Math.abs(pose1.getY() - pose2.getY()) < 0.25 &&
                 Math.abs(pose1.getRotation().getDegrees() - pose2.getRotation().getDegrees()) < 2.5;
     }
 
+    @Override
     public boolean isFinished() {
-        boolean timeHasPassed = m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds());
-        if (Constants.debugMode) {
-            return inRange(m_pose.get(), m_trajectory.getEndState().poseMeters);
-        }
-        else {
-            return timeHasPassed;
-        }
+        return m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds());
     }
 
     @Override

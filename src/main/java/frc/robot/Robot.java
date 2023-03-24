@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Newman_Constants.Constants;
 
 public class Robot extends TimedRobot {
@@ -68,7 +69,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit () {
       CommandScheduler.getInstance().cancelAll();
-      m_robotContainer.zeroCommand();
+      CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
     }
 
     @Override

@@ -77,7 +77,7 @@ public class AutonManager {
         // m_autonChooser.addOption("AprilTagTesting",aprilTagTesting());
         m_autonChooser.addOption("move out of start", generateMovOutOfStart());
         m_autonChooser.addOption("move out and clamp", generateMoveOutAndClamp());
-        m_autonChooser.addOption("Default path", generateExamplePathFromPoses());
+        m_autonChooser.addOption("Default path", generateExamplePathFromPoses()); // two meter forward (stable)
         m_autonChooser.addOption("Intake spit", actuateIntake());
         m_autonChooser.addOption("top dumb", generateTopDumb());
         m_autonChooser.addOption("bottom dumb", generateBottomDumb());
@@ -160,8 +160,7 @@ public class AutonManager {
     public SequentialCommandGroup wrapCmd(AutonCommand command) {
                 return new SequentialCommandGroup(
                     new InstantCommand(() -> m_chassis.resetOdometry(new Pose2d(command.getStartPosition().getTranslation(), command.getStartRotation()))),
-                    command.getCmd(),
-                    new InstantCommand(m_chassis::stopModules)
+                    command.getCmd(), new InstantCommand(m_chassis::stopModules)
         );
     }
 
@@ -323,13 +322,13 @@ public class AutonManager {
     }
 
     public CommandBase generateTopDumb() {
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("top dumb", safe_constraints);
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("dumb leave top", safe_constraints);
         CommandBase command = wrapCmd(autonCommandGenerator(trajectory));
         return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), command, new GoToHighScoring(rotary, extension));
     }
 
     public CommandBase generateBottomDumb() {
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("bottom dumb", safe_constraints);
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("dumb leave bottom", safe_constraints);
         CommandBase command = wrapCmd(autonCommandGenerator(trajectory));
         return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), command, new GoToHighScoring(rotary, extension));
     }
