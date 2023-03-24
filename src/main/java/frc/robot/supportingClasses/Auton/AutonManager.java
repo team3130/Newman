@@ -250,8 +250,8 @@ public class AutonManager {
 
     public CommandBase makeCmdToGoToPlace(Pose2d current) {
         final int index = (int) (current.getY() * 2.5);
-        final double y_value = ((Constants.yPositionsForRowBounds[index] - (Constants.yPositionsForRowBounds[index + 1]) / 2)) + Constants.yPositionsForRowBounds[index];
-        final double x_value = (DriverStation.getAlliance() == DriverStation.Alliance.Blue) ? 1.35 : 14.7;
+        final double y_value = ((Constants.Field.yPositionsForRowBounds[index] - (Constants.Field.yPositionsForRowBounds[index + 1]) / 2)) + Constants.Field.yPositionsForRowBounds[index];
+        final double x_value = (DriverStation.getAlliance() == DriverStation.Alliance.Blue) ? Constants.Field.xPositionForGridBlue : Constants.Field.xPositionForGridRed;
         final double rotation = (DriverStation.getAlliance() == DriverStation.Alliance.Blue) ? 0 : Math.PI;
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(safe_constraints,
                 new PathPoint(
@@ -259,6 +259,30 @@ public class AutonManager {
                         new Rotation2d(0), m_chassis.getRotation2d()
                 ),
 
+                new PathPoint(new Translation2d(x_value, y_value), new Rotation2d(), new Rotation2d(rotation)));
+
+        AutonCommand command = autonCommandGenerator(trajectory);
+        return wrapCmd(command);
+    }
+
+    public CommandBase makeCmdToGoToHumanPlayerStation(Pose2d current) {
+        final double x_value;
+        final double y_value;
+        final double rotation;
+
+        if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
+            x_value = Constants.Field.xPositionForBlueHumanPlayerStation;
+            y_value = Constants.Field.yPositionForBlueHumanPlayerStation;
+            rotation = Constants.Field.rotationForBlueHumanPlayerStation;
+        }
+        else {
+            x_value = Constants.Field.xPositionForRedHumanPlayerStation;
+            y_value = Constants.Field.yPositionForRedHumanPlayerStation;
+            rotation = Constants.Field.rotationForRedHumanPlayerStation;
+        }
+
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(safe_constraints,
+                new PathPoint(current.getTranslation(), new Rotation2d(0), current.getRotation()),
                 new PathPoint(new Translation2d(x_value, y_value), new Rotation2d(), new Rotation2d(rotation)));
 
         AutonCommand command = autonCommandGenerator(trajectory);

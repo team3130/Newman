@@ -2,14 +2,14 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Chassis;
+package frc.robot.commands.Chassis.presets;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Chassis;
 import frc.robot.supportingClasses.Auton.AutonManager;
 
 /** A command to go to whatever origin is */
-public class GoToClosestPlaceToPlace extends CommandBase {
+public class GoToHumanPlayerStation extends CommandBase {
   private final Chassis m_chassis;
   private final AutonManager autonManager;
   private Thread m_thread;
@@ -22,7 +22,7 @@ public class GoToClosestPlaceToPlace extends CommandBase {
    *
    * @param chassis The subsystem used by this command.
    */
-  public GoToClosestPlaceToPlace(Chassis chassis, AutonManager manager) {
+  public GoToHumanPlayerStation(Chassis chassis, AutonManager manager) {
     m_chassis = chassis;
     // Use addRequirements() here to declare subsystem dependencies.
     autonManager = manager;
@@ -35,7 +35,7 @@ public class GoToClosestPlaceToPlace extends CommandBase {
     firstHit = true;
     autonCommand = null;
 
-    m_thread = new Thread(() -> autonCommand = autonManager.makeCmdToGoToPlace(m_chassis.getPose2d()));
+    m_thread = new Thread(() -> autonCommand = autonManager.makeCmdToGoToHumanPlayerStation(m_chassis.getPose2d()));
     m_thread.start();
   }
 

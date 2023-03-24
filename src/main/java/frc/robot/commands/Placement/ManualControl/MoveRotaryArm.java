@@ -69,10 +69,6 @@ public class MoveRotaryArm extends CommandBase {
     }
 
     m_rotaryArm.rotateRotaryArm(y); //that max is currently bs
-
-    if (Constants.debugMode && y > 0) {
-      middleMan(y);
-    }
   }
 
   /**
