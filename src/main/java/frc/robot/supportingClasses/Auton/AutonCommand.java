@@ -452,7 +452,6 @@ public class AutonCommand extends CommandBase {
         for (int index : indicesToRun) {
             commands[index].end(interrupted);
         }
-
     }
 
     public Rotation2d getStartRotation() {

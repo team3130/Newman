@@ -64,7 +64,7 @@ public class TeleopDrive extends CommandBase {
     }
     theta = Math.abs(theta) > Constants.kDeadband ? theta : 0.0;
     
-    if (DriverStation.getMatchType() != DriverStation.MatchType.None && DriverStation.getAlliance() == DriverStation.Alliance.Red && m_chassis.getFieldRelative()) {
+    if (/*DriverStation.getMatchType() != DriverStation.MatchType.None &&*/ DriverStation.getAlliance() == DriverStation.Alliance.Red && m_chassis.getFieldRelative()) {
       y = -y;
       x = -x;
     }

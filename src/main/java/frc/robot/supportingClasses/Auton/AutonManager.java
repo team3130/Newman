@@ -139,7 +139,6 @@ public class AutonManager {
                 holonomicDriveController,
                 m_chassis::setModuleStates,
                 m_chassis);
-
     }
 
     public AutonCommand autonCommandGeneratorPlacement(PathPlannerTrajectory trajectory) {
