@@ -78,6 +78,9 @@ public class AutonManager {
         m_autonChooser.addOption("move out of start", generateMovOutOfStart());
         m_autonChooser.addOption("move out and clamp", generateMoveOutAndClamp());
         m_autonChooser.addOption("Default path", generateExamplePathFromPoses());
+        m_autonChooser.addOption("Intake spit", actuateIntake());
+        m_autonChooser.addOption("top dumb", generateTopDumb());
+        m_autonChooser.addOption("bottom dumb", generateBottomDumb());
     }
 
     /**
@@ -315,7 +318,21 @@ public class AutonManager {
         return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), command, new GoToHighScoring(rotary, extension));
     }
 
+    public CommandBase actuateIntake() {
+        return new ToggleIntake(m_intake);
+    }
 
+    public CommandBase generateTopDumb() {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("top dumb", safe_constraints);
+        CommandBase command = wrapCmd(autonCommandGenerator(trajectory));
+        return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), command, new GoToHighScoring(rotary, extension));
+    }
+
+    public CommandBase generateBottomDumb() {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("bottom dumb", safe_constraints);
+        CommandBase command = wrapCmd(autonCommandGenerator(trajectory));
+        return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), command, new GoToHighScoring(rotary, extension));
+    }
 
 
 }
