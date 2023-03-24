@@ -18,6 +18,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class Limelight {
 
@@ -127,6 +128,11 @@ public class Limelight {
             Transform3d cameraToCenterOfBot = new Transform3d(
                     new Translation3d(Camera.xPos, Camera.yPos, Camera.zPos),
                     new Rotation3d(Camera.roll, Camera.pitch, Camera.yaw));
+
+            Optional<Pose3d> pose3d = aprilTagFieldLayout.getTagPose(target.getFiducialId());
+            if (pose3d.isEmpty()) {
+                return null;
+            }
 
             // the position of the bot relative to the april tag
             Pose3d position = PhotonUtils.estimateFieldToRobotAprilTag(
