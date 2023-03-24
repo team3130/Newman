@@ -132,7 +132,7 @@ public class AutonManager {
     }
 
     public AutonCommand autonCommandGeneratorPlacement(PathPlannerTrajectory trajectory) {
-                PIDController xController = new PIDController(Constants.kPXController, Constants.kIXController,Constants.kDXController);
+        PIDController xController = new PIDController(Constants.kPXController, Constants.kIXController,Constants.kDXController);
         PIDController yController = new PIDController(Constants.kPYController, Constants.kIYController ,Constants.kDYController);
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(xController, yController, new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, 0, Constants.kThetaControllerConstraints));
 
@@ -180,7 +180,7 @@ public class AutonManager {
     public SequentialCommandGroup wrapCmd(AutonCommand command) {
                 return new SequentialCommandGroup(
                     new InstantCommand(() -> m_chassis.resetOdometry(new Pose2d(command.getStartPosition().getTranslation(), command.getStartRotation()))),
-                    command.getCmd(), new InstantCommand(m_chassis::stopModules)
+                    command, new InstantCommand(m_chassis::stopModules)
         );
     }
 

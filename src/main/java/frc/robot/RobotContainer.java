@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -83,10 +84,15 @@ public class RobotContainer {
     m_hopper = new Hopper();
     m_pivot = new IntakePivot();
 
+
     Mechanism2d arm = new Mechanism2d(4, 2);
     MechanismRoot2d root = arm.getRoot("arm", 5, 5);
     MechanismLigament2d zero = new MechanismLigament2d("retracted", Constants.kExtensionArmLengthExtended / 2, -90);
     root.append(zero);
+
+    /*
+    SendableRegistry.add(arm, "placement");
+    Shuffleboard.getTab("Test").add(arm);*/
     
     m_extensionArm = new ExtensionArm(zero);
     m_rotaryArm = new RotaryArm(zero);

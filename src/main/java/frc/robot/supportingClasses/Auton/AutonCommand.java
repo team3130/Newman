@@ -18,6 +18,7 @@ import frc.robot.commands.Placement.presets.GoToMidScoring;
 import frc.robot.subsystems.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -387,6 +388,8 @@ public class AutonCommand extends CommandBase {
         } else {
             closest = findClosestWithBinSearch();
         }
+
+        System.out.println(Arrays.toString(closest.names.toArray()));
 
         if (closest != current) {
             CommandBase toAdd = getCommandFromMap(closest);
