@@ -75,12 +75,15 @@ public class AutonManager {
         // m_autonChooser.addOption("feelin spicy", generateExamplePathFromPoses());
         // m_autonChooser.addOption("circuit", complexPathTest());
         // m_autonChooser.addOption("AprilTagTesting",aprilTagTesting());
-        m_autonChooser.addOption("move out of start", generateMovOutOfStart());
+        m_autonChooser.addOption("move out of start intake pushy", generateMovOutOfStart());
         m_autonChooser.addOption("move out and clamp", generateMoveOutAndClamp());
-        m_autonChooser.addOption("Default path", generateExamplePathFromPoses()); // two meter forward (stable)
+        m_autonChooser.addOption("Two meter forward", generateExamplePathFromPoses()); // two meter forward (stable)
         m_autonChooser.addOption("Intake spit", actuateIntake());
         m_autonChooser.addOption("top dumb", generateTopDumb());
         m_autonChooser.addOption("bottom dumb", generateBottomDumb());
+        if (Constants.debugMode) {
+            m_autonChooser.addOption("marker path <- not for comp", generateMarkerPath());
+        }
     }
 
     /**
