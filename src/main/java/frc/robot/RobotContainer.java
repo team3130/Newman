@@ -95,7 +95,6 @@ public class RobotContainer {
     m_rotaryArm.setDefaultCommand(new MoveRotaryArm(m_rotaryArm, m_extensionArm, m_weaponsGamepad));
     m_extensionArm.setDefaultCommand(new MoveExtensionArm(m_extensionArm, m_weaponsGamepad));
 
-
     configureButtonBindings();
     vomitShuffleBoardData();
   }
