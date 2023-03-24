@@ -63,9 +63,6 @@ public class ExtensionArm extends SubsystemBase {
   public int sStrengthPlacementExtensionArm = 0;
   private final double positionDeadband = 1000;
 
-
-  private int sStrengthPlacementExtensionArm = 0;
-
   protected final VelocityGainFilter gainFilter;
 
 
