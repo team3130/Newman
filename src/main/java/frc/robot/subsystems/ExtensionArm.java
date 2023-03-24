@@ -106,6 +106,22 @@ public class ExtensionArm extends SubsystemBase {
     this.ligament = ligament;
   }
 
+  private double getSpeed(double y){
+
+    if (armSpeed < 0) {
+
+      if (brokeLimit()) {
+        resetEncoders();
+        y = 0;
+      }
+    } else if (armSpeed > 0) {
+      if (getPositionTicks() >= Math.abs(Constants.kMaxExtensionLength)) {
+        y = 0;
+      }
+    }
+    return y;
+  }
+
   /* If the Arm is retracting and hits the limit switch we reset encoder's and
   stop the arm from further retracting to prevent the motor from breaking the arm.
   We also need to check if the arm is at max extension. If so then we stop the motors*/
@@ -114,17 +130,7 @@ public class ExtensionArm extends SubsystemBase {
     // This method will be called once per scheduler run
     ligament.setLength(getLengthExtensionArm());
 
-    if (armSpeed < 0) {
-
-      if (brokeLimit()) {
-          resetEncoders();
-          spinExtensionArm(0);
-      }
-    } else if (armSpeed > 0) {
-      if (getPositionTicks() >= Math.abs(Constants.kMaxExtensionLength)) {
-        spinExtensionArm(0);
-      }
-    }
+    spinExtensionArm(getSpeed(armSpeed));
   }
 
 
@@ -233,6 +239,9 @@ public class ExtensionArm extends SubsystemBase {
    * @param scalar to scale the output speed
    */
   public void spinExtensionArm(double scalar) {
+    if (brokeLimit() && ) {
+
+    }
     if (Constants.debugMode) {
       accelerationManager.update(getSpeedMetersPerSecond(), Timer.getFPGATimestamp());
     }
