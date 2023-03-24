@@ -4,7 +4,10 @@
 
 package frc.robot.commands.Placement;
 
+import com.ctre.phoenix.schedulers.ConcurrentScheduler;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.ExtensionArm;
 
 /** An example command that uses an example subsystem. */
@@ -26,7 +29,9 @@ public class ExtendExtension extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_placementExtension.updateValues();
+    if (Constants.debugMode) {
+      m_placementExtension.updateValues();
+    }
     m_placementExtension.extendArmFull();
   }
 

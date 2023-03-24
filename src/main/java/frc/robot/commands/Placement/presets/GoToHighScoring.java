@@ -4,7 +4,6 @@
 
 package frc.robot.commands.Placement.presets;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ExtensionArm;
 import frc.robot.subsystems.RotaryArm;
