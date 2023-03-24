@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -40,7 +41,7 @@ public class ExtensionArm extends SubsystemBase {
 
   private double currentSetpoint = 0;
 
-
+  public Joystick m_xboxController;
   /**
    * Network table variables
    */
@@ -53,14 +54,16 @@ public class ExtensionArm extends SubsystemBase {
   public double l_placementExtensionArmD;
   public GenericEntry n_placementExtensionArmS_Strength;
   public double l_placementExtensionArmS_Strength;
-
   public final double collapsedPosition = 0;
   public final double intermediatePosition = Constants.kMaxExtensionLength / 2;
   public final double extendedPosition = Constants.kMaxExtensionLength;
 
+  public double armSpeed = 0;
+
   public int sStrengthPlacementExtensionArm = 0;
 
   protected final VelocityGainFilter gainFilter;
+
 
   /**
    * Initializes the extension arm and configures the necessary device settings.
@@ -102,13 +105,29 @@ public class ExtensionArm extends SubsystemBase {
     this.ligament = ligament;
   }
 
+  /* If the Arm is retracting and hits the limit switch we reset encoder's and
+  stop the arm from further retracting to prevent the motor from breaking the arm.
+  We also need to check if the arm is at max extension. If so then we stop the motors*/
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     ligament.setLength(getLengthExtensionArm());
+
+    if (armSpeed < 0) {
+
+      if (brokeLimit()) {
+          resetEncoders();
+          spinExtensionArm(0);
+      }
+    } else if (armSpeed > 0) {
+      if (getPositionTicks() >= Math.abs(Constants.kMaxExtensionLength)) {
+        spinExtensionArm(0);
+      }
+    }
   }
 
-  /**
+
+  /*
    * Extend the arm all the way out
    */
   public void extendArmFull() {
@@ -217,7 +236,9 @@ public class ExtensionArm extends SubsystemBase {
       accelerationManager.update(getSpeedMetersPerSecond(), Timer.getFPGATimestamp());
     }
     extensionMotor.set(scalar);
+    armSpeed = scalar;
   }
+
 
   /**
    * This method will be called once per scheduler run during simulation
@@ -258,4 +279,11 @@ public class ExtensionArm extends SubsystemBase {
   public double getLengthExtensionArm(){
     return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition() + Constants.kExtensionArmLengthExtended;
   }
+
+  /*public MoveExtensionArm(ExtensionArm subsystem, Joystick m_xboxController) {
+    ExtensionArm m_extensionArm;
+    this.m_xboxController = m_xboxController;
+//    boolean flag = false;
+  }*/
+
 }

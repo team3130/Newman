@@ -40,27 +40,6 @@ public class MoveExtensionArm extends CommandBase {
     double y = -m_xboxController.getRawAxis(Constants.Buttons.LST_AXS_LJOYSTICKY); // inverted
     y = y * Math.abs(y);
 
-    if (Math.abs(y) < Constants.kDeadband || (m_extensionArm.brokeLimit() && y < 0)) {
-      y = 0;
-    }
-
-    if (Math.abs(m_extensionArm.getPositionTicks()) > Math.abs(Constants.kMaxExtensionLength) && y > 0) {
-      y = 0;
-    }
-
-/*    if (m_extensionArm.brokeLimit()) {
-      // m_extensionArm.RumbleFullPower(m_xboxController);
-       if (!justHitLimit) {
-         m_extensionArm.resetEncoders();
-         justHitLimit = true;
-       }
-    }
-    else {
-      if (justHitLimit) {
-        justHitLimit = false;
-      }
-    }*/
-
     m_extensionArm.spinExtensionArm(y); //that max is currently bs
   }
 
