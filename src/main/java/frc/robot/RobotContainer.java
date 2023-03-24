@@ -85,7 +85,7 @@ public class RobotContainer {
     m_ExtensionArm = new ExtensionArm(zero);
     m_RotaryArm = new RotaryArm(zero);
 
-    m_autonManager = new AutonManager(m_chassis, m_pivot);
+    m_autonManager = new AutonManager(m_chassis, m_pivot, m_RotaryArm, m_ExtensionArm, m_manipulator);
 
     m_chassis.setDefaultCommand(new TeleopDrive(m_chassis, m_driverGamepad));
 

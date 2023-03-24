@@ -16,8 +16,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Intake.ToggleIntake;
-import frc.robot.subsystems.Chassis;
-import frc.robot.subsystems.IntakePivot;
+import frc.robot.commands.Manipulator.ToggleGrabber;
+import frc.robot.commands.Placement.presets.GoToHighScoring;
+import frc.robot.subsystems.*;
 
 /**
  * A class to generate our auton paths from PathPlanner
@@ -32,13 +33,16 @@ public class AutonManager {
     private DriverStation.Alliance alliance;
 
     protected IntakePivot m_intake;
+    protected RotaryArm rotary;
+    protected ExtensionArm extension;
+    protected Manipulator m_manipulator;
 
     /**
      * Makes an object to make and manage auton paths.
      * Also calls {@link #populateChooser()}
      * @param chassis needs chassis so that commands made in here can use it
      */
-    public AutonManager(Chassis chassis, IntakePivot intake){
+    public AutonManager(Chassis chassis, IntakePivot intake, RotaryArm rotary, ExtensionArm extension, Manipulator manipulator){
         this.m_autonChooser = new SendableChooser<>();
         this.m_chassis = chassis;
 
@@ -47,11 +51,14 @@ public class AutonManager {
 
         SmartDashboard.putData(m_autonChooser);
 
+        m_intake = intake;
+        this.rotary = rotary;
+        this.extension = extension;
+        m_manipulator = manipulator;
+
         populateChooser();
 
         alliance = DriverStation.getAlliance();
-
-        m_intake = intake;
     }
 
     /**
@@ -69,6 +76,7 @@ public class AutonManager {
         // m_autonChooser.addOption("circuit", complexPathTest());
         // m_autonChooser.addOption("AprilTagTesting",aprilTagTesting());
         m_autonChooser.addOption("move out of start", generateMovOutOfStart());
+        m_autonChooser.addOption("move out and clamp", generateMoveOutAndClamp());
         m_autonChooser.addOption("Default path", generateExamplePathFromPoses());
     }
 
@@ -114,7 +122,7 @@ public class AutonManager {
                 m_chassis);
 
 
-        return new AutonCommand(holonomicControllerCommand, trajectory, m_chassis);
+        return new AutonCommand(holonomicControllerCommand, trajectory);
     }
 
     /**
@@ -148,7 +156,7 @@ public class AutonManager {
      */
     public SequentialCommandGroup wrapCmd(AutonCommand command) {
                 return new SequentialCommandGroup(
-                    new InstantCommand(() -> m_chassis.resetOdometry(command.getStartPosition())),
+                    new InstantCommand(() -> m_chassis.resetOdometry(new Pose2d(command.getStartPosition().getTranslation(), command.getStartRotation()))),
                     command.getCmd(),
                     new InstantCommand(m_chassis::stopModules)
         );
@@ -257,7 +265,7 @@ public class AutonManager {
 
     public CommandBase makeCmdToGoToPlace(Pose2d current) {
         final int index = (int) (current.getY() * 2.5);
-        final double y_value = ((Constants.yPositionsForRowBounds[index] - (Constants.yPositionsForRowBounds[index + 1]) / 2)) + Constants.yPositionsForRowBounds[index];
+        final double y_value = ((Constants.Field.yPositionsForRowBounds[index] - (Constants.Field.yPositionsForRowBounds[index + 1]) / 2)) + Constants.Field.yPositionsForRowBounds[index];
         final double x_value = (DriverStation.getAlliance() == DriverStation.Alliance.Blue) ? 1.35 : 14.7;
         final double rotation = (DriverStation.getAlliance() == DriverStation.Alliance.Blue) ? 0 : Math.PI;
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(safe_constraints,
@@ -276,6 +284,12 @@ public class AutonManager {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("MoveOutOfStart", safe_constraints);
         CommandBase command = wrapCmd(autonCommandGenerator(trajectory));
         return new SequentialCommandGroup(new ToggleIntake(m_intake), command);
+    }
+
+    private CommandBase generateMoveOutAndClamp() {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("clamp and move out", safe_constraints);
+        CommandBase command = wrapCmd(autonCommandGenerator(trajectory));
+        return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), command, new GoToHighScoring(rotary, extension));
     }
 
 
