@@ -337,6 +337,10 @@ public class Chassis extends SubsystemBase {
         builder.addDoubleProperty("pSwerveModule", this::getPValuesForSwerveModules, this::updatePValuesFromSwerveModule);
         builder.addDoubleProperty("dSwerveModule", this::getDValuesForSwerveModules, this::updateDValuesFromSwerveModule);
         builder.addDoubleProperty("Navx", this::getHeading, null);
+        builder.addDoubleProperty("Navx Roll", Navx::getRoll, null);
+        builder.addDoubleProperty("Navx RollRate", Navx::getRollVelocity, null);
+        builder.addDoubleProperty("Navx Pitch", Navx::getPitch, null);
+        builder.addDoubleProperty("Navx PitchRate", Navx::getPitchVelocity, null);
         builder.addDoubleProperty("X position", this::getX, null);
         builder.addDoubleProperty("Y position", this::getY, null);
         builder.addDoubleProperty("rotation", this::getYaw, null);

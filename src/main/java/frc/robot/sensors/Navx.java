@@ -82,7 +82,8 @@ public class Navx {
      */
     public static double getPitch() {
         if (m_bNavXPresent) {
-            return m_navX.getPitch();
+            // Because Rio is turned Navx's Y axis is pointing to the left
+            return -m_navX.getRoll();
         }
         return Double.NaN;
     }
@@ -106,7 +107,8 @@ public class Navx {
      */
     public static double getRoll() {
         if (m_bNavXPresent) {
-            return m_navX.getRoll();
+            // Because Rio is turned Navx's Z axis points to back of the robot
+            return -m_navX.getYaw();
         }
         return Double.NaN;
     }
