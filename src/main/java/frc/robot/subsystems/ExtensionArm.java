@@ -10,7 +10,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -41,7 +40,6 @@ public class ExtensionArm extends SubsystemBase {
 
   private double currentSetpoint = 0;
 
-  public Joystick m_xboxController;
   /**
    * Network table variables
    */
@@ -129,8 +127,11 @@ public class ExtensionArm extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     ligament.setLength(getLengthExtensionArm());
-
-    spinExtensionArm(getSpeed(armSpeed));
+    double y = getSpeed(armSpeed);
+    if (y != armSpeed) {
+      // It's updated so update the motor
+      spinExtensionArm(y);
+    }
   }
 
 
@@ -239,9 +240,7 @@ public class ExtensionArm extends SubsystemBase {
    * @param scalar to scale the output speed
    */
   public void spinExtensionArm(double scalar) {
-    if (brokeLimit() && ) {
-
-    }
+    scalar = getSpeed(scalar);
     if (Constants.debugMode) {
       accelerationManager.update(getSpeedMetersPerSecond(), Timer.getFPGATimestamp());
     }
@@ -289,11 +288,5 @@ public class ExtensionArm extends SubsystemBase {
   public double getLengthExtensionArm(){
     return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition() + Constants.kExtensionArmLengthExtended;
   }
-
-  /*public MoveExtensionArm(ExtensionArm subsystem, Joystick m_xboxController) {
-    ExtensionArm m_extensionArm;
-    this.m_xboxController = m_xboxController;
-//    boolean flag = false;
-  }*/
 
 }
