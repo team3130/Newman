@@ -19,6 +19,7 @@ import frc.robot.subsystems.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -88,6 +89,7 @@ public class AutonCommand extends CommandBase {
 
         if (hopper != null) {
             HOPPER = new SpinHopper(m_hopper);
+            m_requirements.add(m_hopper);
         }
 
         if (m_rotaryArm != null && m_extensionArm != null && m_manipulator != null) {
@@ -107,6 +109,8 @@ public class AutonCommand extends CommandBase {
             );
 
             DO_NOTHING = new DoNothing();
+
+            m_requirements.addAll(List.of(m_rotaryArm, m_extensionArm, m_manipulator));
         }
 
         commands = new CommandBase[] {HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH, DO_NOTHING};
@@ -419,5 +423,9 @@ public class AutonCommand extends CommandBase {
             commands[index].end(interrupted);
         }
 
+    }
+
+    public Rotation2d getStartRotation() {
+        return trajectory.getInitialState().holonomicRotation;
     }
 }
