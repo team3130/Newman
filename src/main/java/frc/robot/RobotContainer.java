@@ -11,10 +11,12 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -29,9 +31,12 @@ import frc.robot.commands.Hopper.ReverseHopper;
 import frc.robot.commands.Hopper.SpinHopper;
 import frc.robot.commands.Intake.ToggleIntake;
 import frc.robot.commands.Manipulator.ToggleGrabber;
-import frc.robot.commands.Placement.*;
+import frc.robot.commands.Placement.AutoZeroExtensionArm;
+import frc.robot.commands.Placement.AutoZeroRotryArm;
+import frc.robot.commands.Placement.IntermediateExtension;
 import frc.robot.commands.Placement.ManualControl.MoveExtensionArm;
 import frc.robot.commands.Placement.ManualControl.MoveRotaryArm;
+import frc.robot.commands.Placement.ToggleBrake;
 import frc.robot.commands.Placement.presets.GoToHighScoring;
 import frc.robot.commands.Placement.presets.GoToLowScoring;
 import frc.robot.commands.Placement.presets.GoToMidScoring;
@@ -40,9 +45,6 @@ import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.Auton.AutonManager;
 import frc.robot.supportingClasses.Vision.OdoPosition;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a

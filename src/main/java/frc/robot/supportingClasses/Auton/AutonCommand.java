@@ -139,6 +139,9 @@ public class AutonCommand extends CommandBase {
                     markerToCommandMap.put(marker, 3);
                 }
             }
+/*            else if (name.contains("manipulator") || name.contains("grabber")) {
+                markerToCommandMap.put(marker, 4);
+            }*/
             else {
                 markerToCommandMap.put(marker, 4);
             }
@@ -398,6 +401,12 @@ public class AutonCommand extends CommandBase {
             }
             else {
                 toAdd.initialize();
+                if (useOptimized) {
+                    indicesToRun.add(getOptimizedIndex.apply(closest));
+                }
+                else {
+                    indicesToRun.add(markerToCommandMap.get(closest));
+                }
             }
             current = closest;
         }

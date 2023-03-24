@@ -49,7 +49,7 @@ public class Limelight {
             }
         }
     }
-    
+
     /**
      * Calculates the position of the bot relative to an april tag.
      * That calculation is then given to {@link VisionMedianFilter}.

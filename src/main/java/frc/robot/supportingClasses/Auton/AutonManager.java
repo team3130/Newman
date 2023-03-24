@@ -128,6 +128,23 @@ public class AutonManager {
         return new AutonCommand(holonomicControllerCommand, trajectory);
     }
 
+    public AutonCommand autonCommandGeneratorPlacement(PathPlannerTrajectory trajectory) {
+                PIDController xController = new PIDController(Constants.kPXController, Constants.kIXController,Constants.kDXController);
+        PIDController yController = new PIDController(Constants.kPYController, Constants.kIYController ,Constants.kDYController);
+        HolonomicDriveController holonomicDriveController = new HolonomicDriveController(xController, yController, new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, 0, Constants.kThetaControllerConstraints));
+
+        HolonomicControllerCommand holonomicControllerCommand = new HolonomicControllerCommand(
+                trajectory,
+                m_chassis::getPose2d,
+                m_chassis.getKinematics(),
+                holonomicDriveController,
+                m_chassis::setModuleStates,
+                m_chassis);
+
+
+        return new AutonCommand(holonomicControllerCommand, trajectory, rotary, extension, m_manipulator);
+    }
+
     /**
      * Wraps the command with a call to reset odometry before running the {@param first} command
      * Then adds all the commands passed into restOfCommands
@@ -333,5 +350,10 @@ public class AutonManager {
         return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), command, new GoToHighScoring(rotary, extension));
     }
 
+    public CommandBase generateMarkerPath() {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("marker test", safe_constraints);
+        AutonCommand command = autonCommandGeneratorPlacement(trajectory);
+        return wrapCmd(command);
+    }
 
 }
