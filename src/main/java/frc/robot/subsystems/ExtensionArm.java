@@ -104,15 +104,14 @@ public class ExtensionArm extends SubsystemBase {
     this.ligament = ligament;
   }
 
-  private double getSpeed(double y){
+  private double getSmartSpeed(double y){
 
-    if (armSpeed < 0) {
-
+    if (y < 0) {
       if (brokeLimit()) {
         resetEncoders();
         y = 0;
       }
-    } else if (armSpeed > 0) {
+    } else if (y > 0) {
       if (getPositionTicks() >= Math.abs(Constants.kMaxExtensionLength)) {
         y = 0;
       }
@@ -127,7 +126,7 @@ public class ExtensionArm extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     ligament.setLength(getLengthExtensionArm());
-    double y = getSpeed(armSpeed);
+    double y = getSmartSpeed(armSpeed);
     if (y != armSpeed) {
       // It's updated so update the motor
       spinExtensionArm(y);
@@ -240,7 +239,7 @@ public class ExtensionArm extends SubsystemBase {
    * @param scalar to scale the output speed
    */
   public void spinExtensionArm(double scalar) {
-    scalar = getSpeed(scalar);
+    scalar = getSmartSpeed(scalar);
     if (Constants.debugMode) {
       accelerationManager.update(getSpeedMetersPerSecond(), Timer.getFPGATimestamp());
     }
