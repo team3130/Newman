@@ -7,10 +7,11 @@ package frc.robot.commands.Chassis.presets;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.IntakePivot;
+import frc.robot.subsystems.Manipulator;
 import frc.robot.supportingClasses.Auton.AutonManager;
 
 /** A command to go to whatever origin is */
-public class DriveForwardAndIntake extends CommandBase {
+public class GoToClampAndDriveOut extends CommandBase {
   private final Chassis m_chassis;
   private final AutonManager autonManager;
   private Thread m_thread;
@@ -18,16 +19,19 @@ public class DriveForwardAndIntake extends CommandBase {
 
   private CommandBase autonCommand;
 
+  private Manipulator manipulator;
+
   /**
    * Creates a new goToOrigin Command.
    *
    * @param chassis The subsystem used by this command.
    */
-  public DriveForwardAndIntake(Chassis chassis, IntakePivot intake, AutonManager manager) {
+  public GoToClampAndDriveOut(Chassis chassis, Manipulator manipulator, AutonManager manager) {
     m_chassis = chassis;
     // Use addRequirements() here to declare subsystem dependencies.
     autonManager = manager;
-    addRequirements(chassis, intake);
+    this.manipulator = manipulator;
+    addRequirements(chassis, manipulator);
   }
 
   // Called when the command is initially scheduled.
@@ -36,7 +40,7 @@ public class DriveForwardAndIntake extends CommandBase {
     firstHit = true;
     autonCommand = null;
 
-    m_thread = new Thread(() -> autonCommand = autonManager.makeCmdToIntakeAndGoForward(m_chassis.getPose2d()));
+    m_thread = new Thread(() -> autonCommand = autonManager.makeCmdToGoBackwardsClampAndForwards(m_chassis.getPose2d()));
     m_thread.start();
   }
 

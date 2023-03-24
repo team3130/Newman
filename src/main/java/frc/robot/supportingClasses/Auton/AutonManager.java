@@ -13,10 +13,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Chassis.presets.DriveForwardAndIntake;
+import frc.robot.commands.Chassis.presets.GoToClampAndDriveOut;
 import frc.robot.commands.Intake.ToggleIntake;
 import frc.robot.commands.Manipulator.ToggleGrabber;
 import frc.robot.commands.Placement.AutoZeroExtensionArm;
@@ -33,7 +36,7 @@ public class AutonManager {
     protected PathConstraints safe_constraints; // safe speeds for testing
     protected PathConstraints violent_constraints; // wild speeds for if we want to go brrrrrrrrr
 
-    private DriverStation.Alliance alliance;
+    private final DriverStation.Alliance alliance;
 
     protected IntakePivot m_intake;
     protected RotaryArm rotary;
@@ -78,8 +81,8 @@ public class AutonManager {
         // m_autonChooser.addOption("feelin spicy", generateExamplePathFromPoses());
         // m_autonChooser.addOption("circuit", complexPathTest());
         // m_autonChooser.addOption("AprilTagTesting",aprilTagTesting());
-        m_autonChooser.addOption("move out of start intake pushy", new DriveForwardAndIntake(m_chassis, this));
-        m_autonChooser.addOption("move out and clamp", generateMoveOutAndClamp());
+        m_autonChooser.addOption("move out of start intake pushy", new DriveForwardAndIntake(m_chassis, m_intake, this));
+        m_autonChooser.addOption("move out and clamp", new GoToClampAndDriveOut(m_chassis, m_manipulator, this));
         m_autonChooser.addOption("Two meter forward", generateExamplePathFromPoses()); // two meter forward (stable)
         m_autonChooser.addOption("Intake spit", actuateIntake());
         m_autonChooser.addOption("top dumb", generateTopDumb());
@@ -369,6 +372,22 @@ public class AutonManager {
                 ),
 
                 new PathPoint(current.getTranslation().plus(new Translation2d(2, 0)), new Rotation2d(), current.getRotation())
+        );
+
+        AutonCommand command = autonCommandGenerator(trajectory);
+        return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), wrapCmd(command));
+    }
+
+    public CommandBase makeCmdToGoBackwardsClampAndForwards(Pose2d curr) {
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+                violent_constraints,
+                new PathPoint(
+                        curr.getTranslation(),
+                        new Rotation2d(0), m_chassis.getRotation2d()
+                ),
+
+                new PathPoint(curr.getTranslation().plus(new Translation2d(-2, 0)), new Rotation2d(0), curr.getRotation()),
+                new PathPoint(curr.getTranslation(), new Rotation2d(0), curr.getRotation())
         );
 
         AutonCommand command = autonCommandGenerator(trajectory);

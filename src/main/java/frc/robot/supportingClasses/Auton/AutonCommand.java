@@ -371,6 +371,7 @@ public class AutonCommand extends CommandBase {
     @Override
     public void initialize() {
         cmd.initialize();
+        indicesToRun.clear();
     }
 
     @Override
