@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -51,7 +52,7 @@ public class AutonManager {
         safe_constraints = new PathConstraints(2, 2);
         violent_constraints = new PathConstraints(Constants.kPhysicalMaxSpeedMetersPerSecond, Constants.kPhysicalMaxSpeedMetersPerSecond);
 
-        SmartDashboard.putData(m_autonChooser);
+        Shuffleboard.getTab("Comp").add(m_autonChooser);
 
         m_intake = intake;
         this.rotary = rotary;
@@ -327,7 +328,7 @@ public class AutonManager {
     private CommandBase generateMoveOutAndClamp() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("clamp and move out", safe_constraints);
         CommandBase command = wrapCmd(autonCommandGenerator(trajectory));
-        return new SequentialCommandGroup(new AutoZeroExtensionArm(extension), new ToggleGrabber(m_manipulator), command, new GoToHighScoring(rotary, extension));
+        return new SequentialCommandGroup(new AutoZeroExtensionArm(extension), new ToggleGrabber(m_manipulator), command);
     }
 
     public CommandBase actuateIntake() {

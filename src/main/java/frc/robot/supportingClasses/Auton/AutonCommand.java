@@ -86,7 +86,7 @@ public class AutonCommand extends CommandBase {
 
         markerToCommandMap = new HashMap<>();
 
-/*        if (chassis != null) {
+        if (chassis != null) {
             m_requirements.add(chassis);
         }
 
@@ -96,7 +96,7 @@ public class AutonCommand extends CommandBase {
 
         if (m_rotaryArm != null && m_extensionArm != null && m_manipulator != null) {
             m_requirements.addAll(List.of(m_rotaryArm, m_extensionArm, m_manipulator));
-        }*/
+        }
 
         CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null, PLACE_HIGH = null, DO_NOTHING = null;
 
@@ -228,11 +228,18 @@ public class AutonCommand extends CommandBase {
      * @return the closest event using a binary search
      */
     protected PathPlannerTrajectory.EventMarker findClosestWithBinSearch() {
+        if (markers.size() == 0) {
+            return null;
+        }
+        else if (markers.size() == 1) {
+            return markers.get(0);
+        }
+
         int low = 0;
-        int high = markers.size();
+        int high = markers.size() - 1;
         // bin search for closest one
         while (low != high) {
-            int midPosition = (low + high) / 2;
+            int midPosition = (low + high) / 2 ;
             if (m_timer.get() >= markers.get(midPosition).timeSeconds || m_timer.get() < markers.get(midPosition + 1).timeSeconds) {
                 return markers.get(midPosition);
             }

@@ -59,7 +59,7 @@ public class ExtensionArm extends SubsystemBase {
 
   public double armSpeed = 0;
   public int sStrengthPlacementExtensionArm = 0;
-  private final double positionDeadband = 1000;
+  private final double positionDeadband = 10000;
 
   protected final VelocityGainFilter gainFilter;
 
@@ -277,7 +277,7 @@ public class ExtensionArm extends SubsystemBase {
   }
 
   public boolean atPosition() {
-    return extensionMotor.isMotionProfileFinished() && Math.abs(extensionMotor.getSelectedSensorPosition() - currentSetpoint) <= positionDeadband; //TODO: better is finished logic
+    return Math.abs(extensionMotor.getSelectedSensorPosition() - currentSetpoint) <= positionDeadband; //TODO: better is finished logic
   }
 
   /**
