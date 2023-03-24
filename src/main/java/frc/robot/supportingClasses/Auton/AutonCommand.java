@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DoNothing;
 import frc.robot.commands.Hopper.SpinHopper;
@@ -85,7 +86,7 @@ public class AutonCommand extends CommandBase {
 
         markerToCommandMap = new HashMap<>();
 
-        if (chassis != null) {
+/*        if (chassis != null) {
             m_requirements.add(chassis);
         }
 
@@ -95,7 +96,38 @@ public class AutonCommand extends CommandBase {
 
         if (m_rotaryArm != null && m_extensionArm != null && m_manipulator != null) {
             m_requirements.addAll(List.of(m_rotaryArm, m_extensionArm, m_manipulator));
+        }*/
+
+        CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null, PLACE_HIGH = null, DO_NOTHING = null;
+
+        if (m_hopper != null) {
+            HOPPER = new SpinHopper(m_hopper);
+            CommandScheduler.getInstance().registerComposedCommands(HOPPER);
         }
+
+        if (m_rotaryArm != null && m_extensionArm != null && m_manipulator != null) {
+            PLACE_LOW = new SequentialCommandGroup(
+                    new ToggleGrabber(m_manipulator), new GoToLowScoring(m_rotaryArm, m_extensionArm),
+                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
+            );
+
+            PLACE_MID = new SequentialCommandGroup(
+                    new ToggleGrabber(m_manipulator), new GoToMidScoring(m_rotaryArm, m_extensionArm),
+                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
+            );
+
+            PLACE_HIGH = new SequentialCommandGroup(
+                    new ToggleGrabber(m_manipulator), new GoToHighScoring(m_rotaryArm, m_extensionArm),
+                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
+            );
+
+            CommandScheduler.getInstance().registerComposedCommands(PLACE_LOW, PLACE_MID, PLACE_HIGH);
+        }
+
+        DO_NOTHING = new DoNothing();
+        CommandScheduler.getInstance().registerComposedCommands(DO_NOTHING);
+
+        commands = new CommandBase[] {HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH, DO_NOTHING};
 
         getOptimizedIndex = (EventMarker marker) -> (int) (marker.timeSeconds * magicScalar);
 
@@ -331,33 +363,6 @@ public class AutonCommand extends CommandBase {
      */
     @Override
     public void initialize() {
-        CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null, PLACE_HIGH = null, DO_NOTHING = null;
-
-        if (m_hopper != null) {
-            HOPPER = new SpinHopper(m_hopper);
-        }
-
-        if (m_rotaryArm != null && m_extensionArm != null && m_manipulator != null) {
-            PLACE_LOW = new SequentialCommandGroup(
-                    new ToggleGrabber(m_manipulator), new GoToLowScoring(m_rotaryArm, m_extensionArm),
-                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
-            );
-
-            PLACE_MID = new SequentialCommandGroup(
-                    new ToggleGrabber(m_manipulator), new GoToMidScoring(m_rotaryArm, m_extensionArm),
-                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
-            );
-
-            PLACE_HIGH = new SequentialCommandGroup(
-                    new ToggleGrabber(m_manipulator), new GoToHighScoring(m_rotaryArm, m_extensionArm),
-                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
-            );
-
-            DO_NOTHING = new DoNothing();
-        }
-
-        commands = new CommandBase[] {HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH, DO_NOTHING};
-
         cmd.initialize();
     }
 

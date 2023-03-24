@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.commands.Chassis.presets.DriveForwardAndIntake;
 import frc.robot.commands.Intake.ToggleIntake;
 import frc.robot.commands.Manipulator.ToggleGrabber;
 import frc.robot.commands.Placement.AutoZeroExtensionArm;
@@ -76,7 +77,7 @@ public class AutonManager {
         // m_autonChooser.addOption("feelin spicy", generateExamplePathFromPoses());
         // m_autonChooser.addOption("circuit", complexPathTest());
         // m_autonChooser.addOption("AprilTagTesting",aprilTagTesting());
-        m_autonChooser.addOption("move out of start intake pushy", generateMovOutOfStart());
+        m_autonChooser.addOption("move out of start intake pushy", new DriveForwardAndIntake(m_chassis, this));
         m_autonChooser.addOption("move out and clamp", generateMoveOutAndClamp());
         m_autonChooser.addOption("Two meter forward", generateExamplePathFromPoses()); // two meter forward (stable)
         m_autonChooser.addOption("Intake spit", actuateIntake());
@@ -354,6 +355,27 @@ public class AutonManager {
 
     public CommandBase generateMidPlaceTopStart() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("place mid top", safe_constraints);
+        AutonCommand command = autonCommandGeneratorPlacement(trajectory);
+        return wrapCmd(command);
+    }
+
+    public CommandBase makeCmdToIntakeAndGoForward(Pose2d current) {
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+                violent_constraints,
+                new PathPoint(
+                        current.getTranslation(),
+                        new Rotation2d(), m_chassis.getRotation2d()
+                ),
+
+                new PathPoint(current.getTranslation().plus(new Translation2d(2, 0)), new Rotation2d(), current.getRotation())
+        );
+
+        AutonCommand command = autonCommandGenerator(trajectory);
+        return new SequentialCommandGroup(new ToggleIntake(m_intake), wrapCmd(command));
+    }
+
+    public CommandBase generateMidPlaceBottomStart() {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("place mid bottom", safe_constraints);
         AutonCommand command = autonCommandGeneratorPlacement(trajectory);
         return wrapCmd(command);
     }
