@@ -42,7 +42,7 @@ public class GoToPickupCone extends CommandBase {
   public void execute() {
     m_rotaryArm.gotoPos(m_extensionArm.getPositionMeters());
 
-    if (m_rotaryArm.outsideBumper() && !hasStartedExtended) { // may need way outside bumper
+    if (m_rotaryArm.isAtPosition() && !hasStartedExtended) { // may need way outside bumper
       m_extensionArm.extendArmToGroundForCone();
       hasStartedExtended = true;
     }

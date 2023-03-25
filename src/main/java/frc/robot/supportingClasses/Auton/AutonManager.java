@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Newman_Constants.Constants;
-import frc.robot.commands.Chassis.presets.DriveForwardAndIntake;
 import frc.robot.commands.Chassis.presets.GoToClampAndDriveOut;
 import frc.robot.commands.Intake.ToggleIntake;
 import frc.robot.commands.Manipulator.ToggleGrabber;
@@ -81,7 +80,7 @@ public class AutonManager {
         // m_autonChooser.addOption("feelin spicy", generateExamplePathFromPoses());
         // m_autonChooser.addOption("circuit", complexPathTest());
         // m_autonChooser.addOption("AprilTagTesting",aprilTagTesting());
-        m_autonChooser.addOption("move out of start intake pushy", new DriveForwardAndIntake(m_chassis, m_intake, this));
+        m_autonChooser.addOption("move out of start intake pushy", makeCmdToIntakeAndGoForward());
         m_autonChooser.addOption("move out and clamp", new GoToClampAndDriveOut(m_chassis, m_manipulator, this));
         m_autonChooser.addOption("Two meter forward", generateExamplePathFromPoses()); // two meter forward (stable)
         m_autonChooser.addOption("Intake spit", actuateIntake());
@@ -130,7 +129,7 @@ public class AutonManager {
         PIDController yController = new PIDController(Constants.kPYController, Constants.kIYController ,Constants.kDYController);
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(xController, yController, new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, 0, Constants.kThetaControllerConstraints));
 
-        trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
+        // trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
 
         return new HolonomicControllerCommand(
                 trajectory,
@@ -362,19 +361,18 @@ public class AutonManager {
         return wrapCmd(command);
     }
 
-    public CommandBase makeCmdToIntakeAndGoForward(Pose2d current) {
+    public CommandBase makeCmdToIntakeAndGoForward() {
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 violent_constraints,
-                new PathPoint(
-                        current.getTranslation(),
-                        new Rotation2d(), m_chassis.getRotation2d()
+                new PathPoint(new Translation2d(0, 0),
+                        new Rotation2d(), new Rotation2d(0)
                 ),
 
-                new PathPoint(current.getTranslation().plus(new Translation2d(2, 0)), new Rotation2d(), current.getRotation())
+                new PathPoint(new Translation2d(1.25, 0), new Rotation2d(), new Rotation2d(0))
         );
 
         AutonCommand command = autonCommandGenerator(trajectory);
-        return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), wrapCmd(command));
+        return new SequentialCommandGroup(new ToggleIntake(m_intake), wrapCmd(command));
     }
 
     public CommandBase makeCmdToGoBackwardsClampAndForwards(Pose2d curr) {
