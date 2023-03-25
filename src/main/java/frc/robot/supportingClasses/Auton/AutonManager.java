@@ -85,9 +85,9 @@ public class AutonManager {
         m_autonChooser.addOption("move out and clamp", new GoToClampAndDriveOut(m_chassis, m_manipulator, this));
         m_autonChooser.addOption("Two meter forward", generateExamplePathFromPoses()); // two meter forward (stable)
         m_autonChooser.addOption("Intake spit", actuateIntake());
-        m_autonChooser.addOption("top dumb", generateTopDumb());
-        m_autonChooser.addOption("bottom dumb", generateBottomDumb());
-        m_autonChooser.addOption("mid placement start top", generateMidPlaceTopStart());
+        // m_autonChooser.addOption("top dumb", generateTopDumb());
+        // m_autonChooser.addOption("bottom dumb", generateBottomDumb());
+        // m_autonChooser.addOption("mid placement start top", generateMidPlaceTopStart());
         if (Constants.debugMode) {
             m_autonChooser.addOption("marker path <- not for comp", generateMarkerPath());
         }
@@ -390,7 +390,7 @@ public class AutonManager {
         );
 
         AutonCommand command = autonCommandGenerator(trajectory);
-        return new SequentialCommandGroup(new ToggleIntake(m_intake), wrapCmd(command));
+        return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), wrapCmd(command));
     }
 
     public CommandBase generateMidPlaceBottomStart() {
