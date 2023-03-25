@@ -189,7 +189,7 @@ public class RobotContainer {
     // new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new GoToPickupCube(m_rotaryArm, m_extensionArm));
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new GoToMidScoring(m_rotaryArm, m_extensionArm));
 //    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToPickupCone(m_rotaryArm, m_extensionArm));
-    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new SequentialCommandGroup(new GoToPickupCone(m_rotaryArm, m_extensionArm), new ToggleGrabber(m_manipulator)));
+    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToPickupCone(m_rotaryArm, m_extensionArm));
 //    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToLowScoring(m_rotaryArm, m_extensionArm));
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_S).whileTrue(new ReverseHopper(m_hopper, m_pivot));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new SequentialCommandGroup(
