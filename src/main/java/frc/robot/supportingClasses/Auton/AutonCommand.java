@@ -372,6 +372,10 @@ public class AutonCommand extends CommandBase {
     public void initialize() {
         cmd.initialize();
         indicesToRun.clear();
+
+        if (markers.size() >= 1) {
+            current = markers.get(0);
+        }
     }
 
     @Override
