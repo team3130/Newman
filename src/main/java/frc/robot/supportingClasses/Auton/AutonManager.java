@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Newman_Constants.Constants;
-import frc.robot.commands.Chassis.presets.GoToClampAndDriveOut;
 import frc.robot.commands.Intake.ToggleIntake;
 import frc.robot.commands.Manipulator.ToggleGrabber;
 import frc.robot.commands.Placement.AutoZeroExtensionArm;
@@ -81,7 +80,7 @@ public class AutonManager {
         // m_autonChooser.addOption("circuit", complexPathTest());
         // m_autonChooser.addOption("AprilTagTesting",aprilTagTesting());
         m_autonChooser.addOption("move out of start intake pushy", makeCmdToIntakeAndGoForward());
-        m_autonChooser.addOption("move out and clamp", new GoToClampAndDriveOut(m_chassis, m_manipulator, this));
+        m_autonChooser.addOption("move out and clamp", generateMoveOutAndClamp());
         m_autonChooser.addOption("Two meter forward", generateExamplePathFromPoses()); // two meter forward (stable)
         m_autonChooser.addOption("Intake spit", actuateIntake());
         // m_autonChooser.addOption("top dumb", generateTopDumb());
@@ -375,16 +374,16 @@ public class AutonManager {
         return new SequentialCommandGroup(new ToggleIntake(m_intake), wrapCmd(command));
     }
 
-    public CommandBase makeCmdToGoBackwardsClampAndForwards(Pose2d curr) {
+    public CommandBase makeCmdToGoBackwardsClampAndForwards() {
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 violent_constraints,
                 new PathPoint(
-                        curr.getTranslation(),
-                        new Rotation2d(0), m_chassis.getRotation2d()
+                        new Translation2d(0, 0),
+                        new Rotation2d(0), new Rotation2d()
                 ),
 
-                new PathPoint(curr.getTranslation().plus(new Translation2d(-2, 0)), new Rotation2d(0), curr.getRotation()),
-                new PathPoint(curr.getTranslation(), new Rotation2d(0), curr.getRotation())
+                new PathPoint(new Translation2d(-2, 0), new Rotation2d(0), new Rotation2d(0)),
+                new PathPoint(new Translation2d(0, 0), new Rotation2d(0), new Rotation2d(0))
         );
 
         AutonCommand command = autonCommandGenerator(trajectory);

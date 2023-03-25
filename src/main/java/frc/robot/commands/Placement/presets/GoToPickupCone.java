@@ -52,7 +52,6 @@ public class GoToPickupCone extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_rotaryArm.stop();
-    m_rotaryArm.engageBrake();
     m_extensionArm.stop();
   }
 
