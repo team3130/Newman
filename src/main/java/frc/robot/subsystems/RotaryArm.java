@@ -199,14 +199,6 @@ public class RotaryArm extends SubsystemBase {
     rotaryPID.setGoal(Constants.lowPosition);
   }
 
-  /**
-   * Make the setpoint for the controller low
-   */
-  public void makeSetpointGround(){
-    resetPIDController();
-    rotaryPID.setGoal(Constants.offGroundAngle);
-  }
-
   public void makeSetpointGroundCone() {
     resetPIDController();
     rotaryPID.setGoal(Constants.offGroundAngleCone);

@@ -287,11 +287,6 @@ public class ExtensionArm extends SubsystemBase {
     return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition() + Constants.kExtensionArmLengthExtended;
   }
 
-    public void extendArmToGroundForCube() {
-    currentSetpoint = Constants.offGroundPositionCube;
-    extensionMotor.set(ControlMode.MotionMagic, currentSetpoint);
-  }
-
   public void extendArmToGroundForCone() {
     currentSetpoint = Constants.offGroundPositionCone;
     extensionMotor.set(ControlMode.MotionMagic, currentSetpoint);

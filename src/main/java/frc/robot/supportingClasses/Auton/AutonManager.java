@@ -21,6 +21,7 @@ import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Intake.ToggleIntake;
 import frc.robot.commands.Manipulator.ToggleGrabber;
 import frc.robot.commands.Placement.AutoZeroExtensionArm;
+import frc.robot.commands.Placement.AutoZeroRotryArm;
 import frc.robot.commands.Placement.presets.GoToHighScoring;
 import frc.robot.subsystems.*;
 
@@ -83,6 +84,8 @@ public class AutonManager {
         m_autonChooser.addOption("move out and clamp", generateMoveOutAndClamp());
         m_autonChooser.addOption("Two meter forward", generateExamplePathFromPoses()); // two meter forward (stable)
         m_autonChooser.addOption("Intake spit", actuateIntake());
+        m_autonChooser.addOption("place in auton top", placeInAutonTop());
+        m_autonChooser.addOption("place in auton top", placeInAutonLower());
         // m_autonChooser.addOption("top dumb", generateTopDumb());
         // m_autonChooser.addOption("bottom dumb", generateBottomDumb());
         // m_autonChooser.addOption("mid placement start top", generateMidPlaceTopStart());
@@ -331,6 +334,7 @@ public class AutonManager {
         return new SequentialCommandGroup(new AutoZeroExtensionArm(extension), new ToggleGrabber(m_manipulator), command);
     }
 
+
     public CommandBase actuateIntake() {
         return new ToggleIntake(m_intake);
     }
@@ -390,9 +394,61 @@ public class AutonManager {
         return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), wrapCmd(command));
     }
 
+        public CommandBase placeInAutonTop() {
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+                safe_constraints,
+                new PathPoint(
+                        new Translation2d(0, 0),
+                        new Rotation2d(0), new Rotation2d()
+                ),
+
+                new PathPoint(new Translation2d(0.75, 0), new Rotation2d(0), new Rotation2d(0))
+        );
+
+        PathPlannerTrajectory trajectory2 = PathPlanner.generatePath(
+                safe_constraints,
+                new PathPoint(
+                        new Translation2d(0.75, 0),
+                        new Rotation2d(0), new Rotation2d()
+                ),
+
+                new PathPoint(new Translation2d(-1.75, 0), new Rotation2d(0), new Rotation2d(0))
+        );
+
+        AutonCommand command = autonCommandGenerator(trajectory);
+        AutonCommand command2 = autonCommandGenerator(trajectory2);
+        return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), new GoToHighScoring(rotary, extension), wrapCmd(command), new ToggleGrabber(m_manipulator), wrapCmd(command2), new AutoZeroExtensionArm(extension), new AutoZeroRotryArm(rotary));
+    }
+
     public CommandBase generateMidPlaceBottomStart() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("place mid bottom", safe_constraints);
         AutonCommand command = autonCommandGeneratorPlacement(trajectory);
         return wrapCmd(command);
+    }
+
+    public CommandBase placeInAutonLower() {
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+                safe_constraints,
+                new PathPoint(
+                        new Translation2d(0, 0),
+                        new Rotation2d(0), new Rotation2d()
+                ),
+
+                new PathPoint(new Translation2d(0.75, 0), new Rotation2d(0), new Rotation2d(0))
+        );
+
+        PathPlannerTrajectory trajectory2 = PathPlanner.generatePath(
+                safe_constraints,
+                new PathPoint(
+                        new Translation2d(0.75, 0),
+                        new Rotation2d(0), new Rotation2d()
+                ),
+
+                new PathPoint(new Translation2d(-4, 0), new Rotation2d(0), new Rotation2d(0))
+        );
+
+        AutonCommand command = autonCommandGenerator(trajectory);
+        AutonCommand command2 = autonCommandGenerator(trajectory2);
+        return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), new GoToHighScoring(rotary, extension), wrapCmd(command), new ToggleGrabber(m_manipulator), wrapCmd(command2), new AutoZeroExtensionArm(extension), new AutoZeroRotryArm(rotary));
     }
 }
