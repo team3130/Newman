@@ -439,7 +439,7 @@ public class AutonManager {
                         new Rotation2d(0), new Rotation2d()
                 ),
 
-                new PathPoint(new Translation2d(-0.55, 0), new Rotation2d(0), new Rotation2d(0))
+                new PathPoint(new Translation2d(0, 0), new Rotation2d(0), new Rotation2d(0))
         );
 
         AutonCommand command = autonCommandGenerator(trajectory);
