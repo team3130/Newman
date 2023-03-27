@@ -29,7 +29,7 @@ import frc.robot.subsystems.*;
  * A class to generate our auton paths from PathPlanner
  */
 public class AutonManager {
-    private final SendableChooser<Command> m_autonChooser; // shuffleboard dropdown menu for selecting the path
+    private final SendableChooser<CommandBase> m_autonChooser; // shuffleboard dropdown menu for selecting the path
     protected Chassis m_chassis; // the chassis object
 
     protected PathConstraints safe_constraints; // safe speeds for testing
@@ -99,7 +99,7 @@ public class AutonManager {
      * what to command is currently selected on shuffleboard.
      * @return the command that is selected on shuffleboard
      */
-    public Command pick() {
+    public CommandBase pick() {
         return m_autonChooser.getSelected();
     }
 
@@ -204,7 +204,7 @@ public class AutonManager {
      *     Explanation of PathPoint objects</a>
      * @return the command generated
      */
-    public Command generateExamplePathFromPoses() {
+    public CommandBase generateExamplePathFromPoses() {
         // the trajectory being made
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 /* Max velocity and acceleration the path will follow along the trapezoid profile */
@@ -395,7 +395,7 @@ public class AutonManager {
         return new SequentialCommandGroup(new ToggleManipulator(m_manipulator), wrapCmd(command));
     }
 
-        public CommandBase placeInAutonTop() {
+    public CommandBase placeInAutonTop() {
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 safe_constraints,
                 new PathPoint(

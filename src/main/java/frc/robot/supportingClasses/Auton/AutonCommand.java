@@ -51,9 +51,9 @@ public class AutonCommand extends CommandBase {
     protected final HashMap<EventMarker, Integer> markerToCommandMap; // the marker's mapped to the command to run
     protected final ArrayList<Integer> indicesToRun = new ArrayList<>(5); // what indices of commands run right now
 
-    protected final Function<EventMarker, Integer> getOptimizedIndex;
+    protected final Function<EventMarker, Integer> getOptimizedIndex; // gets the index using the optimize function
 
-    protected EventMarker current; // current
+    protected EventMarker current; // current event we are reading
 
     protected CommandBase[] commands; // commands necessary
 

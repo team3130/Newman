@@ -11,9 +11,9 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.supportingClasses.Gains.AccelerationManager;
@@ -281,10 +281,10 @@ public class ExtensionArm extends SubsystemBase {
   }
 
   /**
-   * @return the length of the extension arm
+   * @return the length of the extension arm in meters including the start length
    */
   public double getLengthExtensionArm(){
-    return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition() + Constants.kExtensionArmLengthExtended;
+    return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition() + Constants.kExtensionArmLengthRetractedMeters;
   }
 
   public void extendArmToGroundForCone() {

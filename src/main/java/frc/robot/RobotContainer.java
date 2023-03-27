@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -82,12 +81,12 @@ public class RobotContainer {
     m_pivot = new IntakePivot();
 
 
-    Mechanism2d arm = new Mechanism2d(4, 2);
-    MechanismRoot2d root = arm.getRoot("arm", 5, 5);
-    MechanismLigament2d zero = new MechanismLigament2d("retracted", Constants.kExtensionArmLengthExtended / 2, -90);
+    Mechanism2d arm = new Mechanism2d(3, 3.5);
+    MechanismRoot2d root = arm.getRoot("arm", 1, 2);
+    MechanismLigament2d zero = new MechanismLigament2d("retracted", Constants.kExtensionArmLengthExtendedMeters / 2, -90);
     root.append(zero);
 
-    SendableRegistry.add(arm, "placement");
+    SendableRegistry.add(arm, "arm");
     SmartDashboard.putData(arm);
     
     m_extensionArm = new ExtensionArm(zero);
@@ -227,7 +226,7 @@ public class RobotContainer {
    *
    * @return the auton routine
    */
-  public Command getAutonCmd() {
+  public CommandBase getAutonCmd() {
     return m_autonManager.pick();
   }
 
