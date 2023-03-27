@@ -23,8 +23,6 @@ import frc.robot.sensors.Navx;
 import frc.robot.supportingClasses.Vision.OdoPosition;
 import frc.robot.swerve.SwerveModule;
 
-import java.util.Arrays;
-
 
 public class Chassis extends SubsystemBase {
     /** The geometry of the swerve modules */
