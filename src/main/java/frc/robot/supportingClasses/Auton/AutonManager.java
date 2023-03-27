@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Intake.ToggleIntake;
-import frc.robot.commands.Manipulator.ToggleGrabber;
+import frc.robot.commands.Manipulator.ToggleManipulator;
 import frc.robot.commands.Placement.AutoZeroExtensionArm;
 import frc.robot.commands.Placement.AutoZeroRotryArm;
 import frc.robot.commands.Placement.presets.GoToHighScoring;
@@ -332,7 +332,7 @@ public class AutonManager {
     private CommandBase generateMoveOutAndClamp() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("clamp and move out", safe_constraints);
         CommandBase command = wrapCmd(autonCommandGenerator(trajectory));
-        return new SequentialCommandGroup(new AutoZeroExtensionArm(extension), new ToggleGrabber(m_manipulator), command);
+        return new SequentialCommandGroup(new AutoZeroExtensionArm(extension), new ToggleManipulator(m_manipulator), command);
     }
 
 
@@ -343,13 +343,13 @@ public class AutonManager {
     public CommandBase generateTopDumb() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("dumb leave top", safe_constraints);
         CommandBase command = wrapCmd(autonCommandGenerator(trajectory));
-        return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), command, new GoToHighScoring(rotary, extension));
+        return new SequentialCommandGroup(new ToggleManipulator(m_manipulator), command, new GoToHighScoring(rotary, extension));
     }
 
     public CommandBase generateBottomDumb() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("dumb leave bottom", safe_constraints);
         CommandBase command = wrapCmd(autonCommandGenerator(trajectory));
-        return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), command, new GoToHighScoring(rotary, extension));
+        return new SequentialCommandGroup(new ToggleManipulator(m_manipulator), command, new GoToHighScoring(rotary, extension));
     }
 
     public CommandBase generateMarkerPath() {
@@ -392,7 +392,7 @@ public class AutonManager {
         );
 
         AutonCommand command = autonCommandGenerator(trajectory);
-        return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), wrapCmd(command));
+        return new SequentialCommandGroup(new ToggleManipulator(m_manipulator), wrapCmd(command));
     }
 
         public CommandBase placeInAutonTop() {
@@ -418,7 +418,7 @@ public class AutonManager {
 
         AutonCommand command = autonCommandGenerator(trajectory);
         AutonCommand command2 = autonCommandGenerator(trajectory2);
-        return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), new GoToHighScoring(rotary, extension), wrapCmd(command), new ToggleGrabber(m_manipulator), wrapCmd(command2), new AutoZeroExtensionArm(extension), new AutoZeroRotryArm(rotary));
+        return new SequentialCommandGroup(new ToggleManipulator(m_manipulator), new GoToHighScoring(rotary, extension), wrapCmd(command), new ToggleManipulator(m_manipulator), wrapCmd(command2), new AutoZeroExtensionArm(extension), new AutoZeroRotryArm(rotary));
     }
 
     public CommandBase placeInAuton() {
@@ -444,7 +444,7 @@ public class AutonManager {
 
         AutonCommand command = autonCommandGenerator(trajectory);
         AutonCommand command2 = autonCommandGenerator(trajectory2);
-        return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), new GoToHighScoring(rotary, extension), wrapCmd(command), new ToggleGrabber(m_manipulator), wrapCmd(command2), new AutoZeroExtensionArm(extension), new AutoZeroRotryArm(rotary));
+        return new SequentialCommandGroup(new ToggleManipulator(m_manipulator), new GoToHighScoring(rotary, extension), wrapCmd(command), new ToggleManipulator(m_manipulator), wrapCmd(command2), new AutoZeroExtensionArm(extension), new AutoZeroRotryArm(rotary));
     }
 
     public CommandBase generateMidPlaceBottomStart() {
@@ -476,6 +476,6 @@ public class AutonManager {
 
         AutonCommand command = autonCommandGenerator(trajectory);
         AutonCommand command2 = autonCommandGenerator(trajectory2);
-        return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), new GoToHighScoring(rotary, extension), wrapCmd(command), new ToggleGrabber(m_manipulator), wrapCmd(command2), new AutoZeroExtensionArm(extension), new AutoZeroRotryArm(rotary));
+        return new SequentialCommandGroup(new ToggleManipulator(m_manipulator), new GoToHighScoring(rotary, extension), wrapCmd(command), new ToggleManipulator(m_manipulator), wrapCmd(command2), new AutoZeroExtensionArm(extension), new AutoZeroRotryArm(rotary));
     }
 }

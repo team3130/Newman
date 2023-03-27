@@ -43,14 +43,14 @@ public class ExtensionArm extends SubsystemBase {
   /**
    * Network table variables
    */
-  private ShuffleboardTab Placement;
-  private GenericEntry n_placementExtensionArmP;
+  private final ShuffleboardTab Placement;
+  private final GenericEntry n_placementExtensionArmP;
   private double l_placementExtensionArmP;
-  private GenericEntry n_placementExtensionArmI;
+  private final GenericEntry n_placementExtensionArmI;
   private double l_placementExtensionArmI;
-  private GenericEntry n_placementExtensionArmD;
+  private final GenericEntry n_placementExtensionArmD;
   private double l_placementExtensionArmD;
-  private GenericEntry n_placementExtensionArmS_Strength;
+  private final GenericEntry n_placementExtensionArmS_Strength;
   private double l_placementExtensionArmS_Strength;
 
   private final double collapsedPosition = 0;

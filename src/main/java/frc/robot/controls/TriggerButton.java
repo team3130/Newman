@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class TriggerButton extends JoystickButton {
-    private GenericHID stick;
-    private int axis;
+    private final GenericHID stick;
+    private final int axis;
 
     /**
      * Creates a joystick button for triggering commands.

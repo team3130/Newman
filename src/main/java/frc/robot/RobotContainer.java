@@ -31,15 +31,14 @@ import frc.robot.commands.Chassis.presets.GoToHumanPlayerStation;
 import frc.robot.commands.Hopper.ReverseHopper;
 import frc.robot.commands.Hopper.SpinHopper;
 import frc.robot.commands.Intake.ToggleIntake;
-import frc.robot.commands.Manipulator.ToggleGrabber;
+import frc.robot.commands.Manipulator.ToggleManipulator;
 import frc.robot.commands.Placement.AutoZeroExtensionArm;
 import frc.robot.commands.Placement.AutoZeroRotryArm;
-import frc.robot.commands.Placement.IntermediateExtension;
 import frc.robot.commands.Placement.ManualControl.MoveExtensionArm;
 import frc.robot.commands.Placement.ManualControl.MoveRotaryArm;
 import frc.robot.commands.Placement.ToggleBrake;
 import frc.robot.commands.Placement.presets.*;
-import frc.robot.controls.JoystickTrigger;
+import frc.robot.controls.TriggerButton;
 import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.Auton.AutonManager;
@@ -161,8 +160,8 @@ public class RobotContainer {
     //new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new Balancing(m_chassis));
 
     if (Constants.debugMode) {
-      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
-      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlaceToPlace(m_chassis, m_autonManager));
+      new TriggerButton(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
+      new TriggerButton(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlaceToPlace(m_chassis, m_autonManager));
     }
 
     //Weapons Gamepad:
@@ -182,7 +181,7 @@ public class RobotContainer {
     ));*/
 
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).onTrue(new ToggleBrake(m_rotaryArm));
-    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).onTrue(new ToggleGrabber(m_manipulator));
+    new TriggerButton(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).onTrue(new ToggleManipulator(m_manipulator));
 /*    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new AutoZeroExtensionArm(m_ExtensionArm));
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new AutoZeroRotryArm(m_RotaryArm));*/
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new GoToHighScoring(m_rotaryArm, m_extensionArm));

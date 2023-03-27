@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DoNothing;
 import frc.robot.commands.Hopper.SpinHopper;
-import frc.robot.commands.Manipulator.ToggleGrabber;
+import frc.robot.commands.Manipulator.ToggleManipulator;
 import frc.robot.commands.Placement.AutoZeroExtensionArm;
 import frc.robot.commands.Placement.AutoZeroRotryArm;
 import frc.robot.commands.Placement.presets.GoToHighScoring;
@@ -107,18 +107,18 @@ public class AutonCommand extends CommandBase {
 
         if (m_rotaryArm != null && m_extensionArm != null && m_manipulator != null) {
             PLACE_LOW = new SequentialCommandGroup(
-                    new ToggleGrabber(m_manipulator), new GoToLowScoring(m_rotaryArm, m_extensionArm),
-                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
+                    new ToggleManipulator(m_manipulator), new GoToLowScoring(m_rotaryArm, m_extensionArm),
+                    new ToggleManipulator(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
             );
 
             PLACE_MID = new SequentialCommandGroup(
-                    new ToggleGrabber(m_manipulator), new GoToMidScoring(m_rotaryArm, m_extensionArm),
-                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
+                    new ToggleManipulator(m_manipulator), new GoToMidScoring(m_rotaryArm, m_extensionArm),
+                    new ToggleManipulator(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
             );
 
             PLACE_HIGH = new SequentialCommandGroup(
-                    new ToggleGrabber(m_manipulator), new GoToHighScoring(m_rotaryArm, m_extensionArm),
-                    new ToggleGrabber(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
+                    new ToggleManipulator(m_manipulator), new GoToHighScoring(m_rotaryArm, m_extensionArm),
+                    new ToggleManipulator(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
             );
 
             CommandScheduler.getInstance().registerComposedCommands(PLACE_LOW, PLACE_MID, PLACE_HIGH);

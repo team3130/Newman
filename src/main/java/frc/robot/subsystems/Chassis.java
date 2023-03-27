@@ -45,9 +45,9 @@ public class Chassis extends SubsystemBase {
 
     private double maxSpeedRead = 0;
 
-    private Field2d field;
+    private final Field2d field;
 
-    private GenericEntry n_fieldOrriented;
+    private final GenericEntry n_fieldOrriented;
 
     /**
      * Makes a chassis that starts at 0, 0, 0

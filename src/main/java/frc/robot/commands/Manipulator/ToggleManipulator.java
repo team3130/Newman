@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Manipulator;
 
 /** An example command that uses an example subsystem. */
-public class ToggleGrabber extends InstantCommand {
+public class ToggleManipulator extends InstantCommand {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Manipulator m_manipulator;
 
@@ -17,7 +17,7 @@ public class ToggleGrabber extends InstantCommand {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ToggleGrabber(Manipulator subsystem) {
+  public ToggleManipulator(Manipulator subsystem) {
     m_manipulator = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);

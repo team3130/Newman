@@ -24,7 +24,7 @@ public class Limelight {
 
     protected PhotonCamera camera;
 
-    private static ShuffleboardTab tab = Shuffleboard.getTab("PhotonCamera");
+    private static final ShuffleboardTab tab = Shuffleboard.getTab("PhotonCamera");
     AprilTagFieldLayout aprilTagFieldLayout;
     VisionMedianFilter filter;
     int successfulUpdates = 0;
