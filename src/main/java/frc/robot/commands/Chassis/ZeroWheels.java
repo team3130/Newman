@@ -9,7 +9,6 @@ import frc.robot.subsystems.Chassis;
 
 /** An example command that uses an example subsystem. */
 public class ZeroWheels extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Chassis m_chassis;
   /**
    * Creates a new ExampleCommand.
@@ -42,6 +41,6 @@ public class ZeroWheels extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_chassis.wheelsAreZeroed();
+    return m_chassis.turnToAnglePIDIsDone();
   }
 }
