@@ -87,9 +87,8 @@ public class RobotContainer {
     MechanismLigament2d zero = new MechanismLigament2d("retracted", Constants.kExtensionArmLengthExtended / 2, -90);
     root.append(zero);
 
-    /*
     SendableRegistry.add(arm, "placement");
-    Shuffleboard.getTab("Test").add(arm);*/
+    SmartDashboard.putData(arm);
     
     m_extensionArm = new ExtensionArm(zero);
     m_rotaryArm = new RotaryArm(zero);
