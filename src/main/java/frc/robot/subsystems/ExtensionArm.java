@@ -270,7 +270,7 @@ public class ExtensionArm extends SubsystemBase {
   }
 
   public double getDistanceExtensionArm(){
-    return Constants.ticksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorPosition();
+    return Constants.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorPosition();
   }
 
   /**
