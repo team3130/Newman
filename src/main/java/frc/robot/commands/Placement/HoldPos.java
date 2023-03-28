@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.ExtensionArm;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.supportingClasses.BoundingBox;
 
 /** An example command that uses an example subsystem. */
 public class HoldPos extends CommandBase {
@@ -17,7 +18,7 @@ public class HoldPos extends CommandBase {
    * @param subsystem The subsystem used by this command.
    */
   // bmp stands for bottom, mid, or high
-  public ExampleCommand(ExtensionArm extensionarm, int bmp) {
+  public HoldPos(ExtensionArm extensionarm, int bmp) {
     m_extensionarm = extensionarm;
     addRequirements(extensionarm);
   }
@@ -28,7 +29,11 @@ public class HoldPos extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if (BoundingBox.boxBad(m_extensionarm.armPos)) {
+      //arm stop
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override

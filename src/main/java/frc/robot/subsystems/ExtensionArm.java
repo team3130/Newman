@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.supportingClasses.Gains.AccelerationManager;
 import frc.robot.supportingClasses.Gains.VelocityGainFilter;
+import frc.robot.subsystems.Chassis;
 
 /**
  * The extension arm subsystem for the placement mechanism
@@ -27,6 +28,7 @@ public class ExtensionArm extends SubsystemBase {
   private final WPI_TalonFX extensionMotor;
   // limit switch which is at our 0 point for the extension arm
   private final DigitalInput m_limitSwitch;
+  private final Chassis m_Chassis;
 
   protected MechanismLigament2d ligament;
 
@@ -62,7 +64,6 @@ public class ExtensionArm extends SubsystemBase {
   private final double positionDeadband = 10000;
 
   protected final VelocityGainFilter gainFilter;
-
 
   /**
    * Initializes the extension arm and configures the necessary device settings.
@@ -130,6 +131,9 @@ public class ExtensionArm extends SubsystemBase {
       // It's updated so update the motor
       spinExtensionArm(y);
     }
+
+    double r = getLengthExtensionArm() + 0.26;
+    Pose3d armPos = new Pose3d(r * math.cos(m_chassis.getYaw()), 0, r * math.sin(getYaw()));
   }
 
 

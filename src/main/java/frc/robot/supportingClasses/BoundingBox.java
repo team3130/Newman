@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.subsystems.ExtensionArm;
 
 /**
  * Creates a 3D bounding box
@@ -93,8 +94,14 @@ public class BoundingBox {
      * @param secondObjectPosition the position of the object you are comparing it to 3D space
      * @return the point is in the box
      */
+    /**
     public boolean isInBox(Pose3d secondObjectPosition) {
         return this.isInBox(secondObjectPosition.getX(), secondObjectPosition.getY(), secondObjectPosition.getZ());
+    }
+    */
+
+    public boolean boxBad(Pose3d secondObjectPosition) {
+        return this.isInBox2(secondObjectPosition.getX(), secondObjectPosition.getY(), secondObjectPosition.getZ());
     }
 
     /**
@@ -104,10 +111,11 @@ public class BoundingBox {
      * @param y y coordinate of the point you want to check
      * @return whether the point is in the box or not
      */
+    
     public boolean isInBox(double x, double y) {
-        return (x > xSmall && x < xBig) && (y > ySmall && y < yBig);
+        return (x > xSmall - 0.1 && x < xBig + 0.1) && (y > ySmall - 0.1 && y < yBig + 0.1);
     }
-
+    
     /**
      * A method that tells you if the passed in point is in the bounding box
      *
@@ -115,8 +123,9 @@ public class BoundingBox {
      * @param y y coordinate of the point you want to check
      * @param z z coordinate of the point you want to check
      * @return whether the point is in the box
-     */
-    public boolean isInBox(double x, double y, double z) {
+     * 
+    */
+    public boolean isInBox2(double x, double y, double z) {
         return this.isInBox(x, y) && (z > zSmall && z < zBig);
     }
 
