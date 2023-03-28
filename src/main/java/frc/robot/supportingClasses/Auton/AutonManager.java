@@ -13,10 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Intake.ToggleIntake;
 import frc.robot.commands.Manipulator.ToggleGrabber;
@@ -474,8 +471,19 @@ public class AutonManager {
                 new PathPoint(new Translation2d(-4, 0), new Rotation2d(0), new Rotation2d(0))
         );
 
-        AutonCommand command = autonCommandGenerator(trajectory);
+        CommandBase command = autonCommandGenerator(trajectory);
         AutonCommand command2 = autonCommandGenerator(trajectory2);
-        return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), new GoToHighScoring(rotary, extension), wrapCmd(command), new ToggleGrabber(m_manipulator), wrapCmd(command2), new AutoZeroExtensionArm(extension), new AutoZeroRotryArm(rotary));
+
+        if (Constants.debugMode) {
+            command = wrapCmd((AutonCommand) command);
+        }
+
+        return new SequentialCommandGroup(new ToggleGrabber(m_manipulator), new GoToHighScoring(rotary, extension),
+                command, new ToggleGrabber(m_manipulator),
+                new ParallelCommandGroup(
+                        command2,
+                        new SequentialCommandGroup(
+                                new AutoZeroExtensionArm(extension),
+                                new AutoZeroRotryArm(rotary))));
     }
 }
