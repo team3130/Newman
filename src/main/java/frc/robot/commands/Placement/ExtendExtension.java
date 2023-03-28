@@ -13,11 +13,7 @@ import frc.robot.subsystems.ExtensionArm;
 /** An example command that uses an example subsystem. */
 public class ExtendExtension extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-<<<<<<< HEAD:src/main/java/frc/robot/commands/Placement/MoveRotaryArm.java
-  public final RotaryArm m_rotaryArm;
-=======
   private final ExtensionArm m_placementExtension;
->>>>>>> main:src/main/java/frc/robot/commands/Placement/ExtendExtension.java
 
   /**
    * Creates a new Extend Extension command

@@ -7,17 +7,11 @@ package frc.robot.commands.Placement.ManualControl;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Newman_Constants.Constants;
-<<<<<<< HEAD:src/main/java/frc/robot/commands/Placement/MoveExtensionArm.java
-import frc.robot.subsystems.RotaryArm;
-import frc.robot.supportingClasses.ShuffleboardUpdated;
-=======
 import frc.robot.subsystems.ExtensionArm;
->>>>>>> main:src/main/java/frc/robot/commands/Placement/ManualControl/MoveExtensionArm.java
 
 /** A command to move the extension arm based off the joysticks */
 public class MoveExtensionArm extends CommandBase {
   private final ExtensionArm m_extensionArm;
-  private final RotaryArm m_rotaryArm;
 
   public Joystick m_xboxController;
 
@@ -28,8 +22,7 @@ public class MoveExtensionArm extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveExtensionArm(ExtensionArm subsystem, RotaryArm rsubsystem, Joystick m_xboxController) {
-    m_rotaryArm = rsubsystem;
+  public MoveExtensionArm(ExtensionArm subsystem, Joystick m_xboxController) {
     m_extensionArm = subsystem;
     this.m_xboxController = m_xboxController;
 //    boolean flag = false;
@@ -47,14 +40,7 @@ public class MoveExtensionArm extends CommandBase {
     double y = -m_xboxController.getRawAxis(Constants.Buttons.LST_AXS_LJOYSTICKY); // inverted
     y = y * Math.abs(y);
 
-<<<<<<< HEAD:src/main/java/frc/robot/commands/Placement/MoveExtensionArm.java
-    if (Math.abs(y) < Constants.kDeadband || (y < 0 && m_extensionArm.hitLimitSwitch())) {
-      y = 0;
-    }
-    if(m_extensionArm.getDistanceExtensionArm()>)
-=======
     m_extensionArm.spinExtensionArm(y); //that max is currently bs
->>>>>>> main:src/main/java/frc/robot/commands/Placement/ManualControl/MoveExtensionArm.java
   }
 
   // Called once the command ends or is interrupted.
