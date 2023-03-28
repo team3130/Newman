@@ -4,7 +4,9 @@
 
 package frc.robot.commands.Balance;
 
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.commands.Chassis.ZeroEverything;
 import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
 import edu.wpi.first.math.filter.MedianFilter;
@@ -19,16 +21,18 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class Balance extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Chassis m_chassis;
+  private double sign;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param chassis The subsystem used by this command.
    */
-  public Balance(Chassis chassis) {
+  public Balance(Chassis chassis, int sign) {
     m_chassis = chassis;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_chassis);
+    this.sign = sign;
   }
 
   // Called when the command is initially scheduled.
@@ -38,12 +42,18 @@ public class Balance extends CommandBase {
     AccelerationTilt = 0;
     prev = 0;
 
+
+    driveVelocity = 0.5; //Arbitrary Speed - Tune later
+    initPitch = Math.toRadians(Navx.getPitch());
     pitch = Math.toRadians(Navx.getPitch());
     roll = Math.toRadians(Navx.getRoll());
     direction = Math.atan2(Math.tan(pitch),Math.tan(roll));
   }
 
   private double direction;
+
+  private double driveVelocity;
+  private double initPitch;
   private double pitch;
   private double roll;
   private double tilt;
@@ -70,29 +80,13 @@ public class Balance extends CommandBase {
     pitch = Math.toRadians(Navx.getPitch());
     roll = Math.toRadians(Navx.getRoll());
 
-    tilt = Math.atan(Math.sqrt(Math.pow(Math.tan(pitch),2) + Math.pow(Math.tan(roll),2)));
-    VelocityTilt = Math.atan(Math.sqrt(Math.pow(Math.tan(velocityPitch),2) + Math.pow(Math.tan(velocityRoll),2)));
 
-    VelocityTilt = fVelocityTilt.calculate(VelocityTilt);
+    //trajectory to go forward 2 meters * sign
+    /* Call should be:
+    ConditionalCommand balance = new ConditionalCommand(Balance(m_chassis, 1), Balance(m_chassis, -1), Navx.getPitch() > 1).until(Math.abs(Navx.getPitch())) <= 5.0;
+    */
+    SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity * sign,0,0));
 
-    if (prev != 0) 
-      AccelerationTilt = VelocityTilt - prev;
-    prev = VelocityTilt;
-
-    getTilt.setDouble(tilt);
-    getTiltVelocity.setDouble(VelocityTilt);
-
-    double magnitude = 
-      P.getDouble(Constants.BalanceKp) * VelocityTilt + 
-      D.getDouble(Constants.BalanceKd) * AccelerationTilt + 
-      F.getDouble(Constants.BalanceKf);
-    double direction = Math.atan2(Math.tan(pitch),Math.tan(roll)); 
-    getDirection.setDouble(direction * 180 / Math.PI);
-
-    double x = magnitude * Math.cos(direction);
-    double y = magnitude * Math.sin(direction);
-
-    SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(x,y,0));
     m_chassis.setModuleStates(moduleStates);
   }
 
@@ -106,9 +100,7 @@ public class Balance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (tilt < 0.1 && VelocityTilt < 0.1) {
-      return true;
-    }
+
     return false;
   }
 
