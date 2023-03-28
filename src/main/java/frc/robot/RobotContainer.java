@@ -166,7 +166,8 @@ public class RobotContainer {
       new TriggerButton(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
       new TriggerButton(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlaceToPlace(m_chassis, m_autonManager));
       double balanceDeadband = 5.0; //This should go in Constants later
-      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ConditionalCommand(new Balance(m_chassis, 1), new Balance(m_chassis, -1), () -> Navx.getPitch() > 0).until(() -> Math.abs(Navx.getPitch()) <= balanceDeadband));
+      double zeroPitch = 0; //Also constants
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ConditionalCommand(new Balance(m_chassis, 1), new Balance(m_chassis, -1), () -> Navx.getPitch() - zeroPitch > 0).until(() -> Math.abs(Navx.getPitch()) <= balanceDeadband));
 
     }
 
