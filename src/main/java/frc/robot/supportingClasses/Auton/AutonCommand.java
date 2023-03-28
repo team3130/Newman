@@ -98,7 +98,7 @@ public class AutonCommand extends CommandBase {
             m_requirements.addAll(List.of(m_rotaryArm, m_extensionArm, m_manipulator));
         }
 
-        CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null, PLACE_HIGH = null, DO_NOTHING = null;
+        CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null, PLACE_HIGH = null, ZERO = null, DO_NOTHING = null;
 
         if (m_hopper != null) {
             HOPPER = new SpinHopper(m_hopper);
@@ -121,13 +121,15 @@ public class AutonCommand extends CommandBase {
                     new ToggleManipulator(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
             );
 
-            CommandScheduler.getInstance().registerComposedCommands(PLACE_LOW, PLACE_MID, PLACE_HIGH);
+            ZERO = new SequentialCommandGroup(new AutoZeroExtensionArm(extensionArm), new AutoZeroRotryArm(rotaryArm));
+
+            CommandScheduler.getInstance().registerComposedCommands(PLACE_LOW, PLACE_MID, PLACE_HIGH, ZERO);
         }
 
         DO_NOTHING = new DoNothing();
         CommandScheduler.getInstance().registerComposedCommands(DO_NOTHING);
 
-        commands = new CommandBase[] {HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH, DO_NOTHING};
+        commands = new CommandBase[] {HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH, ZERO, DO_NOTHING};
 
         getOptimizedIndex = (EventMarker marker) -> (int) (marker.timeSeconds * magicScalar);
 
@@ -156,8 +158,11 @@ public class AutonCommand extends CommandBase {
 /*            else if (name.contains("manipulator") || name.contains("grabber")) {
                 markerToCommandMap.put(marker, 4);
             }*/
-            else {
+            else if (name.contains("zero")) {
                 markerToCommandMap.put(marker, 4);
+            }
+            else {
+                markerToCommandMap.put(marker, 5);
             }
         }
     }
@@ -424,6 +429,11 @@ public class AutonCommand extends CommandBase {
         }
     }
 
+    /**
+     * Gets the index that represents the command to run in {@link #commands}. uses optimized if available
+     * @param marker the key
+     * @return the result of the key in the map
+     */
     private int getIndexFromMap(EventMarker marker) {
         if (marker == null) {
             return commands.length - 1;
@@ -458,6 +468,9 @@ public class AutonCommand extends CommandBase {
         }
     }
 
+    /**
+     * @return the start holonomic rotation of the path that will be ran
+     */
     public Rotation2d getStartRotation() {
         return trajectory.getInitialState().holonomicRotation;
     }
