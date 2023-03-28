@@ -10,7 +10,7 @@ import frc.robot.subsystems.RotaryArm;
 
 
 /** A preset command to go to the high position for the rotary arm */
-public class GoToPickupCone extends CommandBase {
+public class GoToPickupOffGround extends CommandBase {
   // required subsystem
   private final RotaryArm m_rotaryArm;
   private final ExtensionArm m_extensionArm;
@@ -23,7 +23,7 @@ public class GoToPickupCone extends CommandBase {
    * @param rotary The rotary subsystem which this command requires
    * @param extension the extension arm subsystem which this command requires
    */
-  public GoToPickupCone(RotaryArm rotary, ExtensionArm extension) {
+  public GoToPickupOffGround(RotaryArm rotary, ExtensionArm extension) {
     m_rotaryArm = rotary;
     m_extensionArm = extension;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -43,7 +43,7 @@ public class GoToPickupCone extends CommandBase {
     m_rotaryArm.gotoPos(m_extensionArm.getPositionMeters());
 
     if (m_rotaryArm.isAtPosition() && !hasStartedExtended) { // may need way outside bumper
-      m_extensionArm.extendArmToGroundForCone();
+      m_extensionArm.extendArmToGround();
       hasStartedExtended = true;
     }
   }

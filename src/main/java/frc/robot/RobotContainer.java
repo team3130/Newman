@@ -83,7 +83,7 @@ public class RobotContainer {
 
     Mechanism2d arm = new Mechanism2d(3, 3.5);
     MechanismRoot2d root = arm.getRoot("arm", 1, 2);
-    MechanismLigament2d zero = new MechanismLigament2d("retracted", Constants.kExtensionArmLengthExtendedMeters / 2, -90);
+    MechanismLigament2d zero = new MechanismLigament2d("retracted", Constants.Extension.kExtensionArmLengthExtendedMeters / 2, -90);
     root.append(zero);
 
     SendableRegistry.add(arm, "arm");
@@ -185,8 +185,8 @@ public class RobotContainer {
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new GoToHighScoring(m_rotaryArm, m_extensionArm));
     // new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new GoToPickupCube(m_rotaryArm, m_extensionArm));
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new GoToMidScoring(m_rotaryArm, m_extensionArm));
-//    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToPickupCone(m_rotaryArm, m_extensionArm));
-    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToPickupCone(m_rotaryArm, m_extensionArm));
+//    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToPickupOffGround(m_rotaryArm, m_extensionArm));
+    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToPickupOffGround(m_rotaryArm, m_extensionArm));
 //    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToLowScoring(m_rotaryArm, m_extensionArm));
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_S).whileTrue(new ReverseHopper(m_hopper, m_pivot));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new SequentialCommandGroup(
