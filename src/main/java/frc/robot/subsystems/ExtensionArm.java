@@ -120,7 +120,7 @@ public class ExtensionArm extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    ligament.setLength(getLengthExtensionArm());
+    ligament.setLength(getLengthExtensionArm() + Constants.Extension.kExtensionArmLengthRetractedMeters);
     double y = getSmartSpeed(armSpeed);
     if (y != armSpeed) {
       // It's updated so update the motor
