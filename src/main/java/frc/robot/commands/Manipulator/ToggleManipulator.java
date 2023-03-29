@@ -26,6 +26,8 @@ public class ToggleManipulator extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_manipulator.toggleManipulator();
+    System.out.println("STARTED: Toggling Manipulator");
+
+    // m_manipulator.toggleManipulator();
   }
 }

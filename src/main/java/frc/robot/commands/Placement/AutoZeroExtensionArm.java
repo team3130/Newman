@@ -26,7 +26,9 @@ public class AutoZeroExtensionArm extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_extensionArm.spinExtensionArm(-1);
+    System.out.println("STARTED: Zeroing extension arm");
+
+    // m_extensionArm.spinExtensionArm(-1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
