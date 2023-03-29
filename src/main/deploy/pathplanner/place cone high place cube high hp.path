@@ -127,13 +127,7 @@
     {
       "position": 0.0,
       "names": [
-        "place high"
-      ]
-    },
-    {
-      "position": 0.01,
-      "names": [
-        "event"
+        "within bot"
       ]
     },
     {
@@ -182,6 +176,18 @@
       "position": 4.0,
       "names": [
         "zero"
+      ]
+    },
+    {
+      "position": 0.11636363636361322,
+      "names": [
+        "within bot"
+      ]
+    },
+    {
+      "position": 0.15,
+      "names": [
+        "place high"
       ]
     }
   ]

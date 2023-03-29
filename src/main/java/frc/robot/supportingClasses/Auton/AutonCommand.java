@@ -157,10 +157,10 @@ public class AutonCommand extends CommandBase {
                 }
             }
             else if (name.contains("within") || name.contains("bot")) {
-                markerToCommandMap.put(marker, 6);
+                markerToCommandMap.put(marker, 7);
             }
             else if (name.contains("pickup") || name.contains("floor")) {
-                markerToCommandMap.put(marker, 7);
+                markerToCommandMap.put(marker, 6);
             }
             else if (name.contains("zero")) {
                 markerToCommandMap.put(marker, 4);
