@@ -13,9 +13,8 @@ import frc.robot.commands.Hopper.SpinHopper;
 import frc.robot.commands.Manipulator.ToggleManipulator;
 import frc.robot.commands.Placement.AutoZeroExtensionArm;
 import frc.robot.commands.Placement.AutoZeroRotryArm;
-import frc.robot.commands.Placement.presets.GoToHighScoring;
-import frc.robot.commands.Placement.presets.GoToLowScoring;
-import frc.robot.commands.Placement.presets.GoToMidScoring;
+import frc.robot.commands.Placement.presets.*;
+import frc.robot.commands.TimedCommand;
 import frc.robot.subsystems.*;
 
 import java.util.ArrayList;
@@ -49,7 +48,7 @@ public class AutonCommand extends CommandBase {
     protected final Timer m_timer; // timer from the holonomic drive command
 
     protected final HashMap<EventMarker, Integer> markerToCommandMap; // the marker's mapped to the command to run
-    protected final ArrayList<Integer> indicesToRun = new ArrayList<>(5); // what indices of commands run right now
+    protected final ArrayList<Integer> indicesToRun = new ArrayList<>(8); // what indices of commands run right now
 
     protected final Function<EventMarker, Integer> getOptimizedIndex; // gets the index using the optimize function
 
@@ -98,7 +97,10 @@ public class AutonCommand extends CommandBase {
             m_requirements.addAll(List.of(m_rotaryArm, m_extensionArm, m_manipulator));
         }
 
-        CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null, PLACE_HIGH = null, ZERO = null, MANIPULATOR = null, DO_NOTHING = null;
+        CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null,
+                PLACE_HIGH = null, ZERO = null, MANIPULATOR = null,
+                PICK_UP_OFF_GROUND = null, PICK_UP_IN_BOT = null,
+                DO_NOTHING = null;
 
         if (m_hopper != null) {
             HOPPER = new SpinHopper(m_hopper);
@@ -116,13 +118,19 @@ public class AutonCommand extends CommandBase {
 
             ZERO = new SequentialCommandGroup(new AutoZeroExtensionArm(extensionArm), new AutoZeroRotryArm(rotaryArm));
 
-            CommandScheduler.getInstance().registerComposedCommands(PLACE_LOW, PLACE_MID, PLACE_HIGH, MANIPULATOR, ZERO);
+            PICK_UP_OFF_GROUND = new GoToPickupOffGround(m_rotaryArm, m_extensionArm);
+
+            PICK_UP_IN_BOT = new SequentialCommandGroup(new GoToPickupWithinBot(m_extensionArm),
+                    new ToggleManipulator(m_manipulator), new TimedCommand(0.1), new AutoZeroExtensionArm(extensionArm), new AutoZeroRotryArm(rotaryArm));
+
+            CommandScheduler.getInstance().registerComposedCommands(PLACE_LOW, PLACE_MID, PLACE_HIGH, MANIPULATOR, ZERO, PICK_UP_IN_BOT, PICK_UP_OFF_GROUND);
         }
 
         DO_NOTHING = new DoNothing();
         CommandScheduler.getInstance().registerComposedCommands(DO_NOTHING);
 
-        commands = new CommandBase[] {HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH, ZERO, MANIPULATOR, DO_NOTHING};
+        commands = new CommandBase[] {HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH, ZERO, MANIPULATOR,
+                PICK_UP_OFF_GROUND, PICK_UP_IN_BOT, DO_NOTHING};
 
         getOptimizedIndex = (EventMarker marker) -> (int) (marker.timeSeconds * magicScalar);
 
@@ -148,6 +156,12 @@ public class AutonCommand extends CommandBase {
                     markerToCommandMap.put(marker, 3);
                 }
             }
+            else if (name.contains("within") || name.contains("bot")) {
+                markerToCommandMap.put(marker, 6);
+            }
+            else if (name.contains("pickup") || name.contains("floor")) {
+                markerToCommandMap.put(marker, 7);
+            }
             else if (name.contains("zero")) {
                 markerToCommandMap.put(marker, 4);
             }
@@ -155,7 +169,7 @@ public class AutonCommand extends CommandBase {
                 markerToCommandMap.put(marker, 5);
             }
             else {
-                markerToCommandMap.put(marker, 6);
+                markerToCommandMap.put(marker, 8);
             }
         }
     }
