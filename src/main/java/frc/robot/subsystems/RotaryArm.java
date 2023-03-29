@@ -19,9 +19,11 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.subsystems.ExtensionArm;
 
 public class RotaryArm extends SubsystemBase {
   private final WPI_TalonFX rotaryMotor;
+  private final ExtensionArm m_extensionArm;                    
   private final Solenoid brake;
   private final boolean defaultState = true;
 
@@ -41,8 +43,9 @@ public class RotaryArm extends SubsystemBase {
           Constants.kRotaryArmD, rotaryArmConstraints);
 
 
-  public RotaryArm(MechanismLigament2d ligament) {
+  public RotaryArm(MechanismLigament2d ligament, ExtensionArm extensionarm) {
     rotaryMotor = new WPI_TalonFX(Constants.CAN_RotaryArm);
+    m_extensionarm = extensionarm;
     rotaryMotor.configFactoryDefault();
     brake = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM, Constants.PNM_Brake);
     brake.set(defaultState);
@@ -75,13 +78,21 @@ public class RotaryArm extends SubsystemBase {
   public void periodic() {
     ligament.setAngle(getAngleRotaryArm());
     n_brake.setBoolean(brakeIsEnabled());
+
+    if (BoundingBox.boxBad(m_extensionarm.armPos)) {
+      if (m_chassis.getX() - (m_extensionarm.getLengthExtensionArm() + 0.09525) <= Constants.xPositionForGridBlue || m_chassis.getX() + (m_extensionarm.getLengthExtensionArm() + 0.09525) >= Constants.xPositionForGridRed) {
+        if (getSpeedPlacementArm() > 0) {
+          rotaryMotor.set(0);
+        }
+      }
+    }
   }
 
   /**
    * Rotates the rotary arm
    * @param scalar value that scales the output speed from shuffleboard
    */
-  public void rotateRotaryArm(double scalar){
+  protected void rotateRotaryArm(double scalar){
     rotaryMotor.set(outputSpeed * scalar);
   }
 
@@ -110,7 +121,7 @@ public class RotaryArm extends SubsystemBase {
   /**
    * @return the output speed for the rotary arm
    */
-  protected double getOutputSpeed() {
+  public double getOutputSpeed() {
     return outputSpeed;
   }
 

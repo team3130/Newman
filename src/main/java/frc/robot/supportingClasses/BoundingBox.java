@@ -135,9 +135,11 @@ public class BoundingBox {
      * @param secondObjectPosition the position of the object you are comparing it to 2D space
      * @return the point is in the box
      */
+    /**
     public boolean isInBox(Pose2d secondObjectPosition) {
         return this.isInBox(secondObjectPosition.getX(), secondObjectPosition.getY());
     }
+    */
 
     /**
      *  A method that tells you if the passed in bounding box has overlap with another bounding box.
@@ -145,7 +147,7 @@ public class BoundingBox {
      * @param secondObjectPosition the other bounding box that you are comparing in space
      * @return the point is in the box
      */
-    public boolean hasOverlapWith(BoundingBox secondObjectPosition) {
+    public boolean hasOverlapWith(Pose3d secondObjectPosition) {
         return this.isInBox(secondObjectPosition.getLowPoint()) || this.isInBox(secondObjectPosition.getHighPoint());
     }
 

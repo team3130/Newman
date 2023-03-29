@@ -133,7 +133,15 @@ public class ExtensionArm extends SubsystemBase {
     }
 
     double r = getLengthExtensionArm() + 0.26;
-    Pose3d armPos = new Pose3d(r * math.cos(m_chassis.getYaw()), 0, r * math.sin(getYaw()));
+    Pose3d armPos = new Pose3d(r * Math.cos(m_chassis.getYaw()), 0, r * Math.sin(getYaw()));
+
+    if (BoundingBox.boxBad(m_extensionarm.armPos)) {
+      if (m_chassis.getX() - (m_extensionarm.getLengthExtensionArm() + 0.09525) <= Constants.xPositionForGridBlue || m_chassis.getX() + (m_extensionarm.getLengthExtensionArm() + 0.09525) >= Constants.xPositionForGridRed) {
+        if (m_extensionarm.y > 0) {
+          m_extensionarm.y = 0;
+        }
+      }
+    }
   }
 
 
