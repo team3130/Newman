@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.ExtensionArm;
+import frc.robot.subsystems.Chassis;
 
 public class RotaryArm extends SubsystemBase {
   private final WPI_TalonFX rotaryMotor;
@@ -28,7 +29,7 @@ public class RotaryArm extends SubsystemBase {
   private final boolean defaultState = true;
 
   private final DigitalInput limitSwitch;
-
+  private final Chassis m_chassis;
   protected final GenericEntry n_brake;
 
   protected MechanismLigament2d ligament;
@@ -43,9 +44,10 @@ public class RotaryArm extends SubsystemBase {
           Constants.kRotaryArmD, rotaryArmConstraints);
 
 
-  public RotaryArm(MechanismLigament2d ligament, ExtensionArm extensionarm) {
+  public RotaryArm(MechanismLigament2d ligament, ExtensionArm extensionarm, Chassis chassis) {
     rotaryMotor = new WPI_TalonFX(Constants.CAN_RotaryArm);
     m_extensionarm = extensionarm;
+    m_chassis = chassis;
     rotaryMotor.configFactoryDefault();
     brake = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM, Constants.PNM_Brake);
     brake.set(defaultState);
@@ -80,7 +82,7 @@ public class RotaryArm extends SubsystemBase {
     n_brake.setBoolean(brakeIsEnabled());
 
     if (BoundingBox.boxBad(m_extensionarm.armPos)) {
-      if (m_chassis.getX() - (m_extensionarm.getLengthExtensionArm() + 0.09525) <= Constants.xPositionForGridBlue || m_chassis.getX() + (m_extensionarm.getLengthExtensionArm() + 0.09525) >= Constants.xPositionForGridRed) {
+      if (m_chassis.getX() - (m_extensionarm.getLengthExtensionArm() + 0.09525) <= Constants.Field.xPositionForGridBlue || m_chassis.getX() + (m_extensionarm.getLengthExtensionArm() + 0.09525) >= Constants.Field.xPositionForGridRed) {
         if (getSpeedPlacementArm() > 0) {
           rotaryMotor.set(0);
         }
@@ -188,7 +190,7 @@ public class RotaryArm extends SubsystemBase {
    * @return the static feed forward gain
    */
   public double getFeedForward(double extensionLength){
-    return Constants.kRotaryStaticGain * extensionLength * Math.sin(getPositionPlacementArmAngle());
+    return Constants.Extension.kRotaryStaticGain * extensionLength * Math.sin(getPositionPlacementArmAngle());
   }
 
   /**
@@ -255,7 +257,7 @@ public class RotaryArm extends SubsystemBase {
   }
 
   public double getStaticGain(double extensionArmLength) {
-    return Math.sin(getPositionPlacementArmAngle()) * extensionArmLength * Constants.kRotaryStaticGain;
+    return Math.sin(getPositionPlacementArmAngle()) * extensionArmLength * Constants.Extension.kRotaryStaticGain;
   }
 
   public boolean pastLimit() {

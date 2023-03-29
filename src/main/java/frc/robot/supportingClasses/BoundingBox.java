@@ -12,7 +12,6 @@ import frc.robot.subsystems.ExtensionArm;
 public class BoundingBox {
     // same coordinate system as Pose3Ds, mathematical grid
     protected final double xSmall, ySmall, zSmall, xBig, yBig, zBig;
-
     /**
      * Creates a bounding box object
      *
@@ -101,7 +100,7 @@ public class BoundingBox {
     */
 
     public boolean boxBad(Pose3d secondObjectPosition) {
-        return this.isInBox2(secondObjectPosition.getX(), secondObjectPosition.getY(), secondObjectPosition.getZ());
+        return this.isInBox(secondObjectPosition.getX(), secondObjectPosition.getY(), secondObjectPosition.getZ());
     }
 
     /**
@@ -125,7 +124,7 @@ public class BoundingBox {
      * @return whether the point is in the box
      * 
     */
-    public boolean isInBox2(double x, double y, double z) {
+    public boolean isInBox(double x, double y, double z) {
         return this.isInBox(x, y) && (z > zSmall && z < zBig);
     }
 

@@ -85,15 +85,15 @@ public class RobotContainer {
 
     Mechanism2d arm = new Mechanism2d(4, 2);
     MechanismRoot2d root = arm.getRoot("arm", 5, 5);
-    MechanismLigament2d zero = new MechanismLigament2d("retracted", Constants.kExtensionArmLengthExtended / 2, -90);
+    MechanismLigament2d zero = new MechanismLigament2d("retracted", Constants.Extension.kExtensionArmLengthExtended / 2, -90);
     root.append(zero);
 
     /*
     SendableRegistry.add(arm, "placement");
     Shuffleboard.getTab("Test").add(arm);*/
     
-    m_extensionArm = new ExtensionArm(zero);
-    m_rotaryArm = new RotaryArm(zero);
+    m_extensionArm = new ExtensionArm(zero, m_chassis);
+    m_rotaryArm = new RotaryArm(zero, m_extensionArm, m_chassis);
 
     m_autonManager = new AutonManager(m_chassis, m_pivot, m_rotaryArm, m_extensionArm, m_manipulator);
 

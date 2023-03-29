@@ -88,7 +88,7 @@ public class MoveRotaryArm extends CommandBase {
           }
         }
         if (worked) {
-          success.setDouble(filter.calculate(main - (Constants.kRotaryStaticGain * torque) / (currentSpeed)));
+          success.setDouble(filter.calculate(main - (Constants.Extension.kRotaryStaticGain * torque) / (currentSpeed)));
         }
         head++;
       }

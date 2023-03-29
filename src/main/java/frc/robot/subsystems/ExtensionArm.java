@@ -19,6 +19,7 @@ import frc.robot.Newman_Constants.Constants;
 import frc.robot.supportingClasses.Gains.AccelerationManager;
 import frc.robot.supportingClasses.Gains.VelocityGainFilter;
 import frc.robot.subsystems.Chassis;
+import edu.wpi.first.math.geometry.Pose3d;
 
 /**
  * The extension arm subsystem for the placement mechanism
@@ -56,8 +57,8 @@ public class ExtensionArm extends SubsystemBase {
   private double l_placementExtensionArmS_Strength;
 
   private final double collapsedPosition = 0;
-  private final double intermediatePosition = Constants.kMaxExtensionLength / 2;
-  private final double extendedPosition = Constants.kMaxExtensionLength;
+  private final double intermediatePosition = Constants.Extension.kMaxExtensionLength / 2;
+  private final double extendedPosition = Constants.Extension.kMaxExtensionLength;
 
   public double armSpeed = 0;
   public int sStrengthPlacementExtensionArm = 0;
@@ -71,18 +72,18 @@ public class ExtensionArm extends SubsystemBase {
    *
    * @param ligament the ligament object that is on smart-dashboard
    */
-  public ExtensionArm(MechanismLigament2d ligament) {
+  public ExtensionArm(MechanismLigament2d ligament, Chassis chassis) {
     extensionMotor = new WPI_TalonFX(Constants.CAN_ExtensionArm);
     extensionMotor.configFactoryDefault();
-    extensionMotor.config_kP(0,Constants.kExtensionArmP);
-    extensionMotor.config_kI(0,Constants.kExtensionArmI);
-    extensionMotor.config_kD(0,Constants.kExtensionArmD);
+    extensionMotor.config_kP(0,Constants.Extension.kExtensionArmP);
+    extensionMotor.config_kI(0,Constants.Extension.kExtensionArmI);
+    extensionMotor.config_kD(0,Constants.Extension.kExtensionArmD);
 
     extensionMotor.setInverted(false);
     extensionMotor.setSensorPhase(false);
 
-    extensionMotor.configMotionCruiseVelocity(Constants.kMaxVelocityPlacementExtensionArm);
-    extensionMotor.configMotionAcceleration(Constants.kMaxAccelerationPlacementExtensionArm);
+    extensionMotor.configMotionCruiseVelocity(Constants.Extension.kMaxVelocityPlacementExtensionArm);
+    extensionMotor.configMotionAcceleration(Constants.Extension.kMaxAccelerationPlacementExtensionArm);
     extensionMotor.configMotionSCurveStrength(sStrengthPlacementExtensionArm);
 
     extensionMotor.setNeutralMode(NeutralMode.Brake);
@@ -91,11 +92,12 @@ public class ExtensionArm extends SubsystemBase {
     extensionMotor.enableVoltageCompensation(true);
 
     m_limitSwitch = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
+    m_chassis = chassis;
 
     Placement = Shuffleboard.getTab("Extension Arm");
-    n_placementExtensionArmP = Placement.add("p", Constants.kExtensionArmP).getEntry();
-    n_placementExtensionArmI = Placement.add("i", Constants.kExtensionArmI).getEntry();
-    n_placementExtensionArmD = Placement.add("d", Constants.kExtensionArmD).getEntry();
+    n_placementExtensionArmP = Placement.add("p", Constants.Extension.kExtensionArmP).getEntry();
+    n_placementExtensionArmI = Placement.add("i", Constants.Extension.kExtensionArmI).getEntry();
+    n_placementExtensionArmD = Placement.add("d", Constants.Extension.kExtensionArmD).getEntry();
 
     n_placementExtensionArmS_Strength = Placement.add("s strength", sStrengthPlacementExtensionArm).getEntry();
 
@@ -112,7 +114,7 @@ public class ExtensionArm extends SubsystemBase {
         y = 0;
       }
     } else if (y > 0) {
-      if (getPositionTicks() >= Math.abs(Constants.kMaxExtensionLength)) {
+      if (getPositionTicks() >= Math.abs(Constants.Extension.kMaxExtensionLength)) {
         y = 0;
       }
     }
@@ -135,10 +137,10 @@ public class ExtensionArm extends SubsystemBase {
     double r = getLengthExtensionArm() + 0.26;
     Pose3d armPos = new Pose3d(r * Math.cos(m_chassis.getYaw()), 0, r * Math.sin(getYaw()));
 
-    if (BoundingBox.boxBad(m_extensionarm.armPos)) {
-      if (m_chassis.getX() - (m_extensionarm.getLengthExtensionArm() + 0.09525) <= Constants.xPositionForGridBlue || m_chassis.getX() + (m_extensionarm.getLengthExtensionArm() + 0.09525) >= Constants.xPositionForGridRed) {
-        if (m_extensionarm.y > 0) {
-          m_extensionarm.y = 0;
+    if (BoundingBox.boxBad(armPos)) {
+      if (m_chassis.getX() - (getLengthExtensionArm() + 0.09525) <= Constants.Field.xPositionForGridBlue || m_chassis.getX() + (getLengthExtensionArm() + 0.09525) >= Constants.Field.xPositionForGridRed) {
+        if (y > 0) {
+          y = 0;
         }
       }
     }
