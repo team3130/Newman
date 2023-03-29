@@ -51,7 +51,7 @@ public class AutonManager {
         this.m_chassis = chassis;
 
         safe_constraints = new PathConstraints(2, 2);
-        violent_constraints = new PathConstraints(Constants.kPhysicalMaxSpeedMetersPerSecond, Constants.kPhysicalMaxSpeedMetersPerSecond * 0.85);
+        violent_constraints = new PathConstraints(Constants.kPhysicalMaxSpeedMetersPerSecond, 3);
 
         Shuffleboard.getTab("Comp").add(m_autonChooser);
 
@@ -91,7 +91,8 @@ public class AutonManager {
         // m_autonChooser.addOption("bottom dumb", generateBottomDumb());
         // m_autonChooser.addOption("mid placement start top", generateMidPlaceTopStart());
         if (Constants.debugMode) {
-            m_autonChooser.addOption("marker path <- not for comp", generateMarkerPath());
+            //m_autonChooser.addOption("marker path <- not for comp", generateMarkerPath());
+            m_autonChooser.addOption("marker path cones", placeConeHighPlaceCubeHigh());
         }
     }
 
@@ -538,5 +539,10 @@ public class AutonManager {
                 )
                 );
 
+    }
+
+    public CommandBase placeConeHighPlaceCubeHigh() {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("place cone high place cube high hp", safe_constraints);
+        return autonCommandGeneratorPlacement(trajectory);
     }
 }

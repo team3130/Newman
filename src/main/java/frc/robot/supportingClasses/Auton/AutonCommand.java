@@ -98,7 +98,7 @@ public class AutonCommand extends CommandBase {
             m_requirements.addAll(List.of(m_rotaryArm, m_extensionArm, m_manipulator));
         }
 
-        CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null, PLACE_HIGH = null, ZERO = null, DO_NOTHING = null;
+        CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null, PLACE_HIGH = null, ZERO = null, MANIPULATOR = null, DO_NOTHING = null;
 
         if (m_hopper != null) {
             HOPPER = new SpinHopper(m_hopper);
@@ -106,30 +106,23 @@ public class AutonCommand extends CommandBase {
         }
 
         if (m_rotaryArm != null && m_extensionArm != null && m_manipulator != null) {
-            PLACE_LOW = new SequentialCommandGroup(
-                    new ToggleManipulator(m_manipulator), new GoToLowScoring(m_rotaryArm, m_extensionArm),
-                    new ToggleManipulator(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
-            );
+            PLACE_LOW = new GoToLowScoring(m_rotaryArm, m_extensionArm);
 
-            PLACE_MID = new SequentialCommandGroup(
-                    new ToggleManipulator(m_manipulator), new GoToMidScoring(m_rotaryArm, m_extensionArm),
-                    new ToggleManipulator(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
-            );
+            PLACE_MID = new GoToMidScoring(m_rotaryArm, m_extensionArm);
 
-            PLACE_HIGH = new SequentialCommandGroup(
-                    new ToggleManipulator(m_manipulator), new GoToHighScoring(m_rotaryArm, m_extensionArm),
-                    new ToggleManipulator(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
-            );
+            PLACE_HIGH = new GoToHighScoring(m_rotaryArm, m_extensionArm);
+
+            MANIPULATOR = new ToggleManipulator(manipulator);
 
             ZERO = new SequentialCommandGroup(new AutoZeroExtensionArm(extensionArm), new AutoZeroRotryArm(rotaryArm));
 
-            CommandScheduler.getInstance().registerComposedCommands(PLACE_LOW, PLACE_MID, PLACE_HIGH, ZERO);
+            CommandScheduler.getInstance().registerComposedCommands(PLACE_LOW, PLACE_MID, PLACE_HIGH, MANIPULATOR, ZERO);
         }
 
         DO_NOTHING = new DoNothing();
         CommandScheduler.getInstance().registerComposedCommands(DO_NOTHING);
 
-        commands = new CommandBase[] {HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH, ZERO, DO_NOTHING};
+        commands = new CommandBase[] {HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH, ZERO, MANIPULATOR, DO_NOTHING};
 
         getOptimizedIndex = (EventMarker marker) -> (int) (marker.timeSeconds * magicScalar);
 
@@ -155,14 +148,14 @@ public class AutonCommand extends CommandBase {
                     markerToCommandMap.put(marker, 3);
                 }
             }
-/*            else if (name.contains("manipulator") || name.contains("grabber")) {
-                markerToCommandMap.put(marker, 4);
-            }*/
             else if (name.contains("zero")) {
                 markerToCommandMap.put(marker, 4);
             }
-            else {
+            else if (name.contains("grabber") || name.contains("manipulator")) {
                 markerToCommandMap.put(marker, 5);
+            }
+            else {
+                markerToCommandMap.put(marker, 6);
             }
         }
     }
