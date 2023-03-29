@@ -51,7 +51,7 @@ public class AutonManager {
         this.m_chassis = chassis;
 
         safe_constraints = new PathConstraints(2, 2);
-        violent_constraints = new PathConstraints(Constants.kPhysicalMaxSpeedMetersPerSecond * 0.85, Constants.kPhysicalMaxSpeedMetersPerSecond);
+        violent_constraints = new PathConstraints(Constants.kPhysicalMaxSpeedMetersPerSecond, Constants.kPhysicalMaxSpeedMetersPerSecond * 0.85);
 
         Shuffleboard.getTab("Comp").add(m_autonChooser);
 
