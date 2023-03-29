@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -37,6 +38,7 @@ import frc.robot.commands.Placement.ManualControl.MoveExtensionArm;
 import frc.robot.commands.Placement.ManualControl.MoveRotaryArm;
 import frc.robot.commands.Placement.ToggleBrake;
 import frc.robot.commands.Placement.presets.*;
+import frc.robot.controls.JoystickTrigger;
 import frc.robot.controls.TriggerButton;
 import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
@@ -82,9 +84,16 @@ public class RobotContainer {
 
 
     Mechanism2d arm = new Mechanism2d(3, 3.5);
-    MechanismRoot2d root = arm.getRoot("arm", 1, 2);
-    MechanismLigament2d zero = new MechanismLigament2d("retracted", Constants.kExtensionArmLengthExtendedMeters / 2, -90);
+    MechanismRoot2d root = arm.getRoot("arm", 0.5, 2);
+    MechanismLigament2d zero = new MechanismLigament2d("retracted", Constants.Extension.kExtensionArmLengthRetractedMeters, -90);
+    MechanismLigament2d limit = new MechanismLigament2d(
+            "limit",
+            Constants.Extension.kExtensionArmLengthExtendedMeters,
+            110 - 90,
+            6,
+            new Color8Bit(0, 0, 255));
     root.append(zero);
+    root.append(limit);
 
     SendableRegistry.add(arm, "arm");
     SmartDashboard.putData(arm);
@@ -158,8 +167,8 @@ public class RobotContainer {
     //new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new Balancing(m_chassis));
 
     if (Constants.debugMode) {
-      new TriggerButton(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
-      new TriggerButton(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlaceToPlace(m_chassis, m_autonManager));
+      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
+      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlaceToPlace(m_chassis, m_autonManager));
     }
 
     //Weapons Gamepad:
@@ -179,14 +188,14 @@ public class RobotContainer {
     ));*/
 
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).onTrue(new ToggleBrake(m_rotaryArm));
-    new TriggerButton(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).onTrue(new ToggleManipulator(m_manipulator));
+    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).onTrue(new ToggleManipulator(m_manipulator));
 /*    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new AutoZeroExtensionArm(m_ExtensionArm));
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new AutoZeroRotryArm(m_RotaryArm));*/
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new GoToHighScoring(m_rotaryArm, m_extensionArm));
     // new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new GoToPickupCube(m_rotaryArm, m_extensionArm));
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new GoToMidScoring(m_rotaryArm, m_extensionArm));
-//    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToPickupCone(m_rotaryArm, m_extensionArm));
-    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToPickupCone(m_rotaryArm, m_extensionArm));
+//    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToPickupOffGround(m_rotaryArm, m_extensionArm));
+    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToPickupOffGround(m_rotaryArm, m_extensionArm));
 //    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToLowScoring(m_rotaryArm, m_extensionArm));
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_S).whileTrue(new ReverseHopper(m_hopper, m_pivot));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new SequentialCommandGroup(
@@ -239,6 +248,10 @@ public class RobotContainer {
                     new AutoZeroExtensionArm(m_extensionArm),
                     new AutoZeroRotryArm(m_rotaryArm)
             );
+  }
+
+  public void periodic() {
+    m_limelight.outputToShuffleboard();
   }
 
 }

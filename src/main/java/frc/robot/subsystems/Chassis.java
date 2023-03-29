@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
@@ -101,7 +102,7 @@ public class Chassis extends SubsystemBase {
     public void resetOdometry(Pose2d pose) {
         resetEncoders();
         Navx.resetNavX();
-        m_odometry.resetPosition(getRotation2d(), generatePoses(), pose);
+        m_odometry.resetPosition(Navx.getRotation(), generatePoses(), pose);
     }
 
     /**
@@ -139,7 +140,7 @@ public class Chassis extends SubsystemBase {
      * @return the bot rotation
      */
     public Rotation2d getRotation2d(){
-      return Rotation2d.fromDegrees(getHeading());
+      return m_odometry.getEstimatedPosition().getRotation();
     }
 
     /**
@@ -177,7 +178,8 @@ public class Chassis extends SubsystemBase {
         if (position != null) {
             updateOdometryFromVision(position);
         }
-         field.setRobotPose(m_odometry.getEstimatedPosition());
+
+        field.setRobotPose(m_odometry.getEstimatedPosition());
     }
 
   /**

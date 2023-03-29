@@ -53,10 +53,6 @@ public class ExtensionArm extends SubsystemBase {
   private final GenericEntry n_placementExtensionArmS_Strength;
   private double l_placementExtensionArmS_Strength;
 
-  private final double collapsedPosition = 0;
-  private final double intermediatePosition = Constants.kMaxExtensionLength / 2;
-  private final double extendedPosition = Constants.kMaxExtensionLength;
-
   public double armSpeed = 0;
   public int sStrengthPlacementExtensionArm = 0;
   private final double positionDeadband = 10000;
@@ -73,15 +69,15 @@ public class ExtensionArm extends SubsystemBase {
   public ExtensionArm(MechanismLigament2d ligament) {
     extensionMotor = new WPI_TalonFX(Constants.CAN_ExtensionArm);
     extensionMotor.configFactoryDefault();
-    extensionMotor.config_kP(0,Constants.kExtensionArmP);
-    extensionMotor.config_kI(0,Constants.kExtensionArmI);
-    extensionMotor.config_kD(0,Constants.kExtensionArmD);
+    extensionMotor.config_kP(0,Constants.Extension.kExtensionArmP);
+    extensionMotor.config_kI(0,Constants.Extension.kExtensionArmI);
+    extensionMotor.config_kD(0,Constants.Extension.kExtensionArmD);
 
     extensionMotor.setInverted(false);
     extensionMotor.setSensorPhase(false);
 
-    extensionMotor.configMotionCruiseVelocity(Constants.kMaxVelocityPlacementExtensionArm);
-    extensionMotor.configMotionAcceleration(Constants.kMaxAccelerationPlacementExtensionArm);
+    extensionMotor.configMotionCruiseVelocity(Constants.Extension.kMaxVelocityPlacementExtensionArm);
+    extensionMotor.configMotionAcceleration(Constants.Extension.kMaxAccelerationPlacementExtensionArm);
     extensionMotor.configMotionSCurveStrength(sStrengthPlacementExtensionArm);
 
     extensionMotor.setNeutralMode(NeutralMode.Brake);
@@ -92,9 +88,9 @@ public class ExtensionArm extends SubsystemBase {
     m_limitSwitch = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
 
     Placement = Shuffleboard.getTab("Extension Arm");
-    n_placementExtensionArmP = Placement.add("p", Constants.kExtensionArmP).getEntry();
-    n_placementExtensionArmI = Placement.add("i", Constants.kExtensionArmI).getEntry();
-    n_placementExtensionArmD = Placement.add("d", Constants.kExtensionArmD).getEntry();
+    n_placementExtensionArmP = Placement.add("p", Constants.Extension.kExtensionArmP).getEntry();
+    n_placementExtensionArmI = Placement.add("i", Constants.Extension.kExtensionArmI).getEntry();
+    n_placementExtensionArmD = Placement.add("d", Constants.Extension.kExtensionArmD).getEntry();
 
     n_placementExtensionArmS_Strength = Placement.add("s strength", sStrengthPlacementExtensionArm).getEntry();
 
@@ -111,7 +107,7 @@ public class ExtensionArm extends SubsystemBase {
         y = 0;
       }
     } else if (y > 0) {
-      if (getPositionTicks() >= Math.abs(Constants.kMaxExtensionLength)) {
+      if (getPositionTicks() >= Math.abs(Constants.Extension.kMaxExtensionLength)) {
         y = 0;
       }
     }
@@ -124,7 +120,7 @@ public class ExtensionArm extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    ligament.setLength(getLengthExtensionArm());
+    ligament.setLength(getLengthExtensionArm() + Constants.Extension.kExtensionArmLengthRetractedMeters);
     double y = getSmartSpeed(armSpeed);
     if (y != armSpeed) {
       // It's updated so update the motor
@@ -137,24 +133,32 @@ public class ExtensionArm extends SubsystemBase {
    * Extend the arm all the way out
    */
   public void extendArmFull() {
-    currentSetpoint = extendedPosition;
-    extensionMotor.set(ControlMode.MotionMagic, extendedPosition);
+    currentSetpoint = Constants.Extension.kMaxExtensionLength;
+    extensionMotor.set(ControlMode.MotionMagic, currentSetpoint);
   }
 
   /**
    * The intermediate position to extend the arm to
    */
   public void intermediateArm() {
-    currentSetpoint = intermediatePosition;
-    extensionMotor.set(ControlMode.MotionMagic, intermediatePosition);
+    currentSetpoint = Constants.Extension.intermediatePosition;
+    extensionMotor.set(ControlMode.MotionMagic, currentSetpoint);
+  }
+
+  /**
+   * Extend the placement extension arm within the bot
+   */
+  public void extendWithinBot() {
+    currentSetpoint = Constants.Extension.kPositionWithinBot;
+    extensionMotor.set(ControlMode.MotionMagic, currentSetpoint);
   }
 
   /**
    * collapse the arm, can be replaced with zero?
    */
   public void collapseArm() {
-    currentSetpoint = collapsedPosition;
-    extensionMotor.set(ControlMode.MotionMagic, collapsedPosition);
+    currentSetpoint = 0;
+    extensionMotor.set(ControlMode.MotionMagic, currentSetpoint);
   }
 
   /**
@@ -175,11 +179,11 @@ public class ExtensionArm extends SubsystemBase {
    * @return the position of the extension arm in meters
    */
   public double getPositionMeters() {
-    return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition();
+    return Constants.Extension.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition();
   }
 
   /**
-   * @return the position of the extension arm in ticks. Max length should be {@link Constants#kMaxExtensionLength}
+   * @return the position of the extension arm in ticks. Max length should be {@link Constants.Extension#kMaxExtensionLength}
    */
   public double getPositionTicks() {
     return extensionMotor.getSelectedSensorPosition();
@@ -189,7 +193,7 @@ public class ExtensionArm extends SubsystemBase {
    * @return the speed of the extension arm in meters per second
    */
   public double getSpeedMetersPerSecond() {
-    return 10 * Constants.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorVelocity();
+    return 10 * Constants.Extension.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorVelocity();
   }
 
   /**
@@ -210,16 +214,16 @@ public class ExtensionArm extends SubsystemBase {
    * update values on shuffleboard
    */
   public void updateValues() {
-    if (l_placementExtensionArmP != n_placementExtensionArmP.getDouble(Constants.kExtensionArmP)){
-      l_placementExtensionArmP = Constants.kExtensionArmP;
+    if (l_placementExtensionArmP != n_placementExtensionArmP.getDouble(l_placementExtensionArmP)) {
+      l_placementExtensionArmP = n_placementExtensionArmP.getDouble(l_placementExtensionArmP);
       extensionMotor.config_kP(0, l_placementExtensionArmP);
     }
-    if (l_placementExtensionArmI != n_placementExtensionArmI.getDouble(Constants.kExtensionArmI)){
-            l_placementExtensionArmI = Constants.kExtensionArmI;
+    if (l_placementExtensionArmI != n_placementExtensionArmI.getDouble(l_placementExtensionArmI)){
+      l_placementExtensionArmI = n_placementExtensionArmI.getDouble(l_placementExtensionArmI);
       extensionMotor.config_kI(0, l_placementExtensionArmI);
     }
-    if (l_placementExtensionArmD != n_placementExtensionArmD.getDouble(Constants.kExtensionArmD)){
-      l_placementExtensionArmD = Constants.kExtensionArmD;
+    if (l_placementExtensionArmD != n_placementExtensionArmD.getDouble(l_placementExtensionArmD)){
+      l_placementExtensionArmD = n_placementExtensionArmD.getDouble(l_placementExtensionArmD);
       extensionMotor.config_kD(0, l_placementExtensionArmD);
     }
     if (l_placementExtensionArmS_Strength != n_placementExtensionArmS_Strength.getDouble(sStrengthPlacementExtensionArm)){
@@ -284,11 +288,11 @@ public class ExtensionArm extends SubsystemBase {
    * @return the length of the extension arm in meters including the start length
    */
   public double getLengthExtensionArm(){
-    return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition() + Constants.kExtensionArmLengthRetractedMeters;
+    return Constants.Extension.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition() + Constants.Extension.kExtensionArmLengthRetractedMeters;
   }
 
-  public void extendArmToGroundForCone() {
-    currentSetpoint = Constants.offGroundPositionCone;
+  public void extendArmToGround() {
+    currentSetpoint = Constants.Extension.offGroundPosition;
     extensionMotor.set(ControlMode.MotionMagic, currentSetpoint);
   }
 }

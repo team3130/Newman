@@ -32,7 +32,7 @@ public class RotaryArm extends SubsystemBase {
   protected final GenericEntry n_brake;
 
   protected MechanismLigament2d ligament;
-  private double outputSpeed = 0.6; // the speed we will run the rotary arm at
+  private double outputSpeed = 0.75; // the speed we will run the rotary arm at
 
   public static final TrapezoidProfile.Constraints rotaryArmConstraints = new TrapezoidProfile.Constraints(
           Constants.kMaxVelocityRotaryPlacementArm, Constants.kMaxAccelerationRotaryPlacementArm);
@@ -179,7 +179,7 @@ public class RotaryArm extends SubsystemBase {
    * @return the static feed forward gain
    */
   public double getFeedForward(double extensionLength){
-    return Constants.kRotaryStaticGain * extensionLength * Math.sin(getPositionPlacementArmAngle());
+    return Constants.Extension.kRotaryStaticGain * extensionLength * Math.sin(getPositionPlacementArmAngle());
   }
 
   /**
@@ -246,7 +246,7 @@ public class RotaryArm extends SubsystemBase {
   }
 
   public double getStaticGain(double extensionArmLength) {
-    return Math.sin(getPositionPlacementArmAngle()) * extensionArmLength * Constants.kRotaryStaticGain;
+    return Math.sin(getPositionPlacementArmAngle()) * extensionArmLength * Constants.Extension.kRotaryStaticGain;
   }
 
   public boolean pastLimit() {
