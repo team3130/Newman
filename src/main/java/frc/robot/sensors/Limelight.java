@@ -29,6 +29,9 @@ public class Limelight {
     VisionMedianFilter filter;
     int successfulUpdates = 0;
 
+    GenericEntry n_yaw;
+    GenericEntry n_pitch;
+
     protected double lastReadTime = 0;
 
     public Limelight() {
@@ -44,6 +47,24 @@ public class Limelight {
         if (Constants.debugMode) {
             SmartDashboard.putData(filter);
         }
+
+        n_yaw = Shuffleboard.getTab("Navx").add("Yaw", 0).getEntry();
+        n_pitch = Shuffleboard.getTab("Navx").add("Pitch", 0).getEntry();
+    }
+
+    public void outputToShuffleboard() {
+        if (!camera.isConnected()) {
+            return;
+        }
+        // the most recent result as read by the camera
+        PhotonPipelineResult result = camera.getLatestResult();
+
+        if (result.getBestTarget() == null) {
+            return;
+        }
+
+        n_pitch.setDouble(result.getBestTarget().getPitch());
+        n_yaw.setDouble(result.getBestTarget().getYaw());
     }
 
     /**
@@ -92,7 +113,7 @@ public class Limelight {
             // the position of the bot relative to the april tag
             Pose3d position = PhotonUtils.estimateFieldToRobotAprilTag(
                     bestCameraToTarget,
-                    aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(),
+                    pose3d.get(),
                     cameraToCenterOfBot);
 
             /* updates the best value that we will return on the last iteration,

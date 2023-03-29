@@ -7,6 +7,7 @@ package frc.robot.commands.Chassis;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Newman_Constants.Constants;
@@ -66,6 +67,12 @@ public class TeleopDrive extends CommandBase {
     if (!m_chassis.getFieldRelative()) {
       y = -y;
       x = -x;
+    }
+    else {
+      if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+        x = -x;
+        y = -y;
+      }
     }
 
     // apply slew rate limiter which also converts to m/s and rad.s

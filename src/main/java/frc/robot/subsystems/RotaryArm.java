@@ -32,7 +32,7 @@ public class RotaryArm extends SubsystemBase {
   protected final GenericEntry n_brake;
 
   protected MechanismLigament2d ligament;
-  private double outputSpeed = 0.6; // the speed we will run the rotary arm at
+  private double outputSpeed = 0.75; // the speed we will run the rotary arm at
 
   public static final TrapezoidProfile.Constraints rotaryArmConstraints = new TrapezoidProfile.Constraints(
           Constants.kMaxVelocityRotaryPlacementArm, Constants.kMaxAccelerationRotaryPlacementArm);

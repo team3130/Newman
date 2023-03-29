@@ -89,7 +89,7 @@ public class RobotContainer {
     MechanismLigament2d limit = new MechanismLigament2d(
             "limit",
             Constants.Extension.kExtensionArmLengthExtendedMeters,
-            110,
+            110 - 90,
             6,
             new Color8Bit(0, 0, 255));
     root.append(zero);
@@ -248,6 +248,10 @@ public class RobotContainer {
                     new AutoZeroExtensionArm(m_extensionArm),
                     new AutoZeroRotryArm(m_rotaryArm)
             );
+  }
+
+  public void periodic() {
+    m_limelight.outputToShuffleboard();
   }
 
 }
