@@ -29,7 +29,7 @@ public class ExtensionArm extends SubsystemBase {
   private final WPI_TalonFX extensionMotor;
   // limit switch which is at our 0 point for the extension arm
   private final DigitalInput m_limitSwitch;
-  private final Chassis m_Chassis;
+  private final Chassis m_chassis;
 
   protected MechanismLigament2d ligament;
 
@@ -135,7 +135,7 @@ public class ExtensionArm extends SubsystemBase {
     }
 
     double r = getLengthExtensionArm() + 0.26;
-    Pose3d armPos = new Pose3d(r * Math.cos(m_chassis.getYaw()), 0, r * Math.sin(getYaw()));
+    Pose3d armPos = new Pose3d(r * Math.cos(m_chassis.getYaw()), 0, r * Math.sin(m_chassis.getYaw()));
 
     if (BoundingBox.boxBad(armPos)) {
       if (m_chassis.getX() - (getLengthExtensionArm() + 0.09525) <= Constants.Field.xPositionForGridBlue || m_chassis.getX() + (getLengthExtensionArm() + 0.09525) >= Constants.Field.xPositionForGridRed) {

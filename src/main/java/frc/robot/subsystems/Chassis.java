@@ -300,21 +300,21 @@ public class Chassis extends SubsystemBase {
     /**
      * @return the x position from odometry
      */
-    private double getX() {
+    public double getX() {
         return m_odometry.getEstimatedPosition().getX();
     }
 
     /**
      * @return the y position from odometry
      */
-    private double getY() {
+    public double getY() {
         return m_odometry.getEstimatedPosition().getY();
     }
 
     /**
      * @return the yaw from odometry
      */
-    private double getYaw() {
+    public double getYaw() {
         return m_odometry.getEstimatedPosition().getRotation().getDegrees();
     }
 

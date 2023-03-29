@@ -24,7 +24,7 @@ import frc.robot.subsystems.Chassis;
 
 public class RotaryArm extends SubsystemBase {
   private final WPI_TalonFX rotaryMotor;
-  private final ExtensionArm m_extensionArm;                    
+  private final ExtensionArm m_extensionArm;                  
   private final Solenoid brake;
   private final boolean defaultState = true;
 
