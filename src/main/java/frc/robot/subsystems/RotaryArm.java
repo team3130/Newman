@@ -52,7 +52,7 @@ public class RotaryArm extends SubsystemBase {
     rotaryMotor.configVoltageCompSaturation(Constants.kMaxRotaryArmVoltage);
     rotaryMotor.setNeutralMode(NeutralMode.Brake);
     rotaryMotor.enableVoltageCompensation(true);
-    rotaryPID.setTolerance(0.2);
+    rotaryPID.setTolerance(0.1);
 
     rotaryMotor.setSensorPhase(true);
 
@@ -213,6 +213,11 @@ public class RotaryArm extends SubsystemBase {
   public void makeSetpointMid(){
     resetPIDController();
     rotaryPID.setGoal(Constants.midPosition);
+  }
+
+  public void makeSetpointMidCone() {
+    resetPIDController();
+    rotaryPID.setGoal(Constants.midPositionCones);
   }
 
   public void resetPIDController() {

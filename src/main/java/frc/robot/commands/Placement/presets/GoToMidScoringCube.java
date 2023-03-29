@@ -9,7 +9,7 @@ import frc.robot.subsystems.ExtensionArm;
 import frc.robot.subsystems.RotaryArm;
 
 /** A command to go to the mid-scoring position. */
-public class GoToMidScoring extends CommandBase {
+public class GoToMidScoringCube extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final RotaryArm m_rotaryArm;
   private final ExtensionArm m_extensionArm;
@@ -17,11 +17,11 @@ public class GoToMidScoring extends CommandBase {
   private boolean hasStartedExtended = false;
 
   /**
-   * Creates a new GoToMidScoring preset.
+   * Creates a new GoToMidScoringCube preset.
    *
    * @param rotary The subsystem used by this command.
    */
-  public GoToMidScoring(RotaryArm rotary, ExtensionArm extension) {
+  public GoToMidScoringCube(RotaryArm rotary, ExtensionArm extension) {
     m_rotaryArm = rotary;
     m_extensionArm = extension;
     // Use addRequirements() here to declare subsystem dependencies.

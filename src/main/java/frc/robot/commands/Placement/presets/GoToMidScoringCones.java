@@ -6,43 +6,56 @@ package frc.robot.commands.Placement.presets;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ExtensionArm;
+import frc.robot.subsystems.RotaryArm;
 
 /** A command to go to the mid-scoring position. */
-public class GoToPickupWithinBot extends CommandBase {
+public class GoToMidScoringCones extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private final RotaryArm m_rotaryArm;
   private final ExtensionArm m_extensionArm;
+
+  private boolean hasStartedExtended = false;
 
   /**
    * Creates a new GoToMidScoringCube preset.
    *
-   * @param extension The Extension arm subsystem which is used by this command.
+   * @param rotary The subsystem used by this command.
    */
-  public GoToPickupWithinBot(ExtensionArm extension) {
+  public GoToMidScoringCones(RotaryArm rotary, ExtensionArm extension) {
+    m_rotaryArm = rotary;
     m_extensionArm = extension;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(extension);
+    addRequirements(rotary, extension);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_extensionArm.extendWithinBot();
+    m_rotaryArm.releaseBrake();
+    m_rotaryArm.makeSetpointMidCone();
+    hasStartedExtended = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_rotaryArm.gotoPos(m_extensionArm.getPositionMeters());
+
+    if (!hasStartedExtended && m_rotaryArm.outsideBumper()) { // may need way outside bumper
+      m_extensionArm.intermediateArm();
+      hasStartedExtended = true;
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_extensionArm.stop();
+    m_rotaryArm.engageBrake();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_extensionArm.atPosition();
+    return m_rotaryArm.isAtPosition() && m_extensionArm.atPosition();
   }
 }

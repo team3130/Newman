@@ -15,7 +15,7 @@ import frc.robot.commands.Placement.AutoZeroExtensionArm;
 import frc.robot.commands.Placement.AutoZeroRotryArm;
 import frc.robot.commands.Placement.presets.GoToHighScoring;
 import frc.robot.commands.Placement.presets.GoToLowScoring;
-import frc.robot.commands.Placement.presets.GoToMidScoring;
+import frc.robot.commands.Placement.presets.GoToMidScoringCube;
 import frc.robot.subsystems.*;
 
 import java.util.ArrayList;
@@ -112,7 +112,7 @@ public class AutonCommand extends CommandBase {
             );
 
             PLACE_MID = new SequentialCommandGroup(
-                    new ToggleManipulator(m_manipulator), new GoToMidScoring(m_rotaryArm, m_extensionArm),
+                    new ToggleManipulator(m_manipulator), new GoToMidScoringCube(m_rotaryArm, m_extensionArm),
                     new ToggleManipulator(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
             );
 
