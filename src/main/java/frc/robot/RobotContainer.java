@@ -257,9 +257,7 @@ public class RobotContainer {
    * Robot container periodic method
    */
   public void periodic() {
-    m_limelight.outputToShuffleboard();
-
-    if (counter == 10) {
+/*    if (counter == 10) {
       CommandBase toRun = m_autonManager.pick();
       try {
         m_chassis.updateField2DFromTrajectory(((AutonCommand) toRun).getTrajectory());
@@ -269,7 +267,7 @@ public class RobotContainer {
       }
         counter = -1;
     }
-    counter++;
+    counter++;*/
   }
 
 }

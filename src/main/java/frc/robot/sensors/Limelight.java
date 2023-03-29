@@ -52,21 +52,6 @@ public class Limelight {
         n_pitch = Shuffleboard.getTab("Navx").add("Pitch", 0).getEntry();
     }
 
-    public void outputToShuffleboard() {
-        if (!camera.isConnected()) {
-            return;
-        }
-        // the most recent result as read by the camera
-        PhotonPipelineResult result = camera.getLatestResult();
-
-        if (result.getBestTarget() == null) {
-            return;
-        }
-
-        n_pitch.setDouble(result.getBestTarget().getPitch());
-        n_yaw.setDouble(result.getBestTarget().getYaw());
-    }
-
     /**
      * Calculates the position of the bot relative to an april tag.
      * That calculation is then given to {@link VisionMedianFilter}.
