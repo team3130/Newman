@@ -42,6 +42,7 @@ import frc.robot.controls.JoystickTrigger;
 import frc.robot.controls.TriggerButton;
 import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
+import frc.robot.supportingClasses.Auton.AutonCommand;
 import frc.robot.supportingClasses.Auton.AutonManager;
 import frc.robot.supportingClasses.Vision.OdoPosition;
 
@@ -66,6 +67,8 @@ public class RobotContainer {
   private final Hopper m_hopper;
   private final IntakePivot m_pivot;
   private final Limelight m_limelight;
+
+  private long counter = 0;
 
 
   /**
@@ -250,8 +253,23 @@ public class RobotContainer {
             );
   }
 
+  /**
+   * Robot container periodic method
+   */
   public void periodic() {
     m_limelight.outputToShuffleboard();
+
+    if (counter == 10) {
+      CommandBase toRun = m_autonManager.pick();
+      try {
+        m_chassis.updateField2DFromTrajectory(((AutonCommand) toRun).getTrajectory());
+      }
+      catch (ClassCastException ignored) {
+
+      }
+        counter = -1;
+    }
+    counter++;
   }
 
 }

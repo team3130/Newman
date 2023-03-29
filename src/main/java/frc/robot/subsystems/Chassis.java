@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -362,4 +363,8 @@ public class Chassis extends SubsystemBase {
     public OdoPosition refreshPosition() {
         return m_limelight.calculate();
   }
+
+    public void updateField2DFromTrajectory(PathPlannerTrajectory trajectory) {
+        field.getObject("traj").setTrajectory(trajectory);
+    }
 }

@@ -474,4 +474,11 @@ public class AutonCommand extends CommandBase {
     public Rotation2d getStartRotation() {
         return trajectory.getInitialState().holonomicRotation;
     }
+
+    /**
+     * @return the trajectory we are running
+     */
+    public PathPlannerTrajectory getTrajectory() {
+        return trajectory;
+    }
 }
