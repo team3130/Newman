@@ -101,7 +101,7 @@ public class AutonManager {
      * what to command is currently selected on shuffleboard.
      * @return the command that is selected on shuffleboard
      */
-    public CommandBase pick() {
+    public PoseCommand pick() {
         return m_autonChooser.getSelected();
     }
 

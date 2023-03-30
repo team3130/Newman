@@ -44,6 +44,7 @@ import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.Auton.AutonCommand;
 import frc.robot.supportingClasses.Auton.AutonManager;
+import frc.robot.supportingClasses.Auton.PoseCommand;
 import frc.robot.supportingClasses.Vision.OdoPosition;
 
 /**
@@ -239,7 +240,9 @@ public class RobotContainer {
    * @return the auton routine
    */
   public CommandBase getAutonCmd() {
-    return m_autonManager.pick();
+    PoseCommand cmd = m_autonManager.pick();
+    cmd.determineCommand(m_chassis.getPose2d());
+    return cmd;
   }
 
   /**
