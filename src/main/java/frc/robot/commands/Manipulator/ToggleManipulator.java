@@ -27,7 +27,6 @@ public class ToggleManipulator extends InstantCommand {
   @Override
   public void initialize() {
     System.out.println("STARTED: Toggling Manipulator");
-
-    // m_manipulator.toggleManipulator();
+     m_manipulator.toggleManipulator();
   }
 }

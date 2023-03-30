@@ -27,8 +27,8 @@ public class AutoZeroRotryArm extends CommandBase {
   public void initialize() {
     System.out.println("STARTED: Zeroing rotary arm");
 
-    // m_RotaryArm.releaseBrake();
-    // m_RotaryArm.spin(-0.1);
+     m_RotaryArm.releaseBrake();
+     m_RotaryArm.spin(-0.1);
 
   }
 

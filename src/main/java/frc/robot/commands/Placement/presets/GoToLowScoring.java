@@ -33,10 +33,10 @@ public class GoToLowScoring extends CommandBase {
   public void initialize() {
     System.out.println("STARTED: Going to low");
 
-    // //timeRunning.reset();
-    // m_RotaryArm.releaseBrake();
-    // //timeRunning.start();
-    // m_RotaryArm.makeSetpointLow();
+     //timeRunning.reset();
+     m_RotaryArm.releaseBrake();
+     //timeRunning.start();
+     m_RotaryArm.makeSetpointLow();
 
   }
 

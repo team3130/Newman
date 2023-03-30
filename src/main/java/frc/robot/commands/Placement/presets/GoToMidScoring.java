@@ -33,9 +33,9 @@ public class GoToMidScoring extends CommandBase {
   public void initialize() {
     System.out.println("STARTED: Going to mid");
     
-    // m_rotaryArm.releaseBrake();
-    // m_rotaryArm.makeSetpointMid();
-    // hasStartedExtended = false;
+     m_rotaryArm.releaseBrake();
+     m_rotaryArm.makeSetpointMid();
+     hasStartedExtended = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -43,12 +43,12 @@ public class GoToMidScoring extends CommandBase {
   public void execute() {
     System.out.println("Going to mid");
 
-    // m_rotaryArm.gotoPos(m_extensionArm.getPositionMeters());
+     m_rotaryArm.gotoPos(m_extensionArm.getPositionMeters());
 
-    // if (!hasStartedExtended && m_rotaryArm.outsideBumper()) { // may need way outside bumper
-    //   m_extensionArm.intermediateArm();
-    //   hasStartedExtended = true;
-    // }
+     if (!hasStartedExtended && m_rotaryArm.outsideBumper()) { // may need way outside bumper
+       m_extensionArm.intermediateArm();
+       hasStartedExtended = true;
+     }
   }
 
   // Called once the command ends or is interrupted.

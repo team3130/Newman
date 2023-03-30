@@ -35,21 +35,21 @@ public class GoToPickupOffGround extends CommandBase {
   public void initialize() {
     System.out.println("STARTED: Pickup off ground");
 
-    // m_rotaryArm.releaseBrake();
-    // m_rotaryArm.makeSetpointGroundCone();
-    // hasStartedExtended = false;
+     m_rotaryArm.releaseBrake();
+     m_rotaryArm.makeSetpointGroundCone();
+     hasStartedExtended = false;
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     System.out.println("Picking up off ground");
 
-    // m_rotaryArm.gotoPos(m_extensionArm.getPositionMeters());
+     m_rotaryArm.gotoPos(m_extensionArm.getPositionMeters());
 
-    // if (m_rotaryArm.isAtPosition() && !hasStartedExtended) { // may need way outside bumper
-    //   m_extensionArm.extendArmToGround();
-    //   hasStartedExtended = true;
-    // }
+     if (m_rotaryArm.isAtPosition() && !hasStartedExtended) { // may need way outside bumper
+       m_extensionArm.extendArmToGround();
+       hasStartedExtended = true;
+     }
   }
 
     // Called once the command ends or is interrupted.
@@ -57,8 +57,8 @@ public class GoToPickupOffGround extends CommandBase {
   public void end(boolean interrupted) {
     System.out.println("FINISHED: Pickup off ground");
 
-    // m_rotaryArm.stop();
-    // m_extensionArm.stop();
+     m_rotaryArm.stop();
+     m_extensionArm.stop();
   }
 
   // Returns true when the command should end.
