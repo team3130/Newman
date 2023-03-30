@@ -84,9 +84,9 @@ public class AutonManager {
         m_autonChooser.addOption("move out and clamp", generateMoveOutAndClamp());
         // m_autonChooser.addOption("Two meter forward", generateExamplePathFromPoses()); // two meter forward (stable)
         m_autonChooser.addOption("Intake spit", actuateIntake());
-        m_autonChooser.addOption("place in auton", placeInAuton());
+//        m_autonChooser.addOption("place in auton", placeInAuton());
         //m_autonChooser.addOption("place in auton top", placeInAutonTop());
-        m_autonChooser.addOption("place in auton bottom", placeInAutonLower());
+        m_autonChooser.addOption("place in auton", placeInAutonHigh());
         m_autonChooser.addOption("place a cone in auton", placeInAutonCone());
         // m_autonChooser.addOption("top dumb", generateTopDumb());
         // m_autonChooser.addOption("bottom dumb", generateBottomDumb());
@@ -593,6 +593,16 @@ public class AutonManager {
      */
     public PoseCommand placeConeHighPlaceCubeHigh() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("place cone high place cube high hp", safe_constraints);
-        return autonCommandGeneratorPlacement(trajectory);
+        return new PoseCommand(autonCommandGeneratorPlacement(trajectory));
+    }
+
+    public PoseCommand placeInAutonHigh() {
+        PathPlannerTrajectory trajectoryHP = PathPlanner.loadPath("place cone start hp", violent_constraints);
+        PathPlannerTrajectory trajectorynonHP = PathPlanner.loadPath("place cone start hp", violent_constraints);
+
+        AutonCommand commandHP = autonCommandGeneratorPlacement(trajectoryHP);
+        AutonCommand commandNonHp = autonCommandGenerator(trajectorynonHP);
+
+        return new PoseCommand(commandHP, commandNonHp);
     }
 }

@@ -3,7 +3,11 @@ package frc.robot.supportingClasses.Auton;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+
+import java.util.Arrays;
 
 public class PoseCommand extends CommandBase {
     protected Pose2d startPosition[]; // start position
@@ -26,6 +30,10 @@ public class PoseCommand extends CommandBase {
         m_requirements.addAll(cmd.getRequirements());
     }
 
+    public PoseCommand(AutonCommand command) {
+        this(command, command.trajectory);
+    }
+
     /**
      * Constructs a pose command without a trajectory or an end position
      * @param cmd the command tied into the PoseCommand object
@@ -35,6 +43,39 @@ public class PoseCommand extends CommandBase {
         this.cmd = new CommandBase[] {cmd};
         this.startPosition = new Pose2d[] {startPosition};
         this.trajectory = null;
+    }
+
+    public PoseCommand(CommandBase cmd1, Pose2d startPosition1, CommandBase cmd2, Pose2d startPosition2) {
+        this.cmd = new CommandBase[] {cmd1, cmd2};
+        this.startPosition = new Pose2d[] {startPosition1, startPosition2};
+        this.trajectory = null;
+    }
+
+    /**
+     * Makes a new PoseCommand
+     * @param cmd an array of the commands being followed
+     * @param trajectory an array of the trajectories being followed
+     */
+    public PoseCommand(CommandBase[] cmd, PathPlannerTrajectory[] trajectory) {
+        this.cmd = cmd;
+        this.trajectory = trajectory;
+        startPosition = new Pose2d[trajectory.length];
+        endPosition = new Pose2d[trajectory.length];
+        for (int i = 0; i < startPosition.length; i++) {
+            startPosition[i] = trajectory[i].getInitialPose();
+            endPosition[i] = trajectory[i].getEndState().poseMeters;
+        }
+    }
+
+    /**
+     * Makes a new PoseCommand object using the command and trajectories passed in, in order.
+     * @param cmd1 the first command
+     * @param trajectory1 the trajectory one
+     * @param cmd2 the second command
+     * @param trajectory2 the second trajectory
+     */
+    public PoseCommand(CommandBase cmd1, PathPlannerTrajectory trajectory1, CommandBase cmd2, PathPlannerTrajectory trajectory2) {
+        this(new CommandBase[] {cmd1, cmd2}, new PathPlannerTrajectory[] {trajectory1, trajectory2});
     }
 
     /**
@@ -57,6 +98,10 @@ public class PoseCommand extends CommandBase {
             }
             index = indexOfLowest;
         }
+    }
+
+    public PoseCommand(AutonCommand command1, AutonCommand command2) {
+        this(command1, command1.getTrajectory(), command2, command2.getTrajectory());
     }
 
     @Override

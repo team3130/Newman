@@ -28,7 +28,10 @@ import java.util.function.Function;
  * <p>
  * Also has capabilities of running along a trajectory.
  */
-public class AutonCommand extends PoseCommand {
+public class AutonCommand extends CommandBase{
+    protected Pose2d startPosition; // start position
+    protected Pose2d endPosition; // end position
+    protected final PathPlannerTrajectory trajectory; // the trajectory to follow
     protected final HolonomicControllerCommand cmd;
     protected final Chassis m_chassis; // the chassis subsystem
     protected final Hopper m_hopper; // the hopper subsystem
@@ -67,7 +70,7 @@ public class AutonCommand extends PoseCommand {
     public AutonCommand(HolonomicControllerCommand cmd, Pose2d startPosition, Pose2d endPosition, PathPlannerTrajectory trajectory,
                         RotaryArm rotaryArm, ExtensionArm extensionArm, Chassis chassis, Manipulator manipulator,
                         Hopper hopper) {
-        super(cmd, trajectory);
+        this.trajectory = trajectory;
         this.cmd = cmd;
         this.endPosition = endPosition;
         this.startPosition = startPosition;
@@ -424,5 +427,17 @@ public class AutonCommand extends PoseCommand {
         for (int index : indicesToRun) {
             commands[index].end(interrupted);
         }
+    }
+
+    public PathPlannerTrajectory getTrajectory() {
+        return trajectory;
+    }
+
+    public Pose2d getStartPosition() {
+        return trajectory.getInitialPose();
+    }
+
+    public Rotation2d getStartRotation() {
+        return trajectory.getInitialState().holonomicRotation;
     }
 }
