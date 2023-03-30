@@ -18,10 +18,12 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.commands.Balance.Balance;
 import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
@@ -40,11 +42,14 @@ import frc.robot.commands.Placement.ToggleBrake;
 import frc.robot.commands.Placement.presets.*;
 import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
+import frc.robot.sensors.Navx;
 import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.Auton.AutonCommand;
 import frc.robot.supportingClasses.Auton.AutonManager;
 import frc.robot.supportingClasses.Auton.PoseCommand;
 import frc.robot.supportingClasses.Vision.OdoPosition;
+
+import java.util.function.BooleanSupplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -172,6 +177,11 @@ public class RobotContainer {
     if (Constants.debugMode) {
       new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
       new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlaceToPlace(m_chassis, m_autonManager));
+
+      double balanceDeadband = 5.0; //This should go in Constants later
+      double omegaDeadband = 7.0;
+      double zeroPitch = -8.211; //Also constants
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new ConditionalCommand(new Balance(m_chassis, -1), new Balance(m_chassis, 1), () -> Navx.getPitch() - zeroPitch > 0).until(() ->( (Math.abs(Navx.getPitch()) <= balanceDeadband) && Math.abs(Navx.getPitchVelocity())  <= omegaDeadband)) );
     }
 
     //Weapons Gamepad:
