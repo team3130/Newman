@@ -592,13 +592,22 @@ public class AutonManager {
      * @return the auton command
      */
     public PoseCommand placeConeHighPlaceCubeHigh() {
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("place cone high place cube high hp", safe_constraints);
-        return new PoseCommand(autonCommandGeneratorPlacement(trajectory));
+        PathPlannerTrajectory trajectoryHP = PathPlanner.loadPath("place cone high place cube high hp", safe_constraints);
+        AutonCommand commandHP = autonCommandGeneratorPlacement(trajectoryHP);
+
+/*        PathPlannerTrajectory trajectorynonHP = PathPlanner.loadPath("place cone high place cube high non hp", safe_constraints);
+        AutonCommand commandnonHP = autonCommandGeneratorPlacement(trajectorynonHP);*/
+
+        return new PoseCommand(wrapCmd(commandHP), commandHP.getTrajectory());
     }
 
+    /**
+     * place in auton high
+     * @return a PoseCommand for placing in auton
+     */
     public PoseCommand placeInAutonHigh() {
         PathPlannerTrajectory trajectoryHP = PathPlanner.loadPath("place cone start hp", violent_constraints);
-        PathPlannerTrajectory trajectorynonHP = PathPlanner.loadPath("place cone start hp", violent_constraints);
+        PathPlannerTrajectory trajectorynonHP = PathPlanner.loadPath("place cone start non hp", violent_constraints);
 
         AutonCommand commandHP = autonCommandGeneratorPlacement(trajectoryHP);
         AutonCommand commandNonHp = autonCommandGenerator(trajectorynonHP);

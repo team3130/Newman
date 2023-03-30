@@ -360,8 +360,6 @@ public class AutonCommand extends CommandBase{
             closest = findClosestWithBinSearch();
         }
 
-        System.out.println("Closest marker name: " + closest.names.get(0));
-
         // if a new marker has been stumbled across. Should only get ran when we wan to intialize markers
         if (closest != current) {
             int toAdd = getIndexFromMap(closest);

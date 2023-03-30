@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import java.util.Arrays;
 
@@ -28,6 +29,7 @@ public class PoseCommand extends CommandBase {
         this.trajectory = new PathPlannerTrajectory[] {trajectory};
 
         m_requirements.addAll(cmd.getRequirements());
+        CommandScheduler.getInstance().registerComposedCommands(cmd);
     }
 
     public PoseCommand(AutonCommand command) {
