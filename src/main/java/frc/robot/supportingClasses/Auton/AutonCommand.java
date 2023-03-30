@@ -100,7 +100,7 @@ public class AutonCommand extends CommandBase {
             m_requirements.addAll(List.of(m_rotaryArm, m_extensionArm, m_manipulator));
         }
 
-        CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null, PLACE_HIGH = null, ZERO = null, PICK_UP, DO_NOTHING = null;
+        CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null, PLACE_HIGH = null, ZERO = null, PICK_UP_OFF_GROUND = null, PICK_UP_IN_BOT = null, DO_NOTHING = null;
 
         if (m_hopper != null) {
             HOPPER = new SpinHopper(m_hopper);

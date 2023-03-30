@@ -287,7 +287,7 @@ public class AutonManager {
         final int index = (int) (current.getY() * 2.5);
         final double y_value = ((Constants.Field.yPositionsForRowBounds[index] - (Constants.Field.yPositionsForRowBounds[index + 1]) / 2)) + Constants.Field.yPositionsForRowBounds[index];
         final double x_value = (DriverStation.getAlliance() == DriverStation.Alliance.Blue) ? Constants.Field.xPositionForGridBlue : Constants.Field.xPositionForGridRed;
-        final double rotation = (DriverStation.getAlliance() == DriverStation.Alliance.Blue) ? 0 : Math.PI;
+        final double rotation = (DriverStation.getAlliance() == DriverStation.Alliance.Blue) ? Math.PI : 0;
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(safe_constraints,
                 new PathPoint(
                         current.getTranslation(),

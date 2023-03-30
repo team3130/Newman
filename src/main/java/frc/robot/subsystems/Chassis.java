@@ -345,6 +345,16 @@ public class Chassis extends SubsystemBase {
         builder.addDoubleProperty("max speed read", this::getMaxSpeedRead, null);
     }
 
+    public void listener() {
+        for (SwerveModule module : modules) {
+            if (maxSpeedRead < module.getDriveVelocity()) {
+                maxSpeedRead = module.getDriveVelocity();
+            }
+        }
+    }
+
+
+
     public double getMaxSpeedRead() {
         return maxSpeedRead;
     }

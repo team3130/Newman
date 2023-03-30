@@ -92,6 +92,10 @@ public class TeleopDrive extends CommandBase {
       moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(x,y,theta));
     }
     m_chassis.setModuleStates(moduleStates);
+
+    if (Constants.debugMode) {
+      m_chassis.listener();
+    }
   }
 
   // Called once the command ends or is interrupted.
