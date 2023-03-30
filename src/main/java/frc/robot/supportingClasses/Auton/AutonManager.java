@@ -4,7 +4,6 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
-import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -70,7 +69,7 @@ public class AutonManager {
      * Method to populate chooser with commands to follow.
      */
     private void populateChooser() {
-        m_autonChooser.setDefaultOption("do nothing", new PoseCommand(new InstantCommand(), new Pose2d(0, 0, new Rotation2d())));
+        m_autonChooser.setDefaultOption("do nothing", new InstantCommand());
 
         // the string is the name passed into shuffleboard and the method call is to generate the method you will use
         // m_autonChooser.addOption("3 Meter", generate3MeterDrive());
@@ -84,10 +83,10 @@ public class AutonManager {
         m_autonChooser.addOption("move out and clamp", generateMoveOutAndClamp());
         // m_autonChooser.addOption("Two meter forward", generateExamplePathFromPoses()); // two meter forward (stable)
         m_autonChooser.addOption("Intake spit", actuateIntake());
-        m_autonChooser.addOption("place in auton", placeInAuton());
+//        m_autonChooser.addOption("place in auton", placeInAuton());
         //m_autonChooser.addOption("place in auton top", placeInAutonTop());
 //        m_autonChooser.addOption("place in auton", placeInAutonHigh());
-        m_autonChooser.addOption("place a cone in auton", placeInAutonCone());
+        m_autonChooser.addOption("place in auton", placeInAutonCone());
         // m_autonChooser.addOption("top dumb", generateTopDumb());
         // m_autonChooser.addOption("bottom dumb", generateBottomDumb());
         // m_autonChooser.addOption("mid placement start top", generateMidPlaceTopStart());
@@ -334,17 +333,17 @@ public class AutonManager {
     /**
      * @return a command to move out and clamp the manipulator closed
      */
-    private PoseCommand generateMoveOutAndClamp() {
+    private CommandBase generateMoveOutAndClamp() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("clamp and move out", safe_constraints);
         CommandBase command = wrapCmd(autonCommandGenerator(trajectory));
-        return new PoseCommand(new SequentialCommandGroup(new AutoZeroExtensionArm(extension), new ToggleManipulator(m_manipulator), command), trajectory);
+        return new SequentialCommandGroup(new AutoZeroExtensionArm(extension), new ToggleManipulator(m_manipulator), command);
     }
 
     /**
      * @return A command that starts at 0, 0 and actuates intake
      */
-    public PoseCommand actuateIntake() {
-        return new PoseCommand(new ToggleIntake(m_intake), new Pose2d(0, 0, new Rotation2d()));
+    public CommandBase actuateIntake() {
+        return new ToggleIntake(m_intake);
     }
 
     public CommandBase generateTopDumb() {
@@ -372,7 +371,7 @@ public class AutonManager {
         return wrapCmd(command);
     }
 
-    public PoseCommand makeCmdToIntakeAndGoForward() {
+    public CommandBase makeCmdToIntakeAndGoForward() {
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 violent_constraints,
                 new PathPoint(new Translation2d(0, 0),
@@ -383,10 +382,10 @@ public class AutonManager {
         );
 
         AutonCommand command = autonCommandGenerator(trajectory);
-        return new PoseCommand(new SequentialCommandGroup(new ToggleIntake(m_intake), wrapCmd(command)), trajectory);
+        return new SequentialCommandGroup(new ToggleIntake(m_intake), wrapCmd(command));
     }
 
-    public PoseCommand makeCmdToGoBackwardsClampAndForwards() {
+    public CommandBase makeCmdToGoBackwardsClampAndForwards() {
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 violent_constraints,
                 new PathPoint(
@@ -399,14 +398,14 @@ public class AutonManager {
         );
 
         AutonCommand command = autonCommandGenerator(trajectory);
-        return new PoseCommand(new SequentialCommandGroup(new ToggleManipulator(m_manipulator), wrapCmd(command)), trajectory);
+        return new SequentialCommandGroup(new ToggleManipulator(m_manipulator), wrapCmd(command));
     }
 
     /**
      * Requires odometry from april tags to be off in auton and for the traajectory to not be transformed by alliance
      * @return a command to place in auton assuming you are starting at the top of the field
      */
-    public PoseCommand placeInAutonTop() {
+    public CommandBase placeInAutonTop() {
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 safe_constraints,
                 new PathPoint(
@@ -429,15 +428,14 @@ public class AutonManager {
 
         AutonCommand command = autonCommandGenerator(trajectory);
         AutonCommand command2 = autonCommandGenerator(trajectory2);
-        return new PoseCommand(
-                new SequentialCommandGroup(
-                        new ToggleManipulator(m_manipulator),
-                        new GoToHighScoring(rotary, extension),
-                        wrapCmd(command),
-                        new ToggleManipulator(m_manipulator),
-                        wrapCmd(command2),
-                        new AutoZeroExtensionArm(extension),
-                        new AutoZeroRotryArm(rotary)), trajectory);
+        return new SequentialCommandGroup(
+                    new ToggleManipulator(m_manipulator),
+                    new GoToHighScoring(rotary, extension),
+                    wrapCmd(command),
+                    new ToggleManipulator(m_manipulator),
+                    wrapCmd(command2),
+                    new AutoZeroExtensionArm(extension),
+                    new AutoZeroRotryArm(rotary));
     }
 
     /**
@@ -489,7 +487,7 @@ public class AutonManager {
     /**
      * @return place in auton assuming that we start on the non-human player side
      */
-    public PoseCommand placeInAutonLower() {
+    public CommandBase placeInAutonLower() {
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 safe_constraints,
                 new PathPoint(
@@ -517,15 +515,14 @@ public class AutonManager {
             command = wrapCmd((AutonCommand) command);
         }
 
-        return new PoseCommand(
-                new SequentialCommandGroup(new ToggleManipulator(m_manipulator), new GoToHighScoring(rotary, extension),
-                command, new ToggleManipulator(m_manipulator),
-                new ParallelCommandGroup(
-                        command2,
-                        new SequentialCommandGroup(
-                                new AutoZeroExtensionArm(extension),
-                                new AutoZeroRotryArm(rotary))))
-        , trajectory);
+        return
+            new SequentialCommandGroup(new ToggleManipulator(m_manipulator), new GoToHighScoring(rotary, extension),
+            command, new ToggleManipulator(m_manipulator),
+            new ParallelCommandGroup(
+                    command2,
+                    new SequentialCommandGroup(
+                            new AutoZeroExtensionArm(extension),
+                            new AutoZeroRotryArm(rotary))));
     }
 
     /**
@@ -533,7 +530,7 @@ public class AutonManager {
      * Requires odometry from april tags to be off in auton and for the traajectory to not be transformed by alliance.
      * @return a command to place a cone in auton.
      */
-    public PoseCommand placeInAutonCone() {
+    public CommandBase placeInAutonCone() {
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 safe_constraints,
                 new PathPoint(
@@ -561,55 +558,52 @@ public class AutonManager {
             command = wrapCmd((AutonCommand) command);
         }
 
-        return new PoseCommand(
-                new SequentialCommandGroup(
-                    new AutoZeroRotryArm(rotary),
-                    new AutoZeroExtensionArm(extension),
-                    new GoToPickupWithinBot(extension),
-                    new ToggleManipulator(m_manipulator),
-                    new TimedCommand(0.2),
-                    new AutoZeroExtensionArm(extension),
-                    new GoToHighScoring(rotary, extension),
-                    command,
-                    new ToggleManipulator(m_manipulator),
-                    new TimedCommand(0.2),
-                    new ParallelCommandGroup(
-                            command2,
-                            new SequentialCommandGroup(
-                                    new AutoZeroExtensionArm(extension),
-                                    new AutoZeroRotryArm(rotary)
-                            )
-                    )),
-                trajectory
-                );
-
+        return
+            new SequentialCommandGroup(
+                new AutoZeroRotryArm(rotary),
+                new AutoZeroExtensionArm(extension),
+                new GoToPickupWithinBot(extension),
+                new ToggleManipulator(m_manipulator),
+                new TimedCommand(0.2),
+                new AutoZeroExtensionArm(extension),
+                new GoToHighScoring(rotary, extension),
+                command,
+                new ToggleManipulator(m_manipulator),
+                new TimedCommand(0.2),
+                new ParallelCommandGroup(
+                        command2,
+                        new SequentialCommandGroup(
+                                new AutoZeroExtensionArm(extension),
+                                new AutoZeroRotryArm(rotary)
+                        )
+                ));
     }
 
     /**
      * Place a cone in high at start and then place a cube in high
      * @return the auton command
      */
-    public PoseCommand placeConeHighPlaceCubeHigh() {
+    public CommandBase placeConeHighPlaceCubeHigh() {
         PathPlannerTrajectory trajectoryHP = PathPlanner.loadPath("place cone high place cube high hp", safe_constraints);
         AutonCommand commandHP = autonCommandGeneratorPlacement(trajectoryHP);
 
 /*        PathPlannerTrajectory trajectorynonHP = PathPlanner.loadPath("place cone high place cube high non hp", safe_constraints);
         AutonCommand commandnonHP = autonCommandGeneratorPlacement(trajectorynonHP);*/
 
-        return new PoseCommand(wrapCmd(commandHP), commandHP.getTrajectory());
+        return wrapCmd(commandHP);
     }
 
     /**
      * place in auton high
      * @return a PoseCommand for placing in auton
      */
-    public PoseCommand placeInAutonHigh() {
+    public CommandBase placeInAutonHigh() {
         PathPlannerTrajectory trajectoryHP = PathPlanner.loadPath("place cone start hp", violent_constraints);
         PathPlannerTrajectory trajectorynonHP = PathPlanner.loadPath("place cone start non hp", violent_constraints);
 
         AutonCommand commandHP = autonCommandGeneratorPlacement(trajectoryHP);
         AutonCommand commandNonHp = autonCommandGeneratorPlacement(trajectorynonHP);
 
-        return new PoseCommand(wrapCmd(commandHP), commandHP.getTrajectory(), wrapCmd(commandNonHp), commandNonHp.getTrajectory());
+        return wrapCmd(commandHP);
     }
 }
