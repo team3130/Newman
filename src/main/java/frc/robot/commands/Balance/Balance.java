@@ -22,7 +22,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class Balance extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Chassis m_chassis;
-  private double sign;
+  private final double pitchZero = -8.211; //should go in Constants
+  private final double pitchDeadband = 5;
+  private final double pitchVelocityDeadband = 0.5;
+
 
 
   /**
@@ -30,32 +33,29 @@ public class Balance extends CommandBase {
    *
    * @param chassis The subsystem used by this command.
    */
-  public Balance(Chassis chassis, int sign) {
+  public Balance(Chassis chassis) {
     m_chassis = chassis;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_chassis);
-    this.sign = sign;
+    
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    fVelocityTilt = new MedianFilter(5);
-    AccelerationTilt = 0;
-    prev = 0;
 
+    currPitch = 0;
 
     driveVelocity = 0.5; //Arbitrary Speed - Tune later
-    initPitch = Math.toRadians(Navx.getPitch());
     pitch = Math.toRadians(Navx.getPitch());
     roll = Math.toRadians(Navx.getRoll());
     direction = Math.atan2(Math.tan(pitch),Math.tan(roll));
   }
 
   private double direction;
-
+  private boolean pitchVelocityCheck = false;
   private double driveVelocity;
-  private double initPitch;
+  private double currPitch;
   private double pitch;
   private double roll;
   private double tilt;
@@ -79,31 +79,42 @@ public class Balance extends CommandBase {
   public void execute() {
     velocityPitch = Math.toRadians(Navx.getPitchVelocity());
     velocityRoll = Math.toRadians(Navx.getRollVelocity());
-    pitch = Math.toRadians(Navx.getPitch());
+    pitch = (Navx.getPitch());
     roll = Math.toRadians(Navx.getRoll());
+
+    pitchVelocityCheck = Math.abs(pitch - currPitch) <= pitchVelocityDeadband;
 
 
     //trajectory to go forward 2 meters * sign
     /* Call should be:
     ConditionalCommand balance = new ConditionalCommand(Balance(m_chassis, 1), Balance(m_chassis, -1), Navx.getPitch() > 1).until(Math.abs(Navx.getPitch())) <= 5.0;
     */
-    SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity * sign,0,0));
+    if(Navx.getPitch() < pitchZero){
+      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity,0,0));
+      m_chassis.setModuleStates(moduleStates);
+    }
+    else{
+      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(-driveVelocity,0,0));
+      m_chassis.setModuleStates(moduleStates);
+    }
 
-    m_chassis.setModuleStates(moduleStates);
+
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(0,0,0));
-    m_chassis.setModuleStates(moduleStates);
+
+    m_chassis.stopModules();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    currPitch = Navx.getPitch();
 
-    return false;
+    return pitchVelocityCheck && Math.abs(Navx.getPitch()) <= pitchDeadband;
   }
 
   public double getDirection() {
