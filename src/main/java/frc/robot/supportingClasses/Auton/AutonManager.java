@@ -29,7 +29,7 @@ import frc.robot.subsystems.*;
  * A class to generate our auton paths from PathPlanner
  */
 public class AutonManager {
-    private final SendableChooser<PoseCommand> m_autonChooser; // shuffleboard dropdown menu for selecting the path
+    private final SendableChooser<CommandBase> m_autonChooser; // shuffleboard dropdown menu for selecting the path
     protected Chassis m_chassis; // the chassis object
 
     protected PathConstraints safe_constraints; // safe speeds for testing
@@ -101,7 +101,7 @@ public class AutonManager {
      * what to command is currently selected on shuffleboard.
      * @return the command that is selected on shuffleboard
      */
-    public PoseCommand pick() {
+    public CommandBase pick() {
         return m_autonChooser.getSelected();
     }
 

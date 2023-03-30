@@ -251,9 +251,7 @@ public class RobotContainer {
    * @return the auton routine
    */
   public CommandBase getAutonCmd() {
-    PoseCommand cmd = m_autonManager.pick();
-    cmd.determineCommand(m_chassis.getPose2d());
-    return cmd;
+    return m_autonManager.pick();
   }
 
   /**
