@@ -94,7 +94,8 @@ public class PoseCommand extends CommandBase {
      * @param currentPosition the position that the bot is currently at
      */
     public void determineCommand(Pose2d currentPosition) {
-        if (Math.abs(currentPosition.getX()) <= 0.05 && Math.abs(currentPosition.getY()) <= 0.05) {
+        index = 0;
+/*        if (Math.abs(currentPosition.getX()) <= 0.05 && Math.abs(currentPosition.getY()) <= 0.05) {
             index = 0;
         }
         else {
@@ -108,7 +109,7 @@ public class PoseCommand extends CommandBase {
                 }
             }
             index = indexOfLowest;
-        }
+        }*/
     }
 
     public PoseCommand(AutonCommand command1, AutonCommand command2) {
