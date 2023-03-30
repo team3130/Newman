@@ -541,10 +541,12 @@ public class AutonManager {
 
     }
 
+    /**
+     * Place a cone in high at start and then place a cube in high
+     * @return the auton command
+     */
     public CommandBase placeConeHighPlaceCubeHigh() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("place cone high place cube high hp", safe_constraints);
-        AutonCommand cmd = autonCommandGeneratorPlacement(trajectory);
-        cmd.optimize();
-        return cmd;
+        return autonCommandGeneratorPlacement(trajectory);
     }
 }
