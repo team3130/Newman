@@ -27,6 +27,22 @@ public class Balance extends CommandBase {
   private final double pitchVelocityDeadband = 0.5;
 
 
+  private double direction;
+  private int iterator;
+  private boolean pitchVelocityCheck = false;
+  private final double driveVelocity = 0.5;
+  private double oddPitch;
+  private double pitch;
+  private double roll;
+  private double tilt;
+  private double velocityPitch;
+  private double velocityRoll;
+  private double VelocityTilt;
+  private double AccelerationTilt;
+  private MedianFilter fVelocityTilt;
+  private double prev;
+  private static ShuffleboardTab tab = Shuffleboard.getTab("Chassis");
+
 
   /**
    * Creates a new ExampleCommand.
@@ -44,45 +60,32 @@ public class Balance extends CommandBase {
   @Override
   public void initialize() {
 
-    currPitch = 0;
+    oddPitch = 0;
 
-    driveVelocity = 0.5; //Arbitrary Speed - Tune later
-    pitch = Math.toRadians(Navx.getPitch());
-    roll = Math.toRadians(Navx.getRoll());
-    direction = Math.atan2(Math.tan(pitch),Math.tan(roll));
+    
+    pitch = (Navx.getPitch());
+    
   }
 
-  private double direction;
-  private boolean pitchVelocityCheck = false;
-  private double driveVelocity;
-  private double currPitch;
-  private double pitch;
-  private double roll;
-  private double tilt;
-  private double velocityPitch;
-  private double velocityRoll;
-  private double VelocityTilt;
-  private double AccelerationTilt;
-  private MedianFilter fVelocityTilt;
-  private double prev;
-  private static ShuffleboardTab tab = Shuffleboard.getTab("Chassis");
+  
 
-  /*private final GenericEntry P = tab.add("Balancer P", Constants.BalanceKp).getEntry();
-  private final GenericEntry D = tab.add("Balancer D", Constants.BalanceKd).getEntry();
-  private final GenericEntry F = tab.add("Balancer F", Constants.BalanceKf).getEntry();
-  private final GenericEntry getDirection = tab.add("Direction", 0).getEntry();
-  private final GenericEntry getTilt = tab.add("Tilt", 0).getEntry();
-  private final GenericEntry getTiltVelocity = tab.add("Tilt Velocity", 0).getEntry(); */
+ 
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    velocityPitch = Math.toRadians(Navx.getPitchVelocity());
-    velocityRoll = Math.toRadians(Navx.getRollVelocity());
+    
     pitch = (Navx.getPitch());
-    roll = Math.toRadians(Navx.getRoll());
+ 
 
-    pitchVelocityCheck = Math.abs(pitch - currPitch) <= pitchVelocityDeadband;
+    iterator++;
+
+    if(iterator % 2 == 0){
+      pitchVelocityCheck = (Math.abs(oddPitch - pitch ) <= pitchVelocityDeadband);
+     }
+    else{oddPitch = Navx.getPitch();}
+
+    
 
 
     //trajectory to go forward 2 meters * sign
@@ -90,11 +93,11 @@ public class Balance extends CommandBase {
     ConditionalCommand balance = new ConditionalCommand(Balance(m_chassis, 1), Balance(m_chassis, -1), Navx.getPitch() > 1).until(Math.abs(Navx.getPitch())) <= 5.0;
     */
     if(Navx.getPitch() < pitchZero){
-      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity,0,0));
+      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(-driveVelocity,0,0));
       m_chassis.setModuleStates(moduleStates);
     }
     else{
-      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(-driveVelocity,0,0));
+      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity,0,0));
       m_chassis.setModuleStates(moduleStates);
     }
 
@@ -112,8 +115,7 @@ public class Balance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    currPitch = Navx.getPitch();
-
+  
     return pitchVelocityCheck && Math.abs(Navx.getPitch()) <= pitchDeadband;
   }
 
