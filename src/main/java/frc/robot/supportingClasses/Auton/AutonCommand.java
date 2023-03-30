@@ -18,6 +18,8 @@ import frc.robot.commands.Placement.presets.GoToLowScoring;
 import frc.robot.commands.Placement.presets.GoToMidScoringCube;
 import frc.robot.commands.Placement.presets.*;
 import frc.robot.commands.TimedCommand;
+import frc.robot.commands.Placement.presets.*;
+import frc.robot.commands.TimedCommand;
 import frc.robot.subsystems.*;
 
 import java.util.ArrayList;
@@ -31,12 +33,11 @@ import java.util.function.Function;
  * <p>
  * Also has capabilities of running along a trajectory.
  */
-public class AutonCommand extends CommandBase {
+public class AutonCommand extends CommandBase{
     protected Pose2d startPosition; // start position
     protected Pose2d endPosition; // end position
-    protected final HolonomicControllerCommand cmd; // command to run
     protected final PathPlannerTrajectory trajectory; // the trajectory to follow
-
+    protected final HolonomicControllerCommand cmd;
     protected final Chassis m_chassis; // the chassis subsystem
     protected final Hopper m_hopper; // the hopper subsystem
     protected final RotaryArm m_rotaryArm; // the rotary arm subsystem
@@ -74,8 +75,8 @@ public class AutonCommand extends CommandBase {
     public AutonCommand(HolonomicControllerCommand cmd, Pose2d startPosition, Pose2d endPosition, PathPlannerTrajectory trajectory,
                         RotaryArm rotaryArm, ExtensionArm extensionArm, Chassis chassis, Manipulator manipulator,
                         Hopper hopper) {
-        this.cmd = cmd;
         this.trajectory = trajectory;
+        this.cmd = cmd;
         this.endPosition = endPosition;
         this.startPosition = startPosition;
         m_rotaryArm = rotaryArm;
@@ -101,6 +102,10 @@ public class AutonCommand extends CommandBase {
         }
 
         CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null, PLACE_HIGH = null, ZERO = null, PICK_UP_OFF_GROUND = null, PICK_UP_IN_BOT = null, DO_NOTHING = null;
+        CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null,
+                PLACE_HIGH = null, ZERO = null, MANIPULATOR = null,
+                PICK_UP_OFF_GROUND = null, PICK_UP_IN_BOT = null,
+                DO_NOTHING = null;
 
         if (m_hopper != null) {
             HOPPER = new SpinHopper(m_hopper);
@@ -108,35 +113,33 @@ public class AutonCommand extends CommandBase {
         }
 
         if (m_rotaryArm != null && m_extensionArm != null && m_manipulator != null) {
-            PLACE_LOW = new SequentialCommandGroup(
-                    new ToggleManipulator(m_manipulator), new GoToLowScoring(m_rotaryArm, m_extensionArm),
-                    new ToggleManipulator(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
-            );
+            PLACE_LOW = new GoToLowScoring(m_rotaryArm, m_extensionArm);
 
             PLACE_MID = new SequentialCommandGroup(
                     new ToggleManipulator(m_manipulator), new GoToMidScoringCube(m_rotaryArm, m_extensionArm),
                     new ToggleManipulator(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
             );
+            PLACE_MID = new GoToMidScoring(m_rotaryArm, m_extensionArm);
 
-            PLACE_HIGH = new SequentialCommandGroup(
-                    new ToggleManipulator(m_manipulator), new GoToHighScoring(m_rotaryArm, m_extensionArm),
-                    new ToggleManipulator(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
-            );
+            PLACE_HIGH = new GoToHighScoring(m_rotaryArm, m_extensionArm);
+
+            MANIPULATOR = new ToggleManipulator(manipulator);
 
             ZERO = new SequentialCommandGroup(new AutoZeroExtensionArm(extensionArm), new AutoZeroRotryArm(rotaryArm));
 
             PICK_UP_OFF_GROUND = new GoToPickupOffGround(m_rotaryArm, m_extensionArm);
 
             PICK_UP_IN_BOT = new SequentialCommandGroup(new GoToPickupWithinBot(m_extensionArm),
-                    new ToggleManipulator(m_manipulator), new AutoZeroExtensionArm(extensionArm), new AutoZeroRotryArm(rotaryArm));
+                    new ToggleManipulator(m_manipulator), new TimedCommand(0.1), new AutoZeroExtensionArm(extensionArm), new AutoZeroRotryArm(rotaryArm));
 
-            CommandScheduler.getInstance().registerComposedCommands(PLACE_LOW, PLACE_MID, PLACE_HIGH, ZERO, PICK_UP_OFF_GROUND, PICK_UP_IN_BOT);
+            CommandScheduler.getInstance().registerComposedCommands(PLACE_LOW, PLACE_MID, PLACE_HIGH, MANIPULATOR, ZERO, PICK_UP_IN_BOT, PICK_UP_OFF_GROUND);
         }
 
         DO_NOTHING = new DoNothing();
         CommandScheduler.getInstance().registerComposedCommands(DO_NOTHING);
 
-        commands = new CommandBase[] {HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH, ZERO, DO_NOTHING};
+        commands = new CommandBase[] {HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH, ZERO, MANIPULATOR,
+                PICK_UP_OFF_GROUND, PICK_UP_IN_BOT, DO_NOTHING};
 
         getOptimizedIndex = (EventMarker marker) -> (int) (marker.timeSeconds * magicScalar);
 
@@ -162,14 +165,20 @@ public class AutonCommand extends CommandBase {
                     markerToCommandMap.put(marker, 3);
                 }
             }
-/*            else if (name.contains("manipulator") || name.contains("grabber")) {
-                markerToCommandMap.put(marker, 4);
-            }*/
+            else if (name.contains("within") || name.contains("bot")) {
+                markerToCommandMap.put(marker, 6);
+            }
+            else if (name.contains("pickup") || name.contains("floor")) {
+                markerToCommandMap.put(marker, 7);
+            }
             else if (name.contains("zero")) {
                 markerToCommandMap.put(marker, 4);
             }
-            else {
+            else if (name.contains("grabber") || name.contains("manipulator")) {
                 markerToCommandMap.put(marker, 5);
+            }
+            else {
+                markerToCommandMap.put(marker, 8);
             }
         }
     }
@@ -312,65 +321,6 @@ public class AutonCommand extends CommandBase {
     }
 
     /**
-     * @return the final position in the trajectory
-     */
-    public Pose2d getEndPosition() {
-        return endPosition;
-    }
-
-    /**
-     * Setter for the end position
-     * @param endPosition the last position in the trajectory
-     */
-    public void setEndPosition(Pose2d endPosition) {
-        this.endPosition = endPosition;
-    }
-
-    /**
-     * sets the start position
-     * @param newPosition position to set the start position to
-     */
-    public void setStartPosition(Pose2d newPosition) {
-        startPosition = newPosition;
-    }
-
-    /**
-     * sets the start position, sets the rotation to 0
-     * @param x position (mathematical coordinates)
-     * @param y position (mathematical coordinates)
-     */
-    public void setPosition(double x, double y) {
-        setPosition(x, y, 0);
-    }
-
-    /**
-     * sets the start position
-     * @param x position (mathematical coordinates)
-     * @param y position (mathematical coordinates)
-     * @param rad rotation in radians (mathematical coordinates)
-     */
-    public void setPosition(double x, double y, double rad) {
-        setPosition(x, y, new Rotation2d(rad));
-    }
-
-    /**
-     * A setter for the start position and assigns it to the {@link Pose2d}
-     * @param x position (mathematical coordinates)
-     * @param y position (mathematical coordinates)
-     * @param rotation rotation (mathematical coordinates)
-     */
-    public void setPosition(double x, double y, Rotation2d rotation) {
-        startPosition = new Pose2d(x, y, rotation);
-    }
-
-    /**
-     * @return the start position of the auton trajectory
-     */
-    public Pose2d getStartPosition() {
-        return startPosition;
-    }
-
-    /**
      * @return the command to run
      */
     public CommandBase getCmd() {
@@ -390,19 +340,27 @@ public class AutonCommand extends CommandBase {
         }
     }
 
+    /**
+     * The execute portion of the command.
+     * This section of the command handles the majority of the logic of cycling through commands based off of markers.
+     */
     @Override
     public void execute() {
         // autony execute
         cmd.execute();
 
+        // for every command that we currently want to run, run its execute and check if it si finished and handle end
         for (int i = 0; i < indicesToRun.size(); i++) {
+            System.out.println("index: " + i);
             // if there is a command that we are supposed to run right now, then run it until it ends
             commands[indicesToRun.get(i)].execute();
             if (commands[indicesToRun.get(i)].isFinished()) {
                 commands[indicesToRun.get(i)].end(false);
-                indicesToRun.remove(indicesToRun.get(i));
+                indicesToRun.remove(i--);
             }
         }
+
+        System.out.println("--------------");
 
         PathPlannerTrajectory.EventMarker closest;
         // event markers
@@ -412,17 +370,22 @@ public class AutonCommand extends CommandBase {
             closest = findClosestWithBinSearch();
         }
 
+        // if a new marker has been stumbled across. Should only get ran when we wan to intialize markers
         if (closest != current) {
             int toAdd = getIndexFromMap(closest);
+            System.out.println("current index: " + closest);
+            // for debugging purposes this doesn't currently get ran
             if (closest.names.get(0).contains("end")) {
                  commands[toAdd].end(true);
-                // remove marker running right now
+                // remove the marker that is running right now
                 for (int i = 0; i < indicesToRun.size(); i++) {
                     if (commands[indicesToRun.get(i)] == commands[toAdd]) {
+                        // remove and keep the loop running
                         indicesToRun.remove(i--);
                     }
                 }
             }
+            // for our purposed read this one
             else {
                 commands[toAdd].initialize();
                 if (useOptimized) {
@@ -454,7 +417,6 @@ public class AutonCommand extends CommandBase {
 
     }
 
-
     @Override
     public boolean isFinished() {
         boolean runningIsDone = true;
@@ -475,17 +437,15 @@ public class AutonCommand extends CommandBase {
         }
     }
 
-    /**
-     * @return the start holonomic rotation of the path that will be ran
-     */
-    public Rotation2d getStartRotation() {
-        return trajectory.getInitialState().holonomicRotation;
-    }
-
-    /**
-     * @return the trajectory we are running
-     */
     public PathPlannerTrajectory getTrajectory() {
         return trajectory;
+    }
+
+    public Pose2d getStartPosition() {
+        return trajectory.getInitialPose();
+    }
+
+    public Rotation2d getStartRotation() {
+        return trajectory.getInitialState().holonomicRotation;
     }
 }

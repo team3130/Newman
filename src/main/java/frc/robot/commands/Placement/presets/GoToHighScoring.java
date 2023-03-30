@@ -33,24 +33,30 @@ public class GoToHighScoring extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_rotaryArm.releaseBrake();
-    m_rotaryArm.makeSetpointHigh();
-    hasStartedExtended = false;
+    System.out.println("STARTED: Going to high");
+
+     m_rotaryArm.releaseBrake();
+     m_rotaryArm.makeSetpointHigh();
+     hasStartedExtended = false;
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_rotaryArm.gotoPos(m_extensionArm.getPositionMeters());
+    System.out.println("Going to high");
 
-    if (m_rotaryArm.outsideBumper() && !hasStartedExtended) { //may need way outside bumper
-      m_extensionArm.extendArmFull();
-      hasStartedExtended = true;
-    }
+     m_rotaryArm.gotoPos(m_extensionArm.getPositionMeters());
+
+     if (m_rotaryArm.outsideBumper() && !hasStartedExtended) { //may need way outside bumper
+       m_extensionArm.extendArmFull();
+       hasStartedExtended = true;
+     }
   }
 
     // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("FINISHED: Going to high");
+
     m_rotaryArm.stop();
     m_rotaryArm.engageBrake();
     m_extensionArm.stop();

@@ -31,25 +31,31 @@ public class GoToMidScoringCube extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_rotaryArm.releaseBrake();
-    m_rotaryArm.makeSetpointMid();
-    hasStartedExtended = false;
+    System.out.println("STARTED: Going to mid");
+    
+     m_rotaryArm.releaseBrake();
+     m_rotaryArm.makeSetpointMid();
+     hasStartedExtended = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_rotaryArm.gotoPos(m_extensionArm.getPositionMeters());
+    System.out.println("Going to mid");
 
-    if (!hasStartedExtended && m_rotaryArm.outsideBumper()) { // may need way outside bumper
-      m_extensionArm.intermediateArm();
-      hasStartedExtended = true;
-    }
+     m_rotaryArm.gotoPos(m_extensionArm.getPositionMeters());
+
+     if (!hasStartedExtended && m_rotaryArm.outsideBumper()) { // may need way outside bumper
+       m_extensionArm.intermediateArm();
+       hasStartedExtended = true;
+     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("FINISHED: Going to mid");
+
     m_rotaryArm.engageBrake();
   }
 
