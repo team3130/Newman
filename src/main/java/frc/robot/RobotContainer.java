@@ -39,17 +39,16 @@ import frc.robot.commands.Placement.AutoZeroRotryArm;
 import frc.robot.commands.Placement.ManualControl.MoveExtensionArm;
 import frc.robot.commands.Placement.ManualControl.MoveRotaryArm;
 import frc.robot.commands.Placement.ToggleBrake;
-import frc.robot.commands.Placement.presets.*;
+import frc.robot.commands.Placement.presets.GoToHighScoring;
+import frc.robot.commands.Placement.presets.GoToMidScoringCones;
+import frc.robot.commands.Placement.presets.GoToMidScoringCube;
+import frc.robot.commands.Placement.presets.GoToPickupOffGround;
 import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
 import frc.robot.sensors.Navx;
 import frc.robot.subsystems.*;
-import frc.robot.supportingClasses.Auton.AutonCommand;
 import frc.robot.supportingClasses.Auton.AutonManager;
-import frc.robot.supportingClasses.Auton.PoseCommand;
 import frc.robot.supportingClasses.Vision.OdoPosition;
-
-import java.util.function.BooleanSupplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -72,8 +71,6 @@ public class RobotContainer {
   private final Hopper m_hopper;
   private final IntakePivot m_pivot;
   private final Limelight m_limelight;
-
-  private long counter = 0;
 
 
   /**

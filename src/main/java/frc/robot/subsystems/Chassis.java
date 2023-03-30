@@ -175,10 +175,10 @@ public class Chassis extends SubsystemBase {
         updateOdometryFromSwerve();
         n_fieldOrriented.setBoolean(fieldRelative);
 
-        OdoPosition position = refreshPosition();
+/*        OdoPosition position = refreshPosition();
         if (position != null) {
             updateOdometryFromVision(position);
-        }
+        }*/
 
         field.setRobotPose(m_odometry.getEstimatedPosition());
     }
