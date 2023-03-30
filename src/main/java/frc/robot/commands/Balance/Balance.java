@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Balance;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Chassis.ZeroEverything;
@@ -22,6 +23,7 @@ public class Balance extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Chassis m_chassis;
   private double sign;
+
 
   /**
    * Creates a new ExampleCommand.
@@ -65,12 +67,12 @@ public class Balance extends CommandBase {
   private double prev;
   private static ShuffleboardTab tab = Shuffleboard.getTab("Chassis");
 
-  private final GenericEntry P = tab.add("Balancer P", Constants.BalanceKp).getEntry();
+  /*private final GenericEntry P = tab.add("Balancer P", Constants.BalanceKp).getEntry();
   private final GenericEntry D = tab.add("Balancer D", Constants.BalanceKd).getEntry();
   private final GenericEntry F = tab.add("Balancer F", Constants.BalanceKf).getEntry();
   private final GenericEntry getDirection = tab.add("Direction", 0).getEntry();
   private final GenericEntry getTilt = tab.add("Tilt", 0).getEntry();
-  private final GenericEntry getTiltVelocity = tab.add("Tilt Velocity", 0).getEntry();
+  private final GenericEntry getTiltVelocity = tab.add("Tilt Velocity", 0).getEntry(); */
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
