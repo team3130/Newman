@@ -60,9 +60,9 @@ public class AutonManager {
         this.extension = extension;
         m_manipulator = manipulator;
 
-        populateChooser();
-
         alliance = DriverStation.getAlliance();
+
+        populateChooser();
     }
 
     /**
@@ -133,7 +133,7 @@ public class AutonManager {
         PIDController yController = new PIDController(Constants.kPYController, Constants.kIYController ,Constants.kDYController);
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(xController, yController, new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, 0, Constants.kThetaControllerConstraints));
 
-        trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
+        trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, alliance);
 
         return new HolonomicControllerCommand(
                 trajectory,
