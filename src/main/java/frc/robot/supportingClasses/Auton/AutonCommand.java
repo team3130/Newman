@@ -28,12 +28,8 @@ import java.util.function.Function;
  * <p>
  * Also has capabilities of running along a trajectory.
  */
-public class AutonCommand extends CommandBase {
-    protected Pose2d startPosition; // start position
-    protected Pose2d endPosition; // end position
-    protected final HolonomicControllerCommand cmd; // command to run
-    protected final PathPlannerTrajectory trajectory; // the trajectory to follow
-
+public class AutonCommand extends PoseCommand {
+    protected final HolonomicControllerCommand cmd;
     protected final Chassis m_chassis; // the chassis subsystem
     protected final Hopper m_hopper; // the hopper subsystem
     protected final RotaryArm m_rotaryArm; // the rotary arm subsystem
@@ -71,8 +67,8 @@ public class AutonCommand extends CommandBase {
     public AutonCommand(HolonomicControllerCommand cmd, Pose2d startPosition, Pose2d endPosition, PathPlannerTrajectory trajectory,
                         RotaryArm rotaryArm, ExtensionArm extensionArm, Chassis chassis, Manipulator manipulator,
                         Hopper hopper) {
+        super(cmd, trajectory);
         this.cmd = cmd;
-        this.trajectory = trajectory;
         this.endPosition = endPosition;
         this.startPosition = startPosition;
         m_rotaryArm = rotaryArm;
@@ -312,65 +308,6 @@ public class AutonCommand extends CommandBase {
     }
 
     /**
-     * @return the final position in the trajectory
-     */
-    public Pose2d getEndPosition() {
-        return endPosition;
-    }
-
-    /**
-     * Setter for the end position
-     * @param endPosition the last position in the trajectory
-     */
-    public void setEndPosition(Pose2d endPosition) {
-        this.endPosition = endPosition;
-    }
-
-    /**
-     * sets the start position
-     * @param newPosition position to set the start position to
-     */
-    public void setStartPosition(Pose2d newPosition) {
-        startPosition = newPosition;
-    }
-
-    /**
-     * sets the start position, sets the rotation to 0
-     * @param x position (mathematical coordinates)
-     * @param y position (mathematical coordinates)
-     */
-    public void setPosition(double x, double y) {
-        setPosition(x, y, 0);
-    }
-
-    /**
-     * sets the start position
-     * @param x position (mathematical coordinates)
-     * @param y position (mathematical coordinates)
-     * @param rad rotation in radians (mathematical coordinates)
-     */
-    public void setPosition(double x, double y, double rad) {
-        setPosition(x, y, new Rotation2d(rad));
-    }
-
-    /**
-     * A setter for the start position and assigns it to the {@link Pose2d}
-     * @param x position (mathematical coordinates)
-     * @param y position (mathematical coordinates)
-     * @param rotation rotation (mathematical coordinates)
-     */
-    public void setPosition(double x, double y, Rotation2d rotation) {
-        startPosition = new Pose2d(x, y, rotation);
-    }
-
-    /**
-     * @return the start position of the auton trajectory
-     */
-    public Pose2d getStartPosition() {
-        return startPosition;
-    }
-
-    /**
      * @return the command to run
      */
     public CommandBase getCmd() {
@@ -390,6 +327,10 @@ public class AutonCommand extends CommandBase {
         }
     }
 
+    /**
+     * The execute portion of the command.
+     * This section of the command handles the majority of the logic of cycling through commands based off of markers.
+     */
     @Override
     public void execute() {
         // autony execute
@@ -483,19 +424,5 @@ public class AutonCommand extends CommandBase {
         for (int index : indicesToRun) {
             commands[index].end(interrupted);
         }
-    }
-
-    /**
-     * @return the start holonomic rotation of the path that will be ran
-     */
-    public Rotation2d getStartRotation() {
-        return trajectory.getInitialState().holonomicRotation;
-    }
-
-    /**
-     * @return the trajectory we are running
-     */
-    public PathPlannerTrajectory getTrajectory() {
-        return trajectory;
     }
 }
