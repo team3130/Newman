@@ -11,10 +11,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import java.util.Arrays;
 
 public class PoseCommand extends CommandBase {
-    protected Pose2d startPosition[]; // start position
-    protected Pose2d endPosition[]; // end position
+    protected Pose2d[] startPosition; // start position
+    protected Pose2d[] endPosition; // end position
     protected final CommandBase[] cmd; // command to run
-    protected final PathPlannerTrajectory trajectory[]; // the trajectory to follow
+    protected final PathPlannerTrajectory[] trajectory; // the trajectory to follow
     protected int index = 0; // the index of cmd to run. used in human player-station side logic
 
     /**

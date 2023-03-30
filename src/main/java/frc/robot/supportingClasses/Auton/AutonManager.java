@@ -612,6 +612,6 @@ public class AutonManager {
         AutonCommand commandHP = autonCommandGeneratorPlacement(trajectoryHP);
         AutonCommand commandNonHp = autonCommandGeneratorPlacement(trajectorynonHP);
 
-        return new PoseCommand(commandHP, commandNonHp);
+        return new PoseCommand(wrapCmd(commandHP), commandHP.getTrajectory(), wrapCmd(commandNonHp), commandNonHp.getTrajectory());
     }
 }
