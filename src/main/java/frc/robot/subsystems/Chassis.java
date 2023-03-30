@@ -26,6 +26,10 @@ import frc.robot.supportingClasses.Vision.OdoPosition;
 import frc.robot.swerve.SwerveModule;
 
 import java.util.Arrays;
+<<<<<<< HEAD
+=======
+import java.util.function.BooleanSupplier;
+>>>>>>> 8510cb7c8fbfe703d8990867da448bcdaba06363
 
 
 public class Chassis extends SubsystemBase {
@@ -374,7 +378,11 @@ public class Chassis extends SubsystemBase {
         return m_limelight.calculate();
   }
 
+<<<<<<< HEAD
     public void updateField2DFromTrajectory(PathPlannerTrajectory trajectory) {
         field.getObject("traj").setTrajectory(trajectory);
     }
+=======
+
+>>>>>>> 8510cb7c8fbfe703d8990867da448bcdaba06363
 }

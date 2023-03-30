@@ -9,7 +9,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Newman_Constants.Constants;
+<<<<<<< HEAD
 import frc.robot.subsystems.ExtensionArm;
+=======
+import frc.robot.sensors.Navx;
+>>>>>>> 8510cb7c8fbfe703d8990867da448bcdaba06363
 
 public class Robot extends TimedRobot {
   private Timer timer;
@@ -40,6 +44,8 @@ public class Robot extends TimedRobot {
         }
       }
     }
+    Navx.outputToShuffleboard();
+
     }
 
     @Override
