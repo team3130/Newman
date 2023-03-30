@@ -44,10 +44,10 @@ public class GoToHighScoring extends CommandBase {
   public void execute() {
     System.out.println("Going to high");
 
-     m_rotaryArm.gotoPos(m_extensionArm.getPositionMeters());
+     m_rotaryArm.gotoPos(m_extensionArm.getPositionTicks());
 
      if (m_rotaryArm.outsideBumper() && !hasStartedExtended) { //may need way outside bumper
-       m_extensionArm.extendArmFull();
+        m_extensionArm.extendArmFull();
        hasStartedExtended = true;
      }
   }
@@ -65,6 +65,6 @@ public class GoToHighScoring extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_rotaryArm.isAtPosition()  && m_extensionArm.atPosition();
+    return m_rotaryArm.isAtPosition() && m_extensionArm.atPosition();
   }
 }
