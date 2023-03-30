@@ -101,7 +101,6 @@ public class AutonCommand extends CommandBase{
             m_requirements.addAll(List.of(m_rotaryArm, m_extensionArm, m_manipulator));
         }
 
-        CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null, PLACE_HIGH = null, ZERO = null, PICK_UP_OFF_GROUND = null, PICK_UP_IN_BOT = null, DO_NOTHING = null;
         CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null,
                 PLACE_HIGH = null, ZERO = null, MANIPULATOR = null,
                 PICK_UP_OFF_GROUND = null, PICK_UP_IN_BOT = null,
@@ -119,7 +118,7 @@ public class AutonCommand extends CommandBase{
                     new ToggleManipulator(m_manipulator), new GoToMidScoringCube(m_rotaryArm, m_extensionArm),
                     new ToggleManipulator(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
             );
-            PLACE_MID = new GoToMidScoring(m_rotaryArm, m_extensionArm);
+            PLACE_MID = new GoToMidScoringCones(m_rotaryArm, m_extensionArm);
 
             PLACE_HIGH = new GoToHighScoring(m_rotaryArm, m_extensionArm);
 
