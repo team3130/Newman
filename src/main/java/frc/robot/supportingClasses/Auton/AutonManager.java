@@ -84,9 +84,9 @@ public class AutonManager {
         m_autonChooser.addOption("move out and clamp", generateMoveOutAndClamp());
         // m_autonChooser.addOption("Two meter forward", generateExamplePathFromPoses()); // two meter forward (stable)
         m_autonChooser.addOption("Intake spit", actuateIntake());
-//        m_autonChooser.addOption("place in auton", placeInAuton());
+        m_autonChooser.addOption("place in auton", placeInAuton());
         //m_autonChooser.addOption("place in auton top", placeInAutonTop());
-        m_autonChooser.addOption("place in auton", placeInAutonHigh());
+//        m_autonChooser.addOption("place in auton", placeInAutonHigh());
         m_autonChooser.addOption("place a cone in auton", placeInAutonCone());
         // m_autonChooser.addOption("top dumb", generateTopDumb());
         // m_autonChooser.addOption("bottom dumb", generateBottomDumb());
@@ -134,7 +134,7 @@ public class AutonManager {
         PIDController yController = new PIDController(Constants.kPYController, Constants.kIYController ,Constants.kDYController);
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(xController, yController, new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, 0, Constants.kThetaControllerConstraints));
 
-        trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, alliance);
+        // trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, alliance);
 
         return new HolonomicControllerCommand(
                 trajectory,
@@ -444,7 +444,7 @@ public class AutonManager {
      * Requires odometry from april tags to be off in auton and for the traajectory to not be transformed by alliance
      * @return A command to place in auton
      */
-    public PoseCommand placeInAuton() {
+    public CommandBase placeInAuton() {
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 safe_constraints,
                 new PathPoint(
@@ -467,16 +467,14 @@ public class AutonManager {
 
         AutonCommand command = autonCommandGenerator(trajectory);
         AutonCommand command2 = autonCommandGenerator(trajectory2);
-        return new PoseCommand(
-                new SequentialCommandGroup(
-                        new ToggleManipulator(m_manipulator),
-                        new GoToHighScoring(rotary, extension),
-                        wrapCmd(command),
-                        new ToggleManipulator(m_manipulator),
-                        wrapCmd(command2),
-                        new AutoZeroExtensionArm(extension),
-                        new AutoZeroRotryArm(rotary)),
-                trajectory);
+        return new SequentialCommandGroup(
+                    new ToggleManipulator(m_manipulator),
+                    new GoToHighScoring(rotary, extension),
+                    wrapCmd(command),
+                    new ToggleManipulator(m_manipulator),
+                    wrapCmd(command2),
+                    new AutoZeroExtensionArm(extension),
+                    new AutoZeroRotryArm(rotary));
     }
 
     /**
