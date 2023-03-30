@@ -258,7 +258,6 @@ public class RobotContainer {
    * Robot container periodic method
    */
   public void periodic() {
-    m_limelight.outputToShuffleboard();
 
     if (counter == 10) {
       CommandBase toRun = m_autonManager.pick();
