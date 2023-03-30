@@ -610,7 +610,7 @@ public class AutonManager {
         PathPlannerTrajectory trajectorynonHP = PathPlanner.loadPath("place cone start non hp", violent_constraints);
 
         AutonCommand commandHP = autonCommandGeneratorPlacement(trajectoryHP);
-        AutonCommand commandNonHp = autonCommandGenerator(trajectorynonHP);
+        AutonCommand commandNonHp = autonCommandGeneratorPlacement(trajectorynonHP);
 
         return new PoseCommand(commandHP, commandNonHp);
     }

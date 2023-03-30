@@ -43,14 +43,21 @@ public class PoseCommand extends CommandBase {
      */
     public PoseCommand(CommandBase cmd, Pose2d startPosition) {
         this.cmd = new CommandBase[] {cmd};
-        this.startPosition = new Pose2d[] {startPosition};
         this.trajectory = null;
+        this.startPosition = new Pose2d[] {startPosition};
+        m_requirements.addAll(cmd.getRequirements());
+        CommandScheduler.getInstance().registerComposedCommands(cmd);
+
     }
 
     public PoseCommand(CommandBase cmd1, Pose2d startPosition1, CommandBase cmd2, Pose2d startPosition2) {
         this.cmd = new CommandBase[] {cmd1, cmd2};
         this.startPosition = new Pose2d[] {startPosition1, startPosition2};
         this.trajectory = null;
+        m_requirements.addAll(cmd1.getRequirements());
+        m_requirements.addAll(cmd2.getRequirements());
+        CommandScheduler.getInstance().registerComposedCommands(cmd1, cmd2);
+
     }
 
     /**
@@ -66,7 +73,9 @@ public class PoseCommand extends CommandBase {
         for (int i = 0; i < startPosition.length; i++) {
             startPosition[i] = trajectory[i].getInitialPose();
             endPosition[i] = trajectory[i].getEndState().poseMeters;
+            m_requirements.addAll(cmd[i].getRequirements());
         }
+        CommandScheduler.getInstance().registerComposedCommands(cmd);
     }
 
     /**
