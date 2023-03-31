@@ -265,4 +265,9 @@ public class RobotContainer {
     counter++;*/
   }
 
+  public void resetOdometryTo(Pose2d pose) {
+    //TODO: REMOVE THIS PPLEASESE
+    m_chassis.resetOdometry(pose);
+  }
+
 }
