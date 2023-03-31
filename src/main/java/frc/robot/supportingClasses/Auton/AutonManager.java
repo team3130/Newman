@@ -554,12 +554,10 @@ public class AutonManager {
                 new PathPoint(new Translation2d(-4, 0), new Rotation2d(0), new Rotation2d(0))
         );
 
-        CommandBase command = autonCommandGenerator(trajectory);
+        AutonCommand command = autonCommandGenerator(trajectory);
         AutonCommand command2 = autonCommandGenerator(trajectory2);
 
-        if (Constants.debugMode) {
-            command = wrapCmd((AutonCommand) command);
-        }
+        CommandBase command1 = wrapCmd(command);
 
         return
             new SequentialCommandGroup(
@@ -570,7 +568,7 @@ public class AutonManager {
                 new TimedCommand(0.2),
                 new AutoZeroExtensionArm(extension),
                 new GoToHighScoring(rotary, extension),
-                command,
+                command1,
                 new ToggleManipulator(m_manipulator),
                 new TimedCommand(0.2),
                 new ParallelCommandGroup(
