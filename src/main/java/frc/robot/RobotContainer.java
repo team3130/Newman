@@ -223,18 +223,6 @@ public class RobotContainer {
 
   }
 
-  /**
-   * Resets odometry to 0, 0, 0
-   */
-  public boolean resetOdometry() {
-     OdoPosition positionToResetTo = m_limelight.calculate();
-    if (positionToResetTo == null) {
-      return false;
-    }
-    m_chassis.resetOdometry(positionToResetTo.getPosition());
-    return true;
-  }
-
   public void resetOdometryWithoutApril() {
     m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
   }
