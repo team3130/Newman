@@ -608,10 +608,18 @@ public class AutonManager {
 
         return wrapCmd(commandHP);
     }
-}
 
-// public void generatePullOut() {
-//     PathPlannerTrajectory trajectory = PathPlanner.generatePath(safe_constraints, 
-//     new PathPoint()
-//     );
-// }
+    public CommandBase generatePullOut() {
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(safe_constraints, 
+        new PathPoint(
+            new Translation2d(0, 0),
+            new Rotation2d(0), new Rotation2d()
+        ),
+
+        new PathPoint(new Translation2d(1.5, 0), new Rotation2d(0), new Rotation2d(0))
+        );
+
+        AutonCommand command = autonCommandGenerator(trajectory);
+        return wrapCmd(command);
+    }
+}
