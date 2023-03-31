@@ -33,8 +33,6 @@ public class GoToHighScoring extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("STARTED: Going to high");
-
      m_rotaryArm.releaseBrake();
      m_rotaryArm.makeSetpointHigh();
      hasStartedExtended = false;
@@ -42,8 +40,6 @@ public class GoToHighScoring extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("Going to high");
-
      m_rotaryArm.gotoPos(m_extensionArm.getPositionTicks());
 
      if (m_rotaryArm.outsideBumper() && !hasStartedExtended) { //may need way outside bumper
@@ -55,8 +51,6 @@ public class GoToHighScoring extends CommandBase {
     // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("FINISHED: Going to high");
-
     m_rotaryArm.stop();
     m_rotaryArm.engageBrake();
     m_extensionArm.stop();

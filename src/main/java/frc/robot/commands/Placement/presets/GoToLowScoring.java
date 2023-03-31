@@ -31,8 +31,6 @@ public class GoToLowScoring extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("STARTED: Going to low");
-
      //timeRunning.reset();
      m_RotaryArm.releaseBrake();
      //timeRunning.start();
@@ -43,7 +41,6 @@ public class GoToLowScoring extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("Going to low");
 
     // m_RotaryArm.gotoPos(m_ExtensionArm.getPositionMeters());
   }
@@ -51,10 +48,7 @@ public class GoToLowScoring extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interupted) {
-    System.out.println("FINISHED: Going to low");
-
     m_RotaryArm.engageBrake();
-
   }
 
   // Returns true when the command should end.

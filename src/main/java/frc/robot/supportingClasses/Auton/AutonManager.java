@@ -36,7 +36,7 @@ public class AutonManager {
 
     private final DriverStation.Alliance alliance;
 
-    protected IntakePivot m_intake;
+    protected Intake m_intake;
     protected RotaryArm rotary;
     protected ExtensionArm extension;
     protected Manipulator m_manipulator;
@@ -46,7 +46,7 @@ public class AutonManager {
      * Also calls {@link #populateChooser()}
      * @param chassis needs chassis so that commands made in here can use it
      */
-    public AutonManager(Chassis chassis, IntakePivot intake, RotaryArm rotary, ExtensionArm extension, Manipulator manipulator) {
+    public AutonManager(Chassis chassis, Intake intake, RotaryArm rotary, ExtensionArm extension, Manipulator manipulator) {
         this.m_autonChooser = new SendableChooser<>();
         this.m_chassis = chassis;
 
@@ -232,7 +232,6 @@ public class AutonManager {
 
     }
 
-
     public CommandBase complexPathTest() {
         PathPlannerTrajectory circuit = PathPlanner.loadPath("circuit", safe_constraints);
         PathPlannerTrajectory circuitLoop2 = PathPlanner.loadPath("circuit", safe_constraints);
@@ -371,6 +370,10 @@ public class AutonManager {
         return wrapCmd(command);
     }
 
+    /**
+     * Makes a command to actuate intake and go forward
+     * @return command for intaking and going forward
+     */
     public CommandBase makeCmdToIntakeAndGoForward() {
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 violent_constraints,

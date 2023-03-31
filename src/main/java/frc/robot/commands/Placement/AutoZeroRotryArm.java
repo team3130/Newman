@@ -25,8 +25,6 @@ public class AutoZeroRotryArm extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("STARTED: Zeroing rotary arm");
-
      m_RotaryArm.releaseBrake();
      m_RotaryArm.spin(-0.1);
 

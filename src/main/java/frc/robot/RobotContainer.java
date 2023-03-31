@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -45,7 +44,6 @@ import frc.robot.commands.Placement.presets.GoToMidScoringCube;
 import frc.robot.commands.Placement.presets.GoToPickupOffGround;
 import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
-import frc.robot.sensors.Navx;
 import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.Auton.AutonManager;
 import frc.robot.supportingClasses.Vision.OdoPosition;
@@ -69,7 +67,7 @@ public class RobotContainer {
   private final Manipulator m_manipulator = new Manipulator();
 
   private final Hopper m_hopper;
-  private final IntakePivot m_pivot;
+  private final Intake m_intake;
   private final Limelight m_limelight;
 
 
@@ -85,7 +83,7 @@ public class RobotContainer {
 
     m_chassis = new Chassis(m_limelight);
     m_hopper = new Hopper();
-    m_pivot = new IntakePivot();
+    m_intake = new Intake();
 
 
     Mechanism2d arm = new Mechanism2d(3, 3.5);
@@ -106,7 +104,7 @@ public class RobotContainer {
     m_extensionArm = new ExtensionArm(zero);
     m_rotaryArm = new RotaryArm(zero);
 
-    m_autonManager = new AutonManager(m_chassis, m_pivot, m_rotaryArm, m_extensionArm, m_manipulator);
+    m_autonManager = new AutonManager(m_chassis, m_intake, m_rotaryArm, m_extensionArm, m_manipulator);
 
     m_chassis.setDefaultCommand(new TeleopDrive(m_chassis, m_driverGamepad));
 
@@ -128,7 +126,7 @@ public class RobotContainer {
       tab.add(m_rotaryArm);
       tab.add(m_manipulator);
       tab.add(m_hopper);
-      tab.add(m_pivot);
+      tab.add(m_intake);
       m_chassis.shuffleboardVom(Shuffleboard.getTab("Swerve Modules"));
     }
   }
@@ -163,7 +161,7 @@ public class RobotContainer {
 
     //Driver Gamepad:
     //Intake
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RBUMPER).onTrue(new ToggleIntake(m_pivot));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RBUMPER).onTrue(new ToggleIntake(m_intake));
 
     //Chassis
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new FlipFieldOriented(m_chassis));
@@ -213,7 +211,7 @@ public class RobotContainer {
             new AutoZeroRotryArm(m_rotaryArm))
     );
 
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ReverseHopper(m_hopper, m_pivot));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ReverseHopper(m_hopper));
 
     /*
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new GoToHighScoring(m_RotaryArm, m_ExtensionArm));

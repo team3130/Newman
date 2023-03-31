@@ -4,20 +4,19 @@
 
 package frc.robot.commands.Intake;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.IntakePivot;
+import frc.robot.subsystems.Intake;
 
 /** An example command that uses an example subsystem. */
 public class ToggleIntake extends InstantCommand {
-  private final IntakePivot m_pivot;
+  private final Intake m_pivot;
 
   /*
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ToggleIntake(IntakePivot pivot) {
+  public ToggleIntake(Intake pivot) {
     m_pivot = pivot;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(pivot);

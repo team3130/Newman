@@ -8,12 +8,10 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Newman_Constants.Constants;
-import frc.robot.sensors.Navx;
 
 public class Robot extends TimedRobot {
   private Timer timer;
   private RobotContainer m_robotContainer;
-  private boolean first = true;
 
   @Override
   public void robotInit() {
@@ -28,19 +26,10 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     m_robotContainer.periodic();
     if (timer.hasElapsed(Constants.kResetTime)) {
-      if (m_robotContainer.resetOdometry()) {
+        m_robotContainer.resetOdometry();
         timer.reset();
         timer.stop();
       }
-      else {
-        if (first) {
-          m_robotContainer.resetOdometryWithoutApril();
-          first = false;
-        }
-      }
-    }
-    Navx.outputToShuffleboard();
-
     }
 
     @Override

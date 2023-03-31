@@ -41,8 +41,6 @@ public class GoToMidScoringCube extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("Going to mid");
-
      m_rotaryArm.gotoPos(m_extensionArm.getPositionMeters());
 
      if (!hasStartedExtended && m_rotaryArm.outsideBumper()) { // may need way outside bumper
@@ -54,8 +52,6 @@ public class GoToMidScoringCube extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("FINISHED: Going to mid");
-
     m_rotaryArm.engageBrake();
   }
 

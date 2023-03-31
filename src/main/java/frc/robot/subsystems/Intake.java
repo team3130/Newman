@@ -10,12 +10,12 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 
-public class IntakePivot extends SubsystemBase {
+public class Intake extends SubsystemBase {
   private final Solenoid small;
 
   private final boolean defaultStateSmall;
 
-  public IntakePivot() {
+  public Intake() {
     small = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM , Constants.PNM_SmallSolenoid);
 
     // default should be whatever retracted is (false?)
