@@ -80,7 +80,7 @@ public class AutonManager {
         // m_autonChooser.addOption("circuit", complexPathTest());
         // m_autonChooser.addOption("AprilTagTesting",aprilTagTesting());
         m_autonChooser.addOption("move out of start intake pushy", makeCmdToIntakeAndGoForward());
-        m_autonChooser.addOption("move out and clamp", generateMoveOutAndClamp());
+//        m_autonChooser.addOption("move out and clamp", generateMoveOutAndClamp());
         // m_autonChooser.addOption("Two meter forward", generateExamplePathFromPoses()); // two meter forward (stable)
         m_autonChooser.addOption("Intake spit", actuateIntake());
 //        m_autonChooser.addOption("place in auton", placeInAuton());
