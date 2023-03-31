@@ -30,7 +30,7 @@ public class Balance extends CommandBase {
   private double direction;
   private int iterator;
   private boolean pitchVelocityCheck = false;
-  private final double driveVelocity = 0.75;
+  private final double driveVelocity = 0.625;
   private double oddPitch;
   private double pitch;
   private double roll;

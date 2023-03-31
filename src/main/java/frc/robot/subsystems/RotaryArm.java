@@ -49,7 +49,7 @@ public class RotaryArm extends SubsystemBase {
     rotaryMotor.configVoltageCompSaturation(Constants.kMaxRotaryArmVoltage);
     rotaryMotor.setNeutralMode(NeutralMode.Brake);
     rotaryMotor.enableVoltageCompensation(true);
-    rotaryPID.setTolerance(0.1);
+    rotaryPID.setTolerance(0.025);
 
     rotaryMotor.setSensorPhase(true);
 

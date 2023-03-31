@@ -90,10 +90,9 @@ public class AutonManager {
         // m_autonChooser.addOption("top dumb", generateTopDumb());
         // m_autonChooser.addOption("bottom dumb", generateBottomDumb());
         // m_autonChooser.addOption("mid placement start top", generateMidPlaceTopStart());
-        if (Constants.debugMode) {
-            //m_autonChooser.addOption("marker path <- not for comp", generateMarkerPath());
-            m_autonChooser.addOption("marker path cones", placeConeHighPlaceCubeHigh());
-        }
+
+        //m_autonChooser.addOption("marker path <- not for comp", generateMarkerPath());
+        m_autonChooser.addOption("marker path cones", placeConeHighPlaceCubeHigh());
     }
 
     /**
