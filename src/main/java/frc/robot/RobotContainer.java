@@ -126,11 +126,11 @@ public class RobotContainer {
     if (Constants.debugMode) {
       ShuffleboardTab tab = Shuffleboard.getTab("Subsystems");
       tab.add(m_chassis);
- /*     tab.add(m_extensionArm);
+      tab.add(m_extensionArm);
       tab.add(m_rotaryArm);
       tab.add(m_manipulator);
       tab.add(m_hopper);
-      tab.add(m_pivot);*/
+      tab.add(m_pivot);
       m_chassis.shuffleboardVom(Shuffleboard.getTab("Swerve Modules"));
     }
   }
