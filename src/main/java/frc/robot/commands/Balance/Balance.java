@@ -30,7 +30,7 @@ public class Balance extends CommandBase {
   private double direction;
   private int iterator;
   private boolean pitchVelocityCheck = false;
-  private final double driveVelocity = 0.5;
+  private final double driveVelocity = 0.75;
   private double oddPitch;
   private double pitch;
   private double roll;
@@ -93,11 +93,11 @@ public class Balance extends CommandBase {
     ConditionalCommand balance = new ConditionalCommand(Balance(m_chassis, 1), Balance(m_chassis, -1), Navx.getPitch() > 1).until(Math.abs(Navx.getPitch())) <= 5.0;
     */
     if(Navx.getPitch() < pitchZero){
-      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(-driveVelocity,0,0));
+      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity,0,0));
       m_chassis.setModuleStates(moduleStates);
     }
     else{
-      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity,0,0));
+      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(-driveVelocity,0,0));
       m_chassis.setModuleStates(moduleStates);
     }
 
@@ -115,8 +115,10 @@ public class Balance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-  
-    return pitchVelocityCheck && Math.abs(Navx.getPitch()) <= pitchDeadband;
+    if((pitchVelocityCheck && Math.abs(Navx.getPitch()) <= Math.abs(pitchDeadband - pitchZero) )){
+      System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " + Navx.getPitch());
+      return true;}
+return false;
   }
 
   public double getDirection() {
