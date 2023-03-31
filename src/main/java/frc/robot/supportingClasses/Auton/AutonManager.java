@@ -86,7 +86,9 @@ public class AutonManager {
 //        m_autonChooser.addOption("place in auton", placeInAuton());
         //m_autonChooser.addOption("place in auton top", placeInAutonTop());
 //        m_autonChooser.addOption("place in auton", placeInAutonHigh());
-        m_autonChooser.addOption("place in auton", placeInAutonCone());
+        m_autonChooser.addOption("place in auton move out", placeInAutonCone());
+        m_autonChooser.addOption("place in auton don't move", placeInAuton());
+        m_autonChooser.addOption("pull out", generatePullOut());
         // m_autonChooser.addOption("top dumb", generateTopDumb());
         // m_autonChooser.addOption("bottom dumb", generateBottomDumb());
         // m_autonChooser.addOption("mid placement start top", generateMidPlaceTopStart());
@@ -607,3 +609,9 @@ public class AutonManager {
         return wrapCmd(commandHP);
     }
 }
+
+// public void generatePullOut() {
+//     PathPlannerTrajectory trajectory = PathPlanner.generatePath(safe_constraints, 
+//     new PathPoint()
+//     );
+// }
