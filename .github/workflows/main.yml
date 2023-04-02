@@ -1,0 +1,24 @@
+name: Deploy Javadoc
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: pull submodules
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Deploy JavaDoc 🚀
+        uses: MathieuSoysal/Javadoc-publisher.yml@v2.3.2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          javadoc-branch: javadoc
+          submodules: true
+          java-version: 17
+          target-folder: javadoc 
+          project: gradle
