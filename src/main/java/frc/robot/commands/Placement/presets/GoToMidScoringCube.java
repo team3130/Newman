@@ -31,8 +31,6 @@ public class GoToMidScoringCube extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("STARTED: Going to mid");
-    
      m_rotaryArm.releaseBrake();
      m_rotaryArm.makeSetpointMid();
      hasStartedExtended = false;

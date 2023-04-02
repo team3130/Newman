@@ -186,9 +186,6 @@ public class RotaryArm extends SubsystemBase {
   public void gotoPos(double extensionLength) {
     double output = rotaryPID.calculate(getPositionPlacementArmAngle()) + getFeedForward(extensionLength);
     double setpoint = rotaryPID.getGoal().position;
-    System.out.println("extension length: " + extensionLength);
-    System.out.println("FF: " + getFeedForward((extensionLength)));
-    System.out.println("output: " + output);
     rotaryMotor.set(ControlMode.PercentOutput, output);
   }
 

@@ -115,10 +115,7 @@ public class Balance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if((pitchVelocityCheck && Math.abs(Navx.getPitch()-pitchZero) <= pitchDeadband )){
-      System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " + Navx.getPitch());
-      return true;}
-return false;
+    return pitchVelocityCheck && Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband;
   }
 
   public double getDirection() {

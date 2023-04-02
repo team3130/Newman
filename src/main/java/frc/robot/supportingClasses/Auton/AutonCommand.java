@@ -343,7 +343,6 @@ public class AutonCommand extends CommandBase{
 
         // for every command that we currently want to run, run its execute and check if it si finished and handle end
         for (int i = 0; i < indicesToRun.size(); i++) {
-            System.out.println("index: " + i);
             // if there is a command that we are supposed to run right now, then run it until it ends
             commands[indicesToRun.get(i)].execute();
             if (commands[indicesToRun.get(i)].isFinished()) {
@@ -351,8 +350,6 @@ public class AutonCommand extends CommandBase{
                 indicesToRun.remove(i--);
             }
         }
-
-        System.out.println("--------------");
 
         PathPlannerTrajectory.EventMarker closest;
         // event markers
@@ -365,7 +362,6 @@ public class AutonCommand extends CommandBase{
         // if a new marker has been stumbled across. Should only get ran when we wan to intialize markers
         if (closest != current) {
             int toAdd = getIndexFromMap(closest);
-            System.out.println("current index: " + closest);
             // for debugging purposes this doesn't currently get ran
             if (closest.names.get(0).contains("end")) {
                  commands[toAdd].end(true);
