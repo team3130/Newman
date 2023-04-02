@@ -1,4 +1,4 @@
-name: Publish Javadoc
+name: Deploy Javadoc
 
 on:
   push:
@@ -6,20 +6,14 @@ on:
       - main
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 11
-        uses: actions/setup-java@v2
-        with:
-          java-version: '11'
-      - name: Build with Gradle
-        run: ./gradlew build
-      - name: Publish Javadoc
-        uses: mathieusoysal/javadoc-publisher@v2.3.0
+      - name: Deploy JavaDoc 🚀
+        uses: MathieuSoysal/Javadoc-publisher.yml@v2.3.2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          javadoc-branch: gh-pages
-          java-version: 11
+          javadoc-branch: javadoc
+          java-version: 17
+          target-folder: javadoc 
+          project: gradle
