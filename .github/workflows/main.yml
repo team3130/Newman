@@ -8,11 +8,27 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    container: wpilib/roborio-cross-ubuntu:2023-22.04
     steps:
+      # checks out repository under $GITHUB_WORKSPACE
+      - uses: actions/checkout@v3
+      # gets rid of dubious ownership 
+      - name: Add repository to git safe directories
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE
+      # pulls submodules so it doesn't cry
       - name: pull submodules
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: recursive
+      # grant proper perms to gradlew
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+        
+      # build and test code
+      - name: Compile and run tests on robot code
+        run: ./gradlew build
+        
+      # deploy javadocs
       - name: Deploy JavaDoc 🚀
         uses: MathieuSoysal/Javadoc-publisher.yml@v2.3.2
         with:
