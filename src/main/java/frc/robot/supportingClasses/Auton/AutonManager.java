@@ -155,7 +155,7 @@ public class AutonManager {
     }
 
     /**
-     * Wraps the command with a call to reset odometry before running the {@param first} command
+     * Wraps the command with a call to reset odometry before running the first command
      * Then adds all the commands passed into restOfCommands
      * Finally wraps the end with a call to stop the swerve modules
      * @param first the first command that you run with a pose for where you start
