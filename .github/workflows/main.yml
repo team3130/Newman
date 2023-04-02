@@ -37,3 +37,4 @@ jobs:
           java-version: 11
           target-folder: javadoc 
           project: gradle
+          custom-command: javadoc
