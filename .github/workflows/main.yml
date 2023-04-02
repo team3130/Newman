@@ -9,8 +9,10 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: pull Submodules
-        run: git submodule update --init --recursive
+      - name: pull submodules
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: Deploy JavaDoc 🚀
         uses: MathieuSoysal/Javadoc-publisher.yml@v2.3.2
         with:
