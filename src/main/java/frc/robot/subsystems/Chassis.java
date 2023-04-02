@@ -321,6 +321,10 @@ public class Chassis extends SubsystemBase {
         return m_odometry.getEstimatedPosition().getRotation().getDegrees();
     }
 
+    /**
+     * A vomit onto shuffleboard of the {@link SwerveModule} objects in Chassis
+     * @param tab the tab to add the {@link SwerveModule} objects
+     */
     public void shuffleboardVom(ShuffleboardTab tab) {
         tab.add(modules[0]);
         tab.add(modules[1]);
@@ -345,6 +349,9 @@ public class Chassis extends SubsystemBase {
         builder.addDoubleProperty("max speed read", this::getMaxSpeedRead, null);
     }
 
+    /**
+     * A listener to calculate what the max speed we read was
+     */
     public void listener() {
         for (SwerveModule module : modules) {
             if (maxSpeedRead < module.getDriveVelocity()) {
@@ -353,8 +360,9 @@ public class Chassis extends SubsystemBase {
         }
     }
 
-
-
+    /**
+     * @return the max speed that we read thus far on this vm instance of rio
+     */
     public double getMaxSpeedRead() {
         return maxSpeedRead;
     }

@@ -11,17 +11,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 
 public class Intake extends SubsystemBase {
-  private final Solenoid small;
+  private final Solenoid intake;
 
   private final boolean defaultStateSmall;
 
   public Intake() {
-    small = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM , Constants.PNM_SmallSolenoid);
+    intake = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM , Constants.PNM_Intake);
 
-    // default should be whatever retracted is (false?)
+    // default should be whatever retracted is
     defaultStateSmall = false;
 
-    small.set(defaultStateSmall);
+    intake.set(defaultStateSmall);
   }
 
   @Override
@@ -33,14 +33,14 @@ public class Intake extends SubsystemBase {
    * Toggles the small pneumatic
    */
   public void toggleSmall(){
-    small.toggle();
+    intake.toggle();
   }
 
   /**
    * Extends the small pneumatic (opposite of retracted which we are saying is the default state)
    */
   public void extendSmall() {
-    small.set(!defaultStateSmall);
+    intake.set(!defaultStateSmall);
   }
 
 
@@ -48,14 +48,14 @@ public class Intake extends SubsystemBase {
    * Retracts the small pneumatic (same as the default state)
    */
   public void retractSmall() {
-    small.set(defaultStateSmall);
+    intake.set(defaultStateSmall);
   }
 
   /**
    * @return the state of the small pneumatic (retracted should be false)
    */
   public boolean isExtended() {
-    return small.get() ^ defaultStateSmall;
+    return intake.get() ^ defaultStateSmall;
   }
 
   /**
@@ -63,7 +63,7 @@ public class Intake extends SubsystemBase {
    * @param state false is retracted, true is extended
    */
   private void setSmallState(boolean state) {
-    small.set(state ^ defaultStateSmall);
+    intake.set(state ^ defaultStateSmall);
   }
 
   @Override
