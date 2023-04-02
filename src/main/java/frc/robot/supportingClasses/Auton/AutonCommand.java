@@ -107,38 +107,34 @@ public class AutonCommand extends CommandBase{
                 DO_NOTHING = null;
 
         if (m_hopper != null) {
-            HOPPER = new SpinHopper(m_hopper);
+            HOPPER = new SpinHopper(m_hopper); // index: 0
             CommandScheduler.getInstance().registerComposedCommands(HOPPER);
         }
 
         if (m_rotaryArm != null && m_extensionArm != null && m_manipulator != null) {
-            PLACE_LOW = new GoToLowScoring(m_rotaryArm, m_extensionArm);
+            PLACE_LOW = new GoToLowScoring(m_rotaryArm, m_extensionArm); // index: 1
 
-            PLACE_MID = new SequentialCommandGroup(
-                    new ToggleManipulator(m_manipulator), new GoToMidScoringCube(m_rotaryArm, m_extensionArm),
-                    new ToggleManipulator(m_manipulator), new AutoZeroRotryArm(m_rotaryArm), new AutoZeroExtensionArm(m_extensionArm)
-            );
-            PLACE_MID = new GoToMidScoringCones(m_rotaryArm, m_extensionArm);
+            PLACE_MID = new GoToMidScoringCones(m_rotaryArm, m_extensionArm); // index: 2
 
-            PLACE_HIGH = new GoToHighScoring(m_rotaryArm, m_extensionArm);
+            PLACE_HIGH = new GoToHighScoring(m_rotaryArm, m_extensionArm); // index: 3
 
-            MANIPULATOR = new ToggleManipulator(manipulator);
+            MANIPULATOR = new ToggleManipulator(manipulator); // index: 5
 
-            ZERO = new SequentialCommandGroup(new AutoZeroExtensionArm(extensionArm), new AutoZeroRotryArm(rotaryArm));
+            ZERO = new SequentialCommandGroup(new AutoZeroExtensionArm(extensionArm), new AutoZeroRotryArm(rotaryArm)); // index: 4
 
-            PICK_UP_OFF_GROUND = new GoToPickupOffGround(m_rotaryArm, m_extensionArm);
+            PICK_UP_OFF_GROUND = new GoToPickupOffGround(m_rotaryArm, m_extensionArm); // index: 7
 
             PICK_UP_IN_BOT = new SequentialCommandGroup(new GoToPickupWithinBot(m_extensionArm),
-                    new ToggleManipulator(m_manipulator), new TimedCommand(0.1), new AutoZeroExtensionArm(extensionArm), new AutoZeroRotryArm(rotaryArm));
+                    new ToggleManipulator(m_manipulator), new TimedCommand(0.1), new AutoZeroExtensionArm(extensionArm), new AutoZeroRotryArm(rotaryArm)); // index: 6
 
             CommandScheduler.getInstance().registerComposedCommands(PLACE_LOW, PLACE_MID, PLACE_HIGH, MANIPULATOR, ZERO, PICK_UP_IN_BOT, PICK_UP_OFF_GROUND);
         }
 
-        DO_NOTHING = new DoNothing();
+        DO_NOTHING = new DoNothing(); // index: 8
         CommandScheduler.getInstance().registerComposedCommands(DO_NOTHING);
 
         commands = new CommandBase[] {HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH, ZERO, MANIPULATOR,
-                PICK_UP_OFF_GROUND, PICK_UP_IN_BOT, DO_NOTHING};
+                PICK_UP_IN_BOT, PICK_UP_OFF_GROUND, DO_NOTHING};
 
         getOptimizedIndex = (EventMarker marker) -> (int) (marker.timeSeconds * magicScalar);
 
@@ -150,34 +146,31 @@ public class AutonCommand extends CommandBase{
      */
     protected void mapMarkersToCommands() {
         for (EventMarker marker : markers) {
-            String name = marker.names.get(0).toLowerCase();
-            if (name.contains("intake")) {
-                markerToCommandMap.put(marker, 0);
-            } else if (name.contains("place")) {
-                if (name.contains("low")) {
-                    markerToCommandMap.put(marker, 1);
+            for (String name : marker.names) {
+                name = name.toLowerCase();
+                if (name.contains("intake")) {
+                    markerToCommandMap.put(marker, 0);
+                } else if (name.contains("place")) {
+                    if (name.contains("low")) {
+                        markerToCommandMap.put(marker, 1);
+                    }
+                    if (name.contains("mid")) {
+                        markerToCommandMap.put(marker, 2);
+                    }
+                    if (name.contains("high")) {
+                        markerToCommandMap.put(marker, 3);
+                    }
+                } else if (name.contains("within") || name.contains("bot")) {
+                    markerToCommandMap.put(marker, 6);
+                } else if (name.contains("pickup") || name.contains("floor")) {
+                    markerToCommandMap.put(marker, 7);
+                } else if (name.contains("zero")) {
+                    markerToCommandMap.put(marker, 4);
+                } else if (name.contains("grabber") || name.contains("manipulator")) {
+                    markerToCommandMap.put(marker, 5);
+                } else {
+                    markerToCommandMap.put(marker, 8);
                 }
-                if (name.contains("mid")) {
-                    markerToCommandMap.put(marker, 2);
-                }
-                if (name.contains("high")) {
-                    markerToCommandMap.put(marker, 3);
-                }
-            }
-            else if (name.contains("within") || name.contains("bot")) {
-                markerToCommandMap.put(marker, 6);
-            }
-            else if (name.contains("pickup") || name.contains("floor")) {
-                markerToCommandMap.put(marker, 7);
-            }
-            else if (name.contains("zero")) {
-                markerToCommandMap.put(marker, 4);
-            }
-            else if (name.contains("grabber") || name.contains("manipulator")) {
-                markerToCommandMap.put(marker, 5);
-            }
-            else {
-                markerToCommandMap.put(marker, 8);
             }
         }
     }
