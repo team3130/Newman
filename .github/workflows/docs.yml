@@ -12,9 +12,9 @@ jobs:
       - name: Deploy JavaDoc 🚀
         uses: MathieuSoysal/Javadoc-publisher.yml@v2.3.2
         with:
-          submodules: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           javadoc-branch: javadoc
+          submodules: true
           java-version: 17
           target-folder: javadoc 
           project: gradle
