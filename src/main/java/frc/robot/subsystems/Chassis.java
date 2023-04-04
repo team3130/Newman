@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
@@ -175,10 +174,10 @@ public class Chassis extends SubsystemBase {
         updateOdometryFromSwerve();
         n_fieldOrriented.setBoolean(fieldRelative);
 
-/*        OdoPosition position = refreshPosition();
+        OdoPosition position = refreshPosition();
         if (position != null) {
             updateOdometryFromVision(position);
-        }*/
+        }
 
         field.setRobotPose(m_odometry.getEstimatedPosition());
     }
@@ -382,6 +381,9 @@ public class Chassis extends SubsystemBase {
         return m_limelight.calculate();
   }
 
+  /**
+   * updates the field2d object with a trajectory
+   */
     public void updateField2DFromTrajectory(PathPlannerTrajectory trajectory) {
         field.getObject("traj").setTrajectory(trajectory);
     }

@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -46,8 +45,8 @@ import frc.robot.commands.Placement.presets.GoToPickupOffGround;
 import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
+import frc.robot.supportingClasses.Auton.AutonCommand;
 import frc.robot.supportingClasses.Auton.AutonManager;
-import frc.robot.supportingClasses.Vision.OdoPosition;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -66,6 +65,8 @@ public class RobotContainer {
   private final ExtensionArm m_extensionArm;
   private final RotaryArm m_rotaryArm;
   private final Manipulator m_manipulator = new Manipulator();
+
+  private int counter = 0;
 
   private final Hopper m_hopper;
   private final Intake m_intake;
@@ -253,7 +254,7 @@ public class RobotContainer {
    * Robot container periodic method
    */
   public void periodic() {
-/*    if (counter == 10) {
+    if (counter == 10) {
       CommandBase toRun = m_autonManager.pick();
       try {
         m_chassis.updateField2DFromTrajectory(((AutonCommand) toRun).getTrajectory());
@@ -263,7 +264,7 @@ public class RobotContainer {
       }
         counter = -1;
     }
-    counter++;*/
+    counter++;
   }
 
   public void resetOdometryTo(Pose2d pose) {

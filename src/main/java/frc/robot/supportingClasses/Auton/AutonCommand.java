@@ -13,14 +13,10 @@ import frc.robot.commands.Hopper.SpinHopper;
 import frc.robot.commands.Manipulator.ToggleManipulator;
 import frc.robot.commands.Placement.AutoZeroExtensionArm;
 import frc.robot.commands.Placement.AutoZeroRotryArm;
-import frc.robot.commands.Placement.presets.GoToHighScoring;
-import frc.robot.commands.Placement.presets.GoToLowScoring;
-import frc.robot.commands.Placement.presets.GoToMidScoringCube;
-import frc.robot.commands.Placement.presets.*;
-import frc.robot.commands.TimedCommand;
 import frc.robot.commands.Placement.presets.*;
 import frc.robot.commands.TimedCommand;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Chassis;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +29,7 @@ import java.util.function.Function;
  * <p>
  * Also has capabilities of running along a trajectory.
  */
-public class AutonCommand extends CommandBase{
+public class AutonCommand extends CommandBase {
     protected Pose2d startPosition; // start position
     protected Pose2d endPosition; // end position
     protected final PathPlannerTrajectory trajectory; // the trajectory to follow
