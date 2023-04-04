@@ -628,4 +628,13 @@ public class AutonManager {
         AutonCommand command = autonCommandGenerator(trajectory);
         return wrapCmd(command);
     }
+
+    /**
+     * @return A command to place high assuming that we start in the middle of the field
+     */
+    public CommandBase generatePlaceAndBalance() {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("place and balance", safe_constraints);
+        AutonCommand command = autonCommandGeneratorPlacement(trajectory);
+        return wrapCmd(command);
+    }
 }
