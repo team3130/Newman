@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import javax.crypto.spec.RC5ParameterSpec;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -20,6 +22,9 @@ import frc.robot.supportingClasses.Gains.AccelerationManager;
 import frc.robot.supportingClasses.Gains.VelocityGainFilter;
 import frc.robot.subsystems.Chassis;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import frc.robot.supportingClasses.BoundingBox;
 
 /**
  * The extension arm subsystem for the placement mechanism
@@ -30,6 +35,7 @@ public class ExtensionArm extends SubsystemBase {
   // limit switch which is at our 0 point for the extension arm
   private final DigitalInput m_limitSwitch;
   private final Chassis m_chassis;
+  BoundingBox m_boundingbox;
 
   protected MechanismLigament2d ligament;
 
@@ -72,7 +78,7 @@ public class ExtensionArm extends SubsystemBase {
    *
    * @param ligament the ligament object that is on smart-dashboard
    */
-  public ExtensionArm(MechanismLigament2d ligament, Chassis chassis) {
+  public ExtensionArm(MechanismLigament2d ligament, Chassis chassis, BoundingBox boundingbox) {
     extensionMotor = new WPI_TalonFX(Constants.CAN_ExtensionArm);
     extensionMotor.configFactoryDefault();
     extensionMotor.config_kP(0,Constants.Extension.kExtensionArmP);
@@ -93,6 +99,8 @@ public class ExtensionArm extends SubsystemBase {
 
     m_limitSwitch = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
     m_chassis = chassis;
+    m_boundingbox = boundingbox;
+    Pose3d armPos;
 
     Placement = Shuffleboard.getTab("Extension Arm");
     n_placementExtensionArmP = Placement.add("p", Constants.Extension.kExtensionArmP).getEntry();
@@ -134,11 +142,13 @@ public class ExtensionArm extends SubsystemBase {
       spinExtensionArm(y);
     }
 
-    double r = getLengthExtensionArm() + 0.26;
-    Pose3d armPos = new Pose3d(r * Math.cos(m_chassis.getYaw()), 0, r * Math.sin(m_chassis.getYaw()));
+    double r = getLengthExtensionArm() + 0.09525;
+    Rotation3d armRotation = new Rotation3d();
+    Translation3d armTranslation = new Translation3d(r * Math.cos(m_chassis.getYaw()), 0, r * Math.sin(m_chassis.getYaw()));
+    armPos = new Pose3d(armTranslation, armRotation);
 
-    if (BoundingBox.boxBad(armPos)) {
-      if (m_chassis.getX() - (getLengthExtensionArm() + 0.09525) <= Constants.Field.xPositionForGridBlue || m_chassis.getX() + (getLengthExtensionArm() + 0.09525) >= Constants.Field.xPositionForGridRed) {
+    if (m_boundingbox.boxBad(armPos)) {
+      if (m_chassis.getX() - (r) <= Constants.Field.xPositionForGridBlue || m_chassis.getX() + (r) >= Constants.Field.xPositionForGridRed) {
         if (y > 0) {
           y = 0;
         }
@@ -189,7 +199,7 @@ public class ExtensionArm extends SubsystemBase {
    * @return the position of the extension arm in meters
    */
   public double getPositionMeters() {
-    return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition();
+    return Constants.Extension.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition();
   }
 
   /**
@@ -203,7 +213,7 @@ public class ExtensionArm extends SubsystemBase {
    * @return the speed of the extension arm in meters per second
    */
   public double getSpeedMetersPerSecond() {
-    return 10 * Constants.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorVelocity();
+    return 10 * Constants.Extension.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorVelocity();
   }
 
   /**
@@ -224,16 +234,16 @@ public class ExtensionArm extends SubsystemBase {
    * update values on shuffleboard
    */
   public void updateValues() {
-    if (l_placementExtensionArmP != n_placementExtensionArmP.getDouble(Constants.kExtensionArmP)){
-      l_placementExtensionArmP = Constants.kExtensionArmP;
+    if (l_placementExtensionArmP != n_placementExtensionArmP.getDouble(Constants.Extension.kExtensionArmP)){
+      l_placementExtensionArmP = Constants.Extension.kExtensionArmP;
       extensionMotor.config_kP(0, l_placementExtensionArmP);
     }
-    if (l_placementExtensionArmI != n_placementExtensionArmI.getDouble(Constants.kExtensionArmI)){
-            l_placementExtensionArmI = Constants.kExtensionArmI;
+    if (l_placementExtensionArmI != n_placementExtensionArmI.getDouble(Constants.Extension.kExtensionArmI)){
+            l_placementExtensionArmI = Constants.Extension.kExtensionArmI;
       extensionMotor.config_kI(0, l_placementExtensionArmI);
     }
-    if (l_placementExtensionArmD != n_placementExtensionArmD.getDouble(Constants.kExtensionArmD)){
-      l_placementExtensionArmD = Constants.kExtensionArmD;
+    if (l_placementExtensionArmD != n_placementExtensionArmD.getDouble(Constants.Extension.kExtensionArmD)){
+      l_placementExtensionArmD = Constants.Extension.kExtensionArmD;
       extensionMotor.config_kD(0, l_placementExtensionArmD);
     }
     if (l_placementExtensionArmS_Strength != n_placementExtensionArmS_Strength.getDouble(sStrengthPlacementExtensionArm)){
@@ -284,7 +294,7 @@ public class ExtensionArm extends SubsystemBase {
   }
 
   public double getDistanceExtensionArm(){
-    return Constants.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorPosition();
+    return Constants.Extension.kTicksToRadiansExtensionPlacement * extensionMotor.getSelectedSensorPosition();
   }
 
   /**
@@ -302,7 +312,7 @@ public class ExtensionArm extends SubsystemBase {
    * @return the length of the extension arm
    */
   public double getLengthExtensionArm(){
-    return Constants.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition() + Constants.kExtensionArmLengthExtended;
+    return Constants.Extension.kTicksToMetersExtension * extensionMotor.getSelectedSensorPosition() + Constants.Extension.kExtensionArmLengthExtendedMeters;
   }
 
   public void extendArmToGroundForCone() {

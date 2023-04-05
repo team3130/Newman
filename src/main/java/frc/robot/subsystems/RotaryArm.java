@@ -21,12 +21,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.ExtensionArm;
 import frc.robot.subsystems.Chassis;
+import frc.robot.supportingClasses.BoundingBox;
 
 public class RotaryArm extends SubsystemBase {
   private final WPI_TalonFX rotaryMotor;
-  private final ExtensionArm m_extensionArm;                  
+  ExtensionArm m_extensionarm;                  
   private final Solenoid brake;
   private final boolean defaultState = true;
+  BoundingBox m_boundingbox;
 
   private final DigitalInput limitSwitch;
   private final Chassis m_chassis;
@@ -44,10 +46,11 @@ public class RotaryArm extends SubsystemBase {
           Constants.kRotaryArmD, rotaryArmConstraints);
 
 
-  public RotaryArm(MechanismLigament2d ligament, ExtensionArm extensionarm, Chassis chassis) {
+  public RotaryArm(MechanismLigament2d ligament, ExtensionArm extensionarm, Chassis chassis, BoundingBox boundingbox) {
     rotaryMotor = new WPI_TalonFX(Constants.CAN_RotaryArm);
     m_extensionarm = extensionarm;
     m_chassis = chassis;
+    m_boundingbox = boundingbox;
     rotaryMotor.configFactoryDefault();
     brake = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM, Constants.PNM_Brake);
     brake.set(defaultState);
@@ -81,7 +84,7 @@ public class RotaryArm extends SubsystemBase {
     ligament.setAngle(getAngleRotaryArm());
     n_brake.setBoolean(brakeIsEnabled());
 
-    if (BoundingBox.boxBad(m_extensionarm.armPos)) {
+    if (m_boundingbox.boxBad(m_extensionarm.armPos)) {
       if (m_chassis.getX() - (m_extensionarm.getLengthExtensionArm() + 0.09525) <= Constants.Field.xPositionForGridBlue || m_chassis.getX() + (m_extensionarm.getLengthExtensionArm() + 0.09525) >= Constants.Field.xPositionForGridRed) {
         if (getSpeedPlacementArm() > 0) {
           rotaryMotor.set(0);

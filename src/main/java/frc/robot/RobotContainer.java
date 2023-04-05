@@ -44,6 +44,7 @@ import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.Auton.AutonManager;
 import frc.robot.supportingClasses.Vision.OdoPosition;
+import frc.robot.supportingClasses.BoundingBox;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -62,7 +63,7 @@ public class RobotContainer {
   private final ExtensionArm m_extensionArm;
   private final RotaryArm m_rotaryArm;
   private final Manipulator m_manipulator = new Manipulator();
-
+  private final BoundingBox m_boundingbox;
   private final Hopper m_hopper;
   private final IntakePivot m_pivot;
   private final Limelight m_limelight;
@@ -92,8 +93,8 @@ public class RobotContainer {
     SendableRegistry.add(arm, "placement");
     Shuffleboard.getTab("Test").add(arm);*/
     
-    m_extensionArm = new ExtensionArm(zero, m_chassis);
-    m_rotaryArm = new RotaryArm(zero, m_extensionArm, m_chassis);
+    m_extensionArm = new ExtensionArm(zero, m_chassis, m_boundingbox);
+    m_rotaryArm = new RotaryArm(zero, m_extensionArm, m_chassis, m_boundingbox);
 
     m_autonManager = new AutonManager(m_chassis, m_pivot, m_rotaryArm, m_extensionArm, m_manipulator);
 
