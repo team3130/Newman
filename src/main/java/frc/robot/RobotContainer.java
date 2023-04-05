@@ -33,6 +33,7 @@ import frc.robot.commands.Hopper.ReverseHopper;
 import frc.robot.commands.Hopper.SpinHopper;
 import frc.robot.commands.Intake.ToggleIntake;
 import frc.robot.commands.Manipulator.ToggleManipulator;
+import frc.robot.commands.Manipulator.UnClampManipulator;
 import frc.robot.commands.Placement.AutoZeroExtensionArm;
 import frc.robot.commands.Placement.AutoZeroRotryArm;
 import frc.robot.commands.Placement.ManualControl.MoveExtensionArm;
@@ -273,6 +274,6 @@ public class RobotContainer {
   }
 
   public CommandBase retractManipulator() {
-    return new ToggleManipulator(m_manipulator);
+    return new UnClampManipulator(m_manipulator);
   }
 }

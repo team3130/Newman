@@ -50,7 +50,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit () {
       CommandScheduler.getInstance().cancelAll();
       CommandScheduler.getInstance().schedule(m_robotContainer.getAutonCmd());
-      CommandScheduler.getInstance().schedule(m_robotContainer.retractManipulator());
+    
     }
 
     @Override
