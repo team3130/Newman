@@ -42,3 +42,6 @@ jobs:
           target-folder: javadoc 
           project: gradle
           custom-command: ./gradlew javadoc
+        
+      - name: Move files out of folder
+        run: mv javadoc/* ./
