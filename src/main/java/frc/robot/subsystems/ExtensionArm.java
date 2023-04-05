@@ -61,6 +61,7 @@ public class ExtensionArm extends SubsystemBase {
   private double l_placementExtensionArmD;
   private GenericEntry n_placementExtensionArmS_Strength;
   private double l_placementExtensionArmS_Strength;
+  Pose3d armPos;
 
   private final double collapsedPosition = 0;
   private final double intermediatePosition = Constants.Extension.kMaxExtensionLength / 2;
@@ -100,7 +101,6 @@ public class ExtensionArm extends SubsystemBase {
     m_limitSwitch = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
     m_chassis = chassis;
     m_boundingbox = boundingbox;
-    Pose3d armPos;
 
     Placement = Shuffleboard.getTab("Extension Arm");
     n_placementExtensionArmP = Placement.add("p", Constants.Extension.kExtensionArmP).getEntry();
@@ -163,6 +163,10 @@ public class ExtensionArm extends SubsystemBase {
   public void extendArmFull() {
     currentSetpoint = extendedPosition;
     extensionMotor.set(ControlMode.MotionMagic, extendedPosition);
+  }
+
+  public Pose3d getArmPos() {
+    return armPos;
   }
 
   /**
@@ -316,7 +320,7 @@ public class ExtensionArm extends SubsystemBase {
   }
 
   public void extendArmToGroundForCone() {
-    currentSetpoint = Constants.offGroundPositionCone;
+    currentSetpoint = Constants.offGroundAngleCone;
     extensionMotor.set(ControlMode.MotionMagic, currentSetpoint);
   }
 }

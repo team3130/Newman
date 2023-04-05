@@ -84,7 +84,7 @@ public class RotaryArm extends SubsystemBase {
     ligament.setAngle(getAngleRotaryArm());
     n_brake.setBoolean(brakeIsEnabled());
 
-    if (m_boundingbox.boxBad(m_extensionarm.armPos)) {
+    if (m_boundingbox.boxBad(m_extensionarm.getArmPos())) {
       if (m_chassis.getX() - (m_extensionarm.getLengthExtensionArm() + 0.09525) <= Constants.Field.xPositionForGridBlue || m_chassis.getX() + (m_extensionarm.getLengthExtensionArm() + 0.09525) >= Constants.Field.xPositionForGridRed) {
         if (getSpeedPlacementArm() > 0) {
           rotaryMotor.set(0);
@@ -97,7 +97,7 @@ public class RotaryArm extends SubsystemBase {
    * Rotates the rotary arm
    * @param scalar value that scales the output speed from shuffleboard
    */
-  protected void rotateRotaryArm(double scalar){
+  public void rotateRotaryArm(double scalar){
     rotaryMotor.set(outputSpeed * scalar);
   }
 

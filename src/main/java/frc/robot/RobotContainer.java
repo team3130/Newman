@@ -78,6 +78,7 @@ public class RobotContainer {
     m_weaponsGamepad = new Joystick(1);
 
     m_limelight = new Limelight();
+    m_boundingbox = new BoundingBox();
 
     m_chassis = new Chassis(m_limelight);
     m_hopper = new Hopper();
@@ -86,7 +87,7 @@ public class RobotContainer {
 
     Mechanism2d arm = new Mechanism2d(4, 2);
     MechanismRoot2d root = arm.getRoot("arm", 5, 5);
-    MechanismLigament2d zero = new MechanismLigament2d("retracted", Constants.Extension.kExtensionArmLengthExtended / 2, -90);
+    MechanismLigament2d zero = new MechanismLigament2d("retracted", Constants.Extension.kExtensionArmLengthExtendedMeters / 2, -90);
     root.append(zero);
 
     /*
