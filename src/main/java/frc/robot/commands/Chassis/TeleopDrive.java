@@ -81,18 +81,7 @@ public class TeleopDrive extends CommandBase {
     y = yLimiter.calculate(y * Constants.kPhysicalMaxSpeedMetersPerSecond);
     theta = turningLimiter.calculate(theta) * Constants.kPhysicalMaxSpeedMetersPerSecond;
 
-    // holder for the module states
-    SwerveModuleState[] moduleStates;
-
-    if (m_chassis.getFieldRelative()) {
-      // field relative states
-      moduleStates = m_chassis.getKinematics().toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(x, y, theta, m_chassis.getRotation2d()));
-    }
-    else {
-      // robot oriented states
-      moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(x,y,theta));
-    }
-    m_chassis.setModuleStates(moduleStates);
+    m_chassis.drive(x,y,theta);
 
     if (Constants.debugMode) {
       m_chassis.listener();
