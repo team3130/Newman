@@ -15,6 +15,8 @@ public class Robot extends TimedRobot {
   private Timer timer;
   private RobotContainer m_robotContainer;
 
+  private boolean hasReset = false;
+
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
@@ -28,11 +30,19 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     m_robotContainer.periodic();
     if (timer.hasElapsed(Constants.kResetTime)) {
-        m_robotContainer.resetOdometryWithoutApril();
+      if (m_robotContainer.resetOdometryWithAprilTags()) {
+        m_robotContainer.resetOdometryWithAprilTags();
         timer.reset();
         timer.stop();
       }
+    else {
+        if (!hasReset) {
+          m_robotContainer.resetOdometryWithoutAprilTag();
+          hasReset = false;
+        }
+      }
     }
+  }
 
     @Override
     public void disabledInit () {
@@ -65,7 +75,6 @@ public class Robot extends TimedRobot {
     public void teleopInit () {
       CommandScheduler.getInstance().cancelAll();
       CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
-      m_robotContainer.resetOdometryTo(new Pose2d(0, 0, new Rotation2d(180)));
     }
 
     @Override

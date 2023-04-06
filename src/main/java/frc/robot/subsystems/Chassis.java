@@ -28,6 +28,10 @@ import frc.robot.swerve.SwerveModule;
 import java.util.Arrays;
 
 
+/**
+ * Chassis is the drivetrain subsystem of our bot. Our physical chassis is a swerve drive, 
+ * so we use wpilib SwerveDriveKinematics and SwerveDrivePoseEstimator as opposed to Differential Drive objects
+ */
 public class Chassis extends SubsystemBase {
     /** The geometry of the swerve modules */
     private final SwerveDriveKinematics m_kinematics;
@@ -45,14 +49,24 @@ public class Chassis extends SubsystemBase {
     /** limelight object */
     private final Limelight m_limelight;
 
+    /**
+     * Updated periodically with the maximum speed that has been read on any of the swerve modules
+     */
     private double maxSpeedRead = 0;
 
+    /**
+     * A sendable that gets put on shuffleboard with the auton trajectory and the robots current position
+     */
     private final Field2d field;
 
+    /**
+     * A Networktables entry for whether we are field oriented or not
+     */
     private final GenericEntry n_fieldOrriented;
 
     /**
-     * Makes a chassis that starts at 0, 0, 0
+     * Makes a chassis that starts at 0, 0, 0. Calls {@link #Chassis(Pose2d, Rotation2d, Limelight)}  Chassis}
+     * @param limelight the limelight object which is used for updating odometry
      */
     public Chassis(Limelight limelight){
       this (new Pose2d(), new Rotation2d(), limelight);
@@ -63,6 +77,7 @@ public class Chassis extends SubsystemBase {
      * Makes a chassis with a starting position
      * @param startingPos the initial position to say that the robot is at
      * @param startingRotation the initial rotation of the bot
+     * @param limelight the limelight object which is used for updating odometry
      */
     public Chassis(Pose2d startingPos, Rotation2d startingRotation, Limelight limelight) {
         m_kinematics = new SwerveDriveKinematics(Constants.moduleTranslations);
@@ -168,7 +183,8 @@ public class Chassis extends SubsystemBase {
 
     /**
      * subsystem looped call made by the scheduler.
-     * Updates the odometry from swerve
+     * Updates the odometry from swerve and April Tags.
+     * Also updates and sendables we use during comp
      */
     @Override
     public void periodic() {
