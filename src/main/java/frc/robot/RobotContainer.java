@@ -63,10 +63,10 @@ public class RobotContainer {
   private final ExtensionArm m_extensionArm;
   private final RotaryArm m_rotaryArm;
   private final Manipulator m_manipulator = new Manipulator();
-  private final BoundingBox m_boundingbox;
   private final Hopper m_hopper;
   private final IntakePivot m_pivot;
   private final Limelight m_limelight;
+  private final BoundingBox[] m_boundingboxes = new BoundingBox[36];
 
 
   /**
@@ -78,7 +78,22 @@ public class RobotContainer {
     m_weaponsGamepad = new Joystick(1);
 
     m_limelight = new Limelight();
-    m_boundingbox = new BoundingBox();
+    //Creating bounding boxes
+    for (int i = 0; i < 36; i++) {
+      if (i == 1 || i == 4 || i == 7 || i == 10 || i == 13 || i == 16 || i == 19 || i == 22 || i == 25 || i == 28 || i == 31 || i == 34) {
+        if (i == 1 || i == 4 || i == 7 || i == 19 || i == 22 || i == 25) {
+          m_boundingboxes[i] = new BoundingBox(Constants.Field.depthOfCubeSpotOneSmall, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfCubeSpotOneBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfCubeSpotOne);
+        } else {
+          m_boundingboxes[i] = new BoundingBox(Constants.Field.depthOfCubeSpotTwoSmall, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfCubeTwoBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfCubeSpotTwo);
+        }
+      } else {
+        if (i == 0 || i == 2 || i == 3 || i == 5 || i == 6 || i == 8) {
+          m_boundingboxes[i] = new BoundingBox(Constants.Field.depthOfConeSpotOneSmall, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfConeSpotOneBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfConeSpotOne);
+        } else {
+          m_boundingboxes[i] = new BoundingBox(Constants.Field.depthOfConeSpotTwoSmall, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfConeTwoBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfConeSpotTwo);
+        }
+      }
+    }
 
     m_chassis = new Chassis(m_limelight);
     m_hopper = new Hopper();
