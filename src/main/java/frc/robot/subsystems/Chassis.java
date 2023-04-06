@@ -27,8 +27,10 @@ import frc.robot.swerve.SwerveModule;
 
 import java.util.Arrays;
 
+
 /**
- * Our chassis this year is a swerve drive.
+ * Chassis is the drivetrain subsystem of our bot. Our physical chassis is a swerve drive, 
+ * so we use wpilib SwerveDriveKinematics and SwerveDrivePoseEstimator as opposed to Differential Drive objects
  */
 public class Chassis extends SubsystemBase {
     /** The geometry of the swerve modules */
@@ -48,12 +50,12 @@ public class Chassis extends SubsystemBase {
     private final Limelight m_limelight;
 
     /**
-     * The max speed that we have read so far
+     * Updated periodically with the maximum speed that has been read on any of the swerve modules
      */
     private double maxSpeedRead = 0;
 
     /**
-     * The field object which we can update with odometry to show up on shuffleboard
+     * A sendable that gets put on shuffleboard with the auton trajectory and the robots current position
      */
     private final Field2d field;
 
@@ -208,7 +210,8 @@ public class Chassis extends SubsystemBase {
 
     /**
      * subsystem looped call made by the scheduler.
-     * Updates the odometry from swerve
+     * Updates the odometry from swerve and April Tags.
+     * Also updates and sendables we use during comp
      */
     @Override
     public void periodic() {

@@ -227,8 +227,17 @@ public class RobotContainer {
 
   }
 
-  public void resetOdometryWithoutApril() {
-    m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
+  /**
+   * Resets odometry using april tags
+   * @return whether the update was successful or not
+   */
+  public boolean resetOdometryWithAprilTags() {
+    OdoPosition positionToResetTo = m_limelight.calculate();
+    if (positionToResetTo == null) {
+      return false;
+    }
+    m_chassis.resetOdometry(positionToResetTo.getPosition());
+    return true;
   }
 
 
@@ -274,7 +283,6 @@ public class RobotContainer {
    * @param pose the position to reset odometry to
    */
   public void resetOdometryTo(Pose2d pose) {
-    //TODO: REMOVE THIS PPLEASESE
     m_chassis.resetOdometry(pose);
   }
 
@@ -287,23 +295,11 @@ public class RobotContainer {
   }
 
   /**
-   * Resets odometry to the position of the april tag
-   * @return success or not
+   * Resets odometry without april tags to 0, 0, 0.
+   * This is needed because the absolute encoders don't turn on for a while.
+   * The logic in Robot.Java should make it so that this can't get ran periodically
    */
-  public boolean resetOdometryWithAprilTag() {
-    OdoPosition position = m_limelight.calculate();
-    if (position != null) {
-      m_chassis.resetOdometry(position.getPosition());
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Updates the chassis position periodically.
-   * Calls {@link Chassis#updateOdometery()}
-   */
-  public void updateChassisPose() {
-    m_chassis.updateOdometery();
+  public void resetOdometryWithoutAprilTag() {
+    m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
   }
 }

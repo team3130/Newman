@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
     if (timer.hasElapsed(Constants.kResetTime)) {
       if (Constants.useAprilTags) {
         if (!haveResetManually) {
-          m_robotContainer.resetOdometryWithoutApril();
+          m_robotContainer.resetOdometryWithoutAprilTag();
           haveResetManually = true;
         } else {
           if (m_robotContainer.resetOdometryWithAprilTag()) {
