@@ -223,6 +223,17 @@ public class Chassis extends SubsystemBase {
     }
 
     /**
+     * Sets the wheels to an X position to prevent sliding
+     */
+    public void brakeModules(){
+        modules[Constants.Side.LEFT_FRONT].turnToAngle(Math.PI /4);
+        modules[Constants.Side.RIGHT_BACK].turnToAngle(Math.PI /4);
+
+        modules[Constants.Side.LEFT_BACK].turnToAngle(-Math.PI /4);
+        modules[Constants.Side.RIGHT_FRONT].turnToAngle(-Math.PI / 4);
+    }
+
+    /**
      * The simulation periodic call
      */
     @Override

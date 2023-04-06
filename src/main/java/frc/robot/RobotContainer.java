@@ -169,7 +169,7 @@ public class RobotContainer {
       double balanceDeadband = 5.0; //This should go in Constants later
       double omegaDeadband = 7.0;
       double zeroPitch = -8.211; //Also constants
-      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new ConditionalCommand(new Balance(m_chassis, -1), new Balance(m_chassis, 1), () -> Navx.getPitch() - zeroPitch > 0).until(() ->( (Math.abs(Navx.getPitch()) <= balanceDeadband) && Math.abs(Navx.getPitchVelocity())  <= omegaDeadband)) );
+
 
 
     }
