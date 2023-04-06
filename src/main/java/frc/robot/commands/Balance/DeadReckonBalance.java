@@ -25,7 +25,9 @@ public class DeadReckonBalance extends CommandBase {
   private boolean pitchHasDropped;
   private double pitchCheckValue;
 
-  
+  private boolean distanceFlag;
+
+
 
   /*
    * Creates a new ExampleCommand.
@@ -49,10 +51,22 @@ public class DeadReckonBalance extends CommandBase {
   @Override
   public void execute() {
 
+   if(!distanceFlag){
     if (Math.abs(Navx.getPitch() - pitchZero) >= 10.0 && !onRamp) { //10.0 is how many degrees for the bot to understand it is on the ramp
       onRamp = true;
       pitchCheckValue = Navx.getPitch();
     }
+
+    if(onRamp && Math.abs(Navx.getPitch() - pitchCheckValue) >= 5.0){
+      distanceFlag = true;
+      m_chassis.stopModules();
+    }
+
+   }
+
+   else{
+
+   }
 
   }
 

@@ -165,6 +165,8 @@ public class RobotContainer {
     if (Constants.debugMode) {
       new TriggerButton(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
       new TriggerButton(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlaceToPlace(m_chassis, m_autonManager));
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new Balance(m_chassis));
+
 
       double balanceDeadband = 5.0; //This should go in Constants later
       double omegaDeadband = 7.0;
