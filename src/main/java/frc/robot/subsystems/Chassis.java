@@ -8,6 +8,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -433,5 +434,20 @@ public class Chassis extends SubsystemBase {
      */
     public void setAprilTagUsage(boolean useAprilTags) {
         this.useAprilTags = useAprilTags;
+    }
+
+    /**
+     * A method to drive the robot with metric units
+     * @param x the x speed in m/s
+     * @param y the y speed in /s
+     * @param theta the angle to rotate in degrees
+     */
+    public void drive(double x, double y, double theta) {
+        if (getFieldRelative()) {
+            setModuleStates(m_kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(x, y, theta, getRotation2d())));
+        }
+         else {
+             setModuleStates(m_kinematics.toSwerveModuleStates(new ChassisSpeeds(x, y, theta)));
+        }
     }
 }
