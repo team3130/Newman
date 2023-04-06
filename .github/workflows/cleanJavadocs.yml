@@ -16,4 +16,4 @@ jobs:
         submodules: recursive
       
     - name: move out
-      run: mv ./javadoc/* ./* -y
+      run: mv ./javadoc/* ./*
