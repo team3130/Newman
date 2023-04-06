@@ -389,12 +389,30 @@ public class Chassis extends SubsystemBase {
         field.getObject("traj").setTrajectory(trajectory);
     }
 
-    public void drive(double x, double y, double theta) {
-        if (getFieldRelative()) {
+    /**
+     * The same as {@link #drive(double, double, double)} except you pass in if you are field relative or not.
+     * This method will drive the swerve modules based to x, y and theta vectors.
+     * @param x velocity in the x dimension m/s
+     * @param y velocity in the y dimension m/s
+     * @param theta the angular (holonomic) speed to drive the swerve modules at
+     * @param fieldRelative whether to use
+     */
+    public void drive(double x, double y, double theta, boolean fieldRelative) {
+        if (fieldRelative) {
             setModuleStates(m_kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(x, y, theta, getRotation2d())));
         }
-         else {
-             setModuleStates(m_kinematics.toSwerveModuleStates(new ChassisSpeeds(x, y, theta)));
+        else {
+            setModuleStates(m_kinematics.toSwerveModuleStates(new ChassisSpeeds(x, y, theta)));
         }
+    }
+
+    /**
+     * Our main method to drive using three variables. Locked to field relative or robot oriented based off of {@link #fieldRelative}.
+     * @param x the velocity in the x dimension m/s
+     * @param y the velocity in the y dimension m/s
+     * @param theta the angular (holonomic) speed of the bot
+     */
+    public void drive(double x, double y, double theta) {
+        drive(x, y, theta, getFieldRelative());
     }
 }
