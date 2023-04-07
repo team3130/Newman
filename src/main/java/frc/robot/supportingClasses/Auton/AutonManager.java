@@ -290,7 +290,7 @@ public class AutonManager {
         return wrapCmd(autonCommand);
     }
 
-    public CommandBase makeCmdToGoToPlace(Pose2d current) {
+    public AutonCommand makeCmdToGoToPlace(Pose2d current) {
         final int index = (int) (current.getY() * 2.5);
         final double y_value = ((Constants.Field.yPositionsForRowBounds[index] - (Constants.Field.yPositionsForRowBounds[index + 1]) / 2)) + Constants.Field.yPositionsForRowBounds[index];
         final double x_value = (DriverStation.getAlliance() == DriverStation.Alliance.Blue) ? Constants.Field.xPositionForGridBlue : Constants.Field.xPositionForGridRed;
@@ -303,8 +303,7 @@ public class AutonManager {
 
                 new PathPoint(new Translation2d(x_value, y_value), new Rotation2d(), new Rotation2d(rotation)));
 
-        AutonCommand command = autonCommandGenerator(trajectory);
-        return wrapCmd(command);
+        return autonCommandGenerator(trajectory);
     }
 
     public CommandBase makeCmdToGoToHumanPlayerStation(Pose2d current) {

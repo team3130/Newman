@@ -27,7 +27,7 @@ import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
 import frc.robot.commands.Chassis.ZeroWheels;
-import frc.robot.commands.Chassis.presets.GoToClosestPlaceToPlace;
+import frc.robot.commands.Chassis.presets.GoToClosestPlacementPosition;
 import frc.robot.commands.Chassis.presets.GoToHumanPlayerStation;
 import frc.robot.commands.Hopper.ReverseHopper;
 import frc.robot.commands.Hopper.SpinHopper;
@@ -174,7 +174,7 @@ public class RobotContainer {
 
     if (Constants.debugMode) {
       new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
-      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlaceToPlace(m_chassis, m_autonManager));
+      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlacementPosition(m_chassis, m_autonManager));
 
       double balanceDeadband = 5.0; //This should go in Constants later
       double omegaDeadband = 7.0;
