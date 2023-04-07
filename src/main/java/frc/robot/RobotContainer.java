@@ -60,8 +60,8 @@ public class RobotContainer {
    * Auton manager is the object that handles the loading of auton paths
    */
   protected AutonManager m_autonManager;
-  private static Joystick m_driverGamepad;
-  private static Joystick m_weaponsGamepad;
+  private static XboxController m_driverGamepad;
+  private static XboxController m_weaponsGamepad;
   private final Chassis m_chassis;
   private final ExtensionArm m_extensionArm;
   private final RotaryArm m_rotaryArm;
@@ -79,8 +79,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    m_driverGamepad = new Joystick(0);
-    m_weaponsGamepad = new Joystick(1);
+    m_driverGamepad = new XboxController(0);
+    m_weaponsGamepad = new XboxController(1);
 
     m_limelight = new Limelight();
 
@@ -268,6 +268,10 @@ public class RobotContainer {
     counter++;
   }
 
+  /**
+   * resets odometry to a position passed in
+   * @param pose the position to reset odometry to
+   */
   public void resetOdometryTo(Pose2d pose) {
     //TODO: REMOVE THIS PPLEASESE
     m_chassis.resetOdometry(pose);

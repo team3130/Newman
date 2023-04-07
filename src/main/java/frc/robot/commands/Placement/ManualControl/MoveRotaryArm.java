@@ -6,34 +6,63 @@ package frc.robot.commands.Placement.ManualControl;
 
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.ExtensionArm;
 import frc.robot.subsystems.RotaryArm;
 
-/** An example command that uses an example subsystem. */
+/** A command that runs the rotary arm */
 public class MoveRotaryArm extends CommandBase {
+
+  /**
+   * The singleton for the rotary arm. Is the subsystem that we use.
+   */
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final RotaryArm m_rotaryArm;
+
+  /**
+   * The singleton for the extension arm. Isn't a subsystem but is used to get the length of the arm for gains
+   */
   private final ExtensionArm m_extensionArm;
 
+  /**
+   * The network table entry for the velocity gain
+   */
   private final GenericEntry success;
 
+  /**
+   * The actual array which becomes circular
+   */
   private final double[] speeds;
+
+  /**
+   * The median filter for the velocity gain
+   */
   private final MedianFilter filter;
 
+  /**
+   * The capacity of the circular array
+   */
   private int capacity = -1;
+
+  /**
+   * Head for the circular array
+   */
   private int head = 0;
 
-  public Joystick m_xboxController;
   /**
-   * Creates a new ExampleCommand.
+   * The controller that the rotary arm is controller with
+   */
+  public XboxController m_xboxController;
+
+  /**
+   * Creates a new MoveRotaryArm command
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveRotaryArm(RotaryArm subsystem, ExtensionArm extensionArm, Joystick m_xboxController) {
+  public MoveRotaryArm(RotaryArm subsystem, ExtensionArm extensionArm, XboxController m_xboxController) {
     // specify whether rotary arm should be lowered or raised by setting the direction parameter as either -1 or 1, respectively
     m_rotaryArm = subsystem;
     this.m_xboxController = m_xboxController;
@@ -49,12 +78,17 @@ public class MoveRotaryArm extends CommandBase {
     filter = new MedianFilter(7);
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * Runs once when the scheduler initially schedules the command
+   */
   @Override
   public void initialize() {
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * Runs repeatedly while the command is not interrupted.
+   * Controls the rotary arm with the Y axis on the right joystick.
+   */
   @Override
   public void execute() {
     double y = -m_xboxController.getRawAxis(Constants.Buttons.LST_AXS_RJOYSTICKY); // inverted?
@@ -73,6 +107,7 @@ public class MoveRotaryArm extends CommandBase {
 
   /**
    * gets the velocity gain?????
+   * FUNNY CIRCULAR ARRAY
    */
   public void middleMan(double main) {
       final double torque = Math.sin(m_rotaryArm.getPositionPlacementArmAngle()) * m_extensionArm.getPositionMeters();
@@ -96,13 +131,18 @@ public class MoveRotaryArm extends CommandBase {
   }
 
 
-  // Called once the command ends or is interrupted.
+  /**
+   * stop the rotary arm at the end of the command.
+   * @param interrupted whether the command was interrupted/canceled
+   */
   @Override
   public void end(boolean interrupted) {
     m_rotaryArm.rotateRotaryArm(0);
   }
 
-  // Returns true when the command should end.
+  /**
+   * @return False. This command does not end.
+   */
   @Override
   public boolean isFinished() {
     return false;
