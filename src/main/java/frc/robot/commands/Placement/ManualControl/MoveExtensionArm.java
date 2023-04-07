@@ -5,6 +5,7 @@
 package frc.robot.commands.Placement.ManualControl;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.ExtensionArm;
@@ -12,7 +13,7 @@ import frc.robot.subsystems.ExtensionArm;
 /** A command to move the extension arm based off the joysticks */
 public class MoveExtensionArm extends CommandBase {
   private final ExtensionArm m_extensionArm;
-  public Joystick m_xboxController;
+  public XboxController m_xboxController;
 
   /*public boolean justHitLimit = false;*/
 
@@ -21,7 +22,7 @@ public class MoveExtensionArm extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveExtensionArm(ExtensionArm subsystem, Joystick m_xboxController) {
+  public MoveExtensionArm(ExtensionArm subsystem, XboxController m_xboxController) {
     m_extensionArm = subsystem;
     this.m_xboxController = m_xboxController;
 //    boolean flag = false;

@@ -140,7 +140,7 @@ public class RobotContainer {
    *
    * @return the driver gamepad
    */
-  public static Joystick getDriverGamepad() {
+  public static XboxController getDriverGamepad() {
     return m_driverGamepad;
   }
 
@@ -150,7 +150,7 @@ public class RobotContainer {
    *
    * @return the weapons game pad
    */
-  public static Joystick getWeaponsGamepad() {
+  public static XboxController getWeaponsGamepad() {
     return m_weaponsGamepad;
   }
 
