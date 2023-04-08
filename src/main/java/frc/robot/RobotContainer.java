@@ -95,7 +95,7 @@ public class RobotContainer {
     MechanismLigament2d limit = new MechanismLigament2d(
             "limit",
             Constants.Extension.kExtensionArmLengthExtendedMeters,
-            110 - 90,
+            Math.toDegrees(Constants.highPosition) - 90,
             6,
             new Color8Bit(0, 0, 255));
     root.append(zero);
