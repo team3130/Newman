@@ -245,7 +245,7 @@ public class RotaryArm extends SubsystemBase {
    * @return if we are past the angle, soft limit on the rotary arm
    */
   public boolean pastLimit() {
-    return getArmAngle() > Math.toRadians(110);
+    return getArmAngle() > Constants.highPosition;
   }
 
   /**
