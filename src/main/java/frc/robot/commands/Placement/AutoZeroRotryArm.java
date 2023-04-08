@@ -7,46 +7,65 @@ package frc.robot.commands.Placement;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.RotaryArm;
 
-/** An example command that uses an example subsystem. */
+/**
+ * A command that zeroes the rotary arm automatically
+ */
 public class AutoZeroRotryArm extends CommandBase {
-  private final RotaryArm m_RotaryArm;
+  /**
+   * The rotary arm singleton which is required by this command
+   */
+  private final RotaryArm m_rotaryArm;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new AutoZeroRotaryArm
    *
    * @param subsystem The subsystem used by this command.
    */
   public AutoZeroRotryArm(RotaryArm subsystem) {
-    m_RotaryArm = subsystem;
+    m_rotaryArm = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * Called when the command is initially scheduled.
+   * Spins the rotary arm backwards at -15% power. (15% was an arbitrary value that looked: "not too sketchy")
+   */
   @Override
   public void initialize() {
-     m_RotaryArm.releaseBrake();
-     m_RotaryArm.spin(-0.1);
+     m_rotaryArm.releaseBrake();
+     m_rotaryArm.spin(-0.15);
 
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * Called every time the scheduler runs while the command is scheduled.
+   * Does nothing.
+   */
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
-  // Called once the command ends or is interrupted.
+  /**
+   * Called once the command ends or is interrupted.
+   * Engages the brake and stops any percent output to the motor.
+   * If the command wasn't interrupted then it is at the limit switch, and we can reset the rotary arms encoders.
+   *
+   * @param interrupted whether the command was interrupted/canceled
+   */
   @Override
   public void end(boolean interrupted) {
-    m_RotaryArm.engageBrake();
+    m_rotaryArm.engageBrake();
+    m_rotaryArm.stop();
     if (!interrupted) {
-      m_RotaryArm.resetEncoder();
+      m_rotaryArm.resetEncoder();
     }
   }
 
-  // Returns true when the command should end.
+  /**
+   * @return if the limit switch for the rotary arm is broken
+   */
   @Override
   public boolean isFinished() {
-    return m_RotaryArm.brokeLimit();
+    return m_rotaryArm.brokeLimit();
   }
 }

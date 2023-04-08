@@ -7,25 +7,30 @@ package frc.robot.commands.Manipulator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Manipulator;
 
-/** An example command that uses an example subsystem. */
+/** An Instant command that clamps the manipulator (Also called grabber) */
 public class ClampManipulator extends InstantCommand {
+  /**
+   * The singleton for manipulator. gets required by this subsystem
+   */
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Manipulator m_manipulator;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new ClampManipulator object
    *
-   * @param subsystem The subsystem used by this command.
+   * @param manipulator the manipulator singleton for actuate the manipulator's pneumatics. Gets required by the command
    */
-  public ClampManipulator(Manipulator subsystem) {
-    m_manipulator = subsystem;
+  public ClampManipulator(Manipulator manipulator) {
+    m_manipulator = manipulator;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(manipulator);
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * Clamps the manipulator aka extends the manipulator
+   */
   @Override
   public void initialize() {
-     m_manipulator.extendGrabber();
+     m_manipulator.extend();
   }
 }

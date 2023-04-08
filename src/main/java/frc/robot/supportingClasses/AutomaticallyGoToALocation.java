@@ -87,8 +87,8 @@ public abstract class AutomaticallyGoToALocation extends CommandBase {
   }
 
   /**
-   * @return whether the command is finished doing its task. In this case it is true if the auton \
-   *    commands isFinished is done. can check out {@link #autonCommand#isFinished()} to see if it is done
+   * @return whether the command is finished doing its task. In this case it is true if the auton
+   *    commands isFinished is done. can check out {@link AutonCommand#isFinished()} to see if it is done
    */
   @Override
   public boolean isFinished() {

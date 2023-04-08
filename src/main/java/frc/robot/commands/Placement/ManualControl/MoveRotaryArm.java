@@ -13,7 +13,9 @@ import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.ExtensionArm;
 import frc.robot.subsystems.RotaryArm;
 
-/** A command that runs the rotary arm */
+/**
+ * A command that runs the rotary arm
+ */
 public class MoveRotaryArm extends CommandBase {
 
   /**
@@ -79,13 +81,6 @@ public class MoveRotaryArm extends CommandBase {
   }
 
   /**
-   * Runs once when the scheduler initially schedules the command
-   */
-  @Override
-  public void initialize() {
-  }
-
-  /**
    * Runs repeatedly while the command is not interrupted.
    * Controls the rotary arm with the Y axis on the right joystick.
    */
@@ -102,7 +97,7 @@ public class MoveRotaryArm extends CommandBase {
       y = 0;
     }
 
-    m_rotaryArm.rotateRotaryArm(y); //that max is currently bs
+    m_rotaryArm.spin(y); //that max is currently bs
   }
 
   /**
@@ -110,7 +105,7 @@ public class MoveRotaryArm extends CommandBase {
    * FUNNY CIRCULAR ARRAY
    */
   public void middleMan(double main) {
-      final double torque = Math.sin(m_rotaryArm.getPositionPlacementArmAngle()) * m_extensionArm.getPositionMeters();
+      final double torque = Math.sin(m_rotaryArm.getArmAngle()) * m_extensionArm.getPositionMeters();
       final double currentSpeed = m_rotaryArm.getSpeedPlacementArm();
 
       if (head + speeds.length == capacity - 1) {
@@ -137,7 +132,7 @@ public class MoveRotaryArm extends CommandBase {
    */
   @Override
   public void end(boolean interrupted) {
-    m_rotaryArm.rotateRotaryArm(0);
+    m_rotaryArm.stop();
   }
 
   /**

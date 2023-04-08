@@ -7,9 +7,16 @@ package frc.robot.commands.Chassis;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Chassis;
 
-/** A command that uses Chassis. */
+/**
+ * A command that flips between robot and field oriented.
+ * Requires chassis
+ */
 public class FlipFieldOriented extends InstantCommand {
-  private final Chassis m_chassis; // the chassis subsystem
+
+  /**
+   * The singleton for chassis. Is the only required subsystem for this command
+   */
+  private final Chassis m_chassis;
 
   /**
    * Creates a new command to flip between field and robot oriented control
@@ -22,7 +29,9 @@ public class FlipFieldOriented extends InstantCommand {
     addRequirements(chassis);
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * Called once when the scheduler runs for the first time
+   */
   @Override
   public void initialize() {
     m_chassis.flipFieldRelative();
