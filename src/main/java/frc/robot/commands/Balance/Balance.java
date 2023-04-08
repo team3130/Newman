@@ -29,10 +29,15 @@ public class Balance extends CommandBase {
 
   private double direction;
   private int iterator;
+  private int timerIterator;
   private boolean pitchVelocityCheck = false;
   private final double driveVelocity = 0.5;
   private double oddPitch;
   private double pitch;
+
+  private boolean drivingPositive;
+  private boolean hasSwitched;
+  private Timer timer = new Timer();
 
   private static ShuffleboardTab tab = Shuffleboard.getTab("Chassis");
 
@@ -57,8 +62,13 @@ public class Balance extends CommandBase {
     pitch = (Navx.getPitch());
 
     pitchVelocityCheck = false;
+    drivingPositive = true;
+    hasSwitched = false;
     iterator = 0;
+    timerIterator = 0;
 
+    timer.reset();
+    timer.start();
   }
 
   
@@ -82,27 +92,55 @@ public class Balance extends CommandBase {
     
 
 
-    //trajectory to go forward 2 meters * sign
-    /* Call should be:
-    ConditionalCommand balance = new ConditionalCommand(Balance(m_chassis, 1), Balance(m_chassis, -1), Navx.getPitch() > 1).until(Math.abs(Navx.getPitch())) <= 5.0;
-    */
+   if(!hasSwitched){
+    timerIterator = 0;
+
     if(Navx.getPitch() < pitchZero){
       SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(-driveVelocity,0,0));
       m_chassis.setModuleStates(moduleStates);
+      if(drivingPositive){
+        hasSwitched = true;
+        drivingPositive = false;
+      }
+      else{hasSwitched = false;}
     }
     else{
       SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity,0,0));
       m_chassis.setModuleStates(moduleStates);
+      if(!drivingPositive){
+        hasSwitched = true;
+        drivingPositive = true;
+      }
+      else{hasSwitched = false;}
+
+      
     }
 
+    
 
 
+  }
+    else{
+      m_chassis.stopModules();
+
+      if(timerIterator == 0){
+         timer.restart(); 
+         timerIterator++;
+      }
+      
+      if(timer.hasElapsed(1.5)){
+        hasSwitched = false;
+      }
+  
+      
+
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
+    timer.stop();
     m_chassis.stopModules();
   }
 

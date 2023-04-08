@@ -169,8 +169,7 @@ public class RobotContainer {
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new Balance(m_chassis));
 
 
-      double pitchDeadband = 3.0; //This should go in Constants later
-      double omegaDeadband = 7.0;
+      double pitchDeadband = 3.5; //This should go in Constants later
       double pitchZero = -6.75; //Also constants
 
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new SequentialCommandGroup(new DeadReckonBalance(m_chassis), m_autonManager.autonCommandGenerator(null).until(() -> Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband)));
