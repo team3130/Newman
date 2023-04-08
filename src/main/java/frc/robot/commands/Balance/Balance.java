@@ -22,9 +22,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class Balance extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Chassis m_chassis;
-  private final double pitchZero = -8.211; //should go in Constants
-  private final double pitchDeadband = 5;
-  private final double pitchVelocityDeadband = 0.5;
+  private final double pitchZero = -6.75; //should go in Constants
+  private final double pitchDeadband = 3.5;
+  private final double pitchVelocityDeadband = 0.1;
 
 
   private double direction;
@@ -33,14 +33,7 @@ public class Balance extends CommandBase {
   private final double driveVelocity = 0.5;
   private double oddPitch;
   private double pitch;
-  private double roll;
-  private double tilt;
-  private double velocityPitch;
-  private double velocityRoll;
-  private double VelocityTilt;
-  private double AccelerationTilt;
-  private MedianFilter fVelocityTilt;
-  private double prev;
+
   private static ShuffleboardTab tab = Shuffleboard.getTab("Chassis");
 
 
@@ -61,10 +54,11 @@ public class Balance extends CommandBase {
   public void initialize() {
 
     oddPitch = 0;
-
-    
     pitch = (Navx.getPitch());
-    
+
+    pitchVelocityCheck = false;
+    iterator = 0;
+
   }
 
   

@@ -7,6 +7,7 @@ package frc.robot.commands.Balance;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
@@ -17,7 +18,7 @@ public class DeadReckonBalance extends CommandBase {
   private final Chassis m_chassis;
   private boolean onRamp = false;
   private final double driveSpeed = 0.75;
-  private final double pitchZero = -8.221;
+  private final double pitchZero = -6.75;
   private final double pitchVelocityDeadband = 0.05;
   private SwerveModuleState[] moduleStates;
   private int iterator;
@@ -26,6 +27,7 @@ public class DeadReckonBalance extends CommandBase {
   private double pitchCheckValue;
 
   private boolean distanceFlag;
+  private boolean finished;
 
 
 
@@ -45,6 +47,11 @@ public class DeadReckonBalance extends CommandBase {
   public void initialize() {
     moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveSpeed,0,0));
     m_chassis.setModuleStates(moduleStates);
+
+    finished = false;
+    distanceFlag = false;
+    onRamp = false;
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -52,21 +59,28 @@ public class DeadReckonBalance extends CommandBase {
   public void execute() {
 
    if(!distanceFlag){
-    if (Math.abs(Navx.getPitch() - pitchZero) >= 10.0 && !onRamp) { //10.0 is how many degrees for the bot to understand it is on the ramp
+    if (Math.abs(Navx.getPitch() - pitchZero) >= 8.0 && !onRamp) { //8 is how many degrees for the bot to understand it is on the ramp
       onRamp = true;
-      pitchCheckValue = Navx.getPitch();
+      
     }
 
-    if(onRamp && Math.abs(Navx.getPitch() - pitchCheckValue) >= 5.0){
+    if(onRamp && Navx.getPitch() - pitchZero >= 5 ){ //Assumes positive pitch is when the bot is tilted the second time
+      //maybe instead of this condition for pitch read the direction change
       distanceFlag = true;
       m_chassis.stopModules();
+      finished = true;
+
+
+
     }
 
-   }
 
-   else{
 
    }
+
+
+
+
 
   }
 
@@ -80,7 +94,7 @@ public class DeadReckonBalance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return onRamp && Math.abs(Navx.getPitch() - pitchCheckValue) >= 5.0  ; //5 is how many degrees for the bot to know the ramp has tipped the other way
+    return finished  ; //5 is how many degrees for the bot to know the ramp has tipped the other way
   }
 }
 

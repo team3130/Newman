@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Balance.Balance;
+import frc.robot.commands.Balance.DeadReckonBalance;
 import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
@@ -168,11 +169,11 @@ public class RobotContainer {
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new Balance(m_chassis));
 
 
-      double balanceDeadband = 5.0; //This should go in Constants later
+      double pitchDeadband = 3.0; //This should go in Constants later
       double omegaDeadband = 7.0;
-      double zeroPitch = -8.211; //Also constants
+      double pitchZero = -6.75; //Also constants
 
-
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new SequentialCommandGroup(new DeadReckonBalance(m_chassis), m_autonManager.autonCommandGenerator(null).until(() -> Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband)));
 
     }
 
