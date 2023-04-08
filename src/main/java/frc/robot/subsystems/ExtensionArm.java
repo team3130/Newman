@@ -191,6 +191,7 @@ public class ExtensionArm extends SubsystemBase {
   }
 
   /**
+   * gets the position of the arm
    * @return the position of the extension arm in meters
    */
   public double getPositionMeters() {
@@ -198,6 +199,7 @@ public class ExtensionArm extends SubsystemBase {
   }
 
   /**
+   * gets the ticks that the extension motor has counted
    * @return the position of the extension arm in ticks. Max length should be {@link Constants.Extension#kMaxExtensionLength}
    */
   public double getPositionTicks() {
@@ -205,6 +207,7 @@ public class ExtensionArm extends SubsystemBase {
   }
 
   /**
+   * Gets the speed of the extension arm in m/s
    * @return the speed of the extension arm in meters per second
    */
   public double getSpeedMetersPerSecond() {
@@ -212,6 +215,7 @@ public class ExtensionArm extends SubsystemBase {
   }
 
   /**
+   * Gets the speed of the extension arm in ticks
    * @return the speed of the mechanism in ticks per second
    */
   public double getSpeedTicksPerSecond() {
@@ -219,6 +223,7 @@ public class ExtensionArm extends SubsystemBase {
   }
 
   /**
+   * Uses the limit switch to see if we have broken it. Limit switch input is inverted (false is broken).
    * @return Whether the extension arm is at the limit switch
    */
   public boolean brokeLimit() {
@@ -267,6 +272,7 @@ public class ExtensionArm extends SubsystemBase {
   }
 
   /**
+   * Whether we are at the position or not in a dead band defined by {@link #positionDeadband}
    * @return whether the extension arm is at it's set position
    */
   public boolean atPosition() {

@@ -138,7 +138,7 @@ public class AutonCommand extends CommandBase {
     }
 
     /**
-     * Map each marker to a specific command
+     * Map each marker to a specific command.
      */
     protected void mapMarkersToCommands() {
         for (EventMarker marker : markers) {
@@ -401,6 +401,9 @@ public class AutonCommand extends CommandBase {
 
     }
 
+    /**
+     * @return Whether the command is finished based off if every command this is running is done
+     */
     @Override
     public boolean isFinished() {
         boolean runningIsDone = true;
@@ -412,6 +415,10 @@ public class AutonCommand extends CommandBase {
         return cmd.isFinished() && runningIsDone;
     }
 
+    /**
+     * stops the {@link HolonomicControllerCommand} that this is running and stops any other commands in this group
+     * @param interrupted whether the command was interrupted/canceled
+     */
     @Override
     public void end(boolean interrupted) {
         cmd.end(interrupted);
@@ -421,14 +428,23 @@ public class AutonCommand extends CommandBase {
         }
     }
 
+    /**
+     * @return the containing trajectory that this command follows
+     */
     public PathPlannerTrajectory getTrajectory() {
         return trajectory;
     }
 
+    /**
+     * @return the start position on the field of the trajectory that this command follows
+     */
     public Pose2d getStartPosition() {
         return trajectory.getInitialPose();
     }
 
+    /**
+     * @return the starting holonomic rotation of the contained trajectory that this command follows
+     */
     public Rotation2d getStartRotation() {
         return trajectory.getInitialState().holonomicRotation;
     }

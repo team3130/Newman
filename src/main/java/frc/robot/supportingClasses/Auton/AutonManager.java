@@ -306,6 +306,11 @@ public class AutonManager {
         return autonCommandGenerator(trajectory);
     }
 
+    /**
+     * On the fly trajectory generation to go to the human player station
+     * @param current the current position on the field
+     * @return the generated path in a wrapped command
+     */
     public CommandBase makeCmdToGoToHumanPlayerStation(Pose2d current) {
         final double x_value;
         final double y_value;
@@ -336,6 +341,7 @@ public class AutonManager {
     }
 
     /**
+     * Makes a command that moves out of the community zone and clamps manipulator.
      * @return a command to move out and clamp the manipulator closed
      */
     private CommandBase generateMoveOutAndClamp() {
@@ -345,6 +351,7 @@ public class AutonManager {
     }
 
     /**
+     * Makes a command that toggles the intake.
      * @return A command that starts at 0, 0 and actuates intake
      */
     public CommandBase actuateIntake() {
@@ -357,12 +364,20 @@ public class AutonManager {
         return new SequentialCommandGroup(new ToggleManipulator(m_manipulator), command, new GoToHighScoring(rotary, extension));
     }
 
+    /**
+     * Makes a dumb path that starts at the bottom
+     * @return the dumb path that starts at the bottom
+     */
     public CommandBase generateBottomDumb() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("dumb leave bottom", safe_constraints);
         CommandBase command = wrapCmd(autonCommandGenerator(trajectory));
         return new SequentialCommandGroup(new ToggleManipulator(m_manipulator), command, new GoToHighScoring(rotary, extension));
     }
 
+    /**
+     * generates a test command to see if markers are working. Wraps the commnad.
+     * @return the generated command
+     */
     public CommandBase generateMarkerPath() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("marker test", safe_constraints);
         AutonCommand command = autonCommandGeneratorPlacement(trajectory);

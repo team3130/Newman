@@ -13,16 +13,19 @@ import frc.robot.subsystems.Chassis;
 import frc.robot.supportingClasses.Auton.AutonCommand;
 import frc.robot.supportingClasses.Auton.AutonManager;
 
+import java.util.function.Supplier;
+
 /**
  * A command to generate and follow a given trajectory using Auton Manager methods.
  * Abstract because a specific class should be made that overrides the constructor in order to actually be used,
  *  see {@link GoToHumanPlayerStation} for an example
  */
 public abstract class AutomaticallyGoToALocation extends CommandBase {
+
   /**
    * A thread that gets used to generate the auton command in case the generation takes too long it doesn't hang the thread
    */
-  private final Thread m_thread;
+  private final Thread thread;
 
   /**
    * If this has been the first hit of {@link #execute()} with a non-null {@link #autonCommand} to run initialize
@@ -32,25 +35,25 @@ public abstract class AutomaticallyGoToALocation extends CommandBase {
   /**
    * The command that should get ran off of our generated path
    */
-  protected AutonCommand autonCommand;
+  protected CommandBase autonCommand;
 
   /**
    * Creates a new object for automatically going to a location based off a passed in runnable.
-   * Gives {@link #m_thread} a lambda to generate a path to the closest place to place a game element.
+   * Gives {@link #thread} a lambda to generate a path to the closest place to place a game element.
    * Kinda a hack, but we don't need to call {@link CommandScheduler#registerComposedCommands(Command...)} because:
    * {@link #autonCommand} only requires {@link Chassis}.
    * any given runnable should update the {@link #autonCommand} field.
    *
    * @param chassis The subsystem used by this command.
-   * @param task for the {@link #m_thread} to run. Should be similar to {@link AutonManager#makeCmdToGoToPlace(Pose2d)}
+   * @param generator for the {@link #thread} to run. Should be similar to {@link AutonManager#makeCmdToGoToPlace(Pose2d)}
    */
-  public AutomaticallyGoToALocation(Chassis chassis, Runnable task) {
+  public AutomaticallyGoToALocation(Chassis chassis, Supplier<CommandBase> generator) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(chassis);
 
     // passes in a lambda which is the equivalent of a method reference so this doesn't need to get reset as it's  \
     // not ran until start is called off the thread
-    m_thread = new Thread(task);
+    thread = new Thread(() -> autonCommand = generator.get());
   }
 
   /**
@@ -65,7 +68,7 @@ public abstract class AutomaticallyGoToALocation extends CommandBase {
     autonCommand = null;
 
     // start the thread to generate the path
-    m_thread.start();
+    thread.start();
   }
 
   /**
@@ -109,7 +112,7 @@ public abstract class AutomaticallyGoToALocation extends CommandBase {
       autonCommand.end(interrupted);
     }
     else {
-      m_thread.interrupt();
+      thread.interrupt();
     }
   }
 }
