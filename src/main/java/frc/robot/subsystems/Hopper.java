@@ -15,9 +15,16 @@ import frc.robot.Newman_Constants.Constants;
  * Because build is un-organized the right wheel is geared 1/4 of the left wheel
  */
 public class Hopper extends SubsystemBase {
-    protected final WPI_TalonSRX m_leftWheel; // the left wheel for hopper
-    protected final WPI_TalonSRX m_rightWheel; // the right wheel for hopper
 
+    /**
+     * The left motor's controller for the hopper
+     */
+    protected final WPI_TalonSRX m_leftWheel;
+
+    /**
+     * The right motor's controller for the hopper
+     */
+    protected final WPI_TalonSRX m_rightWheel;
 
     /**
      * Constructs a hopper with 9 volts of voltage compensation on the motors.
@@ -32,10 +39,8 @@ public class Hopper extends SubsystemBase {
         m_leftWheel.configVoltageCompSaturation(Constants.kMaxVoltageHopper);
         m_leftWheel.enableVoltageCompensation(true);
 
-
         m_leftWheel.setInverted(true);
         m_rightWheel.setInverted(false);
-
     }
 
     /**

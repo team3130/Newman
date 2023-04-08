@@ -4,37 +4,43 @@
 
 package frc.robot.commands.Placement.ManualControl;
 
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.ExtensionArm;
 
-/** A command to move the extension arm based off the joysticks */
+/**
+ * A command to move the extension arm based off the joysticks
+ */
 public class MoveExtensionArm extends CommandBase {
-  private final ExtensionArm m_extensionArm;
-  public Joystick m_xboxController;
-
-  /*public boolean justHitLimit = false;*/
 
   /**
-   * Creates a new Move Extension Arm command.
-   *
-   * @param subsystem The subsystem used by this command.
+   * The singleton for the extension arm. Is required by this subsystem
    */
-  public MoveExtensionArm(ExtensionArm subsystem, Joystick m_xboxController) {
-    m_extensionArm = subsystem;
+  private final ExtensionArm m_extensionArm;
+
+  /**
+   * The xbox controller that the extension arm should be controlled from
+   */
+  public XboxController m_xboxController;
+
+  /**
+   * Creates a new MoveExtensionArm command.
+   *
+   * @param extension The subsystem used by this command.
+   * @param m_xboxController the controller that this subsystem uses (should be weapons)
+   */
+  public MoveExtensionArm(ExtensionArm extension, XboxController m_xboxController) {
+    m_extensionArm = extension;
     this.m_xboxController = m_xboxController;
-//    boolean flag = false;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_extensionArm);
   }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * Reads the controllers input and then runs the extension arm.
+   * Soft limits are checked when {@link ExtensionArm#spinExtensionArm(double)} is called.
+   */
   @Override
   public void execute() {
     double y = -m_xboxController.getRawAxis(Constants.Buttons.LST_AXS_LJOYSTICKY); // inverted
@@ -43,13 +49,18 @@ public class MoveExtensionArm extends CommandBase {
     m_extensionArm.spinExtensionArm(y); //that max is currently bs
   }
 
-  // Called once the command ends or is interrupted.
+  /**
+   * Stops the extension arm
+   * @param interrupted whether the command was interrupted/canceled
+   */
   @Override
   public void end(boolean interrupted) {
     m_extensionArm.stop();
   }
 
-  // Returns true when the command should end.
+  /**
+   * @return False. meant to be a default command so it never ends
+   */
   @Override
   public boolean isFinished() {
     return false;

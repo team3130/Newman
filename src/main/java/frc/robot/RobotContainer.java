@@ -27,7 +27,7 @@ import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
 import frc.robot.commands.Chassis.ZeroWheels;
-import frc.robot.commands.Chassis.presets.GoToClosestPlaceToPlace;
+import frc.robot.commands.Chassis.presets.GoToClosestPlacementPosition;
 import frc.robot.commands.Chassis.presets.GoToHumanPlayerStation;
 import frc.robot.commands.Hopper.ReverseHopper;
 import frc.robot.commands.Hopper.SpinHopper;
@@ -60,8 +60,8 @@ public class RobotContainer {
    * Auton manager is the object that handles the loading of auton paths
    */
   protected AutonManager m_autonManager;
-  private static Joystick m_driverGamepad;
-  private static Joystick m_weaponsGamepad;
+  private static XboxController m_driverGamepad;
+  private static XboxController m_weaponsGamepad;
   private final Chassis m_chassis;
   private final ExtensionArm m_extensionArm;
   private final RotaryArm m_rotaryArm;
@@ -79,8 +79,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    m_driverGamepad = new Joystick(0);
-    m_weaponsGamepad = new Joystick(1);
+    m_driverGamepad = new XboxController(0);
+    m_weaponsGamepad = new XboxController(1);
 
     m_limelight = new Limelight();
 
@@ -140,7 +140,7 @@ public class RobotContainer {
    *
    * @return the driver gamepad
    */
-  public static Joystick getDriverGamepad() {
+  public static XboxController getDriverGamepad() {
     return m_driverGamepad;
   }
 
@@ -150,7 +150,7 @@ public class RobotContainer {
    *
    * @return the weapons game pad
    */
-  public static Joystick getWeaponsGamepad() {
+  public static XboxController getWeaponsGamepad() {
     return m_weaponsGamepad;
   }
 
@@ -174,7 +174,7 @@ public class RobotContainer {
 
     if (Constants.debugMode) {
       new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
-      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlaceToPlace(m_chassis, m_autonManager));
+      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlacementPosition(m_chassis, m_autonManager));
 
       double balanceDeadband = 5.0; //This should go in Constants later
       double omegaDeadband = 7.0;
@@ -268,6 +268,10 @@ public class RobotContainer {
     counter++;
   }
 
+  /**
+   * resets odometry to a position passed in
+   * @param pose the position to reset odometry to
+   */
   public void resetOdometryTo(Pose2d pose) {
     //TODO: REMOVE THIS PPLEASESE
     m_chassis.resetOdometry(pose);
