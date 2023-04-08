@@ -110,6 +110,7 @@ public class Chassis extends SubsystemBase {
     * <p>Resets navx</p>
     * <p>Resets relative encoders to be what the absolute encoders are</p>
     * <p>Hard reset of the odometry object</p>
+     * @param pose the position to reset odometry to
     */
     public void resetOdometry(Pose2d pose) {
         resetEncoders();

@@ -30,31 +30,108 @@ import java.util.function.Function;
  * Also has capabilities of running along a trajectory.
  */
 public class AutonCommand extends CommandBase {
-    protected Pose2d startPosition; // start position
-    protected Pose2d endPosition; // end position
-    protected final PathPlannerTrajectory trajectory; // the trajectory to follow
-    protected final HolonomicControllerCommand cmd;
-    protected final Chassis m_chassis; // the chassis subsystem
-    protected final Hopper m_hopper; // the hopper subsystem
-    protected final RotaryArm m_rotaryArm; // the rotary arm subsystem
-    protected final Manipulator m_manipulator; // the manipulator subsystem
-    protected final ExtensionArm m_extensionArm; // the extension arm subsystem
 
+    /**
+     * start position
+     */
+    protected Pose2d startPosition;
+
+    /**
+     * end position
+     */
+    protected Pose2d endPosition;
+
+    /**
+     * the trajectory to follow
+     */
+    protected final PathPlannerTrajectory trajectory;
+
+    /**
+     * the holonomic controller command that follows the {@link PathPlannerTrajectory}
+     */
+    protected final HolonomicControllerCommand cmd;
+
+    /**
+     * the chassis subsystem.
+     * Should be a singleton.
+     * Gets used to run the actual path.
+     */
+    protected final Chassis m_chassis;
+
+    /**
+     * the hopper subsystem.
+     * As of current it is unused.
+     */
+    @Deprecated
+    protected final Hopper m_hopper;
+
+    /**
+     * the rotary arm subsystem.
+     * Is used for placement markers.
+     */
+    protected final RotaryArm m_rotaryArm;
+
+    /**
+     * the manipulator subsystem.
+     * Is used for grabber markers.
+     */
+    protected final Manipulator m_manipulator;
+
+    /**
+     * the extension arm subsystem.
+     * Is used for placement markers.
+     */
+    protected final ExtensionArm m_extensionArm;
+
+    /**
+     * An array of all the markers in the path.
+     * There are events that are correlated to commands through search or magic scalars.
+     */
     protected final ArrayList<EventMarker> markers; // the markers for other events
 
-    protected boolean useOptimized = false; // whether to use optimized stuffs for bin search
-    protected double magicScalar; // the magic scalar for the optimization
+    /**
+     * whether to use optimized stuffs for bin search.
+     * Gets set to true when {@link #optimize()} is successful
+     */
+    protected boolean useOptimized = false;
 
-    protected final Timer m_timer; // timer from the holonomic drive command
+    /**
+     * the magic scalar for the optimization.
+     * Gets a value from {@link #optimize()}
+     */
+    protected double magicScalar;
 
-    protected final HashMap<EventMarker, Integer> markerToCommandMap; // the marker's mapped to the command to run
+    /**
+     * A pointer to the timer that exists in {@link HolonomicControllerCommand}
+     */
+    protected final Timer m_timer;
+
+    /**
+     * the marker's mapped to the command to run.
+     * Gets updated in {@link #mapMarkersToCommands()}
+     */
+    protected final HashMap<EventMarker, Integer> markerToCommandMap;
+
+    /**
+     * The indices of commands that we are running right now.
+     */
     protected final ArrayList<Integer> indicesToRun = new ArrayList<>(8); // what indices of commands run right now
 
-    protected final Function<EventMarker, Integer> getOptimizedIndex; // gets the index using the optimize function
+    /**
+     * A function to get the index using the optimize function given an event marker. Returns the index in {@link #commands}
+     */
+    protected final Function<EventMarker, Integer> getOptimizedIndex;
 
-    protected EventMarker current; // current event we are reading
+    /**
+     * The current/most recent event that we are reading
+     */
+    protected EventMarker current;
 
-    protected CommandBase[] commands; // commands necessary
+    /**
+     * Commands that we can potentially run all in an array for quick access either via a map as in:
+     * {@link #markerToCommandMap} or with a magic scalar that gets multiplied by time like in {@link #getOptimizedIndex}
+     */
+    protected CommandBase[] commands;
 
     /**
      * THE CONSTRUCTOR for auton command
@@ -100,7 +177,7 @@ public class AutonCommand extends CommandBase {
         CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null,
                 PLACE_HIGH = null, ZERO = null, MANIPULATOR = null,
                 PICK_UP_OFF_GROUND = null, PICK_UP_IN_BOT = null,
-                DO_NOTHING = null;
+                DO_NOTHING = new DoNothing(); // sits on index 8
 
         if (m_hopper != null) {
             HOPPER = new SpinHopper(m_hopper); // index: 0
@@ -125,8 +202,6 @@ public class AutonCommand extends CommandBase {
 
             CommandScheduler.getInstance().registerComposedCommands(PLACE_LOW, PLACE_MID, PLACE_HIGH, MANIPULATOR, ZERO, PICK_UP_IN_BOT, PICK_UP_OFF_GROUND);
         }
-
-        DO_NOTHING = new DoNothing(); // index: 8
         CommandScheduler.getInstance().registerComposedCommands(DO_NOTHING);
 
         commands = new CommandBase[] {HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH, ZERO, MANIPULATOR,
@@ -178,6 +253,7 @@ public class AutonCommand extends CommandBase {
      * @param rotate the rotary arm subsystem
      * @param extendy the extension arm subsystem
      * @param manipulator the manipulator subsystem
+     * @param hopper the hopper subsystem
      * @param chassis the chassis subsystem
      */
     public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory, RotaryArm rotate, ExtensionArm extendy, Manipulator manipulator, Hopper hopper, Chassis chassis) {
@@ -188,8 +264,10 @@ public class AutonCommand extends CommandBase {
      * Constructs an auton command with certain subsystems that it will need
      * @param cmd the command to run for auton
      * @param trajectory the trajectory to follow
+     * @param chassis the chassis subsystem
      * @param rotate the rotary arm subsystem
      * @param extendy the extension arm subsystem
+     * @param manipulator the manipulator subsystem
      */
     public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory, Chassis chassis, RotaryArm rotate, ExtensionArm extendy, Manipulator manipulator) {
         this(cmd, trajectory.getInitialPose(), trajectory.getEndState().poseMeters, trajectory, rotate,
@@ -216,13 +294,18 @@ public class AutonCommand extends CommandBase {
     }
 
     /**
+     * Determines the closest marker with the optimize function.
+     * Takes the magic scalar and multiplies by the current time to get the index from markers.
      * @return the closest event marker with optimized crap
      */
     protected PathPlannerTrajectory.EventMarker findClosestWithOptimized() {
         if (markers.size() <= 1) {
             return null;
         }
+
+        // the only real line everything else is protection
         int index = (int) (magicScalar * m_timer.get());
+
         if (index < 0) {
             return markers.get(0);
         }
@@ -309,6 +392,7 @@ public class AutonCommand extends CommandBase {
     }
 
     /**
+     * {@link #cmd}
      * @return the command to run
      */
     public CommandBase getCmd() {
@@ -402,6 +486,7 @@ public class AutonCommand extends CommandBase {
     }
 
     /**
+     * Determines if the command is finished using the commands in the group
      * @return Whether the command is finished based off if every command this is running is done
      */
     @Override
@@ -429,6 +514,7 @@ public class AutonCommand extends CommandBase {
     }
 
     /**
+     * {@link #trajectory}
      * @return the containing trajectory that this command follows
      */
     public PathPlannerTrajectory getTrajectory() {
@@ -436,13 +522,15 @@ public class AutonCommand extends CommandBase {
     }
 
     /**
+     * {@link #startPosition}
      * @return the start position on the field of the trajectory that this command follows
      */
     public Pose2d getStartPosition() {
-        return trajectory.getInitialPose();
+        return startPosition;
     }
 
     /**
+     * {@link #trajectory}'s initial state's holonomic rotation
      * @return the starting holonomic rotation of the contained trajectory that this command follows
      */
     public Rotation2d getStartRotation() {

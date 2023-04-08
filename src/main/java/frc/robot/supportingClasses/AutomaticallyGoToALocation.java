@@ -90,6 +90,7 @@ public abstract class AutomaticallyGoToALocation extends CommandBase {
   }
 
   /**
+   * Determines if the command is done running or not.
    * @return whether the command is finished doing its task. In this case it is true if the auton
    *    commands isFinished is done. can check out {@link AutonCommand#isFinished()} to see if it is done
    */
