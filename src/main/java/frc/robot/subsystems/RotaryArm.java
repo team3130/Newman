@@ -29,7 +29,6 @@ public class RotaryArm extends SubsystemBase {
   protected final GenericEntry n_brake;
 
   protected MechanismLigament2d ligament;
-  private double outputSpeed = 0.75; // the speed we will run the rotary arm at
 
   public static final TrapezoidProfile.Constraints rotaryArmConstraints = new TrapezoidProfile.Constraints(
           Constants.kMaxVelocityRotaryPlacementArm, Constants.kMaxAccelerationRotaryPlacementArm);
@@ -80,16 +79,6 @@ public class RotaryArm extends SubsystemBase {
    * Rotates the rotary arm
    * @param scalar value that scales the output speed from shuffleboard
    */
-  public void rotateRotaryArm(double scalar){
-    rotaryMotor.set(outputSpeed * scalar);
-  }
-
-  /**
-   * This method will be called once per scheduler run during simulation
-   */
-  @Override
-  public void simulationPeriodic() {}
-
   public boolean brokeLimit() {
     return !limitSwitch.get();
   }
@@ -99,19 +88,13 @@ public class RotaryArm extends SubsystemBase {
   }
 
   /**
-   * update the output speed, usually from network tables
-   * @param newSpeed the new speed to set the output speed to
+   * Spins the motor at a percent output scaled by {@link Constants#kMaxRotaryArmVoltage}
+   * @param output the speed to set the motor percent output at; values are between -1 -> 1
    */
-  protected void updateOutputSpeed(double newSpeed) {
-    outputSpeed = newSpeed;
+  public void spin(double output) {
+    rotaryMotor.set(ControlMode.PercentOutput, output);
   }
 
-  /**
-   * @return the output speed for the rotary arm
-   */
-  protected double getOutputSpeed() {
-    return outputSpeed;
-  }
 
   /**
    * Initializes the sendable builder to put on shuffleboard
@@ -119,7 +102,6 @@ public class RotaryArm extends SubsystemBase {
    */
   public void initSendable(SendableBuilder builder) {
     builder.setSmartDashboardType("Rotary arm");
-    builder.addDoubleProperty("Rotary % output", this::getOutputSpeed, this::updateOutputSpeed);
     builder.addBooleanProperty("lim switch", this::brokeLimit, null);
     builder.addDoubleProperty("rotary length", this::getRawTicks, null);
     builder.addDoubleProperty("rotary angle", this::getPositionPlacementArmAngle, null);
