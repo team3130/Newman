@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -227,8 +226,17 @@ public class RobotContainer {
 
   }
 
-  public void resetOdometryWithoutApril() {
-    m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
+  /**
+   * Resets odometry using april tags
+   * @return whether the update was successful or not
+   */
+  public boolean resetOdometryWithAprilTags() {
+    OdoPosition positionToResetTo = m_limelight.calculate();
+    if (positionToResetTo != null) {
+      m_chassis.resetOdometry(positionToResetTo.getPosition());
+      return true;
+    }
+    return false;
   }
 
 
@@ -274,20 +282,23 @@ public class RobotContainer {
    * @param pose the position to reset odometry to
    */
   public void resetOdometryTo(Pose2d pose) {
-    //TODO: REMOVE THIS PPLEASESE
     m_chassis.resetOdometry(pose);
   }
 
-  public CommandBase retractManipulator() {
+  /**
+   * Makes a command to unclamp the manipulator. Should be used on teleop init to make sure that we don't enable and zero with manipulator clamped.
+   * @return the command to unclamp manipulator
+   */
+  public CommandBase unClampManipulator() {
     return new UnClampManipulator(m_manipulator);
   }
 
-  public boolean resetOdometryWithAprilTag() {
-    OdoPosition position = m_limelight.calculate();
-    if (position != null) {
-      m_chassis.resetOdometry(position.getPosition());
-      return true;
-    }
-    return false;
+  /**
+   * Resets odometry without april tags to 0, 0, 0.
+   * This is needed because the absolute encoders don't turn on for a while.
+   * The logic in Robot.Java should make it so that this can't get ran periodically
+   */
+  public void resetOdometryWithoutAprilTag() {
+    m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
   }
 }

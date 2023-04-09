@@ -8,6 +8,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -27,7 +28,8 @@ import frc.robot.swerve.SwerveModule;
 import java.util.Arrays;
 
 /**
- * Our chassis this year is a swerve drive.
+ * Chassis is the drivetrain subsystem of our bot. Our physical chassis is a swerve drive, 
+ * so we use wpilib SwerveDriveKinematics and SwerveDrivePoseEstimator as opposed to Differential Drive objects
  */
 public class Chassis extends SubsystemBase {
     /** The geometry of the swerve modules */
@@ -47,12 +49,12 @@ public class Chassis extends SubsystemBase {
     private final Limelight m_limelight;
 
     /**
-     * The max speed that we have read so far
+     * Updated periodically with the maximum speed that has been read on any of the swerve modules
      */
     private double maxSpeedRead = 0;
 
     /**
-     * The field object which we can update with odometry to show up on shuffleboard
+     * A sendable that gets put on shuffleboard with the auton trajectory and the robots current position
      */
     private final Field2d field;
 
@@ -62,8 +64,8 @@ public class Chassis extends SubsystemBase {
     private final GenericEntry n_fieldOrriented;
 
     /**
-     * Makes a chassis that starts at 0, 0, 0
-     * @param limelight the limelight object that we can use for updating odometry
+     * Makes a chassis that starts at 0, 0, 0. Calls {@link #Chassis(Pose2d, Rotation2d, Limelight)}  Chassis}
+     * @param limelight the limelight object which is used for updating odometry
      */
     public Chassis(Limelight limelight){
       this (new Pose2d(), new Rotation2d(), limelight);
@@ -73,7 +75,7 @@ public class Chassis extends SubsystemBase {
      * Makes a chassis with a starting position
      * @param startingPos the initial position to say that the robot is at
      * @param startingRotation the initial rotation of the bot
-     * @param limelight a limelight object that we can use for updating odometry
+     * @param limelight the limelight object which is used for updating odometry
      */
     public Chassis(Pose2d startingPos, Rotation2d startingRotation, Limelight limelight) {
         m_kinematics = new SwerveDriveKinematics(Constants.moduleTranslations);
@@ -180,7 +182,8 @@ public class Chassis extends SubsystemBase {
 
     /**
      * subsystem looped call made by the scheduler.
-     * Updates the odometry from swerve
+     * Updates the odometry from swerve and April Tags.
+     * Also updates and sendables we use during comp
      */
     @Override
     public void periodic() {
@@ -405,5 +408,32 @@ public class Chassis extends SubsystemBase {
    */
     public void updateField2DFromTrajectory(PathPlannerTrajectory trajectory) {
         field.getObject("traj").setTrajectory(trajectory);
+    }
+
+    /**
+     * The same as {@link #drive(double, double, double)} except you pass in if you are field relative or not.
+     * This method will drive the swerve modules based to x, y and theta vectors.
+     * @param x velocity in the x dimension m/s
+     * @param y velocity in the y dimension m/s
+     * @param theta the angular (holonomic) speed to drive the swerve modules at
+     * @param fieldRelative whether to use
+     */
+    public void drive(double x, double y, double theta, boolean fieldRelative) {
+        if (fieldRelative) {
+            setModuleStates(m_kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(x, y, theta, getRotation2d())));
+        }
+        else {
+            setModuleStates(m_kinematics.toSwerveModuleStates(new ChassisSpeeds(x, y, theta)));
+        }
+    }
+
+    /**
+     * Our main method to drive using three variables. Locked to field relative or robot oriented based off of {@link #fieldRelative}.
+     * @param x the velocity in the x dimension m/s
+     * @param y the velocity in the y dimension m/s
+     * @param theta the angular (holonomic) speed of the bot
+     */
+    public void drive(double x, double y, double theta) {
+        drive(x, y, theta, getFieldRelative());
     }
 }
