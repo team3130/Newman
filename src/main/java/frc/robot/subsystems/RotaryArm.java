@@ -61,7 +61,6 @@ public class RotaryArm extends SubsystemBase {
    */
   private final TrapezoidProfile.Constraints rotaryArmConstraints;
 
-
   /**
    * the profiled pid controller for rotary arm. Follows a trajectory outlined by {@link #rotaryArmConstraints}
    */
@@ -133,7 +132,7 @@ public class RotaryArm extends SubsystemBase {
 
   /**
    * Spins the motor at a percent output scaled by {@link Constants#kMaxRotaryArmVoltage}
-   * @param output the speed to set the motor percent output at; values are between -1 -> 1
+   * @param output the speed to set the motor percent output at; values are between -1 - 1
    */
   public void spin(double output) {
     rotaryMotor.set(ControlMode.PercentOutput, output);

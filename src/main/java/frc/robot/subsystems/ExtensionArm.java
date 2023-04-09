@@ -253,7 +253,7 @@ public class ExtensionArm extends SubsystemBase {
    * spins the extension arm.
    * calls {@link #getSmartSpeed(double)} in order to apply soft limits.
    * If we are in debug mode (based on {@link Constants#debugMode}) ten it updates the acceleration manager ({@link #accelerationManager}).
-   * @param speed to run the motor at. Bounds: (-1 -> 1) gets multiplied by {@link Constants#kMaxExtensionArmVoltage} and that is supplied to the motor.
+   * @param speed to run the motor at. Bounds: (-1 - 1) gets multiplied by {@link Constants#kMaxExtensionArmVoltage} and that is supplied to the motor.
    */
   public void spinExtensionArm(double speed) {
     speed = getSmartSpeed(speed);
