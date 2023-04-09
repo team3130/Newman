@@ -48,6 +48,7 @@ import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.Auton.AutonCommand;
 import frc.robot.supportingClasses.Auton.AutonManager;
+import frc.robot.supportingClasses.Vision.OdoPosition;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -279,5 +280,14 @@ public class RobotContainer {
 
   public CommandBase retractManipulator() {
     return new UnClampManipulator(m_manipulator);
+  }
+
+  public boolean resetOdometryWithAprilTag() {
+    OdoPosition position = m_limelight.calculate();
+    if (position != null) {
+      m_chassis.resetOdometry(position.getPosition());
+      return true;
+    }
+    return false;
   }
 }

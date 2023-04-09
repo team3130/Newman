@@ -388,7 +388,7 @@ public class Chassis extends SubsystemBase {
      * @param refreshPosition time and position to set to
      */
     public void updateOdometryFromVision(OdoPosition refreshPosition) {
-        m_odometry.addVisionMeasurement(refreshPosition.getPosition(), refreshPosition.getTime());
+        m_odometry.addVisionMeasurement(new Pose2d(refreshPosition.getPosition().getTranslation(), refreshPosition.getPosition().getRotation().rotateBy(new Rotation2d(Math.toRadians(180)))), refreshPosition.getTime());
     }
 
     /**
