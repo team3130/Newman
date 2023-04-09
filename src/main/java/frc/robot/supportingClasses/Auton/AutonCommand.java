@@ -220,6 +220,7 @@ public class AutonCommand extends CommandBase {
             for (String name : marker.names) {
                 name = name.toLowerCase();
                 System.out.println(name);
+                // TODO: change marker to the string
                 if (name.contains("intake")) {
                     markerToCommandMap.put(marker, 0);
                 } else if (name.contains("place")) {
@@ -318,7 +319,7 @@ public class AutonCommand extends CommandBase {
     }
 
     /**
-     * Gets the closes event marker with a binary search
+     * Gets the closes event marker with a binary search.
      * @return the closest event using a binary search
      */
     protected PathPlannerTrajectory.EventMarker findClosestWithBinSearch() {
