@@ -238,6 +238,12 @@ public class AutonManager {
         );
     }
 
+    /**
+     * A method to help with on the fly trajectory generation.
+     * @param current the current position of the bot / start position of the trajectory
+     * @param endPoint the end position of the bot / end position of the trajectory
+     * @return the Auton command without placement support that will follow the path.
+     */
     public AutonCommand onTheFlyGenerator(Pose2d current, Pose2d endPoint) {
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(violent_constraints,
                 new PathPoint(current.getTranslation(), new Rotation2d(), current.getRotation()),
@@ -251,6 +257,7 @@ public class AutonManager {
      * loads a PathPlanner trajectory with optional marker support.
      * If you don't want marker support then this command won't require placement subsystems.
      * @param nameOfFile the name of the path in PathPlanner
+     * @param requirePlacement whether we should require placement or not
      * @return the generated auton command which requires placement
      */
     public AutonCommand loadTrajectory(String nameOfFile, boolean requirePlacement) {
