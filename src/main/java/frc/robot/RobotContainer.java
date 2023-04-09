@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -233,11 +232,11 @@ public class RobotContainer {
    */
   public boolean resetOdometryWithAprilTags() {
     OdoPosition positionToResetTo = m_limelight.calculate();
-    if (positionToResetTo == null) {
-      return false;
+    if (positionToResetTo != null) {
+      m_chassis.resetOdometry(positionToResetTo.getPosition());
+      return true;
     }
-    m_chassis.resetOdometry(positionToResetTo.getPosition());
-    return true;
+    return false;
   }
 
 
@@ -294,12 +293,12 @@ public class RobotContainer {
     return new UnClampManipulator(m_manipulator);
   }
 
-  public boolean resetOdometryWithAprilTag() {
-    OdoPosition position = m_limelight.calculate();
-    if (position != null) {
-      m_chassis.resetOdometry(position.getPosition());
-      return true;
-    }
-    return false;
+  /**
+   * Resets odometry without april tags to 0, 0, 0.
+   * This is needed because the absolute encoders don't turn on for a while.
+   * The logic in Robot.Java should make it so that this can't get ran periodically
+   */
+  public void resetOdometryWithoutAprilTag() {
+    m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
   }
 }
