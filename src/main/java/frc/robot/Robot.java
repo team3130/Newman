@@ -30,15 +30,21 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     m_robotContainer.periodic();
     if (timer.hasElapsed(Constants.kResetTime)) {
-      if (!haveResetManually) {
-        m_robotContainer.resetOdometryWithoutApril();
-        haveResetManually = true;
+      if (Constants.useAprilTags) {
+        if (!haveResetManually) {
+          m_robotContainer.resetOdometryWithoutApril();
+          haveResetManually = true;
+        } else {
+          if (m_robotContainer.resetOdometryWithAprilTag()) {
+            timer.reset();
+            timer.stop();
+          }
+        }
       }
       else {
-        if (m_robotContainer.resetOdometryWithAprilTag()) {
-          timer.reset();
-          timer.stop();
-        }
+        m_robotContainer.resetOdometryWithoutApril();
+        timer.stop();
+        timer.reset();
       }
     }
   }
