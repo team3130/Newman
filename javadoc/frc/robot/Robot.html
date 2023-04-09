@@ -218,7 +218,9 @@ extends edu.wpi.first.wpilibj.TimedRobot</pre>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#autonomousInit()">autonomousInit</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets ran when we enable in auton.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -243,12 +245,16 @@ extends edu.wpi.first.wpilibj.TimedRobot</pre>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#robotInit()">robotInit</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Initializes robot container and the timer for resetting odometry.</div>
+</td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#robotPeriodic()">robotPeriodic</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets ran every loop while code is running on the roborio.</div>
+</td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -258,7 +264,9 @@ extends edu.wpi.first.wpilibj.TimedRobot</pre>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#teleopInit()">teleopInit</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Gets ran when we start teleop / when we enable in teleop.</div>
+</td>
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -351,6 +359,7 @@ extends edu.wpi.first.wpilibj.TimedRobot</pre>
 <li class="blockList">
 <h4>robotInit</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;robotInit()</pre>
+<div class="block">Initializes robot container and the timer for resetting odometry.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>robotInit</code>&nbsp;in class&nbsp;<code>edu.wpi.first.wpilibj.IterativeRobotBase</code></dd>
@@ -364,6 +373,10 @@ extends edu.wpi.first.wpilibj.TimedRobot</pre>
 <li class="blockList">
 <h4>robotPeriodic</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;robotPeriodic()</pre>
+<div class="block">Gets ran every loop while code is running on the roborio.
+ Runs the command scheduler and <a href="RobotContainer.html#periodic()"><code>RobotContainer.periodic()</code></a>.
+ Has logic to reset odometry based off of april tags after a certain amount of time to allow
+ for the absolute encoders to start up. If we can't see april tags then we reset to 0, 0.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>robotPeriodic</code>&nbsp;in class&nbsp;<code>edu.wpi.first.wpilibj.IterativeRobotBase</code></dd>
@@ -416,6 +429,8 @@ extends edu.wpi.first.wpilibj.TimedRobot</pre>
 <li class="blockList">
 <h4>autonomousInit</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;autonomousInit()</pre>
+<div class="block">Gets ran when we enable in auton.
+ Schedules the auton command that is selected on network tables. Default is DoNothing</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>autonomousInit</code>&nbsp;in class&nbsp;<code>edu.wpi.first.wpilibj.IterativeRobotBase</code></dd>
@@ -455,6 +470,8 @@ extends edu.wpi.first.wpilibj.TimedRobot</pre>
 <li class="blockList">
 <h4>teleopInit</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;teleopInit()</pre>
+<div class="block">Gets ran when we start teleop / when we enable in teleop.
+ Zeroes the rotary and extension arms and unclamps the manipulator.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>teleopInit</code>&nbsp;in class&nbsp;<code>edu.wpi.first.wpilibj.IterativeRobotBase</code></dd>

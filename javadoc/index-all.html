@@ -198,7 +198,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="frc/robot/Robot.html#autonomousExit()">autonomousExit()</a></span> - Method in class frc.robot.<a href="frc/robot/Robot.html" title="class in frc.robot">Robot</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Robot.html#autonomousInit()">autonomousInit()</a></span> - Method in class frc.robot.<a href="frc/robot/Robot.html" title="class in frc.robot">Robot</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Gets ran when we enable in auton.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Robot.html#autonomousPeriodic()">autonomousPeriodic()</a></span> - Method in class frc.robot.<a href="frc/robot/Robot.html" title="class in frc.robot">Robot</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/commands/Placement/AutoZeroExtensionArm.html" title="class in frc.robot.commands.Placement"><span class="typeNameLink">AutoZeroExtensionArm</span></a> - Class in <a href="frc/robot/commands/Placement/package-summary.html">frc.robot.commands.Placement</a></dt>
@@ -317,7 +319,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems"><span class="typeNameLink">Chassis</span></a> - Class in <a href="frc/robot/subsystems/package-summary.html">frc.robot.subsystems</a></dt>
 <dd>
-<div class="block">Our chassis this year is a swerve drive.</div>
+<div class="block">Chassis is the drivetrain subsystem of our bot.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#%3Cinit%3E(edu.wpi.first.math.geometry.Pose2d,edu.wpi.first.math.geometry.Rotation2d,frc.robot.sensors.Limelight)">Chassis(Pose2d, Rotation2d, Limelight)</a></span> - Constructor for class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
 <dd>
@@ -325,7 +327,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#%3Cinit%3E(frc.robot.sensors.Limelight)">Chassis(Limelight)</a></span> - Constructor for class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
 <dd>
-<div class="block">Makes a chassis that starts at 0, 0, 0</div>
+<div class="block">Makes a chassis that starts at 0, 0, 0.</div>
 </dd>
 <dt><a href="frc/robot/commands/Manipulator/ClampManipulator.html" title="class in frc.robot.commands.Manipulator"><span class="typeNameLink">ClampManipulator</span></a> - Class in <a href="frc/robot/commands/Manipulator/package-summary.html">frc.robot.commands.Manipulator</a></dt>
 <dd>
@@ -421,6 +423,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/commands/DoNothing.html#%3Cinit%3E()">DoNothing()</a></span> - Constructor for class frc.robot.commands.<a href="frc/robot/commands/DoNothing.html" title="class in frc.robot.commands">DoNothing</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#drive(double,double,double)">drive(double, double, double)</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
+<dd>
+<div class="block">Our main method to drive using three variables.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#drive(double,double,double,boolean)">drive(double, double, double, boolean)</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
+<dd>
+<div class="block">The same as <a href="frc/robot/subsystems/Chassis.html#drive(double,double,double)"><code>Chassis.drive(double, double, double)</code></a> except you pass in if you are field relative or not.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#DriveTicksToMeters">DriveTicksToMeters</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#DriveTicksToMetersPerSecond">DriveTicksToMetersPerSecond</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
@@ -1857,10 +1867,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">resets odometry to a position passed in</div>
 </dd>
-<dt><span class="memberNameLink"><a href="frc/robot/RobotContainer.html#resetOdometryWithAprilTag()">resetOdometryWithAprilTag()</a></span> - Method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="frc/robot/RobotContainer.html#resetOdometryWithoutApril()">resetOdometryWithoutApril()</a></span> - Method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
-<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/RobotContainer.html#resetOdometryWithAprilTags()">resetOdometryWithAprilTags()</a></span> - Method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
+<dd>
+<div class="block">Resets odometry using april tags</div>
+</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/RobotContainer.html#resetOdometryWithoutAprilTag()">resetOdometryWithoutAprilTag()</a></span> - Method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
+<dd>
+<div class="block">Resets odometry without april tags to 0, 0, 0.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/subsystems/RotaryArm.html#resetPIDController()">resetPIDController()</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/RotaryArm.html" title="class in frc.robot.subsystems">RotaryArm</a></dt>
 <dd>
 <div class="block">Reset the PID controller to whatever angle we are currently reading and the speed we are currently reading.</div>
@@ -1875,8 +1889,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Retracts the grabber (Clamps which is the opposite of the default)</div>
 </dd>
-<dt><span class="memberNameLink"><a href="frc/robot/RobotContainer.html#retractManipulator()">retractManipulator()</a></span> - Method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="frc/robot/commands/Hopper/ReverseHopper.html" title="class in frc.robot.commands.Hopper"><span class="typeNameLink">ReverseHopper</span></a> - Class in <a href="frc/robot/commands/Hopper/package-summary.html">frc.robot.commands.Hopper</a></dt>
 <dd>
 <div class="block">An example command that uses an example subsystem.</div>
@@ -1908,9 +1920,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">The container for the robot.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Robot.html#robotInit()">robotInit()</a></span> - Method in class frc.robot.<a href="frc/robot/Robot.html" title="class in frc.robot">Robot</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Initializes robot container and the timer for resetting odometry.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Robot.html#robotPeriodic()">robotPeriodic()</a></span> - Method in class frc.robot.<a href="frc/robot/Robot.html" title="class in frc.robot">Robot</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Gets ran every loop while code is running on the roborio.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Camera.html#roll">roll</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Camera.html" title="class in frc.robot.Newman_Constants">Constants.Camera</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonManager.html#rotary">rotary</a></span> - Variable in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonManager.html" title="class in frc.robot.supportingClasses.Auton">AutonManager</a></dt>
@@ -2149,7 +2165,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="frc/robot/Robot.html#teleopExit()">teleopExit()</a></span> - Method in class frc.robot.<a href="frc/robot/Robot.html" title="class in frc.robot">Robot</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Robot.html#teleopInit()">teleopInit()</a></span> - Method in class frc.robot.<a href="frc/robot/Robot.html" title="class in frc.robot">Robot</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Gets ran when we start teleop / when we enable in teleop.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Robot.html#teleopPeriodic()">teleopPeriodic()</a></span> - Method in class frc.robot.<a href="frc/robot/Robot.html" title="class in frc.robot">Robot</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Robot.html#testExit()">testExit()</a></span> - Method in class frc.robot.<a href="frc/robot/Robot.html" title="class in frc.robot">Robot</a></dt>
@@ -2244,6 +2262,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h2 class="title">U</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="frc/robot/RobotContainer.html#unClampManipulator()">unClampManipulator()</a></span> - Method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
+<dd>
+<div class="block">Makes a command to unclamp the manipulator.</div>
+</dd>
 <dt><a href="frc/robot/commands/Manipulator/UnClampManipulator.html" title="class in frc.robot.commands.Manipulator"><span class="typeNameLink">UnClampManipulator</span></a> - Class in <a href="frc/robot/commands/Manipulator/package-summary.html">frc.robot.commands.Manipulator</a></dt>
 <dd>
 <div class="block">An Instant command to un-clamp the manipulator</div>

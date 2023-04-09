@@ -244,18 +244,24 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resetOdometryWithAprilTag()">resetOdometryWithAprilTag</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resetOdometryWithAprilTags()">resetOdometryWithAprilTags</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Resets odometry using april tags</div>
+</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resetOdometryWithoutApril()">resetOdometryWithoutApril</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resetOdometryWithoutAprilTag()">resetOdometryWithoutAprilTag</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Resets odometry without april tags to 0, 0, 0.</div>
+</td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>edu.wpi.first.wpilibj2.command.CommandBase</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#retractManipulator()">retractManipulator</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#unClampManipulator()">unClampManipulator</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Makes a command to unclamp the manipulator.</div>
+</td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -375,13 +381,18 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="resetOdometryWithoutApril()">
+<a id="resetOdometryWithAprilTags()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>resetOdometryWithoutApril</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;resetOdometryWithoutApril()</pre>
+<h4>resetOdometryWithAprilTags</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;resetOdometryWithAprilTags()</pre>
+<div class="block">Resets odometry using april tags</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>whether the update was successful or not</dd>
+</dl>
 </li>
 </ul>
 <a id="getAutonCmd()">
@@ -432,22 +443,30 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="retractManipulator()">
+<a id="unClampManipulator()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>retractManipulator</h4>
-<pre class="methodSignature">public&nbsp;edu.wpi.first.wpilibj2.command.CommandBase&nbsp;retractManipulator()</pre>
+<h4>unClampManipulator</h4>
+<pre class="methodSignature">public&nbsp;edu.wpi.first.wpilibj2.command.CommandBase&nbsp;unClampManipulator()</pre>
+<div class="block">Makes a command to unclamp the manipulator. Should be used on teleop init to make sure that we don't enable and zero with manipulator clamped.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the command to unclamp manipulator</dd>
+</dl>
 </li>
 </ul>
-<a id="resetOdometryWithAprilTag()">
+<a id="resetOdometryWithoutAprilTag()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>resetOdometryWithAprilTag</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;resetOdometryWithAprilTag()</pre>
+<h4>resetOdometryWithoutAprilTag</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;resetOdometryWithoutAprilTag()</pre>
+<div class="block">Resets odometry without april tags to 0, 0, 0.
+ This is needed because the absolute encoders don't turn on for a while.
+ The logic in Robot.Java should make it so that this can't get ran periodically</div>
 </li>
 </ul>
 </li>
