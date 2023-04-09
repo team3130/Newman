@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -233,11 +232,11 @@ public class RobotContainer {
    */
   public boolean resetOdometryWithAprilTags() {
     OdoPosition positionToResetTo = m_limelight.calculate();
-    if (positionToResetTo == null) {
-      return false;
+    if (positionToResetTo != null) {
+      m_chassis.resetOdometry(positionToResetTo.getPosition());
+      return true;
     }
-    m_chassis.resetOdometry(positionToResetTo.getPosition());
-    return true;
+    return false;
   }
 
 
