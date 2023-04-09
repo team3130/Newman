@@ -9,14 +9,15 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DoNothing;
-import frc.robot.commands.Hopper.SpinHopper;
 import frc.robot.commands.Manipulator.ToggleManipulator;
 import frc.robot.commands.Placement.AutoZeroExtensionArm;
 import frc.robot.commands.Placement.AutoZeroRotryArm;
 import frc.robot.commands.Placement.presets.*;
 import frc.robot.commands.TimedCommand;
-import frc.robot.subsystems.*;
 import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.ExtensionArm;
+import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.RotaryArm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,13 +58,6 @@ public class AutonCommand extends CommandBase {
      * Gets used to run the actual path.
      */
     protected final Chassis m_chassis;
-
-    /**
-     * the hopper subsystem.
-     * As of current it is unused.
-     */
-    @Deprecated
-    protected final Hopper m_hopper;
 
     /**
      * the rotary arm subsystem.
@@ -115,7 +109,7 @@ public class AutonCommand extends CommandBase {
     /**
      * The indices of commands that we are running right now.
      */
-    protected final ArrayList<Integer> indicesToRun = new ArrayList<>(8); // what indices of commands run right now
+    protected final ArrayList<Integer> indicesToRun = new ArrayList<>(7); // what indices of commands run right now
 
     /**
      * A function to get the index using the optimize function given an event marker. Returns the index in {@link #commands}
@@ -143,22 +137,27 @@ public class AutonCommand extends CommandBase {
      * @param extensionArm the extension arm subsystem
      * @param chassis the chassis subsystem
      * @param manipulator the manipulator subsystem
-     * @param hopper the hopper subsystem
      */
     public AutonCommand(HolonomicControllerCommand cmd, Pose2d startPosition, Pose2d endPosition, PathPlannerTrajectory trajectory,
-                        RotaryArm rotaryArm, ExtensionArm extensionArm, Chassis chassis, Manipulator manipulator,
-                        Hopper hopper) {
+                        RotaryArm rotaryArm, ExtensionArm extensionArm, Chassis chassis, Manipulator manipulator) {
         this.trajectory = trajectory;
         this.cmd = cmd;
         this.endPosition = endPosition;
         this.startPosition = startPosition;
         m_rotaryArm = rotaryArm;
         m_extensionArm = extensionArm;
-        markers = (ArrayList<EventMarker>) trajectory.getMarkers();
+
         m_chassis = chassis;
         m_manipulator = manipulator;
-        m_hopper = hopper;
         m_timer = cmd.getTimer();
+
+        final List<EventMarker> markerList = trajectory.getMarkers();
+
+        markers = new ArrayList<>(markerList.size() + 2);
+
+        markers.add(EventMarker.fromTime(List.of("DoNothing"), 0));
+        markers.addAll(markerList);
+        markers.add(EventMarker.fromTime(List.of("DoNothing"), trajectory.getTotalTimeSeconds()));
 
         markerToCommandMap = new HashMap<>();
 
@@ -166,36 +165,27 @@ public class AutonCommand extends CommandBase {
             m_requirements.add(chassis);
         }
 
-        if (hopper != null) {
-            m_requirements.add(m_hopper);
-        }
-
         if (m_rotaryArm != null && m_extensionArm != null && m_manipulator != null) {
             m_requirements.addAll(List.of(m_rotaryArm, m_extensionArm, m_manipulator));
         }
 
-        CommandBase HOPPER = null, PLACE_LOW = null, PLACE_MID = null,
+        CommandBase PLACE_LOW = null, PLACE_MID = null,
                 PLACE_HIGH = null, ZERO = null, MANIPULATOR = null,
                 PICK_UP_OFF_GROUND = null, PICK_UP_IN_BOT = null,
-                DO_NOTHING = new DoNothing(); // sits on index 8
-
-        if (m_hopper != null) {
-            HOPPER = new SpinHopper(m_hopper); // index: 0
-            CommandScheduler.getInstance().registerComposedCommands(HOPPER);
-        }
+                DO_NOTHING = new DoNothing(); // sits on index 7
 
         if (m_rotaryArm != null && m_extensionArm != null && m_manipulator != null) {
-            PLACE_LOW = new GoToLowScoring(m_rotaryArm, m_extensionArm); // index: 1
+            PLACE_LOW = new GoToLowScoring(m_rotaryArm, m_extensionArm); // index: 0
 
-            PLACE_MID = new GoToMidScoringCones(m_rotaryArm, m_extensionArm); // index: 2
+            PLACE_MID = new GoToMidScoringCones(m_rotaryArm, m_extensionArm); // index: 1
 
-            PLACE_HIGH = new GoToHighScoring(m_rotaryArm, m_extensionArm); // index: 3
+            PLACE_HIGH = new GoToHighScoring(m_rotaryArm, m_extensionArm); // index: 2
 
-            MANIPULATOR = new ToggleManipulator(manipulator); // index: 5
+            MANIPULATOR = new ToggleManipulator(manipulator); // index: 4
 
-            ZERO = new SequentialCommandGroup(new AutoZeroExtensionArm(extensionArm), new AutoZeroRotryArm(rotaryArm)); // index: 4
+            ZERO = new SequentialCommandGroup(new AutoZeroExtensionArm(extensionArm), new AutoZeroRotryArm(rotaryArm)); // index: 3
 
-            PICK_UP_OFF_GROUND = new GoToPickupOffGround(m_rotaryArm, m_extensionArm); // index: 7
+            PICK_UP_OFF_GROUND = new GoToPickupOffGround(m_rotaryArm, m_extensionArm); // index: 6
 
             PICK_UP_IN_BOT = new SequentialCommandGroup(new GoToPickupWithinBot(m_extensionArm),
                     new ToggleManipulator(m_manipulator), new TimedCommand(0.1), new AutoZeroExtensionArm(extensionArm), new AutoZeroRotryArm(rotaryArm)); // index: 6
@@ -204,7 +194,7 @@ public class AutonCommand extends CommandBase {
         }
         CommandScheduler.getInstance().registerComposedCommands(DO_NOTHING);
 
-        commands = new CommandBase[] {HOPPER, PLACE_LOW, PLACE_MID, PLACE_HIGH, ZERO, MANIPULATOR,
+        commands = new CommandBase[] {PLACE_LOW, PLACE_MID, PLACE_HIGH, ZERO, MANIPULATOR,
                 PICK_UP_IN_BOT, PICK_UP_OFF_GROUND, DO_NOTHING};
 
         getOptimizedIndex = (EventMarker marker) -> (int) (marker.timeSeconds * magicScalar);
@@ -219,48 +209,30 @@ public class AutonCommand extends CommandBase {
         for (EventMarker marker : markers) {
             for (String name : marker.names) {
                 name = name.toLowerCase();
-                System.out.println(name);
-                // TODO: change marker to the string
-                if (name.contains("intake")) {
-                    markerToCommandMap.put(marker, 0);
-                } else if (name.contains("place")) {
+                if (name.contains("place")) {
                     if (name.contains("low")) {
-                        markerToCommandMap.put(marker, 1);
+                        markerToCommandMap.put(marker, 0);
                     }
                     if (name.contains("mid")) {
-                        markerToCommandMap.put(marker, 2);
+                        markerToCommandMap.put(marker, 1);
                     }
                     if (name.contains("high")) {
-                        markerToCommandMap.put(marker, 3);
+                        markerToCommandMap.put(marker, 2);
                     }
                 } else if (name.contains("within") || name.contains("bot")) {
-                    markerToCommandMap.put(marker, 6);
-                } else if (name.contains("pickup") || name.contains("floor")) {
-                    markerToCommandMap.put(marker, 7);
-                } else if (name.contains("zero")) {
-                    markerToCommandMap.put(marker, 4);
-                } else if (name.contains("grabber") || name.contains("manipulator")) {
                     markerToCommandMap.put(marker, 5);
+                } else if (name.contains("pickup") || name.contains("floor")) {
+                    markerToCommandMap.put(marker, 6);
+                } else if (name.contains("zero")) {
+                    markerToCommandMap.put(marker, 3);
+                } else if (name.contains("grabber") || name.contains("manipulator")) {
+                    markerToCommandMap.put(marker, 4);
                 }
                 else {
-                    markerToCommandMap.put(marker, 8);
+                    markerToCommandMap.put(marker, 7);
                 }
             }
         }
-    }
-
-    /**
-     * The second to last constructor for auton command
-     * @param cmd the command to follow in auton
-     * @param trajectory the trajectory that the command is following
-     * @param rotate the rotary arm subsystem
-     * @param extendy the extension arm subsystem
-     * @param manipulator the manipulator subsystem
-     * @param hopper the hopper subsystem
-     * @param chassis the chassis subsystem
-     */
-    public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory, RotaryArm rotate, ExtensionArm extendy, Manipulator manipulator, Hopper hopper, Chassis chassis) {
-        this(cmd, trajectory.getInitialPose(), trajectory.getEndState().poseMeters, trajectory, rotate, extendy, chassis, manipulator, hopper);
     }
 
     /**
@@ -274,26 +246,17 @@ public class AutonCommand extends CommandBase {
      */
     public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory, Chassis chassis, RotaryArm rotate, ExtensionArm extendy, Manipulator manipulator) {
         this(cmd, trajectory.getInitialPose(), trajectory.getEndState().poseMeters, trajectory, rotate,
-                extendy, chassis, manipulator, null);
+                extendy, chassis, manipulator);
     }
 
     /**
-     * Makes a new auton command that stores the start and end positions of the bot as well as the trajectory
-     * @param cmd the command to run
-     * @param trajectory the trajectory to follow
-     */
-    public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory) {
-        this(cmd, trajectory, null);
-    }
-
-    /**
-     * Wrapper constructor
+     * Wrapper constructor. Creates an auton command without placement support.
      * @param cmd auton path command
      * @param trajectory auton path
      * @param chassis chassis subsystem
      */
     public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory, Chassis chassis) {
-        this(cmd, trajectory, null, null, null, null, chassis);
+        this(cmd, trajectory, chassis, null, null, null);
     }
 
     /**
@@ -357,7 +320,7 @@ public class AutonCommand extends CommandBase {
 
     /**
      * Needs to be run in its own thread or at least one that wasn't made by the scheduler.
-     * Speeds up logic by not needing a binary search
+     * Speeds up logic by not needing a binary search.
      *
      * @return if it can be optimized or not.
      */
