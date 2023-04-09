@@ -219,6 +219,7 @@ public class AutonCommand extends CommandBase {
         for (EventMarker marker : markers) {
             for (String name : marker.names) {
                 name = name.toLowerCase();
+                System.out.println(name);
                 if (name.contains("intake")) {
                     markerToCommandMap.put(marker, 0);
                 } else if (name.contains("place")) {
@@ -239,7 +240,8 @@ public class AutonCommand extends CommandBase {
                     markerToCommandMap.put(marker, 4);
                 } else if (name.contains("grabber") || name.contains("manipulator")) {
                     markerToCommandMap.put(marker, 5);
-                } else {
+                }
+                else {
                     markerToCommandMap.put(marker, 8);
                 }
             }
@@ -330,20 +332,26 @@ public class AutonCommand extends CommandBase {
         int low = 0;
         int high = markers.size() - 1;
         // bin search for closest one
+        //TODO: DOESN'T WORK
         while (low != high) {
             int midPosition = (low + high) / 2 ;
-            if (m_timer.get() >= markers.get(midPosition).timeSeconds || m_timer.get() < markers.get(midPosition + 1).timeSeconds) {
+            System.out.println("mid position: " + midPosition); // TODO: WAS ALWAYS 4
+            if (m_timer.get() >= markers.get(midPosition).timeSeconds && m_timer.get() < markers.get(midPosition + 1).timeSeconds) {
                 return markers.get(midPosition);
             }
             if (m_timer.get() < markers.get(midPosition).timeSeconds) {
+                //TODO: NEVER RUNS
                 high = midPosition;
+                System.out.println("updated HIGH: " + high );
                 continue;
             }
             if (m_timer.get() > markers.get(midPosition).timeSeconds) {
+                //TOD: NEVER RUNS
                 low = midPosition;
+                System.out.println("UPDATED LOW: " + low);
             }
         }
-        return null;
+        return markers.get(0);
     }
 
     /**
@@ -439,9 +447,10 @@ public class AutonCommand extends CommandBase {
             closest = findClosestWithBinSearch();
         }
 
-        // if a new marker has been stumbled across. Should only get ran when we wan to intialize markers
+        // if a new marker has been stumbled across. Should only get ran when we want to initialize markers
         if (closest != current) {
             int toAdd = getIndexFromMap(closest);
+            System.out.println("To add: " + toAdd);
             // for debugging purposes this doesn't currently get ran
             if (closest.names.get(0).contains("end")) {
                  commands[toAdd].end(true);
@@ -461,9 +470,11 @@ public class AutonCommand extends CommandBase {
                 }
                 else {
                     indicesToRun.add(toAdd);
+                    System.out.println("adding indice to run");
                 }
             }
             current = closest;
+            System.out.println("------------------");
         }
     }
 
