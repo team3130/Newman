@@ -1,0 +1,19 @@
+name: Clean Java Doc
+
+on:
+  push:
+    branches:
+      - javadoc
+      
+jobs:
+  clean:
+    name: clean up logic
+    runs-on: ubuntu-latest
+    steps:
+    # checkout out repo and the branch
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+      
+    - name: move out
+      run: mv ./javadoc/* ./*

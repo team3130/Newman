@@ -11,23 +11,31 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 
+/**
+ * A subsystem that contains a solenoid which actuates the pistons on the manipulator (also called grabber at times)
+ */
 public class Manipulator extends SubsystemBase {
-  /** Creates a new ExampleSubsystem. */
-  private final Solenoid grabber;
+
+  /**
+   * the solenoid for the manipulator's pistons
+   */
+  private final Solenoid manipulator;
+
   /**
    * The default state of the solenoid (extended or not)
    */
   private final boolean defaultState = false;
 
   /**
-   * Constructs a HandGrabber object that initializes the solenoid and sets it to its default value
+   * Constructs a Manipulator object that initializes the solenoid and sets it to its default value
    */
   public Manipulator() {
-    grabber = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM , Constants.PNM_Grabber);
+    manipulator = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM , Constants.PNM_Grabber);
     // default
-    grabber.set(defaultState);
+    manipulator.set(defaultState);
 
     // for the sendable logic
+    // TODO this should be removed
     SendableRegistry.add(this, "Manipulator");
   }
 
@@ -35,7 +43,7 @@ public class Manipulator extends SubsystemBase {
    * Toggles the grabber between true and false
    */
   public void toggleManipulator(){
-    grabber.toggle();
+    manipulator.toggle();
   }
 
   /**
@@ -51,7 +59,7 @@ public class Manipulator extends SubsystemBase {
    * In this case it retracts the device
    */
   public void stop() {
-    grabber.set(defaultState);
+    manipulator.set(defaultState);
   }
 
   /**
@@ -65,22 +73,22 @@ public class Manipulator extends SubsystemBase {
   /**
    * Extend the grabber (which would be open/default)
    */
-  public void extendGrabber() {
-    grabber.set(defaultState);
+  public void extend() {
+    manipulator.set(defaultState);
   }
 
   /**
    * Retracts the grabber (Clamps which is the opposite of the default)
    */
-  public void retractGrabber() {
-    grabber.set(!defaultState);
+  public void retract() {
+    manipulator.set(!defaultState);
   }
 
   /**
    * Get whether it is actuated or not.
    */
   public boolean getState() {
-    return grabber.get() ^ defaultState;
+    return manipulator.get() ^ defaultState;
   }
 
   /**
@@ -88,7 +96,7 @@ public class Manipulator extends SubsystemBase {
    * @param stateToSetTo actuate or to not actuate
    */
   public void setState(boolean stateToSetTo) {
-    grabber.set(stateToSetTo ^ defaultState);
+    manipulator.set(stateToSetTo ^ defaultState);
   }
 
   /**

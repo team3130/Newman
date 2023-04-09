@@ -8,18 +8,29 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.Chassis;
 
-/** A command to drive in teleop */
+/** A default command to drive in teleop based off the joysticks*/
 public class TeleopDrive extends CommandBase {
-  private final Chassis m_chassis; // chassis subsystem
 
-  private final SlewRateLimiter xLimiter, yLimiter, turningLimiter; // acceleration limiters
+  /**
+   * Chassis singleton which is used as the subsystem
+   */
+  private final Chassis m_chassis;
 
-  private final Joystick m_xboxController; // the controller we use to drive
+  /**
+   * acceleration limiters for the x dimension, y dimension, and the holonomic rotation.
+   * These values are in m/s and rad/s respectively.
+   */
+  private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
+
+  /**
+   * The controller that we use to drive
+   */
+  private final XboxController m_xboxController;
 
   /**
    * Creates a new TeleopDrive command
@@ -28,7 +39,7 @@ public class TeleopDrive extends CommandBase {
    * @param chassis The subsystem used by this command.
    * @param xboxController the controller that we use to drive
    */
-  public TeleopDrive(Chassis chassis, Joystick xboxController) {
+  public TeleopDrive(Chassis chassis, XboxController xboxController) {
     m_chassis = chassis;
     // Use addRequirements() here to declare subsystem dependencies.
     m_requirements.add(chassis);
@@ -38,13 +49,19 @@ public class TeleopDrive extends CommandBase {
     m_xboxController = xboxController;
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * Called when the scheduler first schedules the command
+   */
   @Override
   public void initialize() {
 
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * Called periodically while the default command is being ran and is not actively interrupted.
+   * Takes the Joysticks inputs, applies a slew rate limit on it in meters per second which makes the input whooshier.
+   * Inverts controls if we are on the red alliance because april tags give us an absolute position of the field
+   */
   @Override
   public void execute() {
     double y = -m_xboxController.getRawAxis(Constants.Buttons.LST_AXS_LJOYSTICKX); // left stick y-axis (y-axis is inverted)
@@ -79,6 +96,7 @@ public class TeleopDrive extends CommandBase {
     // apply slew rate limiter which also converts to m/s and rad.s
     x = xLimiter.calculate(x * Constants.kPhysicalMaxSpeedMetersPerSecond);
     y = yLimiter.calculate(y * Constants.kPhysicalMaxSpeedMetersPerSecond);
+    //TODO: why doesn't theta get scaled as well??
     theta = turningLimiter.calculate(theta) * Constants.kPhysicalMaxSpeedMetersPerSecond;
 
     m_chassis.drive(x,y,theta);
@@ -88,13 +106,19 @@ public class TeleopDrive extends CommandBase {
     }
   }
 
-  // Called once the command ends or is interrupted.
+  /**
+   * Called when the command is over.
+   * Stops the chassis modules
+   * @param interrupted whether the command was interrupted/canceled
+   */
   @Override
   public void end(boolean interrupted) {
     m_chassis.stopModules();
   }
 
-  // Returns true when the command should end.
+  /**
+   * @return false. Never is finished.
+   */
   @Override
   public boolean isFinished() {
     return false;

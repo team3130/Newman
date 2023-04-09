@@ -6,6 +6,10 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+/**
+ * An example subsystem that can be refactored and copied.
+ * Description of the subsystem should go here
+ */
 public class ExampleSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public ExampleSubsystem() {}

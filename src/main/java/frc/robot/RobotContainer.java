@@ -27,7 +27,7 @@ import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
 import frc.robot.commands.Chassis.ZeroWheels;
-import frc.robot.commands.Chassis.presets.GoToClosestPlaceToPlace;
+import frc.robot.commands.Chassis.presets.GoToClosestPlacementPosition;
 import frc.robot.commands.Chassis.presets.GoToHumanPlayerStation;
 import frc.robot.commands.Hopper.ReverseHopper;
 import frc.robot.commands.Hopper.SpinHopper;
@@ -61,8 +61,8 @@ public class RobotContainer {
    * Auton manager is the object that handles the loading of auton paths
    */
   protected AutonManager m_autonManager;
-  private static Joystick m_driverGamepad;
-  private static Joystick m_weaponsGamepad;
+  private static XboxController m_driverGamepad;
+  private static XboxController m_weaponsGamepad;
   private final Chassis m_chassis;
   private final ExtensionArm m_extensionArm;
   private final RotaryArm m_rotaryArm;
@@ -80,8 +80,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    m_driverGamepad = new Joystick(0);
-    m_weaponsGamepad = new Joystick(1);
+    m_driverGamepad = new XboxController(0);
+    m_weaponsGamepad = new XboxController(1);
 
     m_limelight = new Limelight();
 
@@ -96,7 +96,7 @@ public class RobotContainer {
     MechanismLigament2d limit = new MechanismLigament2d(
             "limit",
             Constants.Extension.kExtensionArmLengthExtendedMeters,
-            110 - 90,
+            Math.toDegrees(Constants.highPosition) - 90,
             6,
             new Color8Bit(0, 0, 255));
     root.append(zero);
@@ -141,7 +141,7 @@ public class RobotContainer {
    *
    * @return the driver gamepad
    */
-  public static Joystick getDriverGamepad() {
+  public static XboxController getDriverGamepad() {
     return m_driverGamepad;
   }
 
@@ -151,7 +151,7 @@ public class RobotContainer {
    *
    * @return the weapons game pad
    */
-  public static Joystick getWeaponsGamepad() {
+  public static XboxController getWeaponsGamepad() {
     return m_weaponsGamepad;
   }
 
@@ -175,7 +175,7 @@ public class RobotContainer {
 
     if (Constants.debugMode) {
       new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
-      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlaceToPlace(m_chassis, m_autonManager));
+      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlacementPosition(m_chassis, m_autonManager));
 
       double balanceDeadband = 5.0; //This should go in Constants later
       double omegaDeadband = 7.0;
@@ -279,8 +279,8 @@ public class RobotContainer {
   }
 
   /**
-   * Resets odometry to a passed in position
-   * @param pose the position to reset odometry
+   * resets odometry to a position passed in
+   * @param pose the position to reset odometry to
    */
   public void resetOdometryTo(Pose2d pose) {
     m_chassis.resetOdometry(pose);
@@ -294,12 +294,12 @@ public class RobotContainer {
     return new UnClampManipulator(m_manipulator);
   }
 
-  /**
-   * Resets odometry without april tags to 0, 0, 0.
-   * This is needed because the absolute encoders don't turn on for a while.
-   * The logic in Robot.Java should make it so that this can't get ran periodically
-   */
-  public void resetOdometryWithoutAprilTag() {
-    m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
+  public boolean resetOdometryWithAprilTag() {
+    OdoPosition position = m_limelight.calculate();
+    if (position != null) {
+      m_chassis.resetOdometry(position.getPosition());
+      return true;
+    }
+    return false;
   }
 }

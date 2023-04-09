@@ -19,44 +19,88 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 
+/**
+ * A subsystem that contains
+ */
 public class RotaryArm extends SubsystemBase {
+
+  /**
+   * The rotary arm motor controller
+   */
   private final WPI_TalonFX rotaryMotor;
+
+  /**
+   * The solenoid that control the piston which enables the bike brake
+   */
   private final Solenoid brake;
+
+  /**
+   * The default state of the brake
+   */
   private final boolean defaultState = true;
 
+  /**
+   * A digital input on rio for the limit switch.
+   */
   private final DigitalInput limitSwitch;
 
+  /**
+   * A generic entry for the brake indicator to be used during competition
+   *    (which is why it isn't in the sendable as that is only put on shuffleboard in debug mode)
+   */
   protected final GenericEntry n_brake;
 
+  /**
+   * The placement arm ligament in glass.
+   */
   protected MechanismLigament2d ligament;
-  private double outputSpeed = 0.75; // the speed we will run the rotary arm at
 
-  public static final TrapezoidProfile.Constraints rotaryArmConstraints = new TrapezoidProfile.Constraints(
-          Constants.kMaxVelocityRotaryPlacementArm, Constants.kMaxAccelerationRotaryPlacementArm);
+  /**
+   * Trapezoid constraints outlined by {@link Constants#kMaxVelocityRotaryPlacementArm} for max velocity, and
+   * {@link Constants#kMaxAccelerationRotaryPlacementArm} for max acceleration
+   */
+  private final TrapezoidProfile.Constraints rotaryArmConstraints;
+
+  /**
+   * the profiled pid controller for rotary arm. Follows a trajectory outlined by {@link #rotaryArmConstraints}
+   */
+  private final ProfiledPIDController rotaryPID;
 
 
-  // the profiled pid controller for rotary arm
-  public ProfiledPIDController rotaryPID = new ProfiledPIDController(Constants.kRotaryArmP, Constants.kRotaryArmI,
-          Constants.kRotaryArmD, rotaryArmConstraints);
-
-
+  /**
+   * Makes a new RotaryArm object.
+   * @param ligament the ligament whose angle we update for the glass indicator
+   */
   public RotaryArm(MechanismLigament2d ligament) {
+    // rotary motor
     rotaryMotor = new WPI_TalonFX(Constants.CAN_RotaryArm);
     rotaryMotor.configFactoryDefault();
-    brake = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM, Constants.PNM_Brake);
-    brake.set(defaultState);
-
     rotaryMotor.configVoltageCompSaturation(Constants.kMaxRotaryArmVoltage);
     rotaryMotor.setNeutralMode(NeutralMode.Brake);
     rotaryMotor.enableVoltageCompensation(true);
+    rotaryMotor.setSensorPhase(true); // the encoder's positive values are opposite the positive output of the motor
+
+    // brake
+    brake = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM, Constants.PNM_Brake);
+    brake.set(defaultState);
+
+    // constraints for pid
+    rotaryArmConstraints = new TrapezoidProfile.Constraints(
+            Constants.kMaxVelocityRotaryPlacementArm, Constants.kMaxAccelerationRotaryPlacementArm
+    );
+
+    // pid controller. Constructor is P, I, D, and trapezoid constraints
+    rotaryPID = new ProfiledPIDController(
+            Constants.kRotaryArmP, Constants.kRotaryArmI, Constants.kRotaryArmD, rotaryArmConstraints
+    );
     rotaryPID.setTolerance(0.025);
 
-    rotaryMotor.setSensorPhase(true);
-
+    // limit switch to know where 0 is. Is located on the super structure of the bot.
     limitSwitch = new DigitalInput(Constants.ROTARY_ARM_LIMIT_SWITCH);
 
     this.ligament = ligament;
 
+    // shuffleboard indicator for the brake
     n_brake = Shuffleboard.getTab("Comp").add("Brake indicator", false).getEntry();
   }
 
@@ -68,69 +112,30 @@ public class RotaryArm extends SubsystemBase {
   }
 
   /**
-   * This method will be called once per scheduler run
+   * This method will be called once per scheduler run.
+   * Updates the glass ligament.
+   * Updates the brake boolean on shuffleboard.
    */
   @Override
   public void periodic() {
-    ligament.setAngle(Math.toDegrees(getAngleRotaryArm()) - 90);
+    ligament.setAngle(Math.toDegrees(getArmAngle()) - 90);
     n_brake.setBoolean(brakeIsEnabled());
   }
 
   /**
-   * Rotates the rotary arm
-   * @param scalar value that scales the output speed from shuffleboard
+   * The boolean for the limit switch is inverted, so we must bitwise not the output of the {@link DigitalInput#get()} function.
+   * @return whether the limit switch is broken on the rotary arm. (Are we at 0)
    */
-  public void rotateRotaryArm(double scalar){
-    rotaryMotor.set(outputSpeed * scalar);
-  }
-
-  /**
-   * This method will be called once per scheduler run during simulation
-   */
-  @Override
-  public void simulationPeriodic() {}
-
   public boolean brokeLimit() {
     return !limitSwitch.get();
   }
 
-  public void spin(double v) {
-    rotaryMotor.set(ControlMode.PercentOutput, v);
-  }
-
   /**
-   * update the output speed, usually from network tables
-   * @param newSpeed the new speed to set the output speed to
+   * Spins the motor at a percent output scaled by {@link Constants#kMaxRotaryArmVoltage}
+   * @param output the speed to set the motor percent output at; values are between -1 - 1
    */
-  protected void updateOutputSpeed(double newSpeed) {
-    outputSpeed = newSpeed;
-  }
-
-  /**
-   * @return the output speed for the rotary arm
-   */
-  protected double getOutputSpeed() {
-    return outputSpeed;
-  }
-
-  /**
-   * Initializes the sendable builder to put on shuffleboard
-   * @param builder sendable builder
-   */
-  public void initSendable(SendableBuilder builder) {
-    builder.setSmartDashboardType("Rotary arm");
-    builder.addDoubleProperty("Rotary % output", this::getOutputSpeed, this::updateOutputSpeed);
-    builder.addBooleanProperty("lim switch", this::brokeLimit, null);
-    builder.addDoubleProperty("rotary length", this::getRawTicks, null);
-    builder.addDoubleProperty("rotary angle", this::getPositionPlacementArmAngle, null);
-    builder.addBooleanProperty("Brake", this::brakeIsEnabled, null);
-  }
-
-  /**
-   * @return gets the angle of the rotary arm in raw ticks
-   */
-  public double getRawTicks() {
-    return rotaryMotor.getSelectedSensorPosition();
+  public void spin(double output) {
+    rotaryMotor.set(ControlMode.PercentOutput, output);
   }
 
   /**
@@ -176,7 +181,7 @@ public class RotaryArm extends SubsystemBase {
    * @return the static feed forward gain
    */
   public double getFeedForward(double extensionLength){
-    return Constants.Extension.kRotaryStaticGain * extensionLength * Math.sin(getPositionPlacementArmAngle());
+    return Constants.Extension.kRotaryStaticGain * extensionLength * Math.sin(getArmAngle());
   }
 
   /**
@@ -184,9 +189,17 @@ public class RotaryArm extends SubsystemBase {
    * @param extensionLength the length of the extension arm
    */
   public void gotoPos(double extensionLength) {
-    double output = rotaryPID.calculate(getPositionPlacementArmAngle()) + getFeedForward(extensionLength);
-    double setpoint = rotaryPID.getGoal().position;
+    double output = rotaryPID.calculate(getArmAngle()) + getFeedForward(extensionLength);
     rotaryMotor.set(ControlMode.PercentOutput, output);
+  }
+
+  /**
+   * Resets the PID controller and updates its setpoint with the passed in angle.
+   * @param angle in radians to set the setpoint to of the PID controller
+   */
+  public void makeSetpoint(double angle) {
+    resetPIDController();
+    rotaryPID.setGoal(angle);
   }
 
   /**
@@ -197,40 +210,17 @@ public class RotaryArm extends SubsystemBase {
     rotaryPID.setGoal(Constants.lowPosition);
   }
 
-  public void makeSetpointGroundCone() {
-    resetPIDController();
-    rotaryPID.setGoal(Constants.offGroundAngleCone);
-  }
-
   /**
-   * make the setpoint for the controller mid
+   * Reset the PID controller to whatever angle we are currently reading and the speed we are currently reading.
    */
-  public void makeSetpointMid(){
-    resetPIDController();
-    rotaryPID.setGoal(Constants.midPosition);
-  }
-
-  public void makeSetpointMidCone() {
-    resetPIDController();
-    rotaryPID.setGoal(Constants.midPositionCones);
-  }
-
   public void resetPIDController() {
-    rotaryPID.reset(getPositionPlacementArmAngle(), getSpeedPlacementArm());
-  }
-
-  /**
-   * make the setpoint for the controller high
-   */
-  public void makeSetpointHigh(){
-    resetPIDController();
-    rotaryPID.setGoal(Constants.highPosition);
+    rotaryPID.reset(getArmAngle(), getSpeedPlacementArm());
   }
 
   /**
    * @return position of the placement arm in radians
    */
-  public double getPositionPlacementArmAngle(){
+  public double getArmAngle(){
     return Constants.kTicksToRadiansRotaryPlacementArm * rotaryMotor.getSelectedSensorPosition();
   }
 
@@ -241,27 +231,56 @@ public class RotaryArm extends SubsystemBase {
     return 10 * Constants.kTicksToRadiansRotaryPlacementArm * rotaryMotor.getSelectedSensorVelocity();
   }
 
+  /**
+   * @return if the PID controller is at it's setpoint
+   */
   public boolean isAtPosition() {
     return rotaryPID.atGoal();
   }
 
-  public double getStaticGain(double extensionArmLength) {
-    return Math.sin(getPositionPlacementArmAngle()) * extensionArmLength * Constants.Extension.kRotaryStaticGain;
-  }
-
+  /**
+   * Current soft limit is 110 degrees.
+   * TODO: move this value to Constants
+   * @return if we are past the angle, soft limit on the rotary arm
+   */
   public boolean pastLimit() {
-    return getPositionPlacementArmAngle() > Math.toRadians(110);
-  }
-
-  public boolean outsideBumper() {
-    return this.getPositionPlacementArmAngle() > Math.toRadians(30);
+    return getArmAngle() > Constants.highPosition;
   }
 
   /**
-   * @return gets the angle of the rotary arm
+   * Current angle for the bumper is 30 degrees.
+   * TODO: move this angle to Constants and find a better angle
+   * @return If the extension arm is outside the bumper
    */
-  public double getAngleRotaryArm(){
-    return Constants.kTicksToRadiansRotaryPlacementArm * rotaryMotor.getSelectedSensorPosition();
+  public boolean outsideBumper() {
+    return this.getArmAngle() > Math.toRadians(30);
+  }
+
+  /**
+   * @param angle the angle in degrees to check the if the rotary arm is passed
+   * @return whether the arm is past the passed in angle
+   */
+  public boolean pastAngle(double angle) {
+    return this.getArmAngle() > Math.toRadians(angle);
+  }
+
+  /**
+   * Initializes the sendable builder to put on shuffleboard
+   * @param builder sendable builder
+   */
+  public void initSendable(SendableBuilder builder) {
+    builder.setSmartDashboardType("Rotary arm");
+    builder.addBooleanProperty("lim switch", this::brokeLimit, null);
+    builder.addDoubleProperty("rotary length", this::getRawTicks, null);
+    builder.addDoubleProperty("rotary angle", this::getArmAngle, null);
+    builder.addBooleanProperty("Brake", this::brakeIsEnabled, null);
+  }
+
+  /**
+   * @return gets the angle of the rotary arm in raw ticks
+   */
+  public double getRawTicks() {
+    return rotaryMotor.getSelectedSensorPosition();
   }
 
 }

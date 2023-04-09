@@ -6,30 +6,39 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/** An example command that uses an example subsystem. */
+/**
+ * A command that does nothing and is always finished
+ */
 public class DoNothing extends CommandBase {
 
   /*
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
+   * Creates a new DoNothing command
    */
   public DoNothing() {}
 
-  // Called when the command is initially scheduled.
+  /**
+   * Does nothing
+   */
   @Override
   public void initialize() {
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * Does nothing
+   */
   @Override
   public void execute() {}
 
-  // Called once the command ends or is interrupted.
+  /**
+   * Does nothing
+   * @param interrupted whether the command was interrupted/canceled
+   */
   @Override
   public void end(boolean interrupted) {}
 
-  // Returns true when the command should end.
+  /**
+   * Is always done
+   */
   @Override
   public boolean isFinished() {
     return true;

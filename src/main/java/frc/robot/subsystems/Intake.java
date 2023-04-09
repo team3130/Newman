@@ -10,70 +10,81 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 
+/**
+ * The intake subsystem which has a single solenoid which we actuate when we get to the human player station.
+ * There is support for default states which uses XOR gates to determine what actuated and retracted is.
+ */
 public class Intake extends SubsystemBase {
-  private final Solenoid intake;
 
-  private final boolean defaultStateSmall;
+  /**
+   * The intake solenoid which fires both pistons on the intake
+   */
+  private final Solenoid m_solenoid;
 
+  /**
+   * This is the default state logic for the retracted and extended states of the pistons.
+   * This gets XOr-ed with the desired state to yield retracted and extended values for the piston.
+   */
+  private final boolean defaultState;
+
+  /**
+   * Creates a new intake subsystem object.
+   * Initializes a solenoid that controls air flow for the pistons.
+   */
   public Intake() {
-    intake = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM , Constants.PNM_Intake);
+    m_solenoid = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM , Constants.PNM_Intake);
 
     // default should be whatever retracted is
-    defaultStateSmall = false;
-
-    intake.set(defaultStateSmall);
-  }
-
-  @Override
-  public void periodic() {
-
+    defaultState = false;
+    m_solenoid.set(defaultState);
   }
 
   /**
-   * Toggles the small pneumatic
+   * Toggles the pnumatic for the pistons
    */
-  public void toggleSmall(){
-    intake.toggle();
+  public void toggle(){
+    m_solenoid.toggle();
   }
 
   /**
-   * Extends the small pneumatic (opposite of retracted which we are saying is the default state)
+   * Extends the pneumatic (opposite of retracted which we are saying is the default state)
    */
-  public void extendSmall() {
-    intake.set(!defaultStateSmall);
+  public void extend() {
+    m_solenoid.set(!defaultState);
   }
-
 
   /**
    * Retracts the small pneumatic (same as the default state)
    */
-  public void retractSmall() {
-    intake.set(defaultStateSmall);
+  public void retract() {
+    m_solenoid.set(defaultState);
   }
 
   /**
    * @return the state of the small pneumatic (retracted should be false)
    */
   public boolean isExtended() {
-    return intake.get() ^ defaultStateSmall;
+    return m_solenoid.get() ^ defaultState;
   }
 
   /**
-   * setter for the small pneumatic
+   * setter for the pneumatics state
    * @param state false is retracted, true is extended
    */
-  private void setSmallState(boolean state) {
-    intake.set(state ^ defaultStateSmall);
+  private void setState(boolean state) {
+    m_solenoid.set(state ^ defaultState);
   }
 
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
-
+  /**
+   * Initializes a sendable builder with the proper entry's on network tables.
+   * Automatically gets called when **this** gets put on shuffleboard.
+   * DOES NOT NEED TO BE CALLED BY USER.
+   * @param builder sendable builder that gets entry's
+   *                from {@link SubsystemBase#initSendable(SendableBuilder)} and the solenoid's state
+   */
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-    builder.addBooleanProperty("small solenoid", this::isExtended, this::setSmallState);
+    builder.addBooleanProperty("solenoid", this::isExtended, this::setState);
   }
 }

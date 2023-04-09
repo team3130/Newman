@@ -7,15 +7,21 @@ package frc.robot.commands.Placement;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.RotaryArm;
 
-/** An example command that uses an example subsystem. */
+/**
+ * An Instant command that toggles the solenoid that controls the brake piston
+ * */
 public class ToggleBrake extends InstantCommand {
+  /**
+   * The rotary arm singleton.
+   * It is required by this command.
+   */
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final RotaryArm m_rotary;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new ToggleBrake command
    *
-   * @param rotary The subsystem used by this command.
+   * @param rotary The RotaryArm subsystem which used by this command.
    */
   public ToggleBrake(RotaryArm rotary) {
     m_rotary = rotary;
@@ -23,7 +29,9 @@ public class ToggleBrake extends InstantCommand {
     addRequirements(rotary);
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * Toggles the brake on rotary arm
+   */
   @Override
   public void initialize() {
     m_rotary.toggleBrake();

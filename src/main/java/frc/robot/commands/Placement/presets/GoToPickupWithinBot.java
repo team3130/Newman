@@ -5,6 +5,7 @@
 package frc.robot.commands.Placement.presets;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.ExtensionArm;
 
 /** A command to go to the mid-scoring position. */
@@ -26,7 +27,7 @@ public class GoToPickupWithinBot extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_extensionArm.extendWithinBot();
+    m_extensionArm.extendArmTo(Constants.Extension.kPositionWithinBot);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

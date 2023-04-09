@@ -7,13 +7,18 @@ package frc.robot.commands.Manipulator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Manipulator;
 
-/** An example command that uses an example subsystem. */
+/**
+ * An Instant command to un-clamp the manipulator
+ */
 public class UnClampManipulator extends InstantCommand {
+  /**
+   * the singleton for manipulator. Is required by this subsystem
+   */
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Manipulator m_manipulator;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new UnClampManipulator object
    *
    * @param subsystem The subsystem used by this command.
    */
@@ -23,9 +28,11 @@ public class UnClampManipulator extends InstantCommand {
     addRequirements(subsystem);
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * Retracts the manipulator
+   */
   @Override
   public void initialize() {
-     m_manipulator.retractGrabber();
+     m_manipulator.retract();
   }
 }

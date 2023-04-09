@@ -27,7 +27,6 @@ import frc.robot.swerve.SwerveModule;
 
 import java.util.Arrays;
 
-
 /**
  * Chassis is the drivetrain subsystem of our bot. Our physical chassis is a swerve drive, 
  * so we use wpilib SwerveDriveKinematics and SwerveDrivePoseEstimator as opposed to Differential Drive objects
@@ -60,7 +59,7 @@ public class Chassis extends SubsystemBase {
     private final Field2d field;
 
     /**
-     * A Networktables entry for whether we are field oriented or not
+     * A comp network table entry for whether drivetrain is in field oriented or not
      */
     private final GenericEntry n_fieldOrriented;
 
@@ -71,7 +70,6 @@ public class Chassis extends SubsystemBase {
     public Chassis(Limelight limelight){
       this (new Pose2d(), new Rotation2d(), limelight);
     }
-
 
     /**
      * Makes a chassis with a starting position
@@ -114,6 +112,7 @@ public class Chassis extends SubsystemBase {
     * <p>Resets navx</p>
     * <p>Resets relative encoders to be what the absolute encoders are</p>
     * <p>Hard reset of the odometry object</p>
+     * @param pose the position to reset odometry to
     */
     public void resetOdometry(Pose2d pose) {
         resetEncoders();
@@ -281,6 +280,7 @@ public class Chassis extends SubsystemBase {
 
     /**
      * Sets field oriented to the provided boolean
+     * @param fieldOriented to drive in field or robot orriented
      */
     public void setWhetherFieldOriented(boolean fieldOriented) {
         fieldRelative = fieldOriented;
@@ -288,6 +288,7 @@ public class Chassis extends SubsystemBase {
 
     /**
      * update the P values for the swerve module
+     * @param pValue the new P value
      */
     public void updatePValuesFromSwerveModule(double pValue) {
         Arrays.stream(modules).forEach((SwerveModule modules) -> modules.updatePValue(pValue));
@@ -295,6 +296,7 @@ public class Chassis extends SubsystemBase {
 
     /**
      * update the D values for the swerve module
+     * @param dValue the new D value
      */
     public void updateDValuesFromSwerveModule(double dValue) {
         Arrays.stream(modules).forEach((SwerveModule modules) -> modules.updateDValue(dValue));
@@ -377,6 +379,7 @@ public class Chassis extends SubsystemBase {
     }
 
     /**
+     * Gets the max speed field
      * @return the max speed that we read thus far on this vm instance of rio
      */
     public double getMaxSpeedRead() {
@@ -388,10 +391,11 @@ public class Chassis extends SubsystemBase {
      * @param refreshPosition time and position to set to
      */
     public void updateOdometryFromVision(OdoPosition refreshPosition) {
-        m_odometry.addVisionMeasurement(refreshPosition.getPosition(), refreshPosition.getTime());
+        m_odometry.addVisionMeasurement(new Pose2d(refreshPosition.getPosition().getTranslation(), refreshPosition.getPosition().getRotation().rotateBy(new Rotation2d(Math.toRadians(180)))), refreshPosition.getTime());
     }
 
     /**
+     * Refreshes the position from limelight and it's median filter
      * @return the odoPosition from limelight
      */
     public OdoPosition refreshPosition() {
@@ -399,7 +403,8 @@ public class Chassis extends SubsystemBase {
   }
 
   /**
-   * updates the field2d object with a trajectory
+   * updates the field object with a trajectory
+   * @param trajectory the trajectory to set the field object wtih
    */
     public void updateField2DFromTrajectory(PathPlannerTrajectory trajectory) {
         field.getObject("traj").setTrajectory(trajectory);

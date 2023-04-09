@@ -48,8 +48,8 @@ public class Limelight {
             SmartDashboard.putData(filter);
         }
 
-        n_yaw = Shuffleboard.getTab("Navx").add("Yaw", 0).getEntry();
-        n_pitch = Shuffleboard.getTab("Navx").add("Pitch", 0).getEntry();
+        n_yaw = Shuffleboard.getTab("PhotonVision").add("Yaw", 0).getEntry();
+        n_pitch = Shuffleboard.getTab("PhotonVision").add("Pitch", 0).getEntry();
     }
 
     /**
