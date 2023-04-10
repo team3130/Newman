@@ -128,6 +128,13 @@ public class AutonCommand extends CommandBase {
     protected CommandBase[] commands;
 
     /**
+     * Whether to use april tags or not.
+     * If not then we should reset odometry to the start of the trajectory on initialize.
+     * We should also configure Chassis to not update odometry with april tags during the path.
+     */
+    protected final boolean useAprilTags;
+
+    /**
      * THE CONSTRUCTOR for auton command
      * @param cmd command that will be run during auton
      * @param startPosition the start position of the command
@@ -137,9 +144,10 @@ public class AutonCommand extends CommandBase {
      * @param extensionArm the extension arm subsystem
      * @param chassis the chassis subsystem
      * @param manipulator the manipulator subsystem
+     * @param useAprilTags whether to use april tags or not
      */
     public AutonCommand(HolonomicControllerCommand cmd, Pose2d startPosition, Pose2d endPosition, PathPlannerTrajectory trajectory,
-                        RotaryArm rotaryArm, ExtensionArm extensionArm, Chassis chassis, Manipulator manipulator) {
+                        RotaryArm rotaryArm, ExtensionArm extensionArm, Chassis chassis, Manipulator manipulator, boolean useAprilTags) {
         this.trajectory = trajectory;
         this.cmd = cmd;
         this.endPosition = endPosition;
@@ -200,6 +208,8 @@ public class AutonCommand extends CommandBase {
         getOptimizedIndex = (EventMarker marker) -> (int) (marker.timeSeconds * magicScalar);
 
         mapMarkersToCommands();
+
+        this.useAprilTags = useAprilTags;
     }
 
     /**
@@ -243,10 +253,11 @@ public class AutonCommand extends CommandBase {
      * @param rotate the rotary arm subsystem
      * @param extendy the extension arm subsystem
      * @param manipulator the manipulator subsystem
+     * @param useAprilTags whether to use april tags or not
      */
-    public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory, Chassis chassis, RotaryArm rotate, ExtensionArm extendy, Manipulator manipulator) {
+    public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory, Chassis chassis, RotaryArm rotate, ExtensionArm extendy, Manipulator manipulator, boolean useAprilTags) {
         this(cmd, trajectory.getInitialPose(), trajectory.getEndState().poseMeters, trajectory, rotate,
-                extendy, chassis, manipulator);
+                extendy, chassis, manipulator, useAprilTags);
     }
 
     /**
@@ -254,9 +265,10 @@ public class AutonCommand extends CommandBase {
      * @param cmd auton path command
      * @param trajectory auton path
      * @param chassis chassis subsystem
+     * @param useAprilTags whether to use april tags or not
      */
-    public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory, Chassis chassis) {
-        this(cmd, trajectory, chassis, null, null, null);
+    public AutonCommand(HolonomicControllerCommand cmd, PathPlannerTrajectory trajectory, Chassis chassis, boolean useAprilTags) {
+        this(cmd, trajectory, chassis, null, null, null, useAprilTags);
     }
 
     /**
@@ -372,10 +384,21 @@ public class AutonCommand extends CommandBase {
     }
 
     /**
-     * To initialize portion of the command that runs once when it is scheduled
+     * To initialize portion of the command that runs once when it is scheduled.
+     * If there are markers, then it will set the current marker to the first one.
+     * If we are suppposed to use april tags then it will make sure that chassis is set to update odometry with april tags.
+     * If we are not it will make sure that it is set to update odometry with encoders and it will set odometry to the start of the trajectory.
      */
     @Override
     public void initialize() {
+        if (!useAprilTags) {
+            //TODO: make it so that chassis doesn't update odometry with april tags here
+            m_chassis.resetOdometry(startPosition);
+        }
+        else {
+            //TODO: make sure that chassis updates odometry with april tags here
+        }
+
         cmd.initialize();
         indicesToRun.clear();
 
@@ -486,6 +509,8 @@ public class AutonCommand extends CommandBase {
         for (int index : indicesToRun) {
             commands[index].end(interrupted);
         }
+
+        //TODO: make it so that chassis returns to its default state of whether or not to use april tags
     }
 
     /**

@@ -112,29 +112,13 @@ public class AutonManager {
         m_autonChooser.setDefaultOption("do nothing", new InstantCommand());
 
         // the string is the name passed into shuffleboard and the method call is to generate the method you will use
-        // m_autonChooser.addOption("3 Meter", generate3MeterDrive());
-        // m_autonChooser.addOption("Question mark", generateExamplePathFromFile());
-        // m_autonChooser.addOption("player side", generatepWeekZeroPath());
-        // m_autonChooser.addOption("far side", generatepWeekZeroPath2());
-        // m_autonChooser.addOption("feelin spicy", generateExamplePathFromPoses());
-        // m_autonChooser.addOption("circuit", complexPathTest());
-        // m_autonChooser.addOption("AprilTagTesting",aprilTagTesting());
-        m_autonChooser.addOption("move out of start intake pushy", makeCmdToIntakeAndGoForward());
-        //  m_autonChooser.addOption("move out and clamp", generateMoveOutAndClamp());
-        // m_autonChooser.addOption("Two meter forward", generateExamplePathFromPoses()); // two meter forward (stable)
-        m_autonChooser.addOption("Intake spit", actuateIntake());
-        // m_autonChooser.addOption("place in auton", placeInAuton());
-        //m_autonChooser.addOption("place in auton top", placeInAutonTop());
-        // m_autonChooser.addOption("place in auton", placeInAutonHigh());
-        m_autonChooser.addOption("place in auton move out", placeInAutonCone());
-        m_autonChooser.addOption("place in auton don't move", placeInAuton());
-        m_autonChooser.addOption("pull out", generatePullOut());
-        // m_autonChooser.addOption("top dumb", generateTopDumb());
-        // m_autonChooser.addOption("bottom dumb", generateBottomDumb());
-        // m_autonChooser.addOption("mid placement start top", generateMidPlaceTopStart());
-
-        //m_autonChooser.addOption("marker path <- not for comp", generateMarkerPath());
-        m_autonChooser.addOption("marker path cones", placeConeHighPlaceCubeHigh());
+        m_autonChooser.addOption("move out of start intake pushy", makeCmdToIntakeAndGoForward()); // intake and spit out but then also move
+        m_autonChooser.addOption("Intake spit", actuateIntake()); // intake and spit out
+        m_autonChooser.addOption("place in auton move out", placeInAutonCone()); // place in auton and then don't leave the zone (good for if middle)
+        m_autonChooser.addOption("place in auton don't move", placeInAuton()); // place in auton and move out. PathPoint so reliable and can start from anywhere
+        m_autonChooser.addOption("pull out", generatePullOut()); // as the name suggests its the safest option
+        
+        m_autonChooser.addOption("marker path cones", placeConeHighPlaceCubeHigh()); // really needs to be fixed. markers don't do anything right now yay
     }
 
     /**
@@ -163,10 +147,11 @@ public class AutonManager {
      *      this rotation does not affect the path that the bot takes and instead is a holonomic rotation,
      *      that dictates the direction that the chassis will face.
      * @param trajectory the trajectory from PathPlanner to follow
+     * @param useAprilTags whether or not to use april tags to update odometry during the path
      * @return an {@link AutonCommand} object that contains an auton path to run as well as the start and end points
      */
-    public AutonCommand autonCommandGenerator(PathPlannerTrajectory trajectory) {
-        return new AutonCommand(holonomicControllerGenerator(trajectory), trajectory, m_chassis);
+    public AutonCommand autonCommandGenerator(PathPlannerTrajectory trajectory, boolean useAprilTags) {
+        return new AutonCommand(holonomicControllerGenerator(trajectory), trajectory, m_chassis, useAprilTags);
     }
 
     /**
@@ -195,11 +180,12 @@ public class AutonManager {
      *  {@link #holonomicControllerGenerator(PathPlannerTrajectory)}.
      * The passed in subsystems are all stored in the {@link AutonManager} object.
      * 
-     * @param trajectory
+     * @param trajectory the trajectory from PathPlanner to follow
+     * @param useAprilTags whether or not to use april tags to update odometry during the path
      * @return
      */
-    public AutonCommand autonCommandGeneratorPlacement(PathPlannerTrajectory trajectory) {
-        return new AutonCommand(holonomicControllerGenerator(trajectory), trajectory, m_chassis, rotary, extension, m_manipulator);
+    public AutonCommand autonCommandGeneratorPlacement(PathPlannerTrajectory trajectory, boolean useAprilTags) {
+        return new AutonCommand(holonomicControllerGenerator(trajectory), trajectory, m_chassis, rotary, extension, m_manipulator, useAprilTags);
     }
 
     /**
@@ -239,7 +225,9 @@ public class AutonManager {
     }
 
     /**
-     * A method to help with on the fly trajectory generation.
+     * A method to help with on the fly trajectory generation. 
+     * As of current it will still update position with april tags however this may need to be changed for better effect in the future.
+     * 
      * @param current the current position of the bot / start position of the trajectory
      * @param endPoint the end position of the bot / end position of the trajectory
      * @return the Auton command without placement support that will follow the path.
@@ -250,19 +238,22 @@ public class AutonManager {
                 new PathPoint(endPoint.getTranslation(), new Rotation2d(), endPoint.getRotation())
         );
 
-        return autonCommandGenerator(trajectory);
+        //TODO: if results are undesired change the useAprilTags to false
+        return autonCommandGenerator(trajectory, true);
     }
 
     /**
      * loads a PathPlanner trajectory with optional marker support.
      * If you don't want marker support then this command won't require placement subsystems.
+     * Any auton commands that are made using this command will use april tags.
+     * 
      * @param nameOfFile the name of the path in PathPlanner
      * @param requirePlacement whether we should require placement or not
-     * @return the generated auton command which requires placement
+     * @return the generated auton command which requires placement and uses april tags
      */
     public AutonCommand loadTrajectory(String nameOfFile, boolean requirePlacement) {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath(nameOfFile, safe_constraints); //TODO: Make this violent constraints
-        return (requirePlacement) ? autonCommandGeneratorPlacement(trajectory) : autonCommandGenerator(trajectory);
+        return (requirePlacement) ? autonCommandGeneratorPlacement(trajectory, true) : autonCommandGenerator(trajectory, true);
     }
 
     /**
@@ -285,7 +276,7 @@ public class AutonManager {
                 new PathPoint(new Translation2d(2, 0), new Rotation2d(), new Rotation2d(0))
         );
 
-        AutonCommand command = autonCommandGenerator(trajectory);
+        AutonCommand command = autonCommandGenerator(trajectory, false);
         return wrapCmd(command);
     }
 
@@ -296,7 +287,7 @@ public class AutonManager {
     public Command generateExamplePathFromFile() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("Question Mark", safe_constraints);
         PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, alliance);
-        AutonCommand autonCommand = autonCommandGenerator(trajectory);
+        AutonCommand autonCommand = autonCommandGenerator(trajectory, false);
         return wrapCmd(autonCommand);
     }
 
@@ -317,7 +308,7 @@ public class AutonManager {
                 new PathPoint(new Translation2d(0, 0), new Rotation2d(), new Rotation2d())
         );
 
-        return autonCommandGenerator(trajectory);
+        return autonCommandGenerator(trajectory, true);
     }
 
     /**
@@ -338,7 +329,7 @@ public class AutonManager {
 
                 new PathPoint(new Translation2d(x_value, y_value), new Rotation2d(), new Rotation2d(rotation)));
 
-        return autonCommandGenerator(trajectory);
+        return autonCommandGenerator(trajectory, true);
     }
 
     /**
@@ -365,8 +356,7 @@ public class AutonManager {
                 new PathPoint(current.getTranslation(), new Rotation2d(0), current.getRotation()),
                 new PathPoint(new Translation2d(x_value, y_value), new Rotation2d(), new Rotation2d(rotation)));
 
-        AutonCommand command = autonCommandGenerator(trajectory);
-        return wrapCmd(command);
+        return autonCommandGenerator(trajectory, true);
     }
 
     /**
@@ -392,7 +382,7 @@ public class AutonManager {
                 new PathPoint(new Translation2d(1.25, 0), new Rotation2d(), new Rotation2d(0))
         );
 
-        AutonCommand command = autonCommandGenerator(trajectory);
+        AutonCommand command = autonCommandGenerator(trajectory, false);
         return new SequentialCommandGroup(new ToggleIntake(m_intake), wrapCmd(command));
     }
 
@@ -421,8 +411,8 @@ public class AutonManager {
                 new PathPoint(new Translation2d(0, 0), new Rotation2d(0), new Rotation2d(0))
         );
 
-        AutonCommand command = autonCommandGenerator(trajectory);
-        AutonCommand command2 = autonCommandGenerator(trajectory2);
+        AutonCommand command = autonCommandGenerator(trajectory, false);
+        AutonCommand command2 = autonCommandGenerator(trajectory2, false);
         return new SequentialCommandGroup(
                     new ToggleManipulator(m_manipulator),
                     new GoToHighScoring(rotary, extension),
@@ -459,8 +449,8 @@ public class AutonManager {
                 new PathPoint(new Translation2d(-4, 0), new Rotation2d(0), new Rotation2d(0))
         );
 
-        AutonCommand command = autonCommandGenerator(trajectory);
-        AutonCommand command2 = autonCommandGenerator(trajectory2);
+        AutonCommand command = autonCommandGenerator(trajectory, false);
+        AutonCommand command2 = autonCommandGenerator(trajectory2, false);
 
         CommandBase command1 = wrapCmd(command);
 
@@ -491,9 +481,9 @@ public class AutonManager {
      */
     public CommandBase placeConeHighPlaceCubeHigh() {
         PathPlannerTrajectory trajectoryHP = PathPlanner.loadPath("place cone high place cube high hp", safe_constraints);
-        AutonCommand commandHP = autonCommandGeneratorPlacement(trajectoryHP);
+        AutonCommand commandHP = autonCommandGeneratorPlacement(trajectoryHP, true);
 
-/*        PathPlannerTrajectory trajectorynonHP = PathPlanner.loadPath("place cone high place cube high non hp", safe_constraints);
+    /*  PathPlannerTrajectory trajectorynonHP = PathPlanner.loadPath("place cone high place cube high non hp", safe_constraints);
         AutonCommand commandnonHP = autonCommandGeneratorPlacement(trajectorynonHP);*/
 
         return wrapCmd(commandHP);
@@ -514,7 +504,7 @@ public class AutonManager {
         new PathPoint(new Translation2d(1.5, 0), new Rotation2d(0), new Rotation2d(0))
         );
 
-        AutonCommand command = autonCommandGenerator(trajectory);
+        AutonCommand command = autonCommandGenerator(trajectory, false);
         return wrapCmd(command);
     }
 
