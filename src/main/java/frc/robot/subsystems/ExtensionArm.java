@@ -146,11 +146,13 @@ public class ExtensionArm extends SubsystemBase {
     Rotation3d armRotation = new Rotation3d();
     Translation3d armTranslation = new Translation3d(r * Math.cos(m_chassis.getYaw()), 0, r * Math.sin(m_chassis.getYaw()));
     armPos = new Pose3d(armTranslation, armRotation);
-
-    if (m_boundingbox.boxBad(armPos)) {
-      if (m_chassis.getX() - (r) <= Constants.Field.xPositionForGridBlue || m_chassis.getX() + (r) >= Constants.Field.xPositionForGridRed) {
-        if (y > 0) {
-          y = 0;
+    BoundingBox[] boundingboxes = RobotContainer.getBoundingBoxes();
+    for (i = 0; i < boundingboxes.length; i++) {
+      if (boundingbox[i].boxBad(armPos)) {
+        if (m_chassis.getX() - (r) <= Constants.Field.xPositionForGridBlue || m_chassis.getX() + (r) >= Constants.Field.xPositionForGridRed) {
+          if (y > 0) {
+            y = 0;
+          }
         }
       }
     }

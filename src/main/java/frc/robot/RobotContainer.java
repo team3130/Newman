@@ -224,6 +224,10 @@ public class RobotContainer {
 
   }
 
+  public static BoundingBox[] getBoundingBoxes() {
+    return boundingboxes;
+  }
+
   /**
    * Resets odometry to 0, 0, 0
    */

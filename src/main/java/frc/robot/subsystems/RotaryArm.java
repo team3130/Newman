@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.ExtensionArm;
 import frc.robot.subsystems.Chassis;
@@ -28,7 +29,6 @@ public class RotaryArm extends SubsystemBase {
   ExtensionArm m_extensionarm;                  
   private final Solenoid brake;
   private final boolean defaultState = true;
-  BoundingBox m_boundingbox;
 
   private final DigitalInput limitSwitch;
   private final Chassis m_chassis;
@@ -46,11 +46,10 @@ public class RotaryArm extends SubsystemBase {
           Constants.kRotaryArmD, rotaryArmConstraints);
 
 
-  public RotaryArm(MechanismLigament2d ligament, ExtensionArm extensionarm, Chassis chassis, BoundingBox boundingbox) {
+  public RotaryArm(MechanismLigament2d ligament, ExtensionArm extensionarm, Chassis chassis) {
     rotaryMotor = new WPI_TalonFX(Constants.CAN_RotaryArm);
     m_extensionarm = extensionarm;
     m_chassis = chassis;
-    m_boundingbox = boundingbox;
     rotaryMotor.configFactoryDefault();
     brake = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM, Constants.PNM_Brake);
     brake.set(defaultState);
@@ -83,11 +82,13 @@ public class RotaryArm extends SubsystemBase {
   public void periodic() {
     ligament.setAngle(getAngleRotaryArm());
     n_brake.setBoolean(brakeIsEnabled());
-
-    if (m_boundingbox.boxBad(m_extensionarm.getArmPos())) {
-      if (m_chassis.getX() - (m_extensionarm.getLengthExtensionArm() + 0.09525) <= Constants.Field.xPositionForGridBlue || m_chassis.getX() + (m_extensionarm.getLengthExtensionArm() + 0.09525) >= Constants.Field.xPositionForGridRed) {
-        if (getSpeedPlacementArm() > 0) {
-          rotaryMotor.set(0);
+    BoundingBox[] boundingboxes = RobotContainer.getBoundingBoxes();
+    for (i = 0; i < boundingboxes.length; i++) {
+      if (boundingboxes[i].boxBad(m_extensionarm.getArmPos())) {
+        if (m_chassis.getX() - (m_extensionarm.getLengthExtensionArm() + 0.09525) <= Constants.Field.xPositionForGridBlue || m_chassis.getX() + (m_extensionarm.getLengthExtensionArm() + 0.09525) >= Constants.Field.xPositionForGridRed) {
+          if (getSpeedPlacementArm() > 0) {
+            rotaryMotor.set(0);
+          }
         }
       }
     }
