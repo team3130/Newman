@@ -53,13 +53,13 @@ public class Robot extends TimedRobot {
           m_robotContainer.resetOdometryWithoutAprilTag();
           haveResetManually = true;
         } else {
-          if (m_robotContainer.resetOdometryWithAprilTag()) {
+          if (m_robotContainer.resetOdometryWithAprilTags()) {
             timer.reset();
             timer.stop();
           }
         }
       } else {
-        m_robotContainer.resetOdometryWithoutApril();
+        m_robotContainer.resetOdometryWithoutAprilTag();
         timer.stop();
         timer.reset();
       }

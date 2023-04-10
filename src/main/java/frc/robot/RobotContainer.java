@@ -175,10 +175,7 @@ public class RobotContainer {
     if (Constants.debugMode) {
       new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
       new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlacementPosition(m_chassis, m_autonManager));
-
-      double balanceDeadband = 5.0; //This should go in Constants later
-      double omegaDeadband = 7.0;
-      double zeroPitch = -8.211; //Also constants
+      
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new Balance(m_chassis));
     }
 
@@ -300,5 +297,12 @@ public class RobotContainer {
    */
   public void resetOdometryWithoutAprilTag() {
     m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
+  }
+
+  /**
+   * update chassis position periodicallly. Calls {@link Chassis#updateOdometery()}
+   */
+  public void updateChassisPose() {
+    m_chassis.updateOdometery();
   }
 }
