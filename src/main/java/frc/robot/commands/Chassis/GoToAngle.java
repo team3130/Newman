@@ -4,16 +4,23 @@
 
 package frc.robot.commands.Chassis;
 
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Chassis;
 
-/** A command that uses chassis to go to an angle. */
+/**
+ * A command that uses chassis to spin the wheels to an angle.
+ */
 public class GoToAngle extends CommandBase {
-  private final Chassis m_chassis; // the chassis subsystem reference
-  private SwerveModuleState[] states; // the states to put the swerve modules at
 
-  private final double point; // point to turn the wheels to
+  /**
+   * The chassis singleton which is the subsystem of this command
+   */
+  private final Chassis m_chassis;
+
+  /**
+   * point to turn the wheels to (an angle)
+   */
+  private final double point;
   /**
    * Creates a new GoToAngle command
    *
@@ -27,28 +34,33 @@ public class GoToAngle extends CommandBase {
     this.point = point;
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * Called once when the command is first scheduled
+   */
   @Override
   public void initialize() {
-    m_chassis.turnToAngle(point); // turns the wheels to an angle
-    SwerveModuleState desiredState = new SwerveModuleState(); // empty state
-    // gives the motors an output
-    states = new SwerveModuleState[]{desiredState, desiredState, desiredState, desiredState};
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * Turns the chassis to an angle based off the passed in point
+   */
   @Override
   public void execute() {
-    m_chassis.setModuleStates(states);
+    m_chassis.turnToAngle(point); // turns the wheels to an angle
   }
 
-  // Called once the command ends or is interrupted.
+  /**
+   * Stops the chassis drive motors
+   * @param interrupted whether the command was interrupted/canceled
+   */
   @Override
   public void end(boolean interrupted) {
     m_chassis.stopModules();
   }
 
-  // Returns true when the command should end.
+  /**
+   * @return if chassis turn to angle PID is done
+   */
   @Override
   public boolean isFinished() {
     return m_chassis.turnToAnglePIDIsDone();

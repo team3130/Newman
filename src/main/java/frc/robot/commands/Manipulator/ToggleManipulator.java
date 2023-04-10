@@ -7,25 +7,32 @@ package frc.robot.commands.Manipulator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Manipulator;
 
-/** An example command that uses an example subsystem. */
+/**
+ * An instant command the toggles the manipulator
+ */
 public class ToggleManipulator extends InstantCommand {
+  /**
+   * the singleton for manipulator. Is required by this subsystem
+   */
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Manipulator m_manipulator;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new ToggleManipulator command.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param manipulator The subsystem used by this command.
    */
-  public ToggleManipulator(Manipulator subsystem) {
-    m_manipulator = subsystem;
+  public ToggleManipulator(Manipulator manipulator) {
+    m_manipulator = manipulator;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(manipulator);
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * Toggles the manipulator solenoid which toggles the pistons states.
+   */
   @Override
   public void initialize() {
-    m_manipulator.toggleManipulator();
+     m_manipulator.toggleManipulator();
   }
 }

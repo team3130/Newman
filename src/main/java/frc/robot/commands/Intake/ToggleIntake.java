@@ -4,29 +4,37 @@
 
 package frc.robot.commands.Intake;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.IntakePivot;
+import frc.robot.subsystems.Intake;
 
-/** An example command that uses an example subsystem. */
+/**
+ * An Instant command that toggles the intake between out and in for HP station.
+ * Requires the {@link Intake} subsystem
+ */
 public class ToggleIntake extends InstantCommand {
-  private final IntakePivot m_pivot;
+
+  /**
+   * The Intake singleton which is required by this command
+   */
+  private final Intake m_intake;
 
   /*
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
+   * Creates a new ToggleIntake command.
+   * @param intake
    */
-  public ToggleIntake(IntakePivot pivot) {
-    m_pivot = pivot;
+  public ToggleIntake(Intake intake) {
+    m_intake = intake;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(pivot);
+    addRequirements(intake);
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * Gets called once by the scheduler when the command is first scheduled.
+   * Toggles the intake.
+   */
   @Override
   public void initialize() {
-    m_pivot.toggleSmall();
+    m_intake.toggle();
   }
 
 

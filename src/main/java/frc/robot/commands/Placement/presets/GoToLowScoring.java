@@ -4,56 +4,24 @@
 
 package frc.robot.commands.Placement.presets;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.ExtensionArm;
 import frc.robot.subsystems.RotaryArm;
 
-/** A preset for scoring. */
-public class GoToLowScoring extends CommandBase {
-  // the subsystem rotary arm
-  private final RotaryArm m_RotaryArm;
 
-  private final ExtensionArm m_ExtensionArm;
+/**
+ * A preset command to go to the high position for the rotary arm.
+ * Inherits {@link PlacementSetpoint} to handle the logic for where it should go.
+ */
+public class GoToLowScoring extends PlacementSetpoint {
 
   /**
-   * Creates a new ExampleCommand.
-   *
-   * @param rotary The subsystem used by this command.
-   * @param extension not the subsystem of the command, just used for torque
+   * Makes a new command to go to the high preset for rotary and extension arms.
+   * @param rotaryArm the singleton for rotary arm.
+   * @param extensionArm the singleton for Extension arm.
    */
-  public GoToLowScoring(RotaryArm rotary, ExtensionArm extension) {
-    m_RotaryArm = rotary;
-    m_ExtensionArm = extension;
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(rotary, extension);
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    //timeRunning.reset();
-    m_RotaryArm.releaseBrake();
-    //timeRunning.start();
-    m_RotaryArm.makeSetpointLow();
-
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    m_RotaryArm.gotoPos(m_ExtensionArm.getPositionMeters());
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interupted) {
-    m_RotaryArm.engageBrake();
-
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return m_RotaryArm.isAtPosition();
+  public GoToLowScoring(RotaryArm rotaryArm, ExtensionArm extensionArm) {
+    // extension arm, rotary arm, the rotary arm high position, the max extension of the extension arm, the angle before bumpers.
+    super(rotaryArm, extensionArm, Constants.lowPosition);
   }
 }

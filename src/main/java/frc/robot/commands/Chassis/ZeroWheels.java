@@ -7,11 +7,16 @@ package frc.robot.commands.Chassis;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Chassis;
 
-/** An example command that uses an example subsystem. */
+/** A command to zero wheels of chassis */
 public class ZeroWheels extends CommandBase {
-  private final Chassis m_chassis;
+
   /**
-   * Creates a new ExampleCommand.
+   * The chassis singleton which is the subsystem for this command
+   */
+  private final Chassis m_chassis;
+
+  /**
+   * Creates a new ZeroWheels
    *
    * @param chassis The subsystem used by this command.
    */
@@ -21,24 +26,34 @@ public class ZeroWheels extends CommandBase {
     addRequirements(chassis);
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * Called when the scheduler starts the command
+   */
   @Override
   public void initialize() {
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * Sets the angle PID controller to 0 degrees and calculates output for the motors
+   */
   @Override
   public void execute() {
     m_chassis.turnToAngle(0);
   }
 
-  // Called once the command ends or is interrupted.
+  /**
+   * Called when the scheduler ends the command.
+   * Stops the chassis motors
+   * @param interrupted whether the command was interrupted/canceled
+   */
   @Override
   public void end(boolean interrupted) {
     m_chassis.stopModules();
   }
 
-  // Returns true when the command should end.
+  /**
+   * @return if the wheel PID controller is done. AKA are wheels zero-ed
+   */
   @Override
   public boolean isFinished() {
     return m_chassis.turnToAnglePIDIsDone();

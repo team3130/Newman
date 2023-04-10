@@ -4,66 +4,24 @@
 
 package frc.robot.commands.Chassis.presets;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Chassis;
+import frc.robot.supportingClasses.AutomaticallyGoToALocation;
 import frc.robot.supportingClasses.Auton.AutonManager;
 
-/** A command to go to whatever origin is */
-public class GoToOrigin extends CommandBase {
-  private final Chassis m_chassis;
-  private final AutonManager autonManager;
-  private Thread m_thread;
-  private boolean firstHit = true;
-
-  private CommandBase autonCommand;
+/**
+ * A command to go to 0, 0 automatically
+ * Makes an object that sets the parent's ({@link AutomaticallyGoToALocation}) runnable.
+ */
+public class GoToOrigin extends AutomaticallyGoToALocation {
 
   /**
-   * Creates a new goToOrigin Command.
+   * Makes a new GoToOrigin object. calls the super's constructor to configure the runnable
    *
-   * @param chassis The subsystem used by this command.
+   * @param m_chassis the chassis subsystem which gets required and used for the current position of the bot
+   * @param manager the auton manager singleton which is used to generate the path as a runnable
    */
-  public GoToOrigin(Chassis chassis, AutonManager manager) {
-    m_chassis = chassis;
-    // Use addRequirements() here to declare subsystem dependencies.
-    autonManager = manager;
-    addRequirements(chassis);
+  public GoToOrigin(Chassis m_chassis, AutonManager manager) {
+    super(m_chassis, () -> manager.backToStart(m_chassis.getPose2d()));
   }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    firstHit = true;
-    autonCommand = null;
-
-    m_thread = new Thread(() -> autonCommand = autonManager.backToStart(m_chassis.getPose2d()));
-    m_thread.start();
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    if (autonCommand != null) {
-      if (firstHit) {
-          autonCommand.initialize();
-          firstHit = false;
-      } else {
-        autonCommand.execute();
-      }
-    }
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    autonCommand.end(interrupted);
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    if (autonCommand != null) {
-      return autonCommand.isFinished();
-    }
-    return false;
-  }
 }

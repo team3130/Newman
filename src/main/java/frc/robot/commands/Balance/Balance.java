@@ -31,7 +31,7 @@ public class Balance extends CommandBase {
   private int iterator;
   private int timerIterator;
   private boolean pitchVelocityCheck = false;
-  private final double driveVelocity = 0.5;
+  private final double driveVelocity = 0.625;
   private double oddPitch;
   private double pitch;
 
@@ -96,7 +96,7 @@ public class Balance extends CommandBase {
     timerIterator = 0;
 
     if(Navx.getPitch() < pitchZero){
-      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(-driveVelocity,0,0));
+      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity,0,0));
       m_chassis.setModuleStates(moduleStates);
       if(drivingPositive){
         hasSwitched = true;
@@ -105,7 +105,7 @@ public class Balance extends CommandBase {
       else{hasSwitched = false;}
     }
     else{
-      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity,0,0));
+      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(-driveVelocity,0,0));
       m_chassis.setModuleStates(moduleStates);
       if(!drivingPositive){
         hasSwitched = true;
@@ -147,8 +147,7 @@ public class Balance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-  
-    return pitchVelocityCheck && Math.abs(Navx.getPitch()) <= pitchDeadband;
+    return pitchVelocityCheck && Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband;
   }
 
   public double getDirection() {
