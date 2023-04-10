@@ -37,6 +37,7 @@ public class Balance extends CommandBase {
 
   private boolean drivingPositive;
   private boolean hasSwitched;
+ 
   private Timer timer = new Timer();
 
   private static ShuffleboardTab tab = Shuffleboard.getTab("Chassis");
@@ -66,6 +67,7 @@ public class Balance extends CommandBase {
     hasSwitched = false;
     iterator = 0;
     timerIterator = 0;
+    
 
     timer.reset();
     timer.start();
@@ -90,7 +92,10 @@ public class Balance extends CommandBase {
     else{oddPitch = Navx.getPitch();}
 
     
-
+  if( Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband){
+    hasSwitched = true;
+    timerIterator = 0;
+  }
 
    if(!hasSwitched){
     timerIterator = 0;
@@ -98,7 +103,7 @@ public class Balance extends CommandBase {
     if(Navx.getPitch() < pitchZero){
       SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity,0,0));
       m_chassis.setModuleStates(moduleStates);
-      if(drivingPositive){
+      if(drivingPositive){ //maybe put a pitch  is around zero check for timer also 
         hasSwitched = true;
         drivingPositive = false;
       }
@@ -128,7 +133,7 @@ public class Balance extends CommandBase {
          timerIterator++;
       }
       
-      if(timer.hasElapsed(1.5)){
+      if(timer.hasElapsed(1.0)){
         hasSwitched = false;
       }
   
