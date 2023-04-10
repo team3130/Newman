@@ -62,6 +62,13 @@ public class Chassis extends SubsystemBase {
     private final GenericEntry n_fieldOrriented;
 
     /**
+     * Whether to update the odometry with the april tag or not.
+     * Usuallt used as a toggleable in auton commands.
+     * Default value is {@link Constants#useAprilTags} however is mutable.
+     */
+    protected boolean useAprilTags = Constants.useAprilTags;
+
+    /**
      * Makes a chassis that starts at 0, 0, 0
      * @param limelight the limelight object that we can use for updating odometry
      */
@@ -192,7 +199,7 @@ public class Chassis extends SubsystemBase {
      */
     public void updateOdometery() {
         updateOdometryFromSwerve();
-        if (Constants.useAprilTags) {
+        if (Constants.useAprilTags && useAprilTags) {
             updateOdometryFromVision();
         }
     }
@@ -418,5 +425,13 @@ public class Chassis extends SubsystemBase {
    */
     public void updateField2DFromTrajectory(PathPlannerTrajectory trajectory) {
         field.getObject("traj").setTrajectory(trajectory);
+    }
+
+    /**
+     * setter for april tags
+     * @param useAprilTags whether to use april tags or not
+     */
+    public void setAprilTagUsage(boolean useAprilTags) {
+        this.useAprilTags = useAprilTags;
     }
 }

@@ -1,5 +1,6 @@
 package frc.robot.supportingClasses.Auton;
 
+import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.EventMarker;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -8,6 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.DoNothing;
 import frc.robot.commands.Manipulator.ToggleManipulator;
 import frc.robot.commands.Placement.AutoZeroExtensionArm;
@@ -392,12 +394,9 @@ public class AutonCommand extends CommandBase {
     @Override
     public void initialize() {
         if (!useAprilTags) {
-            //TODO: make it so that chassis doesn't update odometry with april tags here
             m_chassis.resetOdometry(startPosition);
         }
-        else {
-            //TODO: make sure that chassis updates odometry with april tags here
-        }
+        m_chassis.setAprilTagUsage(useAprilTags);
 
         cmd.initialize();
         indicesToRun.clear();
@@ -510,7 +509,7 @@ public class AutonCommand extends CommandBase {
             commands[index].end(interrupted);
         }
 
-        //TODO: make it so that chassis returns to its default state of whether or not to use april tags
+        m_chassis.setAprilTagUsage(Constants.useAprilTags); // resets april tag usage to it's default state
     }
 
     /**
