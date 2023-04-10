@@ -22,10 +22,14 @@ public class Balance extends CommandBase {
   private final Chassis m_chassis;
 
   /**
-   * Should be 1 or negative 1.
-   * Gets multiplied by how hard we should drive in order to determine where we should go to.
+   * speed to run the drivetrain at in m/s
    */
-  protected int sign = 1;
+  protected double speed = 0.3;
+
+  /**
+   * The value for if we are off balance
+   */
+  protected double offBalancePositve = 7;
 
   /**
    * Creates a new Balance command
@@ -43,14 +47,23 @@ public class Balance extends CommandBase {
    */
   @Override
   public void initialize() {
-
   }
 
   /**
    * Called every time the scheduler runs while the command is scheduled.
    */
   @Override
-  public void execute() {}
+  public void execute() {
+    if (m_chassis.getAngle() > offBalancePositve) {
+      m_chassis.(speed, 0);
+    }
+    else if (m_chassis.getAngle() < -offBalancePositve) {
+      m_chassis.drive(-speed, 0);
+    }
+    else {
+      m_chassis.drive(0, 0);
+    }
+  }
 
   /**
    * Called once the command ends or is interrupted.
