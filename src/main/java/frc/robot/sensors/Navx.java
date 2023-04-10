@@ -82,7 +82,7 @@ public class Navx {
      */
     public static double getPitch() {
         if (m_bNavXPresent) {
-            return m_navX.getPitch();
+            return m_navX.getPitch() - Constants.PitchOffset;
         }
         return Double.NaN;
     }

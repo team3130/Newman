@@ -51,9 +51,27 @@ public class Balance extends CommandBase {
   protected double offBalancePositve = 7;
 
   /**
-   * Stores the state that fieldRelative was at before the command started
+   * The state of the commnand.
+   * 0 = driving distance
+   * 1 = waiting for the balancing pad to adjust
    */
-  protected boolean previousDriveState;
+  protected int state = 0;
+
+  /**
+   * The timer used to wait for the balancing pad to adjust
+   */
+  protected Timer m_timer;
+
+  /**
+   * The timeout for balancing pad
+   */
+  protected double timeToWait = 0.5;
+
+  /**
+   * The distance to drive in meters
+   * Should get progressivly smaller as the robot balances.
+   */
+  protected double distanceToDrive;
 
   /**
    * Creates a new Balance command
@@ -73,8 +91,7 @@ public class Balance extends CommandBase {
    */
   @Override
   public void initialize() {
-    previousDriveState = m_chassis.getFieldRelative();
-    m_chassis.setWhetherFieldOriented(false);
+    
   }
 
   /**
@@ -107,10 +124,6 @@ public class Balance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pitchVelocityCheck && Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband;
-  }
-
-  public double getDirection() {
-    return direction;
+    return Navx.getPitch() < offBalancePositve && Navx.getPitch() > -offBalancePositve;
   }
 }
