@@ -41,37 +41,34 @@ public class Balance extends CommandBase {
 
 
   /**
-   * speed to run the drivetrain at in m/s
-   */
-  protected double speed = 0.3;
-
-  /**
-   * The value for if we are off balance
-   */
-  protected double offBalancePositve = 7;
-
-  /**
    * The state of the commnand.
-   * 0 = driving distance
-   * 1 = waiting for the balancing pad to adjust
+   * Driving distance is while the command is driving a certain distance.
+   * Waiting is while the command is waiting for the balancing pad to adjust and whil waiting generate new trajcetorys.
    */
-  protected int state = 0;
+  protected enum State {
+    DrivingDistance, Waiting
+  }
 
   /**
    * The timer used to wait for the balancing pad to adjust
    */
-  protected Timer m_timer;
+  protected final Timer m_timer;
 
   /**
    * The timeout for balancing pad
    */
-  protected double timeToWait = 0.5;
+  protected final double timeToWait;
 
   /**
    * The distance to drive in meters
    * Should get progressivly smaller as the robot balances.
    */
   protected double distanceToDrive;
+
+  /**
+   * Holds the current auton command that we are running
+   */
+  protected AutonCommand autonCommand;
 
   /**
    * Creates a new Balance command
@@ -81,7 +78,10 @@ public class Balance extends CommandBase {
   public Balance(Chassis chassis) {
     m_chassis = chassis;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_chassis);
+    addRequirements(chassis);
+
+    m_timer = new Timer();
+    timeToWait =  0.5;
     
   }
 
@@ -99,15 +99,7 @@ public class Balance extends CommandBase {
    */
   @Override
   public void execute() {
-    if (Navx.getPitch() > offBalancePositve) {
-      m_chassis.drive(speed, 0, 0);
-    }
-    else if (Navx.getPitch() < -offBalancePositve) {
-      m_chassis.drive(-speed, 0, 0);
-    }
-    else {
-      m_chassis.stopModules();
-    }
+
   }
 
   /**
@@ -124,6 +116,6 @@ public class Balance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Navx.getPitch() < offBalancePositve && Navx.getPitch() > -offBalancePositve;
+    return Math.abs(Navx.getPitch()) <= 0.5;
   }
 }

@@ -79,10 +79,13 @@ public class TeleopDrive extends CommandBase {
     }
     theta = Math.abs(theta) > Constants.kDeadband ? theta : 0.0;
 
+    // cody likes intake to be the front of the robot in robot orriented.
     if (!m_chassis.getFieldRelative()) {
       y = -y;
       x = -x;
     }
+
+    // since we have an absolute position of the field, we need to invert the controls if we are on the red alliance.
     else {
       if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
         x = -x;
