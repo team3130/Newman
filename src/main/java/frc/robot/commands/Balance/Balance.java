@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Balance;
 
+import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
 import frc.robot.supportingClasses.Auton.AutonCommand;
 import frc.robot.supportingClasses.Auton.AutonManager;
@@ -32,6 +33,11 @@ public class Balance extends CommandBase {
   protected double offBalancePositve = 7;
 
   /**
+   * Stores the state that fieldRelative was at before the command started
+   */
+  protected boolean previousDriveState;
+
+  /**
    * Creates a new Balance command
    *
    * @param chassis the chassis subsystem.
@@ -44,9 +50,12 @@ public class Balance extends CommandBase {
 
   /**
    * Called when the command is initially scheduled.
+   * Configures the chassis to be robot orriented.
    */
   @Override
   public void initialize() {
+    previousDriveState = m_chassis.getFieldRelative();
+    m_chassis.setWhetherFieldOriented(false);
   }
 
   /**
@@ -54,23 +63,26 @@ public class Balance extends CommandBase {
    */
   @Override
   public void execute() {
-    if (m_chassis.getAngle() > offBalancePositve) {
-      m_chassis.(speed, 0);
+    if (Navx.getPitch() > offBalancePositve) {
+      m_chassis.drive(speed, 0, 0);
     }
-    else if (m_chassis.getAngle() < -offBalancePositve) {
-      m_chassis.drive(-speed, 0);
+    else if (Navx.getPitch() < -offBalancePositve) {
+      m_chassis.drive(-speed, 0, 0);
     }
     else {
-      m_chassis.drive(0, 0);
+      m_chassis.stopModules();
     }
   }
 
   /**
    * Called once the command ends or is interrupted.
+   * Restores field orriented to its previous state.
    * @param interrupted whether the command was interrupted/canceled
    */
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_chassis.setWhetherFieldOriented(previousDriveState);
+  }
 
   /**
    * Returns true when the command should end.
