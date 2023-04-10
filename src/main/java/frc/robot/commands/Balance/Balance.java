@@ -131,7 +131,7 @@ public class Balance extends CommandBase {
         state = State.Waiting;
         m_timer.reset();
         m_timer.start();
-        distanceToDrive = (distanceToDrive / 2) * Math.signum(distanceToDrive); // multiplies the distance to drive by the sign of our pitch
+        distanceToDrive = (distanceToDrive / 2) * -Math.signum(Navx.getPitch()); // multiplies the distance to drive by the sign of our pitch
       } else {
         autonCommand.execute();
       }

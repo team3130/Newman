@@ -2,8 +2,10 @@ package frc.robot.sensors;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Newman_Constants.Constants;
 
@@ -18,6 +20,8 @@ public class Navx {
         return m_pInstance;
     }
 
+    private GenericEntry pitch;
+
     //Create necessary objects
     private static AHRS m_navX;
 
@@ -26,6 +30,7 @@ public class Navx {
     private static boolean m_bNavXPresent;
 
     private Navx() {
+        pitch = Shuffleboard.getTab("Navx").add("pitch", 0).getEntry();
         try {
             //Connect to navX Gyro on MXP port.
             m_navX = new AHRS(SPI.Port.kMXP);
@@ -36,6 +41,10 @@ public class Navx {
             DriverStation.reportError(str_error, true);
             m_bNavXPresent = false;
         }
+    }
+
+    public void updateOdometery() {
+        pitch.setDouble(m_navX.getPitch());
     }
 
     public static void resetNavX(){

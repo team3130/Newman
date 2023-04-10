@@ -44,6 +44,7 @@ import frc.robot.commands.Placement.presets.GoToMidScoringCube;
 import frc.robot.commands.Placement.presets.GoToPickupOffGround;
 import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
+import frc.robot.sensors.Navx;
 import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.Auton.AutonCommand;
 import frc.robot.supportingClasses.Auton.AutonManager;
@@ -272,6 +273,8 @@ public class RobotContainer {
         counter = -1;
     }
     counter++;
+
+    Navx.outputToShuffleboard();
   }
 
   /**

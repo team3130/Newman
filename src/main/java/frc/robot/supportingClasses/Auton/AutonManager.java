@@ -233,7 +233,7 @@ public class AutonManager {
      * @return the Auton command without placement support that will follow the path.
      */
     public AutonCommand onTheFlyGenerator(Pose2d current, Pose2d endPoint) {
-        PathPlannerTrajectory trajectory = PathPlanner.generatePath(violent_constraints,
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(new PathConstraints(0.1, 0.1),
                 new PathPoint(current.getTranslation(), new Rotation2d(), current.getRotation()),
                 new PathPoint(endPoint.getTranslation(), new Rotation2d(), endPoint.getRotation())
         );
