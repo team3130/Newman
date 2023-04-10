@@ -24,9 +24,6 @@ import frc.robot.commands.Placement.presets.GoToPickupWithinBot;
 import frc.robot.commands.TimedCommand;
 import frc.robot.subsystems.*;
 
-import java.nio.file.Path;
-import java.util.Currency;
-
 /**
  * A class to generate our auton paths from PathPlanner
  */
@@ -182,7 +179,7 @@ public class AutonManager {
         PIDController yController = new PIDController(Constants.kPYController, Constants.kIYController ,Constants.kDYController);
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(xController, yController, new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, 0, Constants.kThetaControllerConstraints));
 
-        // trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, alliance);
+        trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
 
         return new HolonomicControllerCommand(
                 trajectory,
@@ -194,9 +191,12 @@ public class AutonManager {
     }
 
     /**
-     * Makes an auton command with placement functionality.
-     * @param trajectory the generated path-planner trajectory to follow
-     * @return the auton command to follow the trajectory with placement functionality
+     * Generates an auton command which requires placement subsystems calling:
+     *  {@link #holonomicControllerGenerator(PathPlannerTrajectory)}.
+     * The passed in subsystems are all stored in the {@link AutonManager} object.
+     * 
+     * @param trajectory
+     * @return
      */
     public AutonCommand autonCommandGeneratorPlacement(PathPlannerTrajectory trajectory) {
         return new AutonCommand(holonomicControllerGenerator(trajectory), trajectory, m_chassis, rotary, extension, m_manipulator);
