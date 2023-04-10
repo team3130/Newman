@@ -55,6 +55,11 @@ public class AutonManager {
     protected final PathConstraints violent_constraints;
 
     /**
+     * really slow velocity for when we try to balance 
+     */
+    protected final PathConstraints balance_constraints;
+
+    /**
      * The alliance that we are on so we don't have to spam networktables
      */
     private final DriverStation.Alliance alliance;
@@ -95,6 +100,7 @@ public class AutonManager {
 
         safe_constraints = new PathConstraints(2, 2);
         violent_constraints = new PathConstraints(Constants.kPhysicalMaxSpeedMetersPerSecond, 3);
+        balance_constraints = new PathConstraints(0.75, 2);
 
         Shuffleboard.getTab("Comp").add(m_autonChooser);
 
@@ -506,6 +512,24 @@ public class AutonManager {
 
         new PathPoint(new Translation2d(1.5, 0), new Rotation2d(0), new Rotation2d(0))
         );
+
+        AutonCommand command = autonCommandGenerator(trajectory);
+        return wrapCmd(command);
+    }
+
+    public CommandBase backDriveBalance() {
+        // the trajectory being made
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+                /* Max velocity and acceleration the path will follow along the trapezoid profile */
+                balance_constraints,
+              
+                new PathPoint(
+                        m_chassis.getPose2d().getTranslation(),
+                        new Rotation2d(), new Rotation2d()),
+                new PathPoint(new Translation2d(m_chassis.getPose2d().getTranslation().getX() - 0.8, m_chassis.getPose2d().getTranslation().getY()), new Rotation2d(), new Rotation2d(0))
+        );
+
+        
 
         AutonCommand command = autonCommandGenerator(trajectory);
         return wrapCmd(command);
