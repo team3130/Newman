@@ -109,8 +109,6 @@ public class Robot extends TimedRobot {
       CommandScheduler.getInstance().cancelAll();
       // zero the rotary arm into frame perimeter for both safety and resetting encoders.
       CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
-      // un clamp the manipulator so that we don't zero the arm into a game element
-      CommandScheduler.getInstance().schedule(m_robotContainer.unClampManipulator());
     }
 
     @Override

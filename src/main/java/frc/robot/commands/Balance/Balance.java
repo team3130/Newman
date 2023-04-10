@@ -6,39 +6,32 @@ package frc.robot.commands.Balance;
 
 import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
-import edu.wpi.first.math.filter.MedianFilter;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.GenericEntry;
+import frc.robot.supportingClasses.Auton.AutonCommand;
+import frc.robot.supportingClasses.Auton.AutonManager;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/** An example command that uses an example subsystem. */
+/** 
+ * A command that balances the robot on the balancing pad.
+ */
 public class Balance extends CommandBase {
+
+  /**
+   * the chassis singleton which is required by this subsystem
+   */
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Chassis m_chassis;
-  private final double pitchZero = -8.211; //should go in Constants
-  private final double pitchDeadband = 5;
-  private final double pitchVelocityDeadband = 0.5;
 
-
-  private double direction;
-  private int iterator;
-  private boolean pitchVelocityCheck = false;
-  private final double driveVelocity = 0.625;
-  private double oddPitch;
-  private double pitch;
-  private double roll;
-  private double tilt;
-  private double velocityPitch;
-  private double velocityRoll;
-  private double VelocityTilt;
-  private double AccelerationTilt;
-  private MedianFilter fVelocityTilt;
-  private double prev;
-  private static ShuffleboardTab tab = Shuffleboard.getTab("Chassis");
-
+  /**
+   * The auton manager singleton which is used to generate paths to go to the balancing pad.
+   */
+  private final AutonManager m_autonManager;
 
   /**
    * The state of the commnand.
@@ -50,12 +43,17 @@ public class Balance extends CommandBase {
   }
 
   /**
+   * Holds what state we are in right now.
+   */
+  protected State state;
+
+  /**
    * The timer used to wait for the balancing pad to adjust
    */
   protected final Timer m_timer;
 
   /**
-   * The timeout for balancing pad
+   * The timeout for balancing pad.
    */
   protected final double timeToWait;
 
@@ -66,23 +64,31 @@ public class Balance extends CommandBase {
   protected double distanceToDrive;
 
   /**
-   * Holds the current auton command that we are running
+   * Holds the current auton command that we are running.
+   * Changes in execute as the robot balances.
    */
   protected AutonCommand autonCommand;
+
+  /**
+   * The past april tag value before this command started running.
+   * Initialized in init as opposed to constructor.
+   */
+  protected boolean pastAprilTagValue;
 
   /**
    * Creates a new Balance command
    *
    * @param chassis The subsystem used by this command.
    */
-  public Balance(Chassis chassis) {
+  public Balance(Chassis chassis, AutonManager manager) {
     m_chassis = chassis;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(chassis);
 
     m_timer = new Timer();
     timeToWait =  0.5;
-    
+
+    m_autonManager = manager;
   }
 
   /**
@@ -91,7 +97,15 @@ public class Balance extends CommandBase {
    */
   @Override
   public void initialize() {
-    
+    // store what april tag usage we had before this command started
+    pastAprilTagValue = m_chassis.getUsingAprilTags();
+    m_chassis.setAprilTagUsage(false);
+
+    state = State.Waiting; // the default state to be at when the command starts
+    distanceToDrive = 1.5; // default length to drive in meters
+
+    m_timer.reset();
+    m_timer.start();
   }
 
   /**
@@ -99,7 +113,29 @@ public class Balance extends CommandBase {
    */
   @Override
   public void execute() {
-
+    if (state == State.Waiting) {
+      if (m_timer.hasElapsed(timeToWait)) {
+        Pose2d currentPos = m_chassis.getPose2d();
+        autonCommand = m_autonManager.onTheFlyGenerator(currentPos, currentPos.plus(
+          new Transform2d(
+            new Translation2d(distanceToDrive, 0), new Rotation2d()))
+          );
+        state = State.DrivingDistance;
+        m_timer.stop();
+        m_timer.reset();
+        autonCommand.initialize();
+      }
+    } else { // state is equal to DrivingDistance);
+      if (autonCommand.isFinished()) {
+        autonCommand.end(false);
+        state = State.Waiting;
+        m_timer.reset();
+        m_timer.start();
+        distanceToDrive = (distanceToDrive / 2) * Math.signum(distanceToDrive); // multiplies the distance to drive by the sign of our pitch
+      } else {
+        autonCommand.execute();
+      }
+    }
   }
 
   /**
@@ -109,13 +145,18 @@ public class Balance extends CommandBase {
    */
   @Override
   public void end(boolean interrupted) {
-    m_chassis.setWhetherFieldOriented(previousDriveState);
     m_chassis.stopModules();
+    m_chassis.setAprilTagUsage(pastAprilTagValue);
+
+    m_timer.stop();
+    m_timer.reset();
   }
 
-  // Returns true when the command should end.
+  /**
+   * is finished if we are balanced
+   */
   @Override
   public boolean isFinished() {
-    return Math.abs(Navx.getPitch()) <= 0.5;
+    return Math.abs(Navx.getPitch()) <= 3;
   }
 }

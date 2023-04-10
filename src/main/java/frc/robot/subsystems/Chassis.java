@@ -457,4 +457,20 @@ public class Chassis extends SubsystemBase {
     public void drive(double x, double y, double theta) {
         drive(x, y, theta, getFieldRelative());
     }
+
+    /**
+     * Setter for {@link #useAprilTags}. This is used to determine whether we are using april tags or not for updating odometry.
+     * @param useAprilTags the value to set apruTags to
+     */
+    public void setAprilTagUsage(boolean useAprilTags) {
+        this.useAprilTags = useAprilTags;
+    }
+
+    /**
+     * A getter for {@link #useAprilTags}
+     * @return whether we are using april tags or not for updating odometry
+     */
+    public boolean getUsingAprilTags() {
+        return useAprilTags;
+    }
 }
