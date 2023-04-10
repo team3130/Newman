@@ -187,6 +187,9 @@ public class Chassis extends SubsystemBase {
         }
     }
 
+    /**
+     * Update odometry with swerve drive. Also updates odometry with vision if the {@link Constants#useAprilTags}'s flag true
+     */
     public void updateOdometery() {
         updateOdometryFromSwerve();
         if (Constants.useAprilTags) {
