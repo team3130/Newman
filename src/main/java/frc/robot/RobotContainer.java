@@ -278,10 +278,18 @@ public class RobotContainer {
     m_chassis.resetOdometry(pose);
   }
 
+  /**
+   * Creates a command to unclamp the manipulator.
+   * @return the InstantCommand that unclamps the manipulator.
+   */
   public CommandBase retractManipulator() {
     return new UnClampManipulator(m_manipulator);
   }
 
+  /**
+   * Resets odometry to the position of the april tag
+   * @return success or not
+   */
   public boolean resetOdometryWithAprilTag() {
     OdoPosition position = m_limelight.calculate();
     if (position != null) {
@@ -289,5 +297,13 @@ public class RobotContainer {
       return true;
     }
     return false;
+  }
+
+  /**
+   * Updates the chassis position periodically.
+   * Calls {@link Chassis#updateOdometery()}
+   */
+  public void updateChassisPose() {
+    m_chassis.updateOdometery();
   }
 }

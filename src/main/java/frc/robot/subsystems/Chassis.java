@@ -177,6 +177,23 @@ public class Chassis extends SubsystemBase {
       m_odometry.updateWithTime(Timer.getFPGATimestamp(), Navx.getRotation(), generatePoses());
     }
 
+    /**
+     * Updates the odometry from vision if there is a new value to update position with
+     */
+    public void updateOdometryFromVision() {
+        OdoPosition position = refreshPosition();
+        if (position != null) {
+            updateOdometryFromVision(position);
+        }
+    }
+
+    public void updateOdometery() {
+        updateOdometryFromSwerve();
+        if (Constants.useAprilTags) {
+            updateOdometryFromVision();
+        }
+    }
+
 
     /**
      * subsystem looped call made by the scheduler.
@@ -184,14 +201,7 @@ public class Chassis extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        updateOdometryFromSwerve();
         n_fieldOrriented.setBoolean(fieldRelative);
-
-        OdoPosition position = refreshPosition();
-        if (position != null) {
-            updateOdometryFromVision(position);
-        }
-
         field.setRobotPose(m_odometry.getEstimatedPosition());
     }
 

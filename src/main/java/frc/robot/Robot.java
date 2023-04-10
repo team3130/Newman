@@ -40,12 +40,14 @@ public class Robot extends TimedRobot {
             timer.stop();
           }
         }
-      }
-      else {
+      } else {
         m_robotContainer.resetOdometryWithoutApril();
         timer.stop();
         timer.reset();
       }
+    }
+    else {
+      m_robotContainer.updateChassisPose();
     }
   }
 
