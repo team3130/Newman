@@ -45,7 +45,17 @@ public class Balance extends CommandBase {
 
 
   /**
-   * Creates a new ExampleCommand.
+   * speed to run the drivetrain at in m/s
+   */
+  protected double speed = 0.3;
+
+  /**
+   * The value for if we are off balance
+   */
+  protected double offBalancePositve = 7;
+
+  /**
+   * Creates a new Balance command
    *
    * @param chassis The subsystem used by this command.
    */
@@ -59,50 +69,22 @@ public class Balance extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
-    oddPitch = 0;
-
-    
-    pitch = (Navx.getPitch());
-    
   }
 
-  
-
- 
-
-  // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * Called every time the scheduler runs while the command is scheduled.
+   */
   @Override
   public void execute() {
-    
-    pitch = (Navx.getPitch());
- 
-
-    iterator++;
-
-    if(iterator % 2 == 0){
-      pitchVelocityCheck = (Math.abs(oddPitch - pitch ) <= pitchVelocityDeadband);
-     }
-    else{oddPitch = Navx.getPitch();}
-
-    
-
-
-    //trajectory to go forward 2 meters * sign
-    /* Call should be:
-    ConditionalCommand balance = new ConditionalCommand(Balance(m_chassis, 1), Balance(m_chassis, -1), Navx.getPitch() > 1).until(Math.abs(Navx.getPitch())) <= 5.0;
-    */
-    if(Navx.getPitch() < pitchZero){
-      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity,0,0));
-      m_chassis.setModuleStates(moduleStates);
+    if (m_chassis.getAngle() > offBalancePositve) {
+      m_chassis.(speed, 0);
     }
-    else{
-      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(-driveVelocity,0,0));
-      m_chassis.setModuleStates(moduleStates);
+    else if (m_chassis.getAngle() < -offBalancePositve) {
+      m_chassis.drive(-speed, 0);
     }
-
-
-
+    else {
+      m_chassis.drive(0, 0);
+    }
   }
 
   // Called once the command ends or is interrupted.
