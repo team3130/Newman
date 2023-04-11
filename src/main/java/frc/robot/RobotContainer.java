@@ -238,7 +238,14 @@ public class RobotContainer {
    * @return the auton routine
    */
   public CommandBase getAutonCmd() {
-    return m_autonManager.pick();
+    CommandBase toRun = m_autonManager.pick();
+    // try {
+    //   m_chassis.updateField2DFromTrajectory(((AutonCommand) toRun).getTrajectory());
+    // }
+    // catch (ClassCastException ignored) {
+
+    // }
+    return toRun;
   }
 
   /**
@@ -256,17 +263,6 @@ public class RobotContainer {
    * Robot container periodic method
    */
   public void periodic() {
-    if (counter == 10) {
-      CommandBase toRun = m_autonManager.pick();
-      try {
-        m_chassis.updateField2DFromTrajectory(((AutonCommand) toRun).getTrajectory());
-      }
-      catch (ClassCastException ignored) {
-
-      }
-        counter = -1;
-    }
-    counter++;
   }
 
   /**
@@ -305,5 +301,14 @@ public class RobotContainer {
    */
   public void updateChassisPose() {
     m_chassis.updateOdometery();
+  }
+
+  public CommandBase packageAuton(CommandBase mainPath) {
+    try {
+      return m_autonManager.goToStartOfCommand((AutonCommand) mainPath);
+    }
+    catch (Exception ignored) {
+      return mainPath;
+    }
   }
 }

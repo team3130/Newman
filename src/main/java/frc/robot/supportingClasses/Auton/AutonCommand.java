@@ -394,6 +394,7 @@ public class AutonCommand extends CommandBase {
     @Override
     public void initialize() {
         if (!useAprilTags) {
+            System.out.println("resetting odometry to: " + startPosition);
             m_chassis.resetOdometry(startPosition);
         }
         m_chassis.setAprilTagUsage(useAprilTags);

@@ -1,9 +1,13 @@
 package frc.robot.supportingClasses.Auton;
 
+import java.util.List;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.PathPlannerTrajectory.EventMarker;
+
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -480,13 +484,13 @@ public class AutonManager {
      * @return the auton command for the generated trajectory wrapped
      */
     public CommandBase placeConeHighPlaceCubeHigh() {
-        PathPlannerTrajectory trajectoryHP = PathPlanner.loadPath("place cone high place cube high hp", safe_constraints);
-        AutonCommand commandHP = autonCommandGeneratorPlacement(trajectoryHP, true);
+        PathPlannerTrajectory trajectoryHP = PathPlanner.loadPath("place cone high place cube high hp", new PathConstraints(1.5, 1.5));
+        return autonCommandGeneratorPlacement(trajectoryHP, true);
 
     /*  PathPlannerTrajectory trajectorynonHP = PathPlanner.loadPath("place cone high place cube high non hp", safe_constraints);
         AutonCommand commandnonHP = autonCommandGeneratorPlacement(trajectorynonHP);*/
 
-        return wrapCmd(commandHP);
+        
     }
 
     /**
@@ -506,6 +510,19 @@ public class AutonManager {
 
         AutonCommand command = autonCommandGenerator(trajectory, false);
         return wrapCmd(command);
+    }
+
+    public SequentialCommandGroup goToStartOfCommand(AutonCommand mainPath) {
+        List<EventMarker> markers = List.of(EventMarker.fromTime(List.of("grabber"), 0), EventMarker.fromTime(List.of("place high"), 0.25));
+
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+            safe_constraints, 
+            markers,
+            new PathPoint(m_chassis.getPose2d().getTranslation(), new Rotation2d(), m_chassis.getRotation2d()), 
+            new PathPoint(mainPath.getStartPosition().getTranslation(), new Rotation2d(), mainPath.getStartRotation()));
+        AutonCommand goToStart = autonCommandGenerator(trajectory, true);
+
+        return new SequentialCommandGroup(goToStart, mainPath);
     }
 
 }
