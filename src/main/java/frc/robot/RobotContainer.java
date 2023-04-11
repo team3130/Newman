@@ -308,6 +308,7 @@ public class RobotContainer {
       return m_autonManager.goToStartOfCommand((AutonCommand) mainPath);
     }
     catch (Exception ignored) {
+      System.out.println("KILLIN MYSELF");
       return mainPath;
     }
   }
