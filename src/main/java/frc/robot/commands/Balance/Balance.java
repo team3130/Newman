@@ -35,6 +35,8 @@ public class Balance extends CommandBase {
   private double oddPitch;
   private double pitch;
 
+
+  private boolean nearZero; 
   private boolean drivingPositive;
   private boolean hasSwitched;
  
@@ -67,7 +69,7 @@ public class Balance extends CommandBase {
     hasSwitched = false;
     iterator = 0;
     timerIterator = 0;
-    
+    nearZero = false;
 
     timer.reset();
     timer.start();
@@ -93,8 +95,11 @@ public class Balance extends CommandBase {
 
     
   if( Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband){
+    nearZero = true;
     hasSwitched = true;
     timerIterator = 0;
+
+
   }
 
    if(!hasSwitched){
@@ -132,9 +137,16 @@ public class Balance extends CommandBase {
          timer.restart(); 
          timerIterator++;
       }
-      
-      if(timer.hasElapsed(1.0)){
+     
+     if(nearZero){ 
+      if(timer.hasElapsed(0.5)){
         hasSwitched = false;
+      }
+    }
+      else {
+        if(timer.hasElapsed(0.80)){
+          hasSwitched = false;
+        }
       }
   
       
@@ -147,6 +159,7 @@ public class Balance extends CommandBase {
   public void end(boolean interrupted) {
     timer.stop();
     m_chassis.stopModules();
+   
   }
 
   // Returns true when the command should end.

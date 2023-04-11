@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Balance.Balance;
 import frc.robot.commands.Balance.DeadReckonBalance;
+import frc.robot.commands.Balance.RileyPark;
 import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
@@ -45,6 +46,7 @@ import frc.robot.commands.Placement.presets.GoToMidScoringCube;
 import frc.robot.commands.Placement.presets.GoToPickupOffGround;
 import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
+import frc.robot.sensors.Navx;
 import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.Auton.AutonCommand;
 import frc.robot.supportingClasses.Auton.AutonManager;
@@ -117,6 +119,7 @@ public class RobotContainer {
 
     configureButtonBindings();
     vomitShuffleBoardData();
+    
   }
 
   /**
@@ -176,8 +179,9 @@ public class RobotContainer {
     if (Constants.debugMode) {
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new Balance(m_chassis));
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new SequentialCommandGroup(new DeadReckonBalance(m_chassis), m_autonManager.backDriveBalance()));
-
-
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new RileyPark(m_chassis));
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RJOYSTICKPRESS).whenPressed(new SequentialCommandGroup(new Balance(m_chassis), new RileyPark(m_chassis)));
+      
     }
 
     //Weapons Gamepad:

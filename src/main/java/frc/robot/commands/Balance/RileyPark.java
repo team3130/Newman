@@ -6,20 +6,25 @@ package frc.robot.commands.Balance;
 
 import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
+
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
 public class RileyPark extends CommandBase {
   private final Chassis m_chassis;
+  private Timer timer = new Timer();
 
   /*
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public RileyPark(Chassis chassis, double direction) {
+  public RileyPark(Chassis chassis) {
+    timer.reset();
+    timer.start();
     m_chassis = chassis;
-    this.direction = direction;
+  
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(chassis);
   }
@@ -28,23 +33,25 @@ public class RileyPark extends CommandBase {
   @Override
   public void initialize() {}
 
-  private final double direction;
-
+  
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double angle = Navx.getAngle();
     
-    m_chassis.turnToAngle(angle + direction + Math.PI / 2);
+    m_chassis.brakeModules();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    timer.stop();
+    m_chassis.stopModules();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return timer.hasElapsed(0.5);
   }
 }

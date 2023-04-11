@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.sensors.Navx;
 
 public class Robot extends TimedRobot {
 
@@ -60,6 +61,7 @@ public class Robot extends TimedRobot {
         }
       }
     }
+    Navx.outputToShuffleboard();
   }
 
     @Override
