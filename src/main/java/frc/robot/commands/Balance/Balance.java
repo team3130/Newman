@@ -4,18 +4,12 @@
 
 package frc.robot.commands.Balance;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
-import frc.robot.supportingClasses.Auton.AutonCommand;
 import frc.robot.supportingClasses.Auton.AutonManager;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** 
  * A command that balances the robot on the balancing pad.
@@ -27,11 +21,6 @@ public class Balance extends CommandBase {
    */
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Chassis m_chassis;
-
-  /**
-   * The auton manager singleton which is used to generate paths to go to the balancing pad.
-   */
-  private final AutonManager m_autonManager;
 
   /**
    * The state of the commnand.
@@ -58,16 +47,14 @@ public class Balance extends CommandBase {
   protected final double timeToWait;
 
   /**
-   * The distance to drive in meters
-   * Should get progressivly smaller as the robot balances.
+   * Holds the distance to drive the wheels to.
    */
-  protected double distanceToDrive;
+  protected double driveDistance;
 
   /**
-   * Holds the current auton command that we are running.
-   * Changes in execute as the robot balances.
+   * The speed to run the drivetrain at.
    */
-  protected AutonCommand autonCommand;
+  protected final double speed = 0.3;
 
   /**
    * The past april tag value before this command started running.
@@ -76,19 +63,29 @@ public class Balance extends CommandBase {
   protected boolean pastAprilTagValue;
 
   /**
+   * The current set point we are going to.
+   * Needs to be combined with coming from to make sure you are on the opposite side of the set point than
+   * where you are coming from.
+   */
+  protected double currentSetpoint;
+
+  /**
+   * The spot we are coming from.
+   */
+  protected double comingFrom;
+
+  /**
    * Creates a new Balance command
    *
    * @param chassis The subsystem used by this command.
    */
-  public Balance(Chassis chassis, AutonManager manager) {
+  public Balance(Chassis chassis) {
     m_chassis = chassis;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(chassis);
 
     m_timer = new Timer();
     timeToWait =  0.5;
-
-    m_autonManager = manager;
   }
 
   /**
@@ -102,7 +99,7 @@ public class Balance extends CommandBase {
     m_chassis.setAprilTagUsage(false);
 
     state = State.Waiting; // the default state to be at when the command starts
-    distanceToDrive = 1.5; // default length to drive in meters
+    driveDistance = 1.5; // default length to drive in meters
 
     m_timer.reset();
     m_timer.start();
@@ -115,32 +112,28 @@ public class Balance extends CommandBase {
   public void execute() {
     if (state == State.Waiting) {
       if (m_timer.hasElapsed(timeToWait)) {
-        Pose2d currentPos = m_chassis.getPose2d();
-        autonCommand = m_autonManager.onTheFlyGenerator(currentPos, currentPos.plus(
-          new Transform2d(
-            new Translation2d(distanceToDrive, 0), new Rotation2d()))
-          );
+        double currentPos = m_chassis.getPose2d().getX();
+        comingFrom = currentPos;
+        driveDistance = (driveDistance / 2) * Math.signum(Navx.getPitch()); // multiplies the distance to drive by the sign of our pitch
+        currentSetpoint = currentPos + driveDistance;
+        m_chassis.drive(speed * Math.signum(driveDistance), 0, 0, true);
         state = State.DrivingDistance;
         m_timer.stop();
         m_timer.reset();
-        autonCommand.initialize();
       }
-    } else { // state is equal to DrivingDistance);
-      if (autonCommand.isFinished()) {
-        autonCommand.end(false);
+    } else { // state is equal to DrivingDistance
+      if (m_chassis.getPose2d().getX() - currentSetpoint >= 0) {
+        m_chassis.stopModules();
         state = State.Waiting;
         m_timer.reset();
         m_timer.start();
-        distanceToDrive = (distanceToDrive / 2) * -Math.signum(Navx.getPitch()); // multiplies the distance to drive by the sign of our pitch
-      } else {
-        autonCommand.execute();
       }
     }
   }
 
   /**
    * Called once the command ends or is interrupted.
-   * Restores field orriented to its previous state.
+   * Restores field oriented to its previous state.
    * @param interrupted whether the command was interrupted/canceled
    */
   @Override
