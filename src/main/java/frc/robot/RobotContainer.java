@@ -66,7 +66,7 @@ public class RobotContainer {
   private final Hopper m_hopper;
   private final IntakePivot m_pivot;
   private final Limelight m_limelight;
-  private final BoundingBox[] m_boundingboxes = new BoundingBox[36];
+  private final static BoundingBox[] boundingboxes = new BoundingBox[36];
 
 
   /**
@@ -82,15 +82,15 @@ public class RobotContainer {
     for (int i = 0; i < 36; i++) {
       if (i == 1 || i == 4 || i == 7 || i == 10 || i == 13 || i == 16 || i == 19 || i == 22 || i == 25 || i == 28 || i == 31 || i == 34) {
         if (i == 1 || i == 4 || i == 7 || i == 19 || i == 22 || i == 25) {
-          m_boundingboxes[i] = new BoundingBox(Constants.Field.depthOfCubeSpotOneSmall, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfCubeSpotOneBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfCubeSpotOne);
+          boundingboxes[i] = new BoundingBox(Constants.Field.depthOfCubeSpotOneSmall, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfCubeSpotOneBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfCubeSpotOne);
         } else {
-          m_boundingboxes[i] = new BoundingBox(Constants.Field.depthOfCubeSpotTwoSmall, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfCubeTwoBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfCubeSpotTwo);
+          boundingboxes[i] = new BoundingBox(Constants.Field.depthOfCubeSpotTwoSmall, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfCubeSpotTwoBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfCubeSpotTwo);
         }
       } else {
         if (i == 0 || i == 2 || i == 3 || i == 5 || i == 6 || i == 8) {
-          m_boundingboxes[i] = new BoundingBox(Constants.Field.depthOfConeSpotOneSmall, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfConeSpotOneBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfConeSpotOne);
+          boundingboxes[i] = new BoundingBox(Constants.Field.depthOfConeSpireOneSmall, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfConeSpireOneBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfConeSpireOne);
         } else {
-          m_boundingboxes[i] = new BoundingBox(Constants.Field.depthOfConeSpotTwoSmall, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfConeTwoBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfConeSpotTwo);
+          boundingboxes[i] = new BoundingBox(Constants.Field.depthOfConeSpireTwoSmall, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfConeSpireTwoBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfConeSpireTwo);
         }
       }
     }
@@ -109,8 +109,8 @@ public class RobotContainer {
     SendableRegistry.add(arm, "placement");
     Shuffleboard.getTab("Test").add(arm);*/
     
-    m_extensionArm = new ExtensionArm(zero, m_chassis, m_boundingbox);
-    m_rotaryArm = new RotaryArm(zero, m_extensionArm, m_chassis, m_boundingbox);
+    m_extensionArm = new ExtensionArm(zero, m_chassis);
+    m_rotaryArm = new RotaryArm(zero, m_extensionArm, m_chassis);
 
     m_autonManager = new AutonManager(m_chassis, m_pivot, m_rotaryArm, m_extensionArm, m_manipulator);
 

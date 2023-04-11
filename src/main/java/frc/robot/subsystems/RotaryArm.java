@@ -83,7 +83,7 @@ public class RotaryArm extends SubsystemBase {
     ligament.setAngle(getAngleRotaryArm());
     n_brake.setBoolean(brakeIsEnabled());
     BoundingBox[] boundingboxes = RobotContainer.getBoundingBoxes();
-    for (i = 0; i < boundingboxes.length; i++) {
+    for (int i = 0; i < boundingboxes.length; i++) {
       if (boundingboxes[i].boxBad(m_extensionarm.getArmPos())) {
         if (m_chassis.getX() - (m_extensionarm.getLengthExtensionArm() + 0.09525) <= Constants.Field.xPositionForGridBlue || m_chassis.getX() + (m_extensionarm.getLengthExtensionArm() + 0.09525) >= Constants.Field.xPositionForGridRed) {
           if (getSpeedPlacementArm() > 0) {

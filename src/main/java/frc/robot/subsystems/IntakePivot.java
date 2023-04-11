@@ -16,7 +16,7 @@ public class IntakePivot extends SubsystemBase {
   private final boolean defaultStateSmall;
 
   public IntakePivot() {
-    small = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM , Constants.PNM_SmallSolenoid);
+    small = new Solenoid(Constants.CAN_PNM, PneumaticsModuleType.CTREPCM , Constants.PNM_Intake);
 
     // default should be whatever retracted is (false?)
     defaultStateSmall = false;

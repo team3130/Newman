@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.supportingClasses.Gains.AccelerationManager;
 import frc.robot.supportingClasses.Gains.VelocityGainFilter;
@@ -35,7 +36,6 @@ public class ExtensionArm extends SubsystemBase {
   // limit switch which is at our 0 point for the extension arm
   private final DigitalInput m_limitSwitch;
   private final Chassis m_chassis;
-  BoundingBox m_boundingbox;
 
   protected MechanismLigament2d ligament;
 
@@ -79,7 +79,7 @@ public class ExtensionArm extends SubsystemBase {
    *
    * @param ligament the ligament object that is on smart-dashboard
    */
-  public ExtensionArm(MechanismLigament2d ligament, Chassis chassis, BoundingBox boundingbox) {
+  public ExtensionArm(MechanismLigament2d ligament, Chassis chassis) {
     extensionMotor = new WPI_TalonFX(Constants.CAN_ExtensionArm);
     extensionMotor.configFactoryDefault();
     extensionMotor.config_kP(0,Constants.Extension.kExtensionArmP);
@@ -100,7 +100,6 @@ public class ExtensionArm extends SubsystemBase {
 
     m_limitSwitch = new DigitalInput(Constants.PUNCHY_LIMIT_SWITCH);
     m_chassis = chassis;
-    m_boundingbox = boundingbox;
 
     Placement = Shuffleboard.getTab("Extension Arm");
     n_placementExtensionArmP = Placement.add("p", Constants.Extension.kExtensionArmP).getEntry();
@@ -147,8 +146,8 @@ public class ExtensionArm extends SubsystemBase {
     Translation3d armTranslation = new Translation3d(r * Math.cos(m_chassis.getYaw()), 0, r * Math.sin(m_chassis.getYaw()));
     armPos = new Pose3d(armTranslation, armRotation);
     BoundingBox[] boundingboxes = RobotContainer.getBoundingBoxes();
-    for (i = 0; i < boundingboxes.length; i++) {
-      if (boundingbox[i].boxBad(armPos)) {
+    for (int i = 0; i < boundingboxes.length; i++) {
+      if (boundingboxes[i].boxBad(armPos)) {
         if (m_chassis.getX() - (r) <= Constants.Field.xPositionForGridBlue || m_chassis.getX() + (r) >= Constants.Field.xPositionForGridRed) {
           if (y > 0) {
             y = 0;
