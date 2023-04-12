@@ -30,16 +30,24 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     m_robotContainer.periodic();
     if (timer.hasElapsed(Constants.kResetTime)) {
-      if (!haveResetManually) {
-        m_robotContainer.resetOdometryWithoutApril();
-        haveResetManually = true;
-      }
-      else {
-        if (m_robotContainer.resetOdometryWithAprilTag()) {
-          timer.reset();
-          timer.stop();
+      if (Constants.useAprilTags) {
+        if (!haveResetManually) {
+          m_robotContainer.resetOdometryWithoutApril();
+          haveResetManually = true;
+        } else {
+          if (m_robotContainer.resetOdometryWithAprilTag()) {
+            timer.stop();
+            timer.reset();
+          }
         }
+      } else {
+        m_robotContainer.resetOdometryWithoutApril();
+        timer.stop();
+        timer.reset();
       }
+    }
+    else {
+      m_robotContainer.updateChassisPose();
     }
   }
 
@@ -58,7 +66,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit () {
       CommandScheduler.getInstance().cancelAll();
-      CommandScheduler.getInstance().schedule(m_robotContainer.getAutonCmd());
+      CommandScheduler.getInstance().schedule(m_robotContainer.packageAuton(m_robotContainer.getAutonCmd()));
     
     }
 
@@ -74,6 +82,7 @@ public class Robot extends TimedRobot {
     public void teleopInit () {
       CommandScheduler.getInstance().cancelAll();
       CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
+      CommandScheduler.getInstance().schedule(m_robotContainer.retractManipulator());
     }
 
     @Override
