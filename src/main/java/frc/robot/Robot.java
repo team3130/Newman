@@ -82,6 +82,7 @@ public class Robot extends TimedRobot {
     public void teleopInit () {
       CommandScheduler.getInstance().cancelAll();
       CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
+      CommandScheduler.getInstance().schedule(m_robotContainer.retractManipulator());
     }
 
     @Override

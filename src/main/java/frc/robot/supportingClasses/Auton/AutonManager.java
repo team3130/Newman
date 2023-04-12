@@ -513,7 +513,7 @@ public class AutonManager {
     }
 
     public SequentialCommandGroup goToStartOfCommand(AutonCommand mainPath) {
-        List<EventMarker> markers = List.of(EventMarker.fromTime(List.of("grabber"), 0), EventMarker.fromTime(List.of("place high"), 0.25));
+        List<EventMarker> markers = List.of(EventMarker.fromTime(List.of("grabber"), 0), EventMarker.fromTime(List.of("place high"), 0.07));
 
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
             safe_constraints, 
