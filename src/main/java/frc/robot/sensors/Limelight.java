@@ -34,28 +34,22 @@ public class Limelight {
 
     protected double lastReadTime = 0;
 
-    /**
-     * Constructs a new Limelight object.
-     * The limelight object will be full of null values if Constants.useAprilTags is false.
-     */
     public Limelight() {
-        if (Constants.useAprilTags) {
-            camera = new PhotonCamera("OV5647");
-            try {
-                aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
-            } catch (IOException e) {
-                DriverStation.reportError("error loading field position file", false);
-            }
+        camera = new PhotonCamera("OV5647");
+        try {
+            aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+        } catch (IOException e) {
+            DriverStation.reportError("error loading field position file", false);
+        }
 
-            filter = new VisionMedianFilter(Camera.kMedianFilterWindowSize);
+        filter = new VisionMedianFilter(Camera.kMedianFilterWindowSize);
 
-            if (Constants.debugMode) {
-                SmartDashboard.putData(filter);
-            }
+        if (Constants.debugMode) {
+            SmartDashboard.putData(filter);
+        }
 
-            n_yaw = Shuffleboard.getTab("PhotonVision").add("Yaw", 0).getEntry();
-            n_pitch = Shuffleboard.getTab("PhotonVision").add("Pitch", 0).getEntry();
-        }   
+        n_yaw = Shuffleboard.getTab("PhotonVision").add("Yaw", 0).getEntry();
+        n_pitch = Shuffleboard.getTab("PhotonVision").add("Pitch", 0).getEntry();
     }
 
     /**
@@ -63,12 +57,11 @@ public class Limelight {
      * That calculation is then given to {@link VisionMedianFilter}.
      * The command will return null if there is no new information or if there are no targets in frame.
      * This will add all the targets that are currently visible to the {@link VisionMedianFilter}.
-     * If {@link Constants#useAprilTags} is false, this will return null.
      *
      * @return the filtered camera position
      */
     public OdoPosition calculate() {
-        if (!Constants.useAprilTags || !camera.isConnected()) {
+        if (!camera.isConnected()) {
             return null;
         }
         // the most recent result as read by the camera

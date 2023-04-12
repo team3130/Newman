@@ -238,14 +238,7 @@ public class RobotContainer {
    * @return the auton routine
    */
   public CommandBase getAutonCmd() {
-    CommandBase toRun = m_autonManager.pick();
-    // try {
-    //   m_chassis.updateField2DFromTrajectory(((AutonCommand) toRun).getTrajectory());
-    // }
-    // catch (ClassCastException ignored) {
-
-    // }
-    return toRun;
+    return m_autonManager.pick();
   }
 
   /**
@@ -263,6 +256,17 @@ public class RobotContainer {
    * Robot container periodic method
    */
   public void periodic() {
+    if (counter == 10) {
+      CommandBase toRun = m_autonManager.pick();
+      try {
+        m_chassis.updateField2DFromTrajectory(((AutonCommand) toRun).getTrajectory());
+      }
+      catch (ClassCastException ignored) {
+
+      }
+        counter = -1;
+    }
+    counter++;
   }
 
   /**
@@ -274,18 +278,10 @@ public class RobotContainer {
     m_chassis.resetOdometry(pose);
   }
 
-  /**
-   * Creates a command to unclamp the manipulator.
-   * @return the InstantCommand that unclamps the manipulator.
-   */
   public CommandBase retractManipulator() {
     return new UnClampManipulator(m_manipulator);
   }
 
-  /**
-   * Resets odometry to the position of the april tag
-   * @return success or not
-   */
   public boolean resetOdometryWithAprilTag() {
     OdoPosition position = m_limelight.calculate();
     if (position != null) {
@@ -293,23 +289,5 @@ public class RobotContainer {
       return true;
     }
     return false;
-  }
-
-  /**
-   * Updates the chassis position periodically.
-   * Calls {@link Chassis#updateOdometery()}
-   */
-  public void updateChassisPose() {
-    m_chassis.updateOdometery();
-  }
-
-  public CommandBase packageAuton(CommandBase mainPath) {
-    try {
-      return m_autonManager.goToStartOfCommand((AutonCommand) mainPath);
-    }
-    catch (Exception ignored) {
-      System.out.println("KILLIN MYSELF");
-      return mainPath;
-    }
   }
 }
