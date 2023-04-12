@@ -33,6 +33,8 @@ public class ZeroEverything extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // if you were right, and you tell it you are somewhere else, then you will be wrong
+    m_chassis.setAprilTagUsage(false); 
     m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
   }
 }
