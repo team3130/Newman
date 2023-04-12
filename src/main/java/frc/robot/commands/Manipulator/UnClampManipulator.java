@@ -33,6 +33,6 @@ public class UnClampManipulator extends InstantCommand {
    */
   @Override
   public void initialize() {
-     m_manipulator.extend();
+     m_manipulator.retract();
   }
 }

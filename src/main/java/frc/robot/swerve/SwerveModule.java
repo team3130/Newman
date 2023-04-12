@@ -52,8 +52,8 @@ public class SwerveModule implements Sendable {
 
         m_driveMotor.configFactoryDefault();
         m_driveMotor.setNeutralMode(NeutralMode.Brake);
-        m_driveMotor.configVoltageCompSaturation(Constants.kMaxDriveVoltage);
-        m_driveMotor.enableVoltageCompensation(true);
+        // m_driveMotor.configVoltageCompSaturation(Constants.kMaxDriveVoltage);
+        m_driveMotor.enableVoltageCompensation(false);
         m_driveMotor.setInverted(false);
 
         turningPidController.enableContinuousInput(-Math.PI, Math.PI); // wrap for circles

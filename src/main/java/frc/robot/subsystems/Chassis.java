@@ -62,13 +62,6 @@ public class Chassis extends SubsystemBase {
     private final GenericEntry n_fieldOrriented;
 
     /**
-     * Whether to update the odometry with the april tag or not.
-     * Usuallt used as a toggleable in auton commands.
-     * Default value is {@link Constants#useAprilTags} however is mutable.
-     */
-    protected boolean useAprilTags = Constants.useAprilTags;
-
-    /**
      * Makes a chassis that starts at 0, 0, 0
      * @param limelight the limelight object that we can use for updating odometry
      */
@@ -184,26 +177,6 @@ public class Chassis extends SubsystemBase {
       m_odometry.updateWithTime(Timer.getFPGATimestamp(), Navx.getRotation(), generatePoses());
     }
 
-    /**
-     * Updates the odometry from vision if there is a new value to update position with
-     */
-    public void updateOdometryFromVision() {
-        OdoPosition position = refreshPosition();
-        if (position != null) {
-            updateOdometryFromVision(position);
-        }
-    }
-
-    /**
-     * Update odometry with swerve drive. Also updates odometry with vision if the {@link Constants#useAprilTags}'s flag true
-     */
-    public void updateOdometery() {
-        updateOdometryFromSwerve();
-        if (Constants.useAprilTags && useAprilTags) {
-            updateOdometryFromVision();
-        }
-    }
-
 
     /**
      * subsystem looped call made by the scheduler.
@@ -211,7 +184,14 @@ public class Chassis extends SubsystemBase {
      */
     @Override
     public void periodic() {
+        updateOdometryFromSwerve();
         n_fieldOrriented.setBoolean(fieldRelative);
+
+        OdoPosition position = refreshPosition();
+        if (position != null) {
+            updateOdometryFromVision(position);
+        }
+
         field.setRobotPose(m_odometry.getEstimatedPosition());
     }
 
@@ -408,7 +388,7 @@ public class Chassis extends SubsystemBase {
      * @param refreshPosition time and position to set to
      */
     public void updateOdometryFromVision(OdoPosition refreshPosition) {
-        m_odometry.addVisionMeasurement(new Pose2d(refreshPosition.getPosition().getTranslation(), refreshPosition.getPosition().getRotation().rotateBy(new Rotation2d(Math.toRadians(0)))), refreshPosition.getTime());
+        m_odometry.addVisionMeasurement(new Pose2d(refreshPosition.getPosition().getTranslation(), refreshPosition.getPosition().getRotation().rotateBy(new Rotation2d(Math.toRadians(180)))), refreshPosition.getTime());
     }
 
     /**
@@ -425,13 +405,5 @@ public class Chassis extends SubsystemBase {
    */
     public void updateField2DFromTrajectory(PathPlannerTrajectory trajectory) {
         field.getObject("traj").setTrajectory(trajectory);
-    }
-
-    /**
-     * setter for april tags
-     * @param useAprilTags whether to use april tags or not
-     */
-    public void setAprilTagUsage(boolean useAprilTags) {
-        this.useAprilTags = useAprilTags;
     }
 }
