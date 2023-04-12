@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -16,32 +15,37 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.commands.Balance.Balance;
 import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
 import frc.robot.commands.Chassis.ZeroWheels;
-import frc.robot.commands.Chassis.presets.GoToClosestPlaceToPlace;
+import frc.robot.commands.Chassis.presets.GoToClosestPlacementPosition;
 import frc.robot.commands.Chassis.presets.GoToHumanPlayerStation;
 import frc.robot.commands.Hopper.ReverseHopper;
 import frc.robot.commands.Hopper.SpinHopper;
 import frc.robot.commands.Intake.ToggleIntake;
-import frc.robot.commands.Manipulator.ToggleGrabber;
+import frc.robot.commands.Manipulator.ToggleManipulator;
+import frc.robot.commands.Manipulator.UnClampManipulator;
 import frc.robot.commands.Placement.AutoZeroExtensionArm;
 import frc.robot.commands.Placement.AutoZeroRotryArm;
-import frc.robot.commands.Placement.IntermediateExtension;
 import frc.robot.commands.Placement.ManualControl.MoveExtensionArm;
 import frc.robot.commands.Placement.ManualControl.MoveRotaryArm;
 import frc.robot.commands.Placement.ToggleBrake;
-import frc.robot.commands.Placement.presets.*;
+import frc.robot.commands.Placement.presets.GoToHighScoring;
+import frc.robot.commands.Placement.presets.GoToMidScoringCones;
+import frc.robot.commands.Placement.presets.GoToMidScoringCube;
+import frc.robot.commands.Placement.presets.GoToPickupOffGround;
 import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
+import frc.robot.supportingClasses.Auton.AutonCommand;
 import frc.robot.supportingClasses.Auton.AutonManager;
 import frc.robot.supportingClasses.Vision.OdoPosition;
 import frc.robot.supportingClasses.BoundingBox;
@@ -57,14 +61,17 @@ public class RobotContainer {
    * Auton manager is the object that handles the loading of auton paths
    */
   protected AutonManager m_autonManager;
-  private static Joystick m_driverGamepad;
-  private static Joystick m_weaponsGamepad;
+  private static XboxController m_driverGamepad;
+  private static XboxController m_weaponsGamepad;
   private final Chassis m_chassis;
   private final ExtensionArm m_extensionArm;
   private final RotaryArm m_rotaryArm;
   private final Manipulator m_manipulator = new Manipulator();
+
+  private int counter = 0;
+
   private final Hopper m_hopper;
-  private final IntakePivot m_pivot;
+  private final Intake m_intake;
   private final Limelight m_limelight;
   private final static BoundingBox[] boundingboxes = new BoundingBox[36];
 
@@ -74,8 +81,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    m_driverGamepad = new Joystick(0);
-    m_weaponsGamepad = new Joystick(1);
+    m_driverGamepad = new XboxController(0);
+    m_weaponsGamepad = new XboxController(1);
 
     m_limelight = new Limelight();
     //Creating bounding boxes
@@ -97,22 +104,28 @@ public class RobotContainer {
 
     m_chassis = new Chassis(m_limelight);
     m_hopper = new Hopper();
-    m_pivot = new IntakePivot();
+    m_intake = new Intake();
 
 
-    Mechanism2d arm = new Mechanism2d(4, 2);
-    MechanismRoot2d root = arm.getRoot("arm", 5, 5);
-    MechanismLigament2d zero = new MechanismLigament2d("retracted", Constants.Extension.kExtensionArmLengthExtendedMeters / 2, -90);
+    Mechanism2d arm = new Mechanism2d(3, 3.5);
+    MechanismRoot2d root = arm.getRoot("arm", 0.5, 2);
+    MechanismLigament2d zero = new MechanismLigament2d("retracted", Constants.Extension.kExtensionArmLengthRetractedMeters, -90);
+    MechanismLigament2d limit = new MechanismLigament2d(
+            "limit",
+            Constants.Extension.kExtensionArmLengthExtendedMeters,
+            Math.toDegrees(Constants.highPosition) - 90,
+            6,
+            new Color8Bit(0, 0, 255));
     root.append(zero);
+    root.append(limit);
 
-    /*
-    SendableRegistry.add(arm, "placement");
-    Shuffleboard.getTab("Test").add(arm);*/
+    SendableRegistry.add(arm, "arm");
+    SmartDashboard.putData(arm);
     
     m_extensionArm = new ExtensionArm(zero, m_chassis);
     m_rotaryArm = new RotaryArm(zero, m_extensionArm, m_chassis);
 
-    m_autonManager = new AutonManager(m_chassis, m_pivot, m_rotaryArm, m_extensionArm, m_manipulator);
+    m_autonManager = new AutonManager(m_chassis, m_intake, m_rotaryArm, m_extensionArm, m_manipulator);
 
     m_chassis.setDefaultCommand(new TeleopDrive(m_chassis, m_driverGamepad));
 
@@ -134,7 +147,7 @@ public class RobotContainer {
       tab.add(m_rotaryArm);
       tab.add(m_manipulator);
       tab.add(m_hopper);
-      tab.add(m_pivot);
+      tab.add(m_intake);
       m_chassis.shuffleboardVom(Shuffleboard.getTab("Swerve Modules"));
     }
   }
@@ -145,7 +158,7 @@ public class RobotContainer {
    *
    * @return the driver gamepad
    */
-  public static Joystick getDriverGamepad() {
+  public static XboxController getDriverGamepad() {
     return m_driverGamepad;
   }
 
@@ -155,7 +168,7 @@ public class RobotContainer {
    *
    * @return the weapons game pad
    */
-  public static Joystick getWeaponsGamepad() {
+  public static XboxController getWeaponsGamepad() {
     return m_weaponsGamepad;
   }
 
@@ -169,7 +182,7 @@ public class RobotContainer {
 
     //Driver Gamepad:
     //Intake
-    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RBUMPER).onTrue(new ToggleIntake(m_pivot));
+    new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RBUMPER).onTrue(new ToggleIntake(m_intake));
 
     //Chassis
     new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new FlipFieldOriented(m_chassis));
@@ -179,7 +192,12 @@ public class RobotContainer {
 
     if (Constants.debugMode) {
       new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
-      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlaceToPlace(m_chassis, m_autonManager));
+      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlacementPosition(m_chassis, m_autonManager));
+
+      double balanceDeadband = 5.0; //This should go in Constants later
+      double omegaDeadband = 7.0;
+      double zeroPitch = -8.211; //Also constants
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new Balance(m_chassis));
     }
 
     //Weapons Gamepad:
@@ -195,28 +213,30 @@ public class RobotContainer {
                     new ToggleGrabber(m_manipulator),
                     new AutoZeroExtensionArm(m_extensionArm),
                     new AutoZeroRotryArm(m_rotaryArm),
-                    new GoToMidScoring(m_rotaryArm, m_extensionArm)
+                    new GoToMidScoringCube(m_rotaryArm, m_extensionArm)
     ));*/
 
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_RBUMPER).onTrue(new ToggleBrake(m_rotaryArm));
-    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).onTrue(new ToggleGrabber(m_manipulator));
+    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).onTrue(new ToggleManipulator(m_manipulator));
 /*    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new AutoZeroExtensionArm(m_ExtensionArm));
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new AutoZeroRotryArm(m_RotaryArm));*/
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new GoToHighScoring(m_rotaryArm, m_extensionArm));
     // new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new GoToPickupCube(m_rotaryArm, m_extensionArm));
-    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new GoToMidScoring(m_rotaryArm, m_extensionArm));
-//    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToPickupCone(m_rotaryArm, m_extensionArm));
-    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToPickupCone(m_rotaryArm, m_extensionArm));
+    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_E).whileTrue(new GoToMidScoringCones(m_rotaryArm, m_extensionArm));
+//    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToPickupOffGround(m_rotaryArm, m_extensionArm));
+    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToPickupOffGround(m_rotaryArm, m_extensionArm));
 //    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_W).whileTrue(new GoToLowScoring(m_rotaryArm, m_extensionArm));
-    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_S).whileTrue(new ReverseHopper(m_hopper, m_pivot));
+    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_S).whileTrue(new GoToMidScoringCube(m_rotaryArm, m_extensionArm));
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new SequentialCommandGroup(
             new AutoZeroExtensionArm(m_extensionArm),
             new AutoZeroRotryArm(m_rotaryArm))
     );
 
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ReverseHopper(m_hopper));
+
     /*
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new GoToHighScoring(m_RotaryArm, m_ExtensionArm));
-    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToMidScoring(m_RotaryArm, m_ExtensionArm));
+    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToMidScoringCube(m_RotaryArm, m_ExtensionArm));
     new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToLowScoring(m_RotaryArm, m_ExtensionArm));
     */
 
@@ -229,19 +249,16 @@ public class RobotContainer {
   }
 
   /**
-   * Resets odometry to 0, 0, 0
+   * Resets odometry using april tags
+   * @return whether the update was successful or not
    */
-  public boolean resetOdometry() {
-     OdoPosition positionToResetTo = m_limelight.calculate();
-    if (positionToResetTo == null) {
-      return false;
+  public boolean resetOdometryWithAprilTags() {
+    OdoPosition positionToResetTo = m_limelight.calculate();
+    if (positionToResetTo != null) {
+      m_chassis.resetOdometry(positionToResetTo.getPosition());
+      return true;
     }
-    m_chassis.resetOdometry(positionToResetTo.getPosition());
-    return true;
-  }
-
-  public void resetOdometryWithoutApril() {
-    m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
+    return false;
   }
 
 
@@ -250,7 +267,7 @@ public class RobotContainer {
    *
    * @return the auton routine
    */
-  public Command getAutonCmd() {
+  public CommandBase getAutonCmd() {
     return m_autonManager.pick();
   }
 
@@ -265,4 +282,45 @@ public class RobotContainer {
             );
   }
 
+  /**
+   * Robot container periodic method
+   */
+  public void periodic() {
+    if (counter == 10) {
+      CommandBase toRun = m_autonManager.pick();
+      try {
+        m_chassis.updateField2DFromTrajectory(((AutonCommand) toRun).getTrajectory());
+      }
+      catch (ClassCastException ignored) {
+
+      }
+        counter = -1;
+    }
+    counter++;
+  }
+
+  /**
+   * resets odometry to a position passed in
+   * @param pose the position to reset odometry to
+   */
+  public void resetOdometryTo(Pose2d pose) {
+    m_chassis.resetOdometry(pose);
+  }
+
+  /**
+   * Makes a command to unclamp the manipulator. Should be used on teleop init to make sure that we don't enable and zero with manipulator clamped.
+   * @return the command to unclamp manipulator
+   */
+  public CommandBase unClampManipulator() {
+    return new UnClampManipulator(m_manipulator);
+  }
+
+  /**
+   * Resets odometry without april tags to 0, 0, 0.
+   * This is needed because the absolute encoders don't turn on for a while.
+   * The logic in Robot.Java should make it so that this can't get ran periodically
+   */
+  public void resetOdometryWithoutAprilTag() {
+    m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
+  }
 }

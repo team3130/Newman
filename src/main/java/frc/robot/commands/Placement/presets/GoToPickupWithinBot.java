@@ -2,26 +2,24 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Placement;
+package frc.robot.commands.Placement.presets;
 
-import com.ctre.phoenix.schedulers.ConcurrentScheduler;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.ExtensionArm;
 
-/** An example command that uses an example subsystem. */
-public class ExtendExtension extends CommandBase {
+/** A command to go to the mid-scoring position. */
+public class GoToPickupWithinBot extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final ExtensionArm m_placementExtension;
+  private final ExtensionArm m_extensionArm;
 
   /**
-   * Creates a new Extend Extension command
+   * Creates a new GoToMidScoringCube preset.
    *
-   * @param extension The subsystem used by this command.
+   * @param extension The Extension arm subsystem which is used by this command.
    */
-  public ExtendExtension(ExtensionArm extension) {
-    m_placementExtension = extension;
+  public GoToPickupWithinBot(ExtensionArm extension) {
+    m_extensionArm = extension;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(extension);
   }
@@ -29,29 +27,23 @@ public class ExtendExtension extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (Constants.debugMode) {
-      m_placementExtension.updateValues();
-    }
-    m_placementExtension.extendArmFull();
+    m_extensionArm.extendArmTo(Constants.Extension.kPositionWithinBot);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
   }
-
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_placementExtension.stop();
-
+    m_extensionArm.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_extensionArm.atPosition();
   }
 }

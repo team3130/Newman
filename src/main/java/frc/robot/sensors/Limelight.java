@@ -24,10 +24,13 @@ public class Limelight {
 
     protected PhotonCamera camera;
 
-    private static ShuffleboardTab tab = Shuffleboard.getTab("PhotonCamera");
+    private static final ShuffleboardTab tab = Shuffleboard.getTab("PhotonCamera");
     AprilTagFieldLayout aprilTagFieldLayout;
     VisionMedianFilter filter;
     int successfulUpdates = 0;
+
+    GenericEntry n_yaw;
+    GenericEntry n_pitch;
 
     protected double lastReadTime = 0;
 
@@ -44,6 +47,9 @@ public class Limelight {
         if (Constants.debugMode) {
             SmartDashboard.putData(filter);
         }
+
+        n_yaw = Shuffleboard.getTab("PhotonVision").add("Yaw", 0).getEntry();
+        n_pitch = Shuffleboard.getTab("PhotonVision").add("Pitch", 0).getEntry();
     }
 
     /**
@@ -92,7 +98,7 @@ public class Limelight {
             // the position of the bot relative to the april tag
             Pose3d position = PhotonUtils.estimateFieldToRobotAprilTag(
                     bestCameraToTarget,
-                    aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(),
+                    pose3d.get(),
                     cameraToCenterOfBot);
 
             /* updates the best value that we will return on the last iteration,

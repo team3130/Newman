@@ -7,14 +7,28 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Newman_Constants.Constants;
 
 public class Robot extends TimedRobot {
-  private Timer timer;
-  private RobotContainer m_robotContainer;
-  private boolean first = true;
 
+  /**
+   * A timer for resetting odometry. Gets started on robotInit and will run until we reset odometry with april tags
+   */
+  private Timer timer;
+
+  /**
+   * The robot container singleton which declares button bindings and initializes subsystems
+   */
+  private RobotContainer m_robotContainer;
+
+  /**
+   * Whether we have reset odometry without april tags yet
+   */
+  private boolean haveResetManually = false;
+
+  /**
+   * Initializes robot container and the timer for resetting odometry.
+   */
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
@@ -23,22 +37,30 @@ public class Robot extends TimedRobot {
     timer.start();
   }
 
+  /**
+   * Gets ran every loop while code is running on the roborio.
+   * Runs the command scheduler and {@link RobotContainer#periodic()}.
+   * Has logic to reset odometry based off of april tags after a certain amount of time to allow
+   * for the absolute encoders to start up. If we can't see april tags then we reset to 0, 0.
+   */
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    m_robotContainer.periodic();
     if (timer.hasElapsed(Constants.kResetTime)) {
-      if (m_robotContainer.resetOdometry()) {
-        timer.reset();
-        timer.stop();
+      if (!haveResetManually) {
+        m_robotContainer.resetOdometryWithoutAprilTag();
+        haveResetManually = true; // makes it so this if statement won't trigger again
       }
-      else {
-        if (first) {
-          m_robotContainer.resetOdometryWithoutApril();
-          first = false;
+      else { // if we have already reset odometry with april tags then attempt to reset with april tags
+        if (m_robotContainer.resetOdometryWithAprilTags()) {
+          // when it was successful cut off this who sh-bang from running
+          timer.reset();
+          timer.stop();
         }
       }
     }
-    }
+  }
 
     @Override
     public void disabledInit () {
@@ -52,10 +74,15 @@ public class Robot extends TimedRobot {
     public void disabledExit () {
     }
 
-    @Override
+  /**
+   * Gets ran when we enable in auton.
+   * Schedules the auton command that is selected on network tables. Default is DoNothing
+   */
+  @Override
     public void autonomousInit () {
       CommandScheduler.getInstance().cancelAll();
-      CommandScheduler.getInstance().schedule(new SequentialCommandGroup(m_robotContainer.zeroCommand(), m_robotContainer.getAutonCmd()));
+      CommandScheduler.getInstance().schedule(m_robotContainer.getAutonCmd());
+    
     }
 
     @Override
@@ -66,10 +93,17 @@ public class Robot extends TimedRobot {
     public void autonomousExit () {
     }
 
-    @Override
+  /**
+   * Gets ran when we start teleop / when we enable in teleop.
+   * Zeroes the rotary and extension arms and unclamps the manipulator.
+   */
+  @Override
     public void teleopInit () {
       CommandScheduler.getInstance().cancelAll();
+      // zero the rotary arm into frame perimeter for both safety and resetting encoders.
       CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
+      // un clamp the manipulator so that we don't zero the arm into a game element
+      CommandScheduler.getInstance().schedule(m_robotContainer.unClampManipulator());
     }
 
     @Override

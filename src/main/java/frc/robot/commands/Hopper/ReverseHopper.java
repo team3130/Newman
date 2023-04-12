@@ -6,34 +6,31 @@ package frc.robot.commands.Hopper;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Hopper;
-import frc.robot.subsystems.IntakePivot;
 
 /** An example command that uses an example subsystem. */
 public class ReverseHopper extends CommandBase {
   private final Hopper m_hopper;
-  private final IntakePivot m_pivot;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param hopper The subsystem used by this command.
    */
-  public ReverseHopper(Hopper hopper, IntakePivot pivot) {
+  public ReverseHopper(Hopper hopper) {
     m_hopper = hopper;
-    m_pivot = pivot;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(hopper, pivot);
+    addRequirements(hopper);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_hopper.spitToDumpHopper();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_hopper.spitToDumpHopper();
   }
 
   // Called once the command ends or is interrupted.
