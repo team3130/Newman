@@ -14,6 +14,8 @@ import frc.robot.subsystems.Chassis;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import javax.sound.sampled.SourceDataLine;
+
 public class HolonomicControllerCommand extends CommandBase {
   protected final Timer m_timer = new Timer();
   protected final PathPlannerTrajectory m_trajectory;
@@ -48,6 +50,9 @@ public class HolonomicControllerCommand extends CommandBase {
         // calculate the speeds and states of the motors
         ChassisSpeeds targetChassisSpeeds = m_controller.calculate(m_pose.get(), desiredState,
                 desiredState.holonomicRotation);
+
+            System.out.println("desired state: " + desiredState.toString());
+            System.out.println("position: " + m_pose.get());
         SwerveModuleState[] targetModuleStates = m_kinematics.toSwerveModuleStates(targetChassisSpeeds);
 
         // send the states to chassis
