@@ -3,19 +3,15 @@ package frc.robot.supportingClasses.Auton;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.Chassis;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-import javax.sound.sampled.SourceDataLine;
 
 public class HolonomicControllerCommand extends CommandBase {
   protected final Timer m_timer = new Timer();
@@ -68,16 +64,12 @@ public class HolonomicControllerCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        System.out.println("Timer elapsed: " + m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds()));
-        System.out.println("get total timeseconds: " + m_trajectory.getTotalTimeSeconds());
-        System.out.println("timer: " + m_timer.get());
         return m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds());
     }
 
     @Override
     public void end(boolean interrupted) {
         m_timer.stop();
-        System.out.println("Holo ended");
     }
 
     public double getTimeUntilEnd() {
