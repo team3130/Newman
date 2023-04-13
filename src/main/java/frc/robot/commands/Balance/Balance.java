@@ -39,6 +39,7 @@ public class Balance extends CommandBase {
   private boolean nearZero; 
   private boolean drivingPositive;
   private boolean hasSwitched;
+  private boolean timerIsOn;
  
   private Timer timer = new Timer();
 
@@ -70,6 +71,7 @@ public class Balance extends CommandBase {
     iterator = 0;
     timerIterator = 0;
     nearZero = false;
+    timerIsOn = false;
 
     timer.reset();
     timer.start();
@@ -97,13 +99,11 @@ public class Balance extends CommandBase {
   if( Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband){
     nearZero = true;
     hasSwitched = true;
-    timerIterator = 0;
-
-
+    timerIsOn = false;
   }
 
    if(!hasSwitched){
-    timerIterator = 0;
+      timerIsOn = false;
 
     if(Navx.getPitch() < pitchZero){
       SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity,0,0));
@@ -133,19 +133,21 @@ public class Balance extends CommandBase {
     else{
       m_chassis.stopModules();
 
-      if(timerIterator == 0){
+      if(!timerIsOn){
          timer.restart(); 
-         timerIterator++;
+         timerIsOn = true;
       }
      
      if(nearZero){ 
       if(timer.hasElapsed(0.5)){
         hasSwitched = false;
+       // timerIsOn = false;;
       }
     }
       else {
         if(timer.hasElapsed(0.80)){
           hasSwitched = false;
+         // timerIsOn = false;
         }
       }
   
