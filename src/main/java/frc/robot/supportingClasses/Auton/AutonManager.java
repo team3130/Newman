@@ -485,7 +485,7 @@ public class AutonManager {
      * @return the auton command for the generated trajectory wrapped
      */
     public CommandBase placeConeHighPlaceCubeHigh() {
-        PathPlannerTrajectory trajectoryHP = PathPlanner.loadPath("place cone high place cube high hp", new PathConstraints(1.5, 1.5));
+        PathPlannerTrajectory trajectoryHP = PathPlanner.loadPath("place two cones high hp", new PathConstraints(1.5, 1.5));
         return autonCommandGeneratorPlacement(trajectoryHP, true);
 
     /*  PathPlannerTrajectory trajectorynonHP = PathPlanner.loadPath(, safe_constraints);

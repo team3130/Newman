@@ -5,6 +5,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.EventMarker;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -167,7 +168,7 @@ public class AutonCommand extends CommandBase {
 
         markers.add(EventMarker.fromTime(List.of("DoNothing"), 0));
         markers.addAll(markerList);
-        markers.add(EventMarker.fromTime(List.of("DoNothing"), trajectory.getTotalTimeSeconds()));
+        markers.add(EventMarker.fromTime(List.of("DoNothing"), trajectory.getTotalTimeSeconds() * 100)); // set really far away so that the bin search thread doesn't hang
 
         markerToCommandMap = new HashMap<>();
 
@@ -411,7 +412,7 @@ public class AutonCommand extends CommandBase {
     public void execute() {
         // autony execute
         cmd.execute();
-
+        
         // for every command that we currently want to run, run its execute and check if it si finished and handle end
         for (int i = 0; i < indicesToRun.size(); i++) {
             // if there is a command that we are supposed to run right now, then run it until it ends
@@ -530,5 +531,14 @@ public class AutonCommand extends CommandBase {
      */
     public Rotation2d getStartRotation() {
         return trajectory.getInitialState().holonomicRotation;
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        super.initSendable(builder);
+        builder.addBooleanProperty("timer has elapsed", () -> m_timer.hasElapsed(trajectory.getTotalTimeSeconds()), null);
+        builder.addDoubleProperty("timer", () -> m_timer.getFPGATimestamp(), null);
+        builder.addDoubleProperty("Trajectory length", () -> trajectory.getTotalTimeSeconds(), null);
+        builder.addDoubleProperty("Holo time until end", () -> cmd.getTimeUntilEnd(), null);
     }
 }
