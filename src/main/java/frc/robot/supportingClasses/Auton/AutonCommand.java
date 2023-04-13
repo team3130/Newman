@@ -495,7 +495,7 @@ public class AutonCommand extends CommandBase {
                 runningIsDone = false;
             }
         }
-        return cmd.isFinished() && runningIsDone;
+        return cmd.isFinished();
     }
 
     /**
@@ -509,6 +509,8 @@ public class AutonCommand extends CommandBase {
         for (int index : indicesToRun) {
             commands[index].end(interrupted);
         }
+
+        m_chassis.stopModules();
 
         m_chassis.setAprilTagUsage(Constants.useAprilTags); // resets april tag usage to it's default state
     }
