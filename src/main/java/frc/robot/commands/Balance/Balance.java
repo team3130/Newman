@@ -37,7 +37,7 @@ public class Balance extends CommandBase {
 
 
   private boolean nearZero; 
-  private boolean drivingPositive;
+  private boolean drivingNegative;
   private boolean hasSwitched;
   private boolean timerIsOn;
  
@@ -66,10 +66,10 @@ public class Balance extends CommandBase {
     pitch = (Navx.getPitch());
 
     pitchVelocityCheck = false;
-    drivingPositive = true;
+    drivingNegative = true;
     hasSwitched = false;
     iterator = 0;
-    timerIterator = 0;
+    
     nearZero = false;
     timerIsOn = false;
 
@@ -108,18 +108,18 @@ public class Balance extends CommandBase {
     if(Navx.getPitch() < pitchZero){
       SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity,0,0));
       m_chassis.setModuleStates(moduleStates);
-      if(drivingPositive){ //maybe put a pitch  is around zero check for timer also 
+      if(drivingNegative){ //maybe put a pitch  is around zero check for timer also 
         hasSwitched = true;
-        drivingPositive = false;
+        drivingNegative = false;
       }
       else{hasSwitched = false;}
     }
     else{
       SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(-driveVelocity,0,0));
       m_chassis.setModuleStates(moduleStates);
-      if(!drivingPositive){
+      if(!drivingNegative){
         hasSwitched = true;
-        drivingPositive = true;
+        drivingNegative = true;
       }
       else{hasSwitched = false;}
 
@@ -141,7 +141,7 @@ public class Balance extends CommandBase {
      if(nearZero){ 
       if(timer.hasElapsed(0.5)){
         hasSwitched = false;
-       // timerIsOn = false;;
+       // timerIsOn = false;
       }
     }
       else {

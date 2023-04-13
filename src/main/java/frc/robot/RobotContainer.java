@@ -178,7 +178,7 @@ public class RobotContainer {
 
     if (Constants.debugMode) {
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new Balance(m_chassis));
-      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).onTrue(new SequentialCommandGroup(new DeadReckonBalance(m_chassis), m_autonManager.backDriveBalance(), new RileyPark(m_chassis)));
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).onTrue(new SequentialCommandGroup(new DeadReckonBalance(m_chassis), new RileyPark(m_chassis)));
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new RileyPark(m_chassis));
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RJOYSTICKPRESS).onTrue(new SequentialCommandGroup(new Balance(m_chassis), new RileyPark(m_chassis)));
       

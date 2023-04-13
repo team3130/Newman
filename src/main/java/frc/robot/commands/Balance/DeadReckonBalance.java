@@ -29,6 +29,8 @@ public class DeadReckonBalance extends CommandBase {
   private boolean distanceFlag;
   private boolean finished;
 
+  private double initPos;
+  
 
 
   /*
@@ -68,7 +70,7 @@ public class DeadReckonBalance extends CommandBase {
       //maybe instead of this condition for pitch read the direction change
       distanceFlag = true;
       m_chassis.stopModules();
-      finished = true;
+      
 
 
 
@@ -77,7 +79,19 @@ public class DeadReckonBalance extends CommandBase {
 
 
    }
+   else{
+    initPos = m_chassis.getPose2d().getTranslation().getX(); 
 
+    if(Math.abs(m_chassis.getPose2d().getTranslation().getX() - initPos) <= 0.4 ){ //0.4 is meters
+      moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(-driveSpeed,0,0));
+      m_chassis.setModuleStates(moduleStates);
+    }
+    else{
+      m_chassis.stopModules();
+      finished = true;
+    }
+
+   }
 
 
 
