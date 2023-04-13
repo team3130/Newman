@@ -60,7 +60,7 @@ public class ExtensionArm extends SubsystemBase {
    * Generic entry for updating the "I" value of the feedback controller on the extension arm
    */
   private final GenericEntry n_placementExtensionArmI;
-  private GenericEntry isInBox;
+  private GenericEntry isinBox;
 
   /**
    * Holds the last read "I" value from network tables. Is used in order to have fewer calls across CAN
@@ -143,7 +143,7 @@ public class ExtensionArm extends SubsystemBase {
     n_placementExtensionArmP = placement.add("p", Constants.Extension.kExtensionArmP).getEntry();
     n_placementExtensionArmI = placement.add("i", Constants.Extension.kExtensionArmI).getEntry();
     n_placementExtensionArmD = placement.add("d", Constants.Extension.kExtensionArmD).getEntry();
-    isInBox = placement.add("isInBox", false).getEntry();
+    isinBox = placement.add("isInBox", false).getEntry();
 
     accelerationManager = new AccelerationManager();
     gainFilter = new VelocityGainFilter(9, "extension", this::getSpeedTicksPerSecond, accelerationManager);
@@ -189,14 +189,14 @@ public class ExtensionArm extends SubsystemBase {
     BoundingBox[] boundingboxes = RobotContainer.getBoundingBoxes();
     for (int i = 0; i < boundingboxes.length; i++) {
       if (boundingboxes[i].boxBad(armPos)) {
-        isInBox.setBoolean(true);
+        isinBox.setBoolean(true);
         if (m_chassis.getX() - (r) <= Constants.Field.xPositionForGridBlue || m_chassis.getX() + (r) >= Constants.Field.xPositionForGridRed) {
           if (y > 0) {
             y = 0;
           }
         }
       } else {
-        isInBox.setBoolean(false);
+        isinBox.setBoolean(false);
       }
     }
   }
