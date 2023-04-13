@@ -68,12 +68,16 @@ public class HolonomicControllerCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
+        System.out.println("Timer elapsed: " + m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds()));
+        System.out.println("get total timeseconds: " + m_trajectory.getTotalTimeSeconds());
+        System.out.println("timer: " + m_timer.get());
         return m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds());
     }
 
     @Override
     public void end(boolean interrupted) {
         m_timer.stop();
+        System.out.println("Holo ended");
     }
 
     public double getTimeUntilEnd() {

@@ -412,8 +412,6 @@ public class AutonCommand extends CommandBase {
         // autony execute
         cmd.execute();
 
-        System.out.println(m_timer.get());
-
         // for every command that we currently want to run, run its execute and check if it si finished and handle end
         for (int i = 0; i < indicesToRun.size(); i++) {
             // if there is a command that we are supposed to run right now, then run it until it ends
@@ -500,6 +498,7 @@ public class AutonCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         cmd.end(interrupted);
+        System.out.println("stopping modules");
         m_chassis.stopModules();
 
         for (int index : indicesToRun) {
