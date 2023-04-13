@@ -4,12 +4,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Newman_Constants.Constants;
 
@@ -68,12 +64,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit () {
       CommandScheduler.getInstance().cancelAll();
-      CommandBase toRun = m_robotContainer.getAutonCmd();
-      SmartDashboard.putData(toRun);
-      CommandScheduler.getInstance().schedule(toRun);
-
-      // CommandScheduler.getInstance().schedule(m_robotContainer.packageAuton(m_robotContainer.getAutonCmd()));
-    
+      CommandScheduler.getInstance().schedule(m_robotContainer.packageAuton(m_robotContainer.getAutonCmd()));
     }
 
     @Override

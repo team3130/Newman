@@ -391,6 +391,7 @@ public class AutonCommand extends CommandBase {
      */
     @Override
     public void initialize() {
+        // ADD SOME CLAUSE FOR IF WE HAVEN'T SEEN A TARGET YET
         if (!useAprilTags) {
             m_chassis.resetOdometry(startPosition);
         }
