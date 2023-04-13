@@ -123,7 +123,7 @@ public class AutonManager {
         m_autonChooser.addOption("pull out", generatePullOut()); // as the name suggests its the safest option
         m_autonChooser.addOption("2 meters forward", generateExamplePathFromPoses());
         
-        m_autonChooser.addOption("marker path 2 cones HP", placeConeHighPlaceCubeHigh()); // really needs to be fixed. markers don't do anything right now yay
+        m_autonChooser.addOption("marker path 2 cones HP", placeTwoConesHP()); // really needs to be fixed. markers don't do anything right now yay
         // m_autonChooser.addOption("marker path 2 cones non-hp", loadTrajectory("place two cones non hp", true));
     }
 
@@ -301,7 +301,7 @@ public class AutonManager {
      * @param Current the current position of the robot or the position of the robot when we plan on running the command
      * @return the generated path as an Auton command
      */
-    public CommandBase backToStart(Pose2d Current) {
+    public AutonCommand backToStart(Pose2d Current) {
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 violent_constraints,
 
@@ -342,7 +342,7 @@ public class AutonManager {
      * @param current the current position on the field
      * @return the generated path in a wrapped command
      */
-    public CommandBase makeCmdToGoToHumanPlayerStation(Pose2d current) {
+    public AutonCommand makeCmdToGoToHumanPlayerStation(Pose2d current) {
         final double x_value;
         final double y_value;
         final double rotation;
@@ -430,6 +430,7 @@ public class AutonManager {
 
     /**
      * Place a cone in auton.
+     * Uses a sequential command group as opposed to markers.
      * Requires odometry from april tags to be off in auton and for the traajectory to not be transformed by alliance.
      * @return a command to place a cone in auton.
      */
@@ -484,12 +485,9 @@ public class AutonManager {
      * Place a cone in high at start and then place a cube in high.
      * @return the auton command for the generated trajectory wrapped
      */
-    public CommandBase placeConeHighPlaceCubeHigh() {
+    public AutonCommand placeTwoConesHP() {
         PathPlannerTrajectory trajectoryHP = PathPlanner.loadPath("place two cones high hp", new PathConstraints(1.5, 1.5));
         return autonCommandGeneratorPlacement(trajectoryHP, true);
-
-    /*  PathPlannerTrajectory trajectorynonHP = PathPlanner.loadPath(, safe_constraints);
-        AutonCommand commandnonHP = autonCommandGeneratorPlacement(trajectorynonHP);*/
     }
 
     /**
@@ -497,7 +495,7 @@ public class AutonManager {
      * Generates a trajectory to leave the community zone by going 1.5 meters forwards.
      * @return the generated trajectory in a wrapped command.
      */
-    public CommandBase generatePullOut() {
+    public AutonCommand generatePullOut() {
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(safe_constraints, 
         new PathPoint(
             new Translation2d(0, 0),
@@ -507,8 +505,7 @@ public class AutonManager {
         new PathPoint(new Translation2d(1.5, 0), new Rotation2d(0), new Rotation2d(0))
         );
 
-        AutonCommand command = autonCommandGenerator(trajectory, false);
-        return wrapCmd(command);
+        return autonCommandGenerator(trajectory, false);
     }
 
     /**
