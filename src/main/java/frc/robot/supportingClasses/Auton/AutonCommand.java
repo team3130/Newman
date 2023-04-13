@@ -313,20 +313,17 @@ public class AutonCommand extends CommandBase {
         //TODO: DOESN'T WORK
         while (low != high) {
             int midPosition = (low + high) / 2 ;
-            System.out.println("mid position: " + midPosition); // TODO: WAS ALWAYS 4
             if (m_timer.get() >= markers.get(midPosition).timeSeconds && m_timer.get() < markers.get(midPosition + 1).timeSeconds) {
                 return markers.get(midPosition);
             }
             if (m_timer.get() < markers.get(midPosition).timeSeconds) {
                 //TODO: NEVER RUNS
                 high = midPosition;
-                System.out.println("updated HIGH: " + high );
                 continue;
             }
             if (m_timer.get() > markers.get(midPosition).timeSeconds) {
                 //TOD: NEVER RUNS
                 low = midPosition;
-                System.out.println("UPDATED LOW: " + low);
             }
         }
         return markers.get(0);
@@ -394,7 +391,6 @@ public class AutonCommand extends CommandBase {
     @Override
     public void initialize() {
         if (!useAprilTags) {
-            System.out.println("resetting odometry to: " + startPosition);
             m_chassis.resetOdometry(startPosition);
         }
         m_chassis.setAprilTagUsage(useAprilTags);
@@ -415,6 +411,8 @@ public class AutonCommand extends CommandBase {
     public void execute() {
         // autony execute
         cmd.execute();
+
+        System.out.println(m_timer.get());
 
         // for every command that we currently want to run, run its execute and check if it si finished and handle end
         for (int i = 0; i < indicesToRun.size(); i++) {
@@ -437,7 +435,6 @@ public class AutonCommand extends CommandBase {
         // if a new marker has been stumbled across. Should only get ran when we want to initialize markers
         if (closest != current) {
             int toAdd = getIndexFromMap(closest);
-            System.out.println("To add: " + toAdd);
             // for debugging purposes this doesn't currently get ran
             if (closest.names.get(0).contains("end")) {
                  commands[toAdd].end(true);
@@ -457,11 +454,9 @@ public class AutonCommand extends CommandBase {
                 }
                 else {
                     indicesToRun.add(toAdd);
-                    System.out.println("adding indice to run");
                 }
             }
             current = closest;
-            System.out.println("------------------");
         }
     }
 
@@ -505,12 +500,11 @@ public class AutonCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         cmd.end(interrupted);
+        m_chassis.stopModules();
 
         for (int index : indicesToRun) {
             commands[index].end(interrupted);
         }
-
-        m_chassis.stopModules();
 
         m_chassis.setAprilTagUsage(Constants.useAprilTags); // resets april tag usage to it's default state
     }

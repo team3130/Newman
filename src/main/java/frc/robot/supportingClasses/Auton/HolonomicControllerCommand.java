@@ -3,6 +3,7 @@ package frc.robot.supportingClasses.Auton;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -51,8 +52,6 @@ public class HolonomicControllerCommand extends CommandBase {
         ChassisSpeeds targetChassisSpeeds = m_controller.calculate(m_pose.get(), desiredState,
                 desiredState.holonomicRotation);
 
-            System.out.println("desired state: " + desiredState.toString());
-            System.out.println("position: " + m_pose.get());
         SwerveModuleState[] targetModuleStates = m_kinematics.toSwerveModuleStates(targetChassisSpeeds);
 
         // send the states to chassis

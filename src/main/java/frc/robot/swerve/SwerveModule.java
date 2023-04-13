@@ -157,6 +157,7 @@ public class SwerveModule implements Sendable {
      * Default stop method to stop the motors
      */
     public void stop(){
+        System.out.println("Stopping " + side);
         m_steerMotor.set(ControlMode.PercentOutput, 0);
         m_driveMotor.set(ControlMode.PercentOutput, 0);
     }
