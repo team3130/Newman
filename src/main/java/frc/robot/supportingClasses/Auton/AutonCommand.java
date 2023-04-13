@@ -23,7 +23,6 @@ import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.RotaryArm;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -111,6 +110,11 @@ public class AutonCommand extends CommandBase {
     protected final HashMap<EventMarker, Integer> markerToCommandMap;
 
     /**
+     * The indices of commands that we are running right now.
+     */
+    protected final ArrayList<Integer> indicesToRun = new ArrayList<>(7); // what indices of commands run right now
+
+    /**
      * A function to get the index using the optimize function given an event marker. Returns the index in {@link #commands}
      */
     protected final Function<EventMarker, Integer> getOptimizedIndex;
@@ -164,7 +168,7 @@ public class AutonCommand extends CommandBase {
 
         markers.add(EventMarker.fromTime(List.of("DoNothing"), 0));
         markers.addAll(markerList);
-        markers.add(EventMarker.fromTime(List.of("DoNothing"), trajectory.getTotalTimeSeconds() + 0.5)); // set really far away so that the bin search thread doesn't hang
+        markers.add(EventMarker.fromTime(List.of("DoNothing"), trajectory.getTotalTimeSeconds() * 100)); // set really far away so that the bin search thread doesn't hang
 
         markerToCommandMap = new HashMap<>();
 
@@ -303,13 +307,11 @@ public class AutonCommand extends CommandBase {
         else if (markers.size() == 1) {
             return markers.get(0);
         }
-        else if (markers.get(markers.size() - 1).timeSeconds < m_timer.get()) {
-            return markers.get(markers.size() - 1);
-        }
 
         int low = 0;
         int high = markers.size() - 1;
         // bin search for closest one
+        //TODO: DOESN'T WORK
         while (low != high) {
             int midPosition = (low + high) / 2 ;
             if (m_timer.get() >= markers.get(midPosition).timeSeconds && m_timer.get() < markers.get(midPosition + 1).timeSeconds) {
@@ -395,6 +397,7 @@ public class AutonCommand extends CommandBase {
         m_chassis.setAprilTagUsage(useAprilTags);
 
         cmd.initialize();
+        indicesToRun.clear();
 
         if (markers.size() >= 1) {
             current = markers.get(0);
@@ -409,6 +412,16 @@ public class AutonCommand extends CommandBase {
     public void execute() {
         // autony execute
         cmd.execute();
+        
+        // for every command that we currently want to run, run its execute and check if it si finished and handle end
+        for (int i = 0; i < indicesToRun.size(); i++) {
+            // if there is a command that we are supposed to run right now, then run it until it ends
+            commands[indicesToRun.get(i)].execute();
+            if (commands[indicesToRun.get(i)].isFinished()) {
+                commands[indicesToRun.get(i)].end(false);
+                indicesToRun.remove(i--);
+            }
+        }
 
         PathPlannerTrajectory.EventMarker closest;
         // event markers
@@ -421,12 +434,26 @@ public class AutonCommand extends CommandBase {
         // if a new marker has been stumbled across. Should only get ran when we want to initialize markers
         if (closest != current) {
             int toAdd = getIndexFromMap(closest);
-            // if it has end in it then it should cancel the command if possible
-            if (!closest.names.get(0).contains("end")) {
-                CommandScheduler.getInstance().schedule(commands[toAdd]);
+            // for debugging purposes this doesn't currently get ran
+            if (closest.names.get(0).contains("end")) {
+                 commands[toAdd].end(true);
+                // remove the marker that is running right now
+                for (int i = 0; i < indicesToRun.size(); i++) {
+                    if (commands[indicesToRun.get(i)] == commands[toAdd]) {
+                        // remove and keep the loop running
+                        indicesToRun.remove(i--);
+                    }
+                }
             }
+            // for our purposed read this one
             else {
-                CommandScheduler.getInstance().cancel(commands[toAdd]);
+                commands[toAdd].initialize();
+                if (useOptimized) {
+                    indicesToRun.add(toAdd);
+                }
+                else {
+                    indicesToRun.add(toAdd);
+                }
             }
             current = closest;
         }
@@ -456,6 +483,12 @@ public class AutonCommand extends CommandBase {
      */
     @Override
     public boolean isFinished() {
+        boolean runningIsDone = true;
+        for (int index : indicesToRun) {
+            if (!commands[index].isFinished()) {
+                runningIsDone = false;
+            }
+        }
         return cmd.isFinished();
     }
 
@@ -466,12 +499,12 @@ public class AutonCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         cmd.end(interrupted);
-        m_chassis.stopModules(); // stop modules on end
+        System.out.println("stopping modules");
+        m_chassis.stopModules();
 
-        // cancel all commands that could be running
-        CommandScheduler scheduler = CommandScheduler.getInstance();
-        Arrays.stream(commands).forEach(scheduler::cancel);
-        scheduler = null; //this was just to fix a warning about destruction of ptr (ON THE STACK NOT DELTETING OBJECT FROM HEAP)
+        for (int index : indicesToRun) {
+            commands[index].end(interrupted);
+        }
 
         m_chassis.setAprilTagUsage(Constants.useAprilTags); // resets april tag usage to it's default state
     }
@@ -498,5 +531,14 @@ public class AutonCommand extends CommandBase {
      */
     public Rotation2d getStartRotation() {
         return trajectory.getInitialState().holonomicRotation;
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        super.initSendable(builder);
+        builder.addBooleanProperty("timer has elapsed", () -> m_timer.hasElapsed(trajectory.getTotalTimeSeconds()), null);
+        builder.addDoubleProperty("timer", () -> m_timer.getFPGATimestamp(), null);
+        builder.addDoubleProperty("Trajectory length", () -> trajectory.getTotalTimeSeconds(), null);
+        builder.addDoubleProperty("Holo time until end", () -> cmd.getTimeUntilEnd(), null);
     }
 }

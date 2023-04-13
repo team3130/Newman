@@ -2,16 +2,12 @@ package frc.robot.supportingClasses.Gains;
 
 import java.util.Objects;
 
-/**
- * An instance in time and the velocity, percent output, and time at that instant.
- */
-public class GainData implements Cloneable, Comparable<GainData> {
-    protected final double velocity; // in meters per second
-    protected final double percentOutput; // percent output of the motor at this instant
-    protected final double time; // the time at this instant
+public class GainData implements Cloneable, Comparable {
+    protected final double velocity;
+    protected final double percentOutput;
+    protected final double time;
 
     /**
-     * Creates a new GainData object that represents a point in time
      * @param velocity      the velocity at the instant
      * @param percentOutput the percent output at that instant
      * @param time          the time at that instant
@@ -60,6 +56,18 @@ public class GainData implements Cloneable, Comparable<GainData> {
     }
 
     /**
+     * @param o the object to be compared.
+     * @return -1 for less than, 0 for same, and 1 for greater than
+     */
+    @Override
+    public int compareTo(Object o) {
+        if (o != null && getClass() == o.getClass()) {
+            return Double.compare(this.getVelocityGain(), ((GainData) o).getVelocityGain());
+        }
+        throw new RuntimeException("The passed in object was either null or was not the same class as this.");
+    }
+
+    /**
      * Default equate that checks the fields
      * @param o the other object
      * @return whether they are the same
@@ -78,14 +86,5 @@ public class GainData implements Cloneable, Comparable<GainData> {
     @Override
     public int hashCode() {
         return Objects.hash(velocity, percentOutput, time);
-    }
-
-    /**
-     * @param other the object to be compared.
-     * @return -1 for less than, 0 for same, and 1 for greater than
-     */
-    @Override
-    public int compareTo(GainData other) {
-        return Double.compare(this.getVelocityGain(), other.getVelocityGain());
     }
 }

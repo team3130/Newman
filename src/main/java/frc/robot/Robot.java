@@ -22,18 +22,11 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-
-    // the timer to wait for navx to reset more and for the absoulte encoders to reset as well as for the rel encoders to be updated
     timer = new Timer();
     timer.reset();
     timer.start();
   }
 
-  /**
-   * Gets called periodically (every 20 ms).
-   * Handles logic to reset odometry when we see an april tag.
-   * Also tells chassis to update odometry.
-   */
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
@@ -75,7 +68,12 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit () {
       CommandScheduler.getInstance().cancelAll();
-      CommandScheduler.getInstance().schedule(m_robotContainer.packageAuton(m_robotContainer.getAutonCmd()));
+      CommandBase toRun = m_robotContainer.getAutonCmd();
+      SmartDashboard.putData(toRun);
+      CommandScheduler.getInstance().schedule(toRun);
+
+      // CommandScheduler.getInstance().schedule(m_robotContainer.packageAuton(m_robotContainer.getAutonCmd()));
+    
     }
 
     @Override
