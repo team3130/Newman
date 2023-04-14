@@ -13,6 +13,8 @@ public class Navx {
 
     private double angle = 0d;
 
+    private static double zeroPitch = Constants.Balance.defaultPitchZero;
+
     public static Navx GetInstance() {
         if (m_pInstance == null) m_pInstance = new Navx();
         return m_pInstance;
@@ -149,6 +151,14 @@ public class Navx {
 
     public static boolean getNavxPresent() {
         return m_bNavXPresent;
+    }
+
+    public static void setPitchZero(double val){
+        zeroPitch = val;
+    }
+
+    public static double getZeroPitch(){
+        return zeroPitch;
     }
 
     public static void outputToShuffleboard() {

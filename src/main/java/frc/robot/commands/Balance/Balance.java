@@ -22,16 +22,15 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class Balance extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Chassis m_chassis;
-  private final double pitchZero = -6.75; //should go in Constants
-  private final double pitchDeadband = 3.5;
-  private final double pitchVelocityDeadband = 0.1;
+  private double pitchZero =Constants.Balance.defaultPitchZero; //should go in Constants
+  private final double pitchDeadband = Constants.Balance.pitchDeadband;
+  private final double pitchVelocityDeadband = Constants.Balance.pitchVelocityDeadband;
 
 
   private double direction;
   private int iterator;
-  private int timerIterator;
   private boolean pitchVelocityCheck = false;
-  private final double driveVelocity = 0.625;
+  private final double driveVelocity = Constants.Balance.driveSpeed;
   private double oddPitch;
   private double pitch;
 
@@ -61,6 +60,7 @@ public class Balance extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    pitchZero = Navx.getZeroPitch();
 
     oddPitch = 0;
     pitch = (Navx.getPitch());
@@ -84,7 +84,8 @@ public class Balance extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    System.out.println("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPpp Pitch is " + Navx.getPitch());
+
     pitch = (Navx.getPitch());
  
 
@@ -94,6 +95,13 @@ public class Balance extends CommandBase {
       pitchVelocityCheck = (Math.abs(oddPitch - pitch ) <= pitchVelocityDeadband);
      }
     else{oddPitch = Navx.getPitch();}
+
+    if(pitchVelocityCheck){
+      System.out.println("VELOCITY CHECK PASSED");
+    }
+    if(Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband){
+      System.out.println("NEAR ZERO " + (Navx.getPitch() - pitchZero) + " AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    }
 
     
   if( Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband){
@@ -167,7 +175,8 @@ public class Balance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pitchVelocityCheck && Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband;
+    //return pitchVelocityDeadband && Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband;
+    return Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband;
   }
 
   public double getDirection() {

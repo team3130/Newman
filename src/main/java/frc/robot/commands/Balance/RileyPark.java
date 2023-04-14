@@ -21,8 +21,7 @@ public class RileyPark extends CommandBase {
    * @param subsystem The subsystem used by this command.
    */
   public RileyPark(Chassis chassis) {
-    timer.reset();
-    timer.start();
+    
     m_chassis = chassis;
   
     // Use addRequirements() here to declare subsystem dependencies.
@@ -31,7 +30,10 @@ public class RileyPark extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    timer.reset();
+    timer.start();
+  }
 
   
   // Called every time the scheduler runs while the command is scheduled.

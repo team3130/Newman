@@ -83,6 +83,7 @@ public class Robot extends TimedRobot {
   @Override
     public void autonomousInit () {
       CommandScheduler.getInstance().cancelAll();
+      //Navx.setPitchZero(Navx.getPitch());
       CommandScheduler.getInstance().schedule(m_robotContainer.getAutonCmd());
     
     }
@@ -106,6 +107,9 @@ public class Robot extends TimedRobot {
       CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
       // un clamp the manipulator so that we don't zero the arm into a game element
       CommandScheduler.getInstance().schedule(m_robotContainer.unClampManipulator());
+
+      //SHOULD GO TO AUTONINIT AFTER TESTING
+      Navx.setPitchZero(Navx.getPitch());
     }
 
     @Override
