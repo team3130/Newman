@@ -22,6 +22,6 @@ public class GoToPickupOffGround extends PlacementSetpoint {
    */
   public GoToPickupOffGround(RotaryArm rotaryArm, ExtensionArm extensionArm) {
       // extension arm, rotary arm, the rotary arm high position, the max extension of the extension arm, the angle before bumpers.
-      super(rotaryArm, extensionArm, Constants.offGroundAngleCone, Constants.Extension.offGroundPosition, 15);
+      super(rotaryArm, extensionArm, Constants.offGroundAngleCone, Constants.Extension.offGroundPosition, 35);
   }
 }
