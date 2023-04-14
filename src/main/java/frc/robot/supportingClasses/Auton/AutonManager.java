@@ -517,7 +517,7 @@ public class AutonManager {
         return wrapCmd(command);
     }
 
-    public CommandBase backDriveBalance() {
+    public CommandBase setpointBalance(int dir) {
         // the trajectory being made
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 /* Max velocity and acceleration the path will follow along the trapezoid profile */
@@ -526,7 +526,7 @@ public class AutonManager {
                 new PathPoint(
                         m_chassis.getPose2d().getTranslation(),
                         new Rotation2d(), new Rotation2d()),
-                new PathPoint(new Translation2d(m_chassis.getPose2d().getTranslation().getX() - 0.8, m_chassis.getPose2d().getTranslation().getY()), new Rotation2d(), new Rotation2d(0))
+                new PathPoint(new Translation2d(m_chassis.getPose2d().getTranslation().getX() + dir*Constants.Balance.distanceToStationMiddle, m_chassis.getPose2d().getTranslation().getY()), new Rotation2d(), new Rotation2d(0))
         );
 
         

@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import frc.robot.Newman_Constants.Constants;
 import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -61,12 +62,12 @@ public class DeadReckonBalance extends CommandBase {
   public void execute() {
 
    if(!distanceFlag){
-    if (Math.abs(Navx.getPitch() - pitchZero) >= 8.0 && !onRamp) { //8 is how many degrees for the bot to understand it is on the ramp
+    if (Math.abs(Navx.getPitch() - pitchZero) >= Constants.Balance.changeForRampPitch && !onRamp) { //8 is how many degrees for the bot to understand it is on the ramp
       onRamp = true;
       
     }
 
-    if(onRamp && Navx.getPitch() - pitchZero >= 5 ){ //Assumes positive pitch is when the bot is tilted the second time
+    if(onRamp && Navx.getPitch() - pitchZero >= Constants.Balance.changeForRampPitch ){ //Assumes positive pitch is when the bot is tilted the second time
       //maybe instead of this condition for pitch read the direction change
       distanceFlag = true;
       m_chassis.stopModules();
@@ -82,7 +83,7 @@ public class DeadReckonBalance extends CommandBase {
    else{
     initPos = m_chassis.getPose2d().getTranslation().getX(); 
 
-    if(Math.abs(m_chassis.getPose2d().getTranslation().getX() - initPos) <= 0.4 ){ //0.4 is meters
+    if(Math.abs(m_chassis.getPose2d().getTranslation().getX() - initPos) <= Constants.Balance.tippedtoStationCenter ){ //0.4 is meters
       moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(-driveSpeed,0,0));
       m_chassis.setModuleStates(moduleStates);
     }
