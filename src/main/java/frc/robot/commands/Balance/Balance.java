@@ -39,6 +39,7 @@ public class Balance extends CommandBase {
   private boolean drivingNegative;
   private boolean hasSwitched;
   private boolean timerIsOn;
+  private boolean finished;
  
   private Timer timer = new Timer();
 
@@ -72,6 +73,8 @@ public class Balance extends CommandBase {
     
     nearZero = false;
     timerIsOn = false;
+
+    finished = false;
 
     timer.reset();
     timer.start();
@@ -113,18 +116,19 @@ public class Balance extends CommandBase {
    if(!hasSwitched){
       timerIsOn = false;
 
-    if(Navx.getPitch() < pitchZero){
-      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity,0,0));
-      m_chassis.setModuleStates(moduleStates);
+      if(Navx.getPitch() < pitchZero){
+    
+        m_chassis.drive(driveVelocity, 0, 0, false);
+
       if(drivingNegative){ //maybe put a pitch  is around zero check for timer also 
         hasSwitched = true;
         drivingNegative = false;
       }
       else{hasSwitched = false;}
     }
-    else{
-      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(-driveVelocity,0,0));
-      m_chassis.setModuleStates(moduleStates);
+      else{
+        m_chassis.drive(-driveVelocity, 0, 0, false);
+
       if(!drivingNegative){
         hasSwitched = true;
         drivingNegative = true;
@@ -147,15 +151,18 @@ public class Balance extends CommandBase {
       }
      
      if(nearZero){ 
-      if(timer.hasElapsed(0.5)){
-        hasSwitched = false;
+      m_chassis.brakeModules();
+          if(timer.hasElapsed(0.5)){
+            hasSwitched = false;
+            finished = Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband;
        // timerIsOn = false;
       }
     }
       else {
-        if(timer.hasElapsed(0.80)){
-          hasSwitched = false;
-         // timerIsOn = false;
+        m_chassis.brakeModules();
+          if(timer.hasElapsed(0.80)){
+            hasSwitched = false;
+            // timerIsOn = false;
         }
       }
   
@@ -176,7 +183,7 @@ public class Balance extends CommandBase {
   @Override
   public boolean isFinished() {
     //return pitchVelocityDeadband && Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband;
-    return Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband;
+    return finished;
   }
 
   public double getDirection() {

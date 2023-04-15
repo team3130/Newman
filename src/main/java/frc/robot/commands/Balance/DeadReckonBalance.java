@@ -48,8 +48,7 @@ public class DeadReckonBalance extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveSpeed,0,0));
-    m_chassis.setModuleStates(moduleStates);
+    m_chassis.drive(driveSpeed, 0, 0, false);
 
     finished = false;
     distanceFlag = false;
@@ -83,9 +82,8 @@ public class DeadReckonBalance extends CommandBase {
    else{
     initPos = m_chassis.getPose2d().getTranslation().getX(); 
 
-    if(Math.abs(m_chassis.getPose2d().getTranslation().getX() - initPos) <= Constants.Balance.tippedtoStationCenter ){ //0.4 is meters
-      moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(-driveSpeed,0,0));
-      m_chassis.setModuleStates(moduleStates);
+    if(Math.abs(m_chassis.getPose2d().getTranslation().getX() - initPos) <= Constants.Balance.tippedtoStationCenterDistance){ //0.4 is meters
+      m_chassis.drive(-driveSpeed,0,0, false);
     }
     else{
       m_chassis.stopModules();

@@ -53,8 +53,7 @@ public class OnToRamp extends CommandBase {
   public void execute() {
     double angVelocity = Math.toRadians( initHeading - Navx.getYaw());
 
-    SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity * direction,0,Constants.Balance.HeadingkP * angVelocity));
-    m_chassis.setModuleStates(moduleStates);
+    m_chassis.drive(-driveVelocity, 0, 0, false);
    
   }
 

@@ -526,7 +526,7 @@ public class AutonManager {
                 new PathPoint(
                         m_chassis.getPose2d().getTranslation(),
                         new Rotation2d(), new Rotation2d()),
-                new PathPoint(new Translation2d(m_chassis.getPose2d().getTranslation().getX() + dir*Constants.Balance.distanceToStationMiddle, m_chassis.getPose2d().getTranslation().getY()), new Rotation2d(), new Rotation2d(0))
+                new PathPoint(new Translation2d(m_chassis.getPose2d().getTranslation().getX() + dir*Constants.Balance.toStationCenterDistance, m_chassis.getPose2d().getTranslation().getY()), new Rotation2d(), new Rotation2d(0))
         );
 
         
