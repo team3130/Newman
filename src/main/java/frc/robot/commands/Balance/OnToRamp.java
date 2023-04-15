@@ -18,6 +18,8 @@ public class OnToRamp extends CommandBase {
   private Timer timer = new Timer();
   private final double driveVelocity = Constants.Balance.driveSpeed;
   private int direction;
+
+  private double initHeading = Navx.getYaw();
  
 
   /*
@@ -40,6 +42,8 @@ public class OnToRamp extends CommandBase {
     timer.reset();
     timer.start();
 
+    initHeading = Navx.getYaw();
+
  
   }
 
@@ -47,7 +51,9 @@ public class OnToRamp extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity * direction,0,0));
+    double angVelocity = Math.toRadians( initHeading - Navx.getYaw());
+
+    SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity * direction,0,Constants.Balance.HeadingkP * angVelocity));
     m_chassis.setModuleStates(moduleStates);
    
   }
@@ -62,6 +68,6 @@ public class OnToRamp extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(Navx.getPitch() - Navx.getZeroPitch()) >= Constants.Balance.changeForRampPitch;
+    return Math.abs(Navx.getPitch() - Navx.getZeroPitch()) >= Constants.Balance.changeForRampPitch || timer.hasElapsed(Constants.Balance.safetyTimeLimit);
   }
 }
