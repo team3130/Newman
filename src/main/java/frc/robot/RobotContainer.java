@@ -89,15 +89,15 @@ public class RobotContainer {
     for (int i = 0; i < 36; i++) {
       if (i == 1 || i == 4 || i == 7 || i == 10 || i == 13 || i == 16 || i == 19 || i == 22 || i == 25 || i == 28 || i == 31 || i == 34) {
         if (i == 1 || i == 4 || i == 7 || i == 19 || i == 22 || i == 25) {
-          boundingboxes[i] = new BoundingBox(Constants.Field.depthOfCubeSpotOneSmall, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfCubeSpotOneBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfCubeSpotOne);
+          boundingboxes[i] = new BoundingBox(Constants.Field.depthOfCubeSpotOneSmall + 31/2, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfCubeSpotOneBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfCubeSpotOne);
         } else {
-          boundingboxes[i] = new BoundingBox(Constants.Field.depthOfCubeSpotTwoSmall, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfCubeSpotTwoBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfCubeSpotTwo);
+          boundingboxes[i] = new BoundingBox(Constants.Field.depthOfCubeSpotTwoSmall + 31/2, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfCubeSpotTwoBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfCubeSpotTwo);
         }
       } else {
         if (i == 0 || i == 2 || i == 3 || i == 5 || i == 6 || i == 8) {
-          boundingboxes[i] = new BoundingBox(Constants.Field.depthOfConeSpireOneSmall, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfConeSpireOneBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfConeSpireOne);
+          boundingboxes[i] = new BoundingBox(Constants.Field.depthOfConeSpireOneSmall + 31/2, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfConeSpireOneBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfConeSpireOne);
         } else {
-          boundingboxes[i] = new BoundingBox(Constants.Field.depthOfConeSpireTwoSmall, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfConeSpireTwoBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfConeSpireTwo);
+          boundingboxes[i] = new BoundingBox(Constants.Field.depthOfConeSpireTwoSmall + 31/2, Constants.Field.yPositionsForRowBounds[i%9], 0, Constants.Field.depthOfConeSpireTwoBig, Constants.Field.yPositionsForRowBounds[(i%9)+1], Constants.Field.heightOfConeSpireTwo);
         }
       }
     }
