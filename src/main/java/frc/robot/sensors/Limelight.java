@@ -35,6 +35,15 @@ public class Limelight {
     protected double lastReadTime = 0;
 
     /**
+     * The transformation to put the bot in terms of path planner's system.
+     * The transformation sets 0 to be the right corner of your alliances side and 0 degrees to be forward.
+     */
+    protected final Transform2d redTransformation = new Transform2d(
+            new Pose2d(0, 0, new Rotation2d()),
+            new Pose2d(8.02, 16.54, new Rotation2d(Math.PI))
+    );
+
+    /**
      * Constructs a new Limelight object.
      * The limelight object will be full of null values if Constants.useAprilTags is false.
      */
@@ -108,10 +117,17 @@ public class Limelight {
                     pose3d.get(),
                     cameraToCenterOfBot);
 
+            Pose2d positionToUse = position.toPose2d();
+
             /* updates the best value that we will return on the last iteration,
               also passes the read position into the {@link VisionMedianFilter)
              */
-            best = filter.getOdoPose(new OdoPosition(position.toPose2d(), result.getTimestampSeconds()));;
+            best = filter.getOdoPose(
+                    new OdoPosition(
+                        (DriverStation.getAlliance() == DriverStation.Alliance.Blue) ?
+                                positionToUse :
+                                positionToUse.transformBy(redTransformation),
+                            result.getTimestampSeconds()));
         }
         // returns the last filtered value that we checked in the above for loop
         return best;

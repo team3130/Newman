@@ -85,12 +85,6 @@ public class TeleopDrive extends CommandBase {
       y = -y;
       x = -x;
     }
-    else {
-      if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-        x = -x;
-        y = -y;
-      }
-    }
 
     // apply slew rate limiter which also converts to m/s and rad.s
     x = xLimiter.calculate(x * Constants.kPhysicalMaxSpeedMetersPerSecond);
