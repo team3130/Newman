@@ -181,14 +181,23 @@ public class VisionMedianFilter implements Sendable {
     }
 
     public double getReadX() {
+        if (mostRecentPose == null) {
+            return 0;
+        }
         return mostRecentPose.getX();
     }
 
     public double getReadY() {
+        if (mostRecentPose == null) {
+            return 0;
+        }
         return mostRecentPose.getY();
     }
 
     public double getReadYaw() {
+        if (mostRecentPose == null) {
+            return 0;
+        }
         return mostRecentPose.getRotation().getRadians();
     }
 
