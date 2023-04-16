@@ -4,6 +4,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -54,6 +55,7 @@ public class Limelight {
             filter = new VisionMedianFilter(Camera.kMedianFilterWindowSize);
 
             if (Constants.debugMode) {
+                SendableRegistry.add(this, "vision filter");
                 SmartDashboard.putData(filter);
             }
 
@@ -95,6 +97,9 @@ public class Limelight {
             // x is forward, y is left, z is up
             Transform3d bestCameraToTarget = target.getBestCameraToTarget();
 
+            if (bestCameraToTarget.getTranslation().getDistance(new Translation3d(0 ,0, 0)) > Constants.AprilTagTrustDistance) {
+                continue;
+            }
 
             // the matrix transformation for the camera to the center of the bot
             Transform3d cameraToCenterOfBot = new Transform3d(
@@ -102,8 +107,9 @@ public class Limelight {
                     new Rotation3d(Camera.roll, Camera.pitch, Camera.yaw));
 
             Optional<Pose3d> pose3d = aprilTagFieldLayout.getTagPose(target.getFiducialId());
+
             if (pose3d.isEmpty()) {
-                return null;
+                continue;
             }
 
             // the position of the bot relative to the april tag
