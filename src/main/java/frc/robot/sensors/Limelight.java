@@ -18,6 +18,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.io.IOException;
+import java.sql.Driver;
 import java.util.Optional;
 
 public class Limelight {
@@ -35,15 +36,6 @@ public class Limelight {
     protected double lastReadTime = 0;
 
     /**
-     * The transformation to put the bot in terms of path planner's system.
-     * The transformation sets 0 to be the right corner of your alliances side and 0 degrees to be forward.
-     */
-    protected final Transform2d redTransformation = new Transform2d(
-            new Pose2d(0, 0, new Rotation2d()),
-            new Pose2d(8.02, 16.54, new Rotation2d(Math.PI))
-    );
-
-    /**
      * Constructs a new Limelight object.
      * The limelight object will be full of null values if Constants.useAprilTags is false.
      */
@@ -52,6 +44,9 @@ public class Limelight {
             camera = new PhotonCamera("OV5647");
             try {
                 aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+                if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+                    aprilTagFieldLayout.setOrigin(AprilTagFieldLayout.OriginPosition.kRedAllianceWallRightSide);
+                }
             } catch (IOException e) {
                 DriverStation.reportError("error loading field position file", false);
             }
@@ -117,17 +112,11 @@ public class Limelight {
                     pose3d.get(),
                     cameraToCenterOfBot);
 
-            Pose2d positionToUse = position.toPose2d();
-
             /* updates the best value that we will return on the last iteration,
               also passes the read position into the {@link VisionMedianFilter)
              */
             best = filter.getOdoPose(
-                    new OdoPosition(
-                        (DriverStation.getAlliance() == DriverStation.Alliance.Blue) ?
-                                positionToUse :
-                                positionToUse.transformBy(redTransformation),
-                            result.getTimestampSeconds()));
+                    new OdoPosition(position.toPose2d(), result.getTimestampSeconds()));
         }
         // returns the last filtered value that we checked in the above for loop
         return best;
