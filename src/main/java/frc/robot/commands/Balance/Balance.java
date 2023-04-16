@@ -42,6 +42,7 @@ public class Balance extends CommandBase {
   private boolean finished;
  
   private Timer timer = new Timer();
+  private Timer safetyTimer = new Timer();
 
   private static ShuffleboardTab tab = Shuffleboard.getTab("Chassis");
 
@@ -78,6 +79,9 @@ public class Balance extends CommandBase {
 
     timer.reset();
     timer.start();
+
+    safetyTimer.reset();
+    safetyTimer.start();
   }
 
   
@@ -183,6 +187,7 @@ public class Balance extends CommandBase {
   @Override
   public boolean isFinished() {
     //return pitchVelocityDeadband && Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband;
+    //return finished || safetyTimer.hasElapsed(Constants.Balance.safetyTimeLimit);
     return finished;
   }
 

@@ -67,6 +67,6 @@ public class OnToRamp extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(Navx.getPitch() - Navx.getZeroPitch()) >= Constants.Balance.changeForRampPitch || timer.hasElapsed(Constants.Balance.safetyTimeLimit);
+    return Math.abs(Navx.getPitch() - Navx.getZeroPitch()) >= Constants.Balance.changeForRampPitch || timer.hasElapsed(Constants.Balance.toRampSafetyTimeLimit);
   }
 }

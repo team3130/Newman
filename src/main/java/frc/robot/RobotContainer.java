@@ -25,6 +25,7 @@ import frc.robot.commands.Balance.Balance;
 import frc.robot.commands.Balance.DeadReckonBalance;
 import frc.robot.commands.Balance.OnToRamp;
 import frc.robot.commands.Balance.RileyPark;
+import frc.robot.commands.Balance.SearchBalance;
 import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
@@ -181,7 +182,7 @@ public class RobotContainer {
     if (Constants.debugMode) {
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).onTrue(new SequentialCommandGroup(new ZeroWheels(m_chassis), new Balance(m_chassis), new RileyPark(m_chassis)));
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).onTrue(new SequentialCommandGroup(new DeadReckonBalance(m_chassis), new RileyPark(m_chassis)));
-      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new RileyPark(m_chassis));
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).onTrue(new SequentialCommandGroup(new SearchBalance(m_chassis), new RileyPark(m_chassis)));
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RJOYSTICKPRESS).onTrue(new SequentialCommandGroup(new OnToRamp(m_chassis, false), new Balance(m_chassis), new RileyPark(m_chassis)));
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).onTrue(new SequentialCommandGroup(m_autonManager.setpointBalance(-1), new RileyPark(m_chassis)));
       
@@ -270,7 +271,7 @@ public class RobotContainer {
    * Robot container periodic method
    */
   public void periodic() {
-   /*  if (counter == 10) {
+   /*   if (counter == 10) {
       CommandBase toRun = m_autonManager.pick();
       try {
         m_chassis.updateField2DFromTrajectory(((AutonCommand) toRun).getTrajectory());

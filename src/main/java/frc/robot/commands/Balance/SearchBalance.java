@@ -40,6 +40,7 @@ public class SearchBalance extends CommandBase {
   }
   private State state;
   private Timer timer = new Timer();
+  private Timer safetyTimer = new Timer();
   private double distanceToDrive;
   private int sign;
 
@@ -65,6 +66,8 @@ public class SearchBalance extends CommandBase {
     sign = -1;
 
     timer.reset();
+    safetyTimer.reset();
+    safetyTimer.start();
 
   }
 
@@ -92,6 +95,7 @@ public class SearchBalance extends CommandBase {
         timer.stop();
         finished = Math.abs(Navx.getPitch() - Navx.getZeroPitch()) <= Constants.Balance.pitchDeadband;
       }
+
     }
     else if (state == State.DRIVING){
       initPos = m_chassis.getPose2d().getTranslation().getX(); 
@@ -107,7 +111,7 @@ public class SearchBalance extends CommandBase {
 
 
     }
-
+`
 
 
 
@@ -120,13 +124,16 @@ public class SearchBalance extends CommandBase {
     m_chassis.stopModules();
     timer.stop();
     timer.reset();
+    safetyTimer.stop();
+    safetyTimer.reset();
 
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return finished; 
+    return finished;
+   // return finished || safetyTimer.hasElapsed(Constants.Balance.safetyTimeLimit); 
   }
 }
 
