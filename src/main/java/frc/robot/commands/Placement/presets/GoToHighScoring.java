@@ -24,6 +24,6 @@ public class GoToHighScoring extends PlacementSetpoint {
    */
   public GoToHighScoring(RotaryArm rotaryArm, ExtensionArm extensionArm) {
     // extension arm, rotary arm, the rotary arm high position, the max extension of the extension arm, the angle before bumpers.
-    super(rotaryArm, extensionArm, Constants.highPosition, Constants.Extension.kMaxExtensionLength, 20);
+    super(rotaryArm, extensionArm, Constants.highPosition, Constants.Extension.kMaxExtensionLength, 15);
   }
 }
