@@ -14,6 +14,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -119,6 +120,9 @@ public class AutonManager {
 
         bluePath.getObject("traj").setTrajectory(PathPlannerTrajectory.transformTrajectoryForAlliance(testTrajectory, DriverStation.Alliance.Blue));
         redPath.getObject("traj").setTrajectory(PathPlannerTrajectory.transformTrajectoryForAlliance(testTrajectory, DriverStation.Alliance.Red));
+
+        SendableRegistry.setName(bluePath, "blue trajectory");
+        SendableRegistry.setName(redPath, "red trajectory");
 
         Shuffleboard.getTab("Trajectorys").add(bluePath);
         Shuffleboard.getTab("Trajectorys").add(redPath);
