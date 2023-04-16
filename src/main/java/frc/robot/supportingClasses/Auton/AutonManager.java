@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Newman_Constants.Constants;
@@ -80,6 +81,9 @@ public class AutonManager {
      */
     protected final Manipulator m_manipulator;
 
+    protected final Field2d bluePath;
+    protected final Field2d redPath;
+
     /**
      * Makes an object to make and manage auton paths.
      * The passed in subsystems are used for making AutonCommands that run routines in auton
@@ -107,6 +111,17 @@ public class AutonManager {
         alliance = DriverStation.getAlliance();
 
         populateChooser();
+
+        bluePath = new Field2d();
+        redPath = new Field2d();
+
+        PathPlannerTrajectory testTrajectory = placeConeHighPlaceCubeHigh().getTrajectory();
+
+        bluePath.getObject("traj").setTrajectory(PathPlannerTrajectory.transformTrajectoryForAlliance(testTrajectory, DriverStation.Alliance.Blue));
+        redPath.getObject("traj").setTrajectory(PathPlannerTrajectory.transformTrajectoryForAlliance(testTrajectory, DriverStation.Alliance.Red));
+
+        Shuffleboard.getTab("Trajectorys").add(bluePath);
+        Shuffleboard.getTab("Trajectorys").add(redPath);
     }
 
     /**
@@ -484,7 +499,7 @@ public class AutonManager {
      * Place a cone in high at start and then place a cube in high.
      * @return the auton command for the generated trajectory wrapped
      */
-    public CommandBase placeConeHighPlaceCubeHigh() {
+    public AutonCommand placeConeHighPlaceCubeHigh() {
         PathPlannerTrajectory trajectoryHP = PathPlanner.loadPath("place two cones high hp", new PathConstraints(1.5, 1.5));
         return autonCommandGeneratorPlacement(trajectoryHP, true);
 
