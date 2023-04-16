@@ -89,7 +89,7 @@ public abstract class PlacementSetpoint extends CommandBase {
     this.angleToGoTo = angleToGoTo;
     this.lengthForExtensionArm = lengthToGoTo;
     // tolerance
-    this.angleBeforeExtension = Math.toRadians(angleBeforeExtension);
+    this.angleBeforeExtension = angleBeforeExtension;
 
     usesExtensionArm = true;
   }
@@ -112,7 +112,7 @@ public abstract class PlacementSetpoint extends CommandBase {
   public void execute() {
      m_rotaryArm.gotoPos(m_extensionArm.getPositionTicks());
 
-     if (usesExtensionArm && !hasStartedExtended && m_rotaryArm.pastAngle(angleToGoTo)) {
+     if (usesExtensionArm && !hasStartedExtended && m_rotaryArm.pastAngle(angleBeforeExtension)) {
         m_extensionArm.extendArmTo(lengthForExtensionArm);
         hasStartedExtended = true;
      }
