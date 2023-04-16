@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -177,9 +176,6 @@ public class RobotContainer {
       new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
       new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlacementPosition(m_chassis, m_autonManager));
 
-      double balanceDeadband = 5.0; //This should go in Constants later
-      double omegaDeadband = 7.0;
-      double zeroPitch = -8.211; //Also constants
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new Balance(m_chassis));
     }
 
@@ -227,6 +223,9 @@ public class RobotContainer {
 
   }
 
+  /**
+   * Resets the odometry to origin at 0 degrees
+   */
   public void resetOdometryWithoutApril() {
     m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
   }
@@ -239,12 +238,13 @@ public class RobotContainer {
    */
   public CommandBase getAutonCmd() {
     CommandBase toRun = m_autonManager.pick();
-    // try {
-    //   m_chassis.updateField2DFromTrajectory(((AutonCommand) toRun).getTrajectory());
-    // }
-    // catch (ClassCastException ignored) {
+    // draws a funny shape on glass
+    /* try {
+      m_chassis.updateField2DFromTrajectory(((AutonCommand) toRun).getTrajectory());
+    }
+    catch (ClassCastException ignored) {
 
-    // }
+    } */
     return toRun;
   }
 
@@ -303,12 +303,19 @@ public class RobotContainer {
     m_chassis.updateOdometery();
   }
 
+  /**
+   * Packages auton commands so that they go to the start of the command before running the main routines.
+   * As of 4/13 this command also brings up the rotary arm to high.
+   * If mainPath is an auton command then we can convert it to an AutonCommand and go to the start of its path. 
+   * If it is not an Auton command then this method will just return the passed in command.
+   * @param mainPath the main path to run. 
+   * @return A full auton routine if the passed in command is an auton command. Otherwise it will just return the passed in command.
+   */
   public CommandBase packageAuton(CommandBase mainPath) {
     try {
       return m_autonManager.goToStartOfCommand((AutonCommand) mainPath);
     }
     catch (Exception ignored) {
-      System.out.println("KILLIN MYSELF");
       return mainPath;
     }
   }

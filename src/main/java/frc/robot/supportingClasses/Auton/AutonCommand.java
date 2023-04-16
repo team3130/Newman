@@ -5,6 +5,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.EventMarker;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -167,7 +168,7 @@ public class AutonCommand extends CommandBase {
 
         markers.add(EventMarker.fromTime(List.of("DoNothing"), 0));
         markers.addAll(markerList);
-        markers.add(EventMarker.fromTime(List.of("DoNothing"), trajectory.getTotalTimeSeconds()));
+        markers.add(EventMarker.fromTime(List.of("DoNothing"), trajectory.getTotalTimeSeconds() * 100)); // set really far away so that the bin search thread doesn't hang
 
         markerToCommandMap = new HashMap<>();
 
@@ -313,20 +314,17 @@ public class AutonCommand extends CommandBase {
         //TODO: DOESN'T WORK
         while (low != high) {
             int midPosition = (low + high) / 2 ;
-            System.out.println("mid position: " + midPosition); // TODO: WAS ALWAYS 4
             if (m_timer.get() >= markers.get(midPosition).timeSeconds && m_timer.get() < markers.get(midPosition + 1).timeSeconds) {
                 return markers.get(midPosition);
             }
             if (m_timer.get() < markers.get(midPosition).timeSeconds) {
                 //TODO: NEVER RUNS
                 high = midPosition;
-                System.out.println("updated HIGH: " + high );
                 continue;
             }
             if (m_timer.get() > markers.get(midPosition).timeSeconds) {
                 //TOD: NEVER RUNS
                 low = midPosition;
-                System.out.println("UPDATED LOW: " + low);
             }
         }
         return markers.get(0);
@@ -393,8 +391,8 @@ public class AutonCommand extends CommandBase {
      */
     @Override
     public void initialize() {
+        // ADD SOME CLAUSE FOR IF WE HAVEN'T SEEN A TARGET YET
         if (!useAprilTags) {
-            System.out.println("resetting odometry to: " + startPosition);
             m_chassis.resetOdometry(startPosition);
         }
         m_chassis.setAprilTagUsage(useAprilTags);
@@ -415,7 +413,7 @@ public class AutonCommand extends CommandBase {
     public void execute() {
         // autony execute
         cmd.execute();
-
+        
         // for every command that we currently want to run, run its execute and check if it si finished and handle end
         for (int i = 0; i < indicesToRun.size(); i++) {
             // if there is a command that we are supposed to run right now, then run it until it ends
@@ -437,7 +435,6 @@ public class AutonCommand extends CommandBase {
         // if a new marker has been stumbled across. Should only get ran when we want to initialize markers
         if (closest != current) {
             int toAdd = getIndexFromMap(closest);
-            System.out.println("To add: " + toAdd);
             // for debugging purposes this doesn't currently get ran
             if (closest.names.get(0).contains("end")) {
                  commands[toAdd].end(true);
@@ -457,11 +454,9 @@ public class AutonCommand extends CommandBase {
                 }
                 else {
                     indicesToRun.add(toAdd);
-                    System.out.println("adding indice to run");
                 }
             }
             current = closest;
-            System.out.println("------------------");
         }
     }
 
@@ -495,7 +490,7 @@ public class AutonCommand extends CommandBase {
                 runningIsDone = false;
             }
         }
-        return cmd.isFinished() && runningIsDone;
+        return cmd.isFinished();
     }
 
     /**
@@ -505,6 +500,8 @@ public class AutonCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         cmd.end(interrupted);
+        System.out.println("stopping modules");
+        m_chassis.stopModules();
 
         for (int index : indicesToRun) {
             commands[index].end(interrupted);
@@ -535,5 +532,14 @@ public class AutonCommand extends CommandBase {
      */
     public Rotation2d getStartRotation() {
         return trajectory.getInitialState().holonomicRotation;
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        super.initSendable(builder);
+        builder.addBooleanProperty("timer has elapsed", () -> m_timer.hasElapsed(trajectory.getTotalTimeSeconds()), null);
+        builder.addDoubleProperty("timer", () -> m_timer.getFPGATimestamp(), null);
+        builder.addDoubleProperty("Trajectory length", () -> trajectory.getTotalTimeSeconds(), null);
+        builder.addDoubleProperty("Holo time until end", () -> cmd.getTimeUntilEnd(), null);
     }
 }

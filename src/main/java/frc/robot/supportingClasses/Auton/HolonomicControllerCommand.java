@@ -8,13 +8,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.Chassis;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-import javax.sound.sampled.SourceDataLine;
 
 public class HolonomicControllerCommand extends CommandBase {
   protected final Timer m_timer = new Timer();
@@ -51,8 +48,6 @@ public class HolonomicControllerCommand extends CommandBase {
         ChassisSpeeds targetChassisSpeeds = m_controller.calculate(m_pose.get(), desiredState,
                 desiredState.holonomicRotation);
 
-            System.out.println("desired state: " + desiredState.toString());
-            System.out.println("position: " + m_pose.get());
         SwerveModuleState[] targetModuleStates = m_kinematics.toSwerveModuleStates(targetChassisSpeeds);
 
         // send the states to chassis

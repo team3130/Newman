@@ -121,8 +121,10 @@ public class AutonManager {
         m_autonChooser.addOption("place in auton move out", placeInAutonCone()); // place in auton and then don't leave the zone (good for if middle)
         m_autonChooser.addOption("place in auton don't move", placeInAuton()); // place in auton and move out. PathPoint so reliable and can start from anywhere
         m_autonChooser.addOption("pull out", generatePullOut()); // as the name suggests its the safest option
+        m_autonChooser.addOption("2 meters forward", generateExamplePathFromPoses());
         
-        m_autonChooser.addOption("marker path cones", placeConeHighPlaceCubeHigh()); // really needs to be fixed. markers don't do anything right now yay
+        m_autonChooser.addOption("marker path 2 cones HP", placeConeHighPlaceCubeHigh()); // really needs to be fixed. markers don't do anything right now yay
+        // m_autonChooser.addOption("marker path 2 cones non-hp", loadTrajectory("place two cones non hp", true));
     }
 
     /**
@@ -166,7 +168,7 @@ public class AutonManager {
     public HolonomicControllerCommand holonomicControllerGenerator(PathPlannerTrajectory trajectory) {
         PIDController xController = new PIDController(Constants.kPXController, Constants.kIXController,Constants.kDXController);
         PIDController yController = new PIDController(Constants.kPYController, Constants.kIYController ,Constants.kDYController);
-        HolonomicDriveController holonomicDriveController = new HolonomicDriveController(xController, yController, new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, 0, Constants.kThetaControllerConstraints));
+        HolonomicDriveController holonomicDriveController = new HolonomicDriveController(xController, yController, new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, Constants.kDThetaController, Constants.kThetaControllerConstraints));
 
         trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
 
@@ -271,7 +273,7 @@ public class AutonManager {
         // the trajectory being made
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 /* Max velocity and acceleration the path will follow along the trapezoid profile */
-                violent_constraints,
+                safe_constraints,
                 /* Each path point is a 2 poses and 2 rotations see explanation here:
                 https://docs.google.com/document/d/1RInEhl8mW1UKMP4AbvWWiWmfI4klbDfyZLJbw1zbjDo/edit#heading=h.lie7pmqbolmu */
                 new PathPoint(
@@ -280,8 +282,7 @@ public class AutonManager {
                 new PathPoint(new Translation2d(2, 0), new Rotation2d(), new Rotation2d(0))
         );
 
-        AutonCommand command = autonCommandGenerator(trajectory, false);
-        return wrapCmd(command);
+        return autonCommandGenerator(trajectory, false);
     }
 
     /**
@@ -484,13 +485,11 @@ public class AutonManager {
      * @return the auton command for the generated trajectory wrapped
      */
     public CommandBase placeConeHighPlaceCubeHigh() {
-        PathPlannerTrajectory trajectoryHP = PathPlanner.loadPath("place cone high place cube high hp", new PathConstraints(1.5, 1.5));
+        PathPlannerTrajectory trajectoryHP = PathPlanner.loadPath("place two cones high hp", new PathConstraints(1.5, 1.5));
         return autonCommandGeneratorPlacement(trajectoryHP, true);
 
-    /*  PathPlannerTrajectory trajectorynonHP = PathPlanner.loadPath("place cone high place cube high non hp", safe_constraints);
+    /*  PathPlannerTrajectory trajectorynonHP = PathPlanner.loadPath(, safe_constraints);
         AutonCommand commandnonHP = autonCommandGeneratorPlacement(trajectorynonHP);*/
-
-        
     }
 
     /**
@@ -512,6 +511,13 @@ public class AutonManager {
         return wrapCmd(command);
     }
 
+    /**
+     * Generates a trajectory to go to the start of the main path. 
+     * Is ran before the main path in auton to make sure that we start in the corrent spot.
+     * Basically a wrapper for the main auton command to make sure that we start in the correct spot.
+     * @param mainPath the main command that will be ran in auton
+     * @return the command group for going to the start of the path and then running the passed in path.
+     */
     public SequentialCommandGroup goToStartOfCommand(AutonCommand mainPath) {
         List<EventMarker> markers = List.of(EventMarker.fromTime(List.of("grabber"), 0), EventMarker.fromTime(List.of("place high"), 0.07));
 
