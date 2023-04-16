@@ -80,6 +80,7 @@ public class Robot extends TimedRobot {
       CommandScheduler.getInstance().cancelAll();
       CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
       CommandScheduler.getInstance().schedule(m_robotContainer.retractManipulator());
+      CommandScheduler.getInstance().schedule(m_robotContainer.resetGoalHeading());
     }
 
     @Override

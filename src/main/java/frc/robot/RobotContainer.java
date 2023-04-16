@@ -42,6 +42,7 @@ import frc.robot.commands.Placement.presets.GoToHighScoring;
 import frc.robot.commands.Placement.presets.GoToMidScoringCones;
 import frc.robot.commands.Placement.presets.GoToMidScoringCube;
 import frc.robot.commands.Placement.presets.GoToPickupOffGround;
+import frc.robot.commands.ResetGoalHeading;
 import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
@@ -301,6 +302,10 @@ public class RobotContainer {
    */
   public void updateChassisPose() {
     m_chassis.updateOdometery();
+  }
+
+  public CommandBase resetGoalHeading(){
+    return new ResetGoalHeading(m_chassis);
   }
 
   /**

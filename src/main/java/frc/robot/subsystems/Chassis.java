@@ -76,6 +76,8 @@ public class Chassis extends SubsystemBase {
       this (new Pose2d(), new Rotation2d(), limelight);
     }
 
+    private double goalHeading = 0;
+    private double thetaP = 0.01; //major magic number
     /**
      * Makes a chassis with a starting position
      * @param startingPos the initial position to say that the robot is at
@@ -204,6 +206,40 @@ public class Chassis extends SubsystemBase {
         }
     }
 
+    public double thetaToStabilizeHeading(){
+        return (getErrorInHeading(goalHeading)) * thetaP;
+    }
+    public boolean outOfThetaStabilizeDeadband(){
+        if (Math.abs(Navx.getHeading() - goalHeading) > 3d){
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public double getErrorInHeading(double goalHeading) {
+        double error = Math.abs(goalHeading - Navx.getHeading());
+        if (error > 180) {
+            error = 360 - error;
+            if (Navx.getHeading() < goalHeading) { //odds these negatives need to be flipped are 50-50
+                error = -error;
+            }
+        }else if (Navx.getHeading() > goalHeading) {
+                error = -error;
+            }
+        return error;
+    }
+    public double getGoalHeading(){
+        return goalHeading;
+    }
+    public void resetGoalHeading(){
+        goalHeading = Navx.getHeading();
+    }
+    public double getHolonomicP(){
+        return thetaP;
+    }
+    public void setHolonomicP(double newP){
+        thetaP = newP;
+    }
 
     /**
      * subsystem looped call made by the scheduler.
@@ -382,6 +418,9 @@ public class Chassis extends SubsystemBase {
         builder.addDoubleProperty("Y position", this::getY, null);
         builder.addDoubleProperty("rotation", this::getYaw, null);
         builder.addDoubleProperty("max speed read", this::getMaxSpeedRead, null);
+
+        builder.addDoubleProperty("goal heading", this::getGoalHeading, null);
+        builder.addDoubleProperty("holonomic p", this::getHolonomicP, this::setHolonomicP);
     }
 
     /**
