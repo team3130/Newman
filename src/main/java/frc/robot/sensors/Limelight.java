@@ -55,7 +55,7 @@ public class Limelight {
             filter = new VisionMedianFilter(Camera.kMedianFilterWindowSize);
 
             if (Constants.debugMode) {
-                SendableRegistry.add(this, "vision filter");
+                SendableRegistry.add(filter, "vision filter");
                 SmartDashboard.putData(filter);
             }
 
