@@ -22,10 +22,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Balance.Balance;
-import frc.robot.commands.Balance.DeadReckonBalance;
-import frc.robot.commands.Balance.OnToRamp;
-import frc.robot.commands.Balance.RileyPark;
-import frc.robot.commands.Balance.SearchBalance;
 import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
@@ -48,7 +44,6 @@ import frc.robot.commands.Placement.presets.GoToMidScoringCube;
 import frc.robot.commands.Placement.presets.GoToPickupOffGround;
 import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
-import frc.robot.sensors.Navx;
 import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.Auton.AutonCommand;
 import frc.robot.supportingClasses.Auton.AutonManager;
@@ -73,7 +68,6 @@ public class RobotContainer {
   private final Manipulator m_manipulator = new Manipulator();
 
   private int counter = 0;
-
 
   private final Hopper m_hopper;
   private final Intake m_intake;
@@ -122,7 +116,6 @@ public class RobotContainer {
 
     configureButtonBindings();
     vomitShuffleBoardData();
-    
   }
 
   /**
@@ -180,13 +173,13 @@ public class RobotContainer {
     //new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new Balancing(m_chassis));
 
     if (Constants.debugMode) {
-      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).onTrue(new SequentialCommandGroup(new ZeroWheels(m_chassis), new Balance(m_chassis), new RileyPark(m_chassis)));
-      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).onTrue(new SequentialCommandGroup(new DeadReckonBalance(m_chassis), new RileyPark(m_chassis)));
-      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).onTrue(new SequentialCommandGroup(new SearchBalance(m_chassis), new RileyPark(m_chassis)));
-      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RJOYSTICKPRESS).onTrue(new SequentialCommandGroup(new OnToRamp(m_chassis, false), new Balance(m_chassis), new RileyPark(m_chassis)));
-      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).onTrue(new SequentialCommandGroup(m_autonManager.setpointBalance(-1), new RileyPark(m_chassis)));
-      
-      
+      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
+      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlacementPosition(m_chassis, m_autonManager));
+
+      double balanceDeadband = 5.0; //This should go in Constants later
+      double omegaDeadband = 7.0;
+      double zeroPitch = -8.211; //Also constants
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new Balance(m_chassis));
     }
 
     //Weapons Gamepad:
@@ -271,7 +264,7 @@ public class RobotContainer {
    * Robot container periodic method
    */
   public void periodic() {
-     if (counter == 10) {
+    if (counter == 10) {
       CommandBase toRun = m_autonManager.pick();
       try {
         m_chassis.updateField2DFromTrajectory(((AutonCommand) toRun).getTrajectory());
@@ -281,8 +274,7 @@ public class RobotContainer {
       }
         counter = -1;
     }
-    counter++; 
-
+    counter++;
   }
 
   /**
