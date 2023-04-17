@@ -79,7 +79,7 @@ public class Chassis extends SubsystemBase {
     }
 
     private double goalHeading = 0;
-    private double thetaP = 0.01; //major magic number
+    private double thetaP = 0.001; //major magic number
     /**
      * Makes a chassis with a starting position
      * @param startingPos the initial position to say that the robot is at
@@ -507,7 +507,8 @@ public class Chassis extends SubsystemBase {
             setModuleStates(m_kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(x, y, theta, getRotation2d())));
         }
         else {
-            setModuleStates(m_kinematics.toSwerveModuleStates(new ChassisSpeeds(x, y, theta)));
+            goalHeading = theta;
+            setModuleStates(m_kinematics.toSwerveModuleStates(new ChassisSpeeds(x, y, thetaToStabilizeHeading())));
         }
     }
 

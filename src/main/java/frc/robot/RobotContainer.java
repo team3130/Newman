@@ -314,13 +314,17 @@ public class RobotContainer {
    * Resets odometry to the position of the april tag
    * @return success or not
    */
-  public boolean resetOdometryWithAprilTag() {
+  public boolean resetOdometryWithApril() {
     OdoPosition position = m_limelight.calculate();
     if (position != null) {
       m_chassis.resetOdometry(position.getPosition());
       return true;
     }
     return false;
+  }
+
+  public void resetOdometryWithoutApril(){
+    m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
   }
 
   /**

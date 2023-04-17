@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
           m_robotContainer.resetOdometryWithoutApril();
           haveResetManually = true;
         } else {
-          if (m_robotContainer.resetOdometryWithAprilTag()) {
+          if (m_robotContainer.resetOdometryWithApril()) {
             timer.stop();
             timer.reset();
           }
@@ -66,9 +66,8 @@ public class Robot extends TimedRobot {
       }
     }
     Navx.outputToShuffleboard();
-    else {
-      m_robotContainer.updateChassisPose();
-    }
+
+   
   }
 
     @Override
@@ -111,11 +110,11 @@ public class Robot extends TimedRobot {
       // zero the rotary arm into frame perimeter for both safety and resetting encoders.
       CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
       // un clamp the manipulator so that we don't zero the arm into a game element
-      CommandScheduler.getInstance().schedule(m_robotContainer.unClampManipulator());
-
-      //SHOULD GO TO AUTONINIT AFTER TESTING
-      Navx.setPitchZero(Navx.getPitch());
       CommandScheduler.getInstance().schedule(m_robotContainer.retractManipulator());
+
+      //TODO: SHOULD GO TO AUTONINIT AFTER TESTING
+      Navx.setPitchZero(Navx.getPitch());
+      
       CommandScheduler.getInstance().schedule(m_robotContainer.resetGoalHeading());
     }
 
