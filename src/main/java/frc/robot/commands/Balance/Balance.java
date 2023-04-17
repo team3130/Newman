@@ -91,7 +91,7 @@ public class Balance extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPpp Pitch is " + Navx.getPitch());
+   
 
     pitch = (Navx.getPitch());
  
@@ -103,12 +103,8 @@ public class Balance extends CommandBase {
      }
     else{oddPitch = Navx.getPitch();}
 
-    if(pitchVelocityCheck){
-      System.out.println("VELOCITY CHECK PASSED");
-    }
-    if(Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband){
-      System.out.println("NEAR ZERO " + (Navx.getPitch() - pitchZero) + " AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    }
+   
+   
 
     
   if( Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband){
@@ -156,7 +152,7 @@ public class Balance extends CommandBase {
      
      if(nearZero){ 
       m_chassis.brakeModules();
-          if(timer.hasElapsed(0.5)){
+          if(timer.hasElapsed(Constants.Balance.stablizationTime)){
             hasSwitched = false;
             finished = Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband;
        // timerIsOn = false;
@@ -164,7 +160,7 @@ public class Balance extends CommandBase {
     }
       else {
         m_chassis.brakeModules();
-          if(timer.hasElapsed(0.80)){
+          if(timer.hasElapsed(Constants.Balance.stablizationTime)){
             hasSwitched = false;
             // timerIsOn = false;
         }

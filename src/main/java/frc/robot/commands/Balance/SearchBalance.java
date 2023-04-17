@@ -87,7 +87,7 @@ public class SearchBalance extends CommandBase {
       distanceToDrive = (distanceToDrive / iterator); 
       sign = (Navx.getPitch() < Navx.getZeroPitch()) ? 1 : -1;
 
-      if(timer.hasElapsed(0.75)){
+      if(timer.hasElapsed(Constants.Balance.stablizationTime)){
         timer.stop();
         finished = Math.abs(Navx.getPitch() - Navx.getZeroPitch()) <= Constants.Balance.pitchDeadband;
         state = State.DRIVING;
