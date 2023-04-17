@@ -8,7 +8,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Newman_Constants.Constants;
 import frc.robot.subsystems.Chassis;
 
 import java.util.function.Consumer;
@@ -48,6 +47,7 @@ public class HolonomicControllerCommand extends CommandBase {
         // calculate the speeds and states of the motors
         ChassisSpeeds targetChassisSpeeds = m_controller.calculate(m_pose.get(), desiredState,
                 desiredState.holonomicRotation);
+
         SwerveModuleState[] targetModuleStates = m_kinematics.toSwerveModuleStates(targetChassisSpeeds);
 
         // send the states to chassis
