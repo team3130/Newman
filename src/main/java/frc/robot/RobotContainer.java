@@ -56,18 +56,68 @@ import frc.robot.supportingClasses.Vision.OdoPosition;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
   /**
    * Auton manager is the object that handles the loading of auton paths
    */
   protected final AutonManager m_autonManager;
+
+  /**
+   * The driver Xbox controller object that we use to map buttons to commands.
+   * The left joystick is used with a default command to drive the bot to a position.
+   * The right joystick is used with a default command for the holonomic rotation of the bot.
+   * For more button bindings see {@link #configureButtonBindings()}
+   */
   private final XboxController m_driverGamepad;
+
+  /**
+   * The driver Xbox controller object that we use to map buttons to commands.
+   * The left joystick is used with a default command for manually moving the extension arm.
+   * The right joystick is used with a default command for manually moving the rotary arm.
+   * For more button bindings see {@link #configureButtonBindings()}
+   */
   private final XboxController m_weaponsGamepad;
+
+  /**
+   * The chassis singleton.
+   * Is used to make commands that require the chassis subsystem.
+   */
   private final Chassis m_chassis;
+
+  /**
+   * The extension arm singleton.
+   * Is used for making commands that require the extension arm.
+   */
   private final ExtensionArm m_extensionArm;
+
+  /**
+   * The rotary arm singleton.
+   * Is used for making commands that require the rotary arm.
+   */
   private final RotaryArm m_rotaryArm;
+
+  /**
+   * The manipulator singleton.
+   * Is used for making commands that require the manipulator.
+   */
   private final Manipulator m_manipulator = new Manipulator();
+
+  /**
+   * The hopper singleton.
+   * Is used for making commands that require the hopper.
+   */
   private final Hopper m_hopper;
+
+  /**
+   * The intake singleton.
+   * Is used for making commands that require the intake.
+   */
   private final Intake m_intake;
+
+  /**
+   * The limelight singleton
+   * Is used for updating the robots position using april tags.
+   */
   private final Limelight m_limelight;
 
 
@@ -84,7 +134,6 @@ public class RobotContainer {
     m_chassis = new Chassis(m_limelight);
     m_hopper = new Hopper();
     m_intake = new Intake();
-
 
     Mechanism2d arm = new Mechanism2d(3, 3.5);
     MechanismRoot2d root = arm.getRoot("arm", 0.5, 2);
@@ -137,7 +186,7 @@ public class RobotContainer {
    *
    * @return the driver gamepad
    */
-  public static XboxController getDriverGamepad() {
+  public XboxController getDriverGamepad() {
     return m_driverGamepad;
   }
 
@@ -147,7 +196,7 @@ public class RobotContainer {
    *
    * @return the weapons game pad
    */
-  public static XboxController getWeaponsGamepad() {
+  public XboxController getWeaponsGamepad() {
     return m_weaponsGamepad;
   }
 
