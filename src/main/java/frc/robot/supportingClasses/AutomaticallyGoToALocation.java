@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.Chassis.presets.GoToHumanPlayerStation;
 import frc.robot.subsystems.Chassis;
-import frc.robot.supportingClasses.Auton.AutonCommand;
 import frc.robot.supportingClasses.Auton.AutonManager;
 
 import java.util.function.Supplier;
@@ -92,7 +91,7 @@ public abstract class AutomaticallyGoToALocation extends CommandBase {
   /**
    * Determines if the command is done running or not.
    * @return whether the command is finished doing its task. In this case it is true if the auton
-   *    commands isFinished is done. can check out {@link AutonCommand#isFinished()} to see if it is done
+   *    commands isFinished is done.
    */
   @Override
   public boolean isFinished() {

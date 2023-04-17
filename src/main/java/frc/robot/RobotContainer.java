@@ -45,7 +45,6 @@ import frc.robot.commands.Placement.presets.GoToPickupOffGround;
 import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
-import frc.robot.supportingClasses.Auton.AutonCommand;
 import frc.robot.supportingClasses.Auton.AutonManager;
 import frc.robot.supportingClasses.Vision.OdoPosition;
 
@@ -325,23 +324,6 @@ public class RobotContainer {
    */
   public void updateChassisPose() {
     m_chassis.updateOdometery();
-  }
-
-  /**
-   * Packages auton commands so that they go to the start of the command before running the main routines.
-   * As of 4/13 this command also brings up the rotary arm to high.
-   * If mainPath is an auton command then we can convert it to an AutonCommand and go to the start of its path. 
-   * If it is not an Auton command then this method will just return the passed in command.
-   * @param mainPath the main path to run. 
-   * @return A full auton routine if the passed in command is an auton command. Otherwise it will just return the passed in command.
-   */
-  public CommandBase packageAuton(CommandBase mainPath) {
-    try {
-      return m_autonManager.goToStartOfCommand((AutonCommand) mainPath);
-    }
-    catch (Exception ignored) {
-      return mainPath;
-    }
   }
 
 }
