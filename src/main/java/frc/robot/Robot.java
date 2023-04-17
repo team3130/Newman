@@ -10,11 +10,25 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Newman_Constants.Constants;
 
 public class Robot extends TimedRobot {
+
+  /**
+   * A timer for resetting odometry. Gets started on robotInit and will run until we reset odometry with april tags
+   */
   private Timer timer;
+
+  /**
+   * The robot container singleton which declares button bindings and initializes subsystems
+   */
   private RobotContainer m_robotContainer;
 
+  /**
+   * Whether we have reset odometry without april tags yet
+   */
   private boolean haveResetManually = false;
 
+  /**
+   * Initializes robot container and the timer for resetting odometry.
+   */
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
@@ -23,6 +37,12 @@ public class Robot extends TimedRobot {
     timer.start();
   }
 
+  /**
+   * Gets ran every loop while code is running on the roborio.
+   * Runs the command scheduler and {@link RobotContainer#periodic()}.
+   * Has logic to reset odometry based off of april tags after a certain amount of time to allow
+   * for the absolute encoders to start up. If we can't see april tags then we reset to 0, 0.
+   */
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
@@ -61,7 +81,11 @@ public class Robot extends TimedRobot {
     public void disabledExit () {
     }
 
-    @Override
+  /**
+   * Gets ran when we enable in auton.
+   * Schedules the auton command that is selected on network tables. Default is DoNothing
+   */
+  @Override
     public void autonomousInit () {
       CommandScheduler.getInstance().cancelAll();
       CommandScheduler.getInstance().schedule(m_robotContainer.packageAuton(m_robotContainer.getAutonCmd()));
@@ -75,11 +99,16 @@ public class Robot extends TimedRobot {
     public void autonomousExit () {
     }
 
-    @Override
+  /**
+   * Gets ran when we start teleop / when we enable in teleop.
+   * Zeroes the rotary and extension arms and unclamps the manipulator.
+   */
+  @Override
     public void teleopInit () {
       CommandScheduler.getInstance().cancelAll();
+      // zero the rotary arm into frame perimeter for both safety and resetting encoders.
       CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
-      CommandScheduler.getInstance().schedule(m_robotContainer.retractManipulator());
+      CommandScheduler.getInstance().schedule(m_robotContainer.unClampManipulator());
     }
 
     @Override

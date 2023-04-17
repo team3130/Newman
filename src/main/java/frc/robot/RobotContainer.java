@@ -59,16 +59,13 @@ public class RobotContainer {
   /**
    * Auton manager is the object that handles the loading of auton paths
    */
-  protected AutonManager m_autonManager;
-  private static XboxController m_driverGamepad;
-  private static XboxController m_weaponsGamepad;
+  protected final AutonManager m_autonManager;
+  private final XboxController m_driverGamepad;
+  private final XboxController m_weaponsGamepad;
   private final Chassis m_chassis;
   private final ExtensionArm m_extensionArm;
   private final RotaryArm m_rotaryArm;
   private final Manipulator m_manipulator = new Manipulator();
-
-  private int counter = 0;
-
   private final Hopper m_hopper;
   private final Intake m_intake;
   private final Limelight m_limelight;
@@ -213,23 +210,9 @@ public class RobotContainer {
 
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ReverseHopper(m_hopper));
 
-    /*
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new GoToHighScoring(m_RotaryArm, m_ExtensionArm));
-    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToMidScoringCube(m_RotaryArm, m_ExtensionArm));
-    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToLowScoring(m_RotaryArm, m_ExtensionArm));
-    */
-
     SmartDashboard.putData(new FlipFieldOriented(m_chassis));
 
   }
-
-  /**
-   * Resets the odometry to origin at 0 degrees
-   */
-  public void resetOdometryWithoutApril() {
-    m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
-  }
-
 
   /**
    * Gets the selected auton command that is on shuffleboard
@@ -237,15 +220,7 @@ public class RobotContainer {
    * @return the auton routine
    */
   public CommandBase getAutonCmd() {
-    CommandBase toRun = m_autonManager.pick();
-    // draws a funny shape on glass
-    /* try {
-      m_chassis.updateField2DFromTrajectory(((AutonCommand) toRun).getTrajectory());
-    }
-    catch (ClassCastException ignored) {
-
-    } */
-    return toRun;
+    return m_autonManager.pick();
   }
 
   /**
@@ -260,25 +235,16 @@ public class RobotContainer {
   }
 
   /**
-   * Robot container periodic method
+   * Robot container periodic method.
+   * Needs to be called from {@link Robot#robotPeriodic()} in order to function properly.
    */
-  public void periodic() {
-  }
+  public void periodic() {}
 
   /**
-   * resets odometry to a position passed in
-   * @param pose the position to reset odometry to
+   * Makes a command to unclamp the manipulator. Should be used on teleop init to make sure that we don't enable and zero with manipulator clamped.
+   * @return the instant command to unclamp manipulator
    */
-  public void resetOdometryTo(Pose2d pose) {
-    //TODO: REMOVE THIS PPLEASESE
-    m_chassis.resetOdometry(pose);
-  }
-
-  /**
-   * Creates a command to unclamp the manipulator.
-   * @return the InstantCommand that unclamps the manipulator.
-   */
-  public CommandBase retractManipulator() {
+  public CommandBase unClampManipulator() {
     return new UnClampManipulator(m_manipulator);
   }
 
@@ -293,6 +259,15 @@ public class RobotContainer {
       return true;
     }
     return false;
+  }
+
+  /**
+   * Resets odometry without april tags to 0, 0, 0.
+   * This is needed because the absolute encoders don't turn on for a while.
+   * The logic in Robot.Java should make it so that this can't get ran periodically
+   */
+  public void resetOdometryWithoutApril() {
+    m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
   }
 
   /**
@@ -319,4 +294,5 @@ public class RobotContainer {
       return mainPath;
     }
   }
+
 }
