@@ -46,6 +46,7 @@ import frc.robot.commands.Placement.presets.GoToHighScoring;
 import frc.robot.commands.Placement.presets.GoToMidScoringCones;
 import frc.robot.commands.Placement.presets.GoToMidScoringCube;
 import frc.robot.commands.Placement.presets.GoToPickupOffGround;
+import frc.robot.commands.ResetGoalHeading;
 import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
 import frc.robot.sensors.Navx;
@@ -180,13 +181,13 @@ public class RobotContainer {
     //new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new Balancing(m_chassis));
 
     if (Constants.debugMode) {
+      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlacementPosition(m_chassis, m_autonManager));
+      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).onTrue(new SequentialCommandGroup(new ZeroWheels(m_chassis), new Balance(m_chassis), new RileyPark(m_chassis)));
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).onTrue(new SequentialCommandGroup(new DeadReckonBalance(m_chassis), new RileyPark(m_chassis)));
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).onTrue(new SequentialCommandGroup(new SearchBalance(m_chassis), new RileyPark(m_chassis)));
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RJOYSTICKPRESS).onTrue(new SequentialCommandGroup(new OnToRamp(m_chassis, false), new Balance(m_chassis), new RileyPark(m_chassis)));
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).onTrue(new SequentialCommandGroup(m_autonManager.setpointBalance(-1), new RileyPark(m_chassis)));
-      
-      
     }
 
     //Weapons Gamepad:
@@ -253,7 +254,15 @@ public class RobotContainer {
    * @return the auton routine
    */
   public CommandBase getAutonCmd() {
-    return m_autonManager.pick();
+    CommandBase toRun = m_autonManager.pick();
+    // draws a funny shape on glass
+    /* try {
+      m_chassis.updateField2DFromTrajectory(((AutonCommand) toRun).getTrajectory());
+    }
+    catch (ClassCastException ignored) {
+
+    } */
+    return toRun;
   }
 
   /**
@@ -294,19 +303,52 @@ public class RobotContainer {
   }
 
   /**
-   * Makes a command to unclamp the manipulator. Should be used on teleop init to make sure that we don't enable and zero with manipulator clamped.
-   * @return the command to unclamp manipulator
+   * Creates a command to unclamp the manipulator.
+   * @return the InstantCommand that unclamps the manipulator.
    */
-  public CommandBase unClampManipulator() {
+  public CommandBase retractManipulator() {
     return new UnClampManipulator(m_manipulator);
   }
 
   /**
-   * Resets odometry without april tags to 0, 0, 0.
-   * This is needed because the absolute encoders don't turn on for a while.
-   * The logic in Robot.Java should make it so that this can't get ran periodically
+   * Resets odometry to the position of the april tag
+   * @return success or not
    */
-  public void resetOdometryWithoutAprilTag() {
-    m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
+  public boolean resetOdometryWithAprilTag() {
+    OdoPosition position = m_limelight.calculate();
+    if (position != null) {
+      m_chassis.resetOdometry(position.getPosition());
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Updates the chassis position periodically.
+   * Calls {@link Chassis#updateOdometery()}
+   */
+  public void updateChassisPose() {
+    m_chassis.updateOdometery();
+  }
+
+  public CommandBase resetGoalHeading(){
+    return new ResetGoalHeading(m_chassis);
+  }
+
+  /**
+   * Packages auton commands so that they go to the start of the command before running the main routines.
+   * As of 4/13 this command also brings up the rotary arm to high.
+   * If mainPath is an auton command then we can convert it to an AutonCommand and go to the start of its path. 
+   * If it is not an Auton command then this method will just return the passed in command.
+   * @param mainPath the main path to run. 
+   * @return A full auton routine if the passed in command is an auton command. Otherwise it will just return the passed in command.
+   */
+  public CommandBase packageAuton(CommandBase mainPath) {
+    try {
+      return m_autonManager.goToStartOfCommand((AutonCommand) mainPath);
+    }
+    catch (Exception ignored) {
+      return mainPath;
+    }
   }
 }

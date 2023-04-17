@@ -64,13 +64,22 @@ public class Chassis extends SubsystemBase {
     private final GenericEntry n_fieldOrriented;
 
     /**
-     * Makes a chassis that starts at 0, 0, 0. Calls {@link #Chassis(Pose2d, Rotation2d, Limelight)}  Chassis}
-     * @param limelight the limelight object which is used for updating odometry
+     * Whether to update the odometry with the april tag or not.
+     * Usuallt used as a toggleable in auton commands.
+     * Default value is {@link Constants#useAprilTags} however is mutable.
+     */
+    protected boolean useAprilTags = Constants.useAprilTags;
+
+    /**
+     * Makes a chassis that starts at 0, 0, 0
+     * @param limelight the limelight object that we can use for updating odometry
      */
     public Chassis(Limelight limelight){
       this (new Pose2d(), new Rotation2d(), limelight);
     }
 
+    private double goalHeading = 0;
+    private double thetaP = 0.01; //major magic number
     /**
      * Makes a chassis with a starting position
      * @param startingPos the initial position to say that the robot is at
@@ -179,6 +188,60 @@ public class Chassis extends SubsystemBase {
       m_odometry.updateWithTime(Timer.getFPGATimestamp(), Navx.getRotation(), generatePoses());
     }
 
+    /**
+     * Updates the odometry from vision if there is a new value to update position with
+     */
+    public void updateOdometryFromVision() {
+        OdoPosition position = refreshPosition();
+        if (position != null) {
+            updateOdometryFromVision(position);
+        }
+    }
+
+    /**
+     * Update odometry with swerve drive. Also updates odometry with vision if the {@link Constants#useAprilTags}'s flag true
+     */
+    public void updateOdometery() {
+        updateOdometryFromSwerve();
+        if (Constants.useAprilTags && useAprilTags) {
+            updateOdometryFromVision();
+        }
+    }
+
+    public double thetaToStabilizeHeading(){
+        return (getErrorInHeading(goalHeading)) * thetaP;
+    }
+    public boolean outOfThetaStabilizeDeadband(){
+        if (Math.abs(Navx.getHeading() - goalHeading) > 3d){
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public double getErrorInHeading(double goalHeading) {
+        double error = Math.abs(goalHeading - Navx.getHeading());
+        if (error > 180) {
+            error = 360 - error;
+            if (Navx.getHeading() < goalHeading) { //odds these negatives need to be flipped are 50-50
+                error = -error;
+            }
+        }else if (Navx.getHeading() > goalHeading) {
+                error = -error;
+            }
+        return error;
+    }
+    public double getGoalHeading(){
+        return goalHeading;
+    }
+    public void resetGoalHeading(){
+        goalHeading = Navx.getHeading();
+    }
+    public double getHolonomicP(){
+        return thetaP;
+    }
+    public void setHolonomicP(double newP){
+        thetaP = newP;
+    }
 
     /**
      * subsystem looped call made by the scheduler.
@@ -187,14 +250,7 @@ public class Chassis extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        updateOdometryFromSwerve();
         n_fieldOrriented.setBoolean(fieldRelative);
-
-        OdoPosition position = refreshPosition();
-        if (position != null) {
-            updateOdometryFromVision(position);
-        }
-
         field.setRobotPose(m_odometry.getEstimatedPosition());
     }
 
@@ -376,6 +432,9 @@ public class Chassis extends SubsystemBase {
         builder.addDoubleProperty("Y position", this::getY, null);
         builder.addDoubleProperty("rotation", this::getYaw, null);
         builder.addDoubleProperty("max speed read", this::getMaxSpeedRead, null);
+
+        builder.addDoubleProperty("goal heading", this::getGoalHeading, null);
+        builder.addDoubleProperty("holonomic p", this::getHolonomicP, this::setHolonomicP);
     }
 
     /**
@@ -402,7 +461,12 @@ public class Chassis extends SubsystemBase {
      * @param refreshPosition time and position to set to
      */
     public void updateOdometryFromVision(OdoPosition refreshPosition) {
-        m_odometry.addVisionMeasurement(new Pose2d(refreshPosition.getPosition().getTranslation(), refreshPosition.getPosition().getRotation().rotateBy(new Rotation2d(Math.toRadians(180)))), refreshPosition.getTime());
+        m_odometry.addVisionMeasurement(
+            new Pose2d(
+                refreshPosition.getPosition().getTranslation(), 
+                refreshPosition.getPosition().getRotation()), 
+            refreshPosition.getTime()
+        );
     }
 
     /**
@@ -422,29 +486,10 @@ public class Chassis extends SubsystemBase {
     }
 
     /**
-     * The same as {@link #drive(double, double, double)} except you pass in if you are field relative or not.
-     * This method will drive the swerve modules based to x, y and theta vectors.
-     * @param x velocity in the x dimension m/s
-     * @param y velocity in the y dimension m/s
-     * @param theta the angular (holonomic) speed to drive the swerve modules at
-     * @param fieldRelative whether to use
+     * setter for april tags
+     * @param useAprilTags whether to use april tags or not
      */
-    public void drive(double x, double y, double theta, boolean fieldRelative) {
-        if (fieldRelative) {
-            setModuleStates(m_kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(x, y, theta, getRotation2d())));
-        }
-        else {
-            setModuleStates(m_kinematics.toSwerveModuleStates(new ChassisSpeeds(x, y, theta)));
-        }
-    }
-
-    /**
-     * Our main method to drive using three variables. Locked to field relative or robot oriented based off of {@link #fieldRelative}.
-     * @param x the velocity in the x dimension m/s
-     * @param y the velocity in the y dimension m/s
-     * @param theta the angular (holonomic) speed of the bot
-     */
-    public void drive(double x, double y, double theta) {
-        drive(x, y, theta, getFieldRelative());
+    public void setAprilTagUsage(boolean useAprilTags) {
+        this.useAprilTags = useAprilTags;
     }
 }

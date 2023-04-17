@@ -22,6 +22,6 @@ public class GoToMidScoringCube extends PlacementSetpoint {
    */
   public GoToMidScoringCube(RotaryArm rotaryArm, ExtensionArm extensionArm) {
     // extension arm, rotary arm, the rotary arm high position, the max extension of the extension arm, the angle before bumpers.
-    super(rotaryArm, extensionArm, Constants.midPositionCones);
+    super(rotaryArm, extensionArm, Constants.midPosition);
   }
 }

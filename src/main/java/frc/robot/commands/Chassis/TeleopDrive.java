@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
 
 /** A default command to drive in teleop based off the joysticks*/
@@ -31,7 +32,7 @@ public class TeleopDrive extends CommandBase {
    * The controller that we use to drive
    */
   private final XboxController m_xboxController;
-
+  private boolean needToUpdateHeadingGoal = false;
   /**
    * Creates a new TeleopDrive command
    * Initializes slew rate limiters to limit acceleration
@@ -79,7 +80,22 @@ public class TeleopDrive extends CommandBase {
     if (Math.abs(y) < Constants.kDeadband) {
       y = 0;
     }
-    theta = Math.abs(theta) > Constants.kDeadband ? theta : 0.0;
+
+    if (Math.abs(theta) < Constants.kDeadband) {
+      if (needToUpdateHeadingGoal){
+        m_chassis.resetGoalHeading();
+        needToUpdateHeadingGoal = false;
+      }
+      if (m_chassis.outOfThetaStabilizeDeadband()) {
+        theta = m_chassis.thetaToStabilizeHeading();
+      } else {
+        theta = 0;
+      }
+    }
+    if (Math.abs(theta) > Constants.kDeadband){
+      needToUpdateHeadingGoal = true;
+    }
+
 
     if (!m_chassis.getFieldRelative()) {
       y = -y;
