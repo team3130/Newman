@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -12,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
@@ -22,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.sensors.Limelight;
 import frc.robot.sensors.Navx;
+import frc.robot.supportingClasses.Auton.HolonomicControllerCommand;
 import frc.robot.supportingClasses.Vision.OdoPosition;
 import frc.robot.swerve.SwerveModule;
 
@@ -51,6 +55,10 @@ public class Chassis extends SubsystemBase {
     /**
      * Updated periodically with the maximum speed that has been read on any of the swerve modules
      */
+    private final ProfiledPIDController HolonomicPIDController;
+    private final PIDController HoldController;
+    private Boolean useHold;
+    private double currentGoal = 0;
     private double maxSpeedRead = 0;
 
     /**
@@ -101,7 +109,27 @@ public class Chassis extends SubsystemBase {
         field = new Field2d();
         Shuffleboard.getTab("Comp").add("field", field);
         n_fieldOrriented = Shuffleboard.getTab("Comp").add("field orriented", false).getEntry();
+
+        HolonomicPIDController = new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, Constants.kDThetaController, Constants.kThetaControllerConstraints);
+        HoldController = new PIDController(1, 0, 0);
+
+        HolonomicPIDController.setTolerance(Math.toRadians(2.5));
+        HoldController.setTolerance(0.025);
+        useHold = false;
   }
+
+    public void SetHoloGoal(double angle) {
+        currentGoal = angle;
+        HolonomicPIDController.reset(getHeading());
+        HolonomicPIDController.setGoal(angle);
+        useHold = false;
+    }
+
+    public void holdHoloAt(double angle) {
+        currentGoal = angle;
+        HoldController.setSetpoint(angle);
+        useHold = true;
+    }
 
     /**
     * If the PID controllers of the {@link SwerveModule}'s are all done
@@ -450,6 +478,17 @@ public class Chassis extends SubsystemBase {
         else {
             setModuleStates(m_kinematics.toSwerveModuleStates(new ChassisSpeeds(x, y, theta)));
         }
+    }
+
+    public void drive(double x, double y) {
+        double theta;
+        if (useHold) {
+            theta = HoldController.calculate(getHeading());
+        }
+        else {
+            theta = HolonomicPIDController.calculate(getHeading());
+        }
+        drive(x, y, theta);
     }
 
     /**
