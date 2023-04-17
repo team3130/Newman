@@ -90,12 +90,13 @@ public class SearchBalance extends CommandBase {
       if(timer.hasElapsed(Constants.Balance.stablizationTime)){
         timer.stop();
         finished = Math.abs(Navx.getPitch() - Navx.getZeroPitch()) <= Constants.Balance.pitchDeadband;
+        initPos = m_chassis.getPose2d().getTranslation().getX(); 
         state = State.DRIVING;
       }
 
     }
     else if (state == State.DRIVING){
-      initPos = m_chassis.getPose2d().getTranslation().getX(); 
+      
 
         if((Math.abs(Navx.getPitch() - Navx.getZeroPitch()) > Constants.Balance.pitchDeadband) || Math.abs(m_chassis.getPose2d().getTranslation().getX() - initPos) <= distanceToDrive){
           m_chassis.drive(sign * driveVelocity,0,0, false);
@@ -109,7 +110,7 @@ public class SearchBalance extends CommandBase {
 
 
     }
-`
+
 
 
 
