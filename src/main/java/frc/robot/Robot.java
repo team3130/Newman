@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Newman_Constants.Constants;
-import frc.robot.sensors.Navx;
 
 public class Robot extends TimedRobot {
 
@@ -61,7 +60,6 @@ public class Robot extends TimedRobot {
         }
       }
     }
-    Navx.outputToShuffleboard();
   }
 
     @Override
@@ -83,7 +81,6 @@ public class Robot extends TimedRobot {
   @Override
     public void autonomousInit () {
       CommandScheduler.getInstance().cancelAll();
-      //Navx.setPitchZero(Navx.getPitch());
       CommandScheduler.getInstance().schedule(m_robotContainer.getAutonCmd());
     
     }
@@ -107,9 +104,6 @@ public class Robot extends TimedRobot {
       CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
       // un clamp the manipulator so that we don't zero the arm into a game element
       CommandScheduler.getInstance().schedule(m_robotContainer.unClampManipulator());
-
-      //SHOULD GO TO AUTONINIT AFTER TESTING
-      Navx.setPitchZero(Navx.getPitch());
     }
 
     @Override
