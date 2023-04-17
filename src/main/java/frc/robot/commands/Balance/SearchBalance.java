@@ -18,19 +18,14 @@ import frc.robot.subsystems.ExampleSubsystem;
 /** An example command that uses an example subsystem. */
 public class SearchBalance extends CommandBase {
   private final Chassis m_chassis;
-  private boolean onRamp = false;
   private final double driveVelocity = Constants.Balance.driveSpeed;
-  private final double pitchZero = -6.75;
-  private final double pitchVelocityDeadband = 0.05;
   private SwerveModuleState[] moduleStates;
-  private int iterator;
-  private double oddPitch;
-  private boolean pitchHasDropped;
-  private double pitchCheckValue;
+  private int iterator = 1;
+  
 
-  private boolean distanceFlag;
+  
   private boolean finished;
-
+  
   private double initPos;
 
   private enum State{
@@ -43,6 +38,7 @@ public class SearchBalance extends CommandBase {
   private Timer safetyTimer = new Timer();
   private double distanceToDrive;
   private int sign;
+  
 
 
 
@@ -50,6 +46,7 @@ public class SearchBalance extends CommandBase {
     m_chassis = chassis;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(chassis);
+    
   }
 
   // Called when the command is initially scheduled.
@@ -58,10 +55,9 @@ public class SearchBalance extends CommandBase {
     m_chassis.stopModules();
 
     finished = false;
-    distanceFlag = false;
-    onRamp = false;
+    
     state = State.TO_RAMP;
-    iterator = 0;
+    iterator = 1;
     distanceToDrive = Constants.Balance.initSearchDistance;
     sign = -1;
 
@@ -86,7 +82,7 @@ public class SearchBalance extends CommandBase {
     }
     else if (state == State.WAITING){
       m_chassis.brakeModules();
-      iterator++;
+      
       
       distanceToDrive = (distanceToDrive / iterator); 
       sign = (Navx.getPitch() < Navx.getZeroPitch()) ? 1 : -1;
@@ -94,18 +90,20 @@ public class SearchBalance extends CommandBase {
       if(timer.hasElapsed(0.75)){
         timer.stop();
         finished = Math.abs(Navx.getPitch() - Navx.getZeroPitch()) <= Constants.Balance.pitchDeadband;
+        state = State.DRIVING;
       }
 
     }
     else if (state == State.DRIVING){
       initPos = m_chassis.getPose2d().getTranslation().getX(); 
 
-        if(!(Math.abs(Navx.getPitch() - Navx.getZeroPitch()) <= Constants.Balance.pitchDeadband) && Math.abs(m_chassis.getPose2d().getTranslation().getX() - initPos) <= distanceToDrive){
+        if((Math.abs(Navx.getPitch() - Navx.getZeroPitch()) > Constants.Balance.pitchDeadband) || Math.abs(m_chassis.getPose2d().getTranslation().getX() - initPos) <= distanceToDrive){
           m_chassis.drive(sign * driveVelocity,0,0, false);
         }
         else{
           m_chassis.stopModules();
           timer.restart();
+          iterator++;
           state = State.WAITING;
         }
 
