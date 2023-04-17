@@ -182,7 +182,9 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">Limelight</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructs a new Limelight object.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -268,6 +270,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>Limelight</h4>
 <pre>public&nbsp;Limelight()</pre>
+<div class="block">Constructs a new Limelight object.
+ The limelight object will be full of null values if Constants.useAprilTags is false.</div>
 </li>
 </ul>
 </li>
@@ -290,7 +294,8 @@ extends java.lang.Object</pre>
 <div class="block">Calculates the position of the bot relative to an april tag.
  That calculation is then given to <a href="../supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision"><code>VisionMedianFilter</code></a>.
  The command will return null if there is no new information or if there are no targets in frame.
- This will add all the targets that are currently visible to the <a href="../supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision"><code>VisionMedianFilter</code></a>.</div>
+ This will add all the targets that are currently visible to the <a href="../supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision"><code>VisionMedianFilter</code></a>.
+ If <a href="../Newman_Constants/Constants.html#useAprilTags"><code>Constants.useAprilTags</code></a> is false, this will return null.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the filtered camera position</dd>

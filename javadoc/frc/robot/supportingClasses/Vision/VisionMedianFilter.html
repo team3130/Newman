@@ -138,6 +138,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">VisionMedianFilter</span>
 extends java.lang.Object
 implements edu.wpi.first.util.sendable.Sendable</pre>
+<div class="block">A special type of median filter that is used to filter out outliers in vision data.</div>
 </li>
 </ul>
 </div>
@@ -171,17 +172,23 @@ implements edu.wpi.first.util.sendable.Sendable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>protected int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#itemsAdded">itemsAdded</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Holds the amount of items we have added to the filter</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>protected double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#kP">kP</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Magic error scalar for radians to length</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected edu.wpi.first.math.geometry.Pose2d</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mostRecentPose">mostRecentPose</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">The most recent pose that was added to the filter.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>protected double[]</code></td>
@@ -191,12 +198,16 @@ implements edu.wpi.first.util.sendable.Sendable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>protected double[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#x">x</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Array for the x positional values</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>protected edu.wpi.first.math.filter.MedianFilter</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#xFilter">xFilter</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Median filter for the x position</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected double[]</code></td>
@@ -211,12 +222,16 @@ implements edu.wpi.first.util.sendable.Sendable</pre>
 <tr class="altColor">
 <td class="colFirst"><code>protected edu.wpi.first.math.filter.MedianFilter</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#yawFilter">yawFilter</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Median filter for the yaw</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>protected edu.wpi.first.math.filter.MedianFilter</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#yFilter">yFilter</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Median filter for the y position</div>
+</td>
 </tr>
 </table>
 </li>
@@ -408,6 +423,7 @@ implements edu.wpi.first.util.sendable.Sendable</pre>
 <li class="blockList">
 <h4>x</h4>
 <pre>protected&nbsp;double[] x</pre>
+<div class="block">Array for the x positional values</div>
 </li>
 </ul>
 <a id="y">
@@ -444,6 +460,7 @@ implements edu.wpi.first.util.sendable.Sendable</pre>
 <li class="blockList">
 <h4>xFilter</h4>
 <pre>protected&nbsp;edu.wpi.first.math.filter.MedianFilter xFilter</pre>
+<div class="block">Median filter for the x position</div>
 </li>
 </ul>
 <a id="yFilter">
@@ -453,6 +470,7 @@ implements edu.wpi.first.util.sendable.Sendable</pre>
 <li class="blockList">
 <h4>yFilter</h4>
 <pre>protected&nbsp;edu.wpi.first.math.filter.MedianFilter yFilter</pre>
+<div class="block">Median filter for the y position</div>
 </li>
 </ul>
 <a id="yawFilter">
@@ -462,6 +480,7 @@ implements edu.wpi.first.util.sendable.Sendable</pre>
 <li class="blockList">
 <h4>yawFilter</h4>
 <pre>protected&nbsp;edu.wpi.first.math.filter.MedianFilter yawFilter</pre>
+<div class="block">Median filter for the yaw</div>
 </li>
 </ul>
 <a id="kP">
@@ -471,6 +490,7 @@ implements edu.wpi.first.util.sendable.Sendable</pre>
 <li class="blockList">
 <h4>kP</h4>
 <pre>protected&nbsp;double kP</pre>
+<div class="block">Magic error scalar for radians to length</div>
 </li>
 </ul>
 <a id="itemsAdded">
@@ -480,6 +500,7 @@ implements edu.wpi.first.util.sendable.Sendable</pre>
 <li class="blockList">
 <h4>itemsAdded</h4>
 <pre>protected&nbsp;int itemsAdded</pre>
+<div class="block">Holds the amount of items we have added to the filter</div>
 </li>
 </ul>
 <a id="mostRecentPose">
@@ -489,6 +510,7 @@ implements edu.wpi.first.util.sendable.Sendable</pre>
 <li class="blockList">
 <h4>mostRecentPose</h4>
 <pre>protected&nbsp;edu.wpi.first.math.geometry.Pose2d mostRecentPose</pre>
+<div class="block">The most recent pose that was added to the filter.</div>
 </li>
 </ul>
 </li>

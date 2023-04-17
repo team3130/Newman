@@ -135,6 +135,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">The angle (radians) to move the rotary arm to.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#AprilTagTrustDistance">AprilTagTrustDistance</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/subsystems/ExtensionArm.html#armSpeed">armSpeed</a></span> - Variable in class frc.robot.subsystems.<a href="frc/robot/subsystems/ExtensionArm.html" title="class in frc.robot.subsystems">ExtensionArm</a></dt>
 <dd>
 <div class="block">Holds the current speed of the arm</div>
@@ -159,33 +161,26 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Stores the command to run as well as the start and end position of the bot as <code>Pose2d</code> objects.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#%3Cinit%3E(frc.robot.supportingClasses.Auton.HolonomicControllerCommand,com.pathplanner.lib.PathPlannerTrajectory)">AutonCommand(HolonomicControllerCommand, PathPlannerTrajectory)</a></span> - Constructor for class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
+<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#%3Cinit%3E(frc.robot.supportingClasses.Auton.HolonomicControllerCommand,com.pathplanner.lib.PathPlannerTrajectory,frc.robot.subsystems.Chassis,boolean)">AutonCommand(HolonomicControllerCommand, PathPlannerTrajectory, Chassis, boolean)</a></span> - Constructor for class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
 <dd>
-<div class="block">Makes a new auton command that stores the start and end positions of the bot as well as the trajectory</div>
+<div class="block">Wrapper constructor.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#%3Cinit%3E(frc.robot.supportingClasses.Auton.HolonomicControllerCommand,com.pathplanner.lib.PathPlannerTrajectory,frc.robot.subsystems.Chassis)">AutonCommand(HolonomicControllerCommand, PathPlannerTrajectory, Chassis)</a></span> - Constructor for class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
-<dd>
-<div class="block">Wrapper constructor</div>
-</dd>
-<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#%3Cinit%3E(frc.robot.supportingClasses.Auton.HolonomicControllerCommand,com.pathplanner.lib.PathPlannerTrajectory,frc.robot.subsystems.Chassis,frc.robot.subsystems.RotaryArm,frc.robot.subsystems.ExtensionArm,frc.robot.subsystems.Manipulator)">AutonCommand(HolonomicControllerCommand, PathPlannerTrajectory, Chassis, RotaryArm, ExtensionArm, Manipulator)</a></span> - Constructor for class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
+<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#%3Cinit%3E(frc.robot.supportingClasses.Auton.HolonomicControllerCommand,com.pathplanner.lib.PathPlannerTrajectory,frc.robot.subsystems.Chassis,frc.robot.subsystems.RotaryArm,frc.robot.subsystems.ExtensionArm,frc.robot.subsystems.Manipulator,boolean)">AutonCommand(HolonomicControllerCommand, PathPlannerTrajectory, Chassis, RotaryArm, ExtensionArm, Manipulator, boolean)</a></span> - Constructor for class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
 <dd>
 <div class="block">Constructs an auton command with certain subsystems that it will need</div>
 </dd>
-<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#%3Cinit%3E(frc.robot.supportingClasses.Auton.HolonomicControllerCommand,com.pathplanner.lib.PathPlannerTrajectory,frc.robot.subsystems.RotaryArm,frc.robot.subsystems.ExtensionArm,frc.robot.subsystems.Manipulator,frc.robot.subsystems.Hopper,frc.robot.subsystems.Chassis)">AutonCommand(HolonomicControllerCommand, PathPlannerTrajectory, RotaryArm, ExtensionArm, Manipulator, Hopper, Chassis)</a></span> - Constructor for class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
-<dd>
-<div class="block">The second to last constructor for auton command</div>
-</dd>
-<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#%3Cinit%3E(frc.robot.supportingClasses.Auton.HolonomicControllerCommand,edu.wpi.first.math.geometry.Pose2d,edu.wpi.first.math.geometry.Pose2d,com.pathplanner.lib.PathPlannerTrajectory,frc.robot.subsystems.RotaryArm,frc.robot.subsystems.ExtensionArm,frc.robot.subsystems.Chassis,frc.robot.subsystems.Manipulator,frc.robot.subsystems.Hopper)">AutonCommand(HolonomicControllerCommand, Pose2d, Pose2d, PathPlannerTrajectory, RotaryArm, ExtensionArm, Chassis, Manipulator, Hopper)</a></span> - Constructor for class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
+<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#%3Cinit%3E(frc.robot.supportingClasses.Auton.HolonomicControllerCommand,edu.wpi.first.math.geometry.Pose2d,edu.wpi.first.math.geometry.Pose2d,com.pathplanner.lib.PathPlannerTrajectory,frc.robot.subsystems.RotaryArm,frc.robot.subsystems.ExtensionArm,frc.robot.subsystems.Chassis,frc.robot.subsystems.Manipulator,boolean)">AutonCommand(HolonomicControllerCommand, Pose2d, Pose2d, PathPlannerTrajectory, RotaryArm, ExtensionArm, Chassis, Manipulator, boolean)</a></span> - Constructor for class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
 <dd>
 <div class="block">THE CONSTRUCTOR for auton command</div>
 </dd>
-<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonManager.html#autonCommandGenerator(com.pathplanner.lib.PathPlannerTrajectory)">autonCommandGenerator(PathPlannerTrajectory)</a></span> - Method in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonManager.html" title="class in frc.robot.supportingClasses.Auton">AutonManager</a></dt>
+<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonManager.html#autonCommandGenerator(com.pathplanner.lib.PathPlannerTrajectory,boolean)">autonCommandGenerator(PathPlannerTrajectory, boolean)</a></span> - Method in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonManager.html" title="class in frc.robot.supportingClasses.Auton">AutonManager</a></dt>
 <dd>
 <div class="block">Generates an AutonCommand object from a <code>PathPlannerTrajectory</code> trajectory.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonManager.html#autonCommandGeneratorPlacement(com.pathplanner.lib.PathPlannerTrajectory)">autonCommandGeneratorPlacement(PathPlannerTrajectory)</a></span> - Method in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonManager.html" title="class in frc.robot.supportingClasses.Auton">AutonManager</a></dt>
+<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonManager.html#autonCommandGeneratorPlacement(com.pathplanner.lib.PathPlannerTrajectory,boolean)">autonCommandGeneratorPlacement(PathPlannerTrajectory, boolean)</a></span> - Method in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonManager.html" title="class in frc.robot.supportingClasses.Auton">AutonManager</a></dt>
 <dd>
-<div class="block">Makes an auton command with placement functionality.</div>
+<div class="block">Generates an auton command which requires placement subsystems calling:
+  <a href="frc/robot/supportingClasses/Auton/AutonManager.html#holonomicControllerGenerator(com.pathplanner.lib.PathPlannerTrajectory)"><code>AutonManager.holonomicControllerGenerator(PathPlannerTrajectory)</code></a>.</div>
 </dd>
 <dt><a href="frc/robot/supportingClasses/Auton/AutonManager.html" title="class in frc.robot.supportingClasses.Auton"><span class="typeNameLink">AutonManager</span></a> - Class in <a href="frc/robot/supportingClasses/Auton/package-summary.html">frc.robot.supportingClasses.Auton</a></dt>
 <dd>
@@ -231,10 +226,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">on the-fly generates a path to go back to origin</div>
 </dd>
+<dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Balance.html#backToStationCenterDistance">backToStationCenterDistance</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Balance.html" title="class in frc.robot.Newman_Constants">Constants.Balance</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="frc/robot/commands/Balance/Balance.html" title="class in frc.robot.commands.Balance"><span class="typeNameLink">Balance</span></a> - Class in <a href="frc/robot/commands/Balance/package-summary.html">frc.robot.commands.Balance</a></dt>
 <dd>
 <div class="block">An example command that uses an example subsystem.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Balance.html#%3Cinit%3E()">Balance()</a></span> - Constructor for class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Balance.html" title="class in frc.robot.Newman_Constants">Constants.Balance</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/Balance.html#%3Cinit%3E(frc.robot.subsystems.Chassis)">Balance(Chassis)</a></span> - Constructor for class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/Balance.html" title="class in frc.robot.commands.Balance">Balance</a></dt>
 <dd>
 <div class="block">Creates a new ExampleCommand.</div>
@@ -317,6 +316,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Gains/VelocityGainFilter.html#capacity">capacity</a></span> - Variable in class frc.robot.supportingClasses.Gains.<a href="frc/robot/supportingClasses/Gains/VelocityGainFilter.html" title="class in frc.robot.supportingClasses.Gains">VelocityGainFilter</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Balance.html#changeForRampPitch">changeForRampPitch</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Balance.html" title="class in frc.robot.Newman_Constants">Constants.Balance</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems"><span class="typeNameLink">Chassis</span></a> - Class in <a href="frc/robot/subsystems/package-summary.html">frc.robot.subsystems</a></dt>
 <dd>
 <div class="block">Chassis is the drivetrain subsystem of our bot.</div>
@@ -327,7 +328,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#%3Cinit%3E(frc.robot.sensors.Limelight)">Chassis(Limelight)</a></span> - Constructor for class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
 <dd>
-<div class="block">Makes a chassis that starts at 0, 0, 0.</div>
+<div class="block">Makes a chassis that starts at 0, 0, 0</div>
 </dd>
 <dt><a href="frc/robot/commands/Manipulator/ClampManipulator.html" title="class in frc.robot.commands.Manipulator"><span class="typeNameLink">ClampManipulator</span></a> - Class in <a href="frc/robot/commands/Manipulator/package-summary.html">frc.robot.commands.Manipulator</a></dt>
 <dd>
@@ -365,6 +366,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#%3Cinit%3E()">Constants()</a></span> - Constructor for class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="frc/robot/Newman_Constants/Constants.Balance.html" title="class in frc.robot.Newman_Constants"><span class="typeNameLink">Constants.Balance</span></a> - Class in <a href="frc/robot/Newman_Constants/package-summary.html">frc.robot.Newman_Constants</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="frc/robot/Newman_Constants/Constants.Buttons.html" title="class in frc.robot.Newman_Constants"><span class="typeNameLink">Constants.Buttons</span></a> - Class in <a href="frc/robot/Newman_Constants/package-summary.html">frc.robot.Newman_Constants</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/Newman_Constants/Constants.Camera.html" title="class in frc.robot.Newman_Constants"><span class="typeNameLink">Constants.Camera</span></a> - Class in <a href="frc/robot/Newman_Constants/package-summary.html">frc.robot.Newman_Constants</a></dt>
@@ -394,6 +397,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Gains/VelocityGainFilter.html#data">data</a></span> - Variable in class frc.robot.supportingClasses.Gains.<a href="frc/robot/supportingClasses/Gains/VelocityGainFilter.html" title="class in frc.robot.supportingClasses.Gains">VelocityGainFilter</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#debugMode">debugMode</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Balance.html#defaultPitchZero">defaultPitchZero</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Balance.html" title="class in frc.robot.Newman_Constants">Constants.Balance</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Field.html#depthOfConeSpireOneBig">depthOfConeSpireOneBig</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Field.html" title="class in frc.robot.Newman_Constants">Constants.Field</a></dt>
 <dd>&nbsp;</dd>
@@ -431,6 +436,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">The same as <a href="frc/robot/subsystems/Chassis.html#drive(double,double,double)"><code>Chassis.drive(double, double, double)</code></a> except you pass in if you are field relative or not.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Balance.html#driveSpeed">driveSpeed</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Balance.html" title="class in frc.robot.Newman_Constants">Constants.Balance</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#DriveTicksToMeters">DriveTicksToMeters</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#DriveTicksToMetersPerSecond">DriveTicksToMetersPerSecond</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
@@ -645,7 +652,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#findClosestWithBinSearch()">findClosestWithBinSearch()</a></span> - Method in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
 <dd>
-<div class="block">Gets the closes event marker with a binary search</div>
+<div class="block">Gets the closes event marker with a binary search.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#findClosestWithOptimized()">findClosestWithOptimized()</a></span> - Method in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
 <dd>
@@ -777,7 +784,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/swerve/SwerveModule.html#getDrivePosition()">getDrivePosition()</a></span> - Method in class frc.robot.swerve.<a href="frc/robot/swerve/SwerveModule.html" title="class in frc.robot.swerve">SwerveModule</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="frc/robot/RobotContainer.html#getDriverGamepad()">getDriverGamepad()</a></span> - Static method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
+<dt><span class="memberNameLink"><a href="frc/robot/RobotContainer.html#getDriverGamepad()">getDriverGamepad()</a></span> - Method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
 <dd>
 <div class="block">This shouldn't be necessary as we can just pass the initialized object,
  However this can be here just in case we need it last minute</div>
@@ -851,7 +858,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Returns the current position of the bot as a <code>Pose2d</code></div>
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/OdoPosition.html#getPosition()">getPosition()</a></span> - Method in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/OdoPosition.html" title="class in frc.robot.supportingClasses.Vision">OdoPosition</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Getter for the position</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/swerve/SwerveModule.html#getPosition()">getPosition()</a></span> - Method in class frc.robot.swerve.<a href="frc/robot/swerve/SwerveModule.html" title="class in frc.robot.swerve">SwerveModule</a></dt>
 <dd>
 <div class="block">Get the position of the swerve module</div>
@@ -935,7 +944,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Gains/GainData.html#getTime()">getTime()</a></span> - Method in class frc.robot.supportingClasses.Gains.<a href="frc/robot/supportingClasses/Gains/GainData.html" title="class in frc.robot.supportingClasses.Gains">GainData</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/OdoPosition.html#getTime()">getTime()</a></span> - Method in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/OdoPosition.html" title="class in frc.robot.supportingClasses.Vision">OdoPosition</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Getter for the time it occured at</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html#getTime()">getTime()</a></span> - Method in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision">VisionMedianFilter</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/HolonomicControllerCommand.html#getTimer()">getTimer()</a></span> - Method in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/HolonomicControllerCommand.html" title="class in frc.robot.supportingClasses.Auton">HolonomicControllerCommand</a></dt>
@@ -956,7 +967,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">In theory this times desired velocity should be the percent output we need to run at for that velocity</div>
 </dd>
-<dt><span class="memberNameLink"><a href="frc/robot/RobotContainer.html#getWeaponsGamepad()">getWeaponsGamepad()</a></span> - Static method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
+<dt><span class="memberNameLink"><a href="frc/robot/RobotContainer.html#getWeaponsGamepad()">getWeaponsGamepad()</a></span> - Method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
 <dd>
 <div class="block">This shouldn't be necessary as we can just pass the initialized object,
  However this can be here just in case we need it last minute</div>
@@ -1057,6 +1068,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Go to position specified in the set point of the controller</div>
 </dd>
+<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonManager.html#goToStartOfCommand(frc.robot.supportingClasses.Auton.AutonCommand)">goToStartOfCommand(AutonCommand)</a></span> - Method in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonManager.html" title="class in frc.robot.supportingClasses.Auton">AutonManager</a></dt>
+<dd>
+<div class="block">Generates a trajectory to go to the start of the main path.</div>
+</dd>
 </dl>
 <a id="I:H">
 <!--   -->
@@ -1068,6 +1083,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Gains/GainData.html#hashCode()">hashCode()</a></span> - Method in class frc.robot.supportingClasses.Gains.<a href="frc/robot/supportingClasses/Gains/GainData.html" title="class in frc.robot.supportingClasses.Gains">GainData</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html#head">head</a></span> - Variable in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision">VisionMedianFilter</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Balance.html#HeadingkP">HeadingkP</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Balance.html" title="class in frc.robot.Newman_Constants">Constants.Balance</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Field.html#heightOfConeSpireOne">heightOfConeSpireOne</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Field.html" title="class in frc.robot.Newman_Constants">Constants.Field</a></dt>
 <dd>&nbsp;</dd>
@@ -1185,9 +1202,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#initialize()">initialize()</a></span> - Method in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
 <dd>
-<div class="block">To initialize portion of the command that runs once when it is scheduled</div>
+<div class="block">To initialize portion of the command that runs once when it is scheduled.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/HolonomicControllerCommand.html#initialize()">initialize()</a></span> - Method in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/HolonomicControllerCommand.html" title="class in frc.robot.supportingClasses.Auton">HolonomicControllerCommand</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Balance.html#initSearchDistance">initSearchDistance</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Balance.html" title="class in frc.robot.Newman_Constants">Constants.Balance</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#initSendable(edu.wpi.first.util.sendable.SendableBuilder)">initSendable(SendableBuilder)</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
 <dd>
@@ -1215,6 +1234,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Initializes the sendable builder to put on shuffleboard</div>
 </dd>
+<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#initSendable(edu.wpi.first.util.sendable.SendableBuilder)">initSendable(SendableBuilder)</a></span> - Method in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Gains/VelocityGainFilter.StatsResult.html#initSendable(edu.wpi.first.util.sendable.SendableBuilder)">initSendable(SendableBuilder)</a></span> - Method in class frc.robot.supportingClasses.Gains.<a href="frc/robot/supportingClasses/Gains/VelocityGainFilter.StatsResult.html" title="class in frc.robot.supportingClasses.Gains">VelocityGainFilter.StatsResult</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html#initSendable(edu.wpi.first.util.sendable.SendableBuilder)">initSendable(SendableBuilder)</a></span> - Method in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision">VisionMedianFilter</a></dt>
@@ -1290,7 +1311,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/HolonomicControllerCommand.html#isFinished()">isFinished()</a></span> - Method in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/HolonomicControllerCommand.html" title="class in frc.robot.supportingClasses.Auton">HolonomicControllerCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html#itemsAdded">itemsAdded</a></span> - Variable in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision">VisionMedianFilter</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Holds the amount of items we have added to the filter</div>
+</dd>
 </dl>
 <a id="I:J">
 <!--   -->
@@ -1327,6 +1350,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Gear ratio and ticks per rev</div>
 </dd>
+<dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#kDThetaController">kDThetaController</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#kDXController">kDXController</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#kDYController">kDYController</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
@@ -1348,6 +1373,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Extension.html#kExtensionArmP">kExtensionArmP</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Extension.html" title="class in frc.robot.Newman_Constants">Constants.Extension</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Extension.html#kExtensionHexShaftRadius">kExtensionHexShaftRadius</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Extension.html" title="class in frc.robot.Newman_Constants">Constants.Extension</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Extension.html#kExtensionLengthRetracted">kExtensionLengthRetracted</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Extension.html" title="class in frc.robot.Newman_Constants">Constants.Extension</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#kIThetaController">kIThetaController</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
 <dd>&nbsp;</dd>
@@ -1390,7 +1417,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#kNavxReversed">kNavxReversed</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html#kP">kP</a></span> - Variable in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision">VisionMedianFilter</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Magic error scalar for radians to length</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Extension.html#kPercentOutputToHoldAtMaxExtension">kPercentOutputToHoldAtMaxExtension</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Extension.html" title="class in frc.robot.Newman_Constants">Constants.Extension</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#kPhysicalMaxAngularSpeedRadiansPerSecond">kPhysicalMaxAngularSpeedRadiansPerSecond</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
@@ -1470,7 +1499,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><a href="frc/robot/sensors/Limelight.html" title="class in frc.robot.sensors"><span class="typeNameLink">Limelight</span></a> - Class in <a href="frc/robot/sensors/package-summary.html">frc.robot.sensors</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/sensors/Limelight.html#%3Cinit%3E()">Limelight()</a></span> - Constructor for class frc.robot.sensors.<a href="frc/robot/sensors/Limelight.html" title="class in frc.robot.sensors">Limelight</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructs a new Limelight object.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#listener">listener</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#listener()">listener()</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
@@ -1562,10 +1593,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#m_extensionArm">m_extensionArm</a></span> - Variable in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
 <dd>
 <div class="block">the extension arm subsystem.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#m_hopper">m_hopper</a></span> - Variable in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
-<dd>
-<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonManager.html#m_intake">m_intake</a></span> - Variable in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonManager.html" title="class in frc.robot.supportingClasses.Auton">AutonManager</a></dt>
 <dd>
@@ -1678,7 +1705,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
  translations for the distance to each wheel from the center of the bot.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html#mostRecentPose">mostRecentPose</a></span> - Variable in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision">VisionMedianFilter</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">The most recent pose that was added to the filter.</div>
+</dd>
 <dt><a href="frc/robot/commands/Placement/ManualControl/MoveExtensionArm.html" title="class in frc.robot.commands.Placement.ManualControl"><span class="typeNameLink">MoveExtensionArm</span></a> - Class in <a href="frc/robot/commands/Placement/ManualControl/package-summary.html">frc.robot.commands.Placement.ManualControl</a></dt>
 <dd>
 <div class="block">A command to move the extension arm based off the joysticks</div>
@@ -1717,7 +1746,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h2 class="title">O</h2>
 <dl>
 <dt><a href="frc/robot/supportingClasses/Vision/OdoPosition.html" title="class in frc.robot.supportingClasses.Vision"><span class="typeNameLink">OdoPosition</span></a> - Class in <a href="frc/robot/supportingClasses/Vision/package-summary.html">frc.robot.supportingClasses.Vision</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Odometry position.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/OdoPosition.html#%3Cinit%3E(edu.wpi.first.math.geometry.Pose2d,double)">OdoPosition(Pose2d, double)</a></span> - Constructor for class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/OdoPosition.html" title="class in frc.robot.supportingClasses.Vision">OdoPosition</a></dt>
 <dd>
 <div class="block">Position at a time</div>
@@ -1727,7 +1758,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Extension.html#offGroundPosition">offGroundPosition</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Extension.html" title="class in frc.robot.Newman_Constants">Constants.Extension</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonManager.html#onTheFlyGenerator(edu.wpi.first.math.geometry.Pose2d,edu.wpi.first.math.geometry.Pose2d)">onTheFlyGenerator(Pose2d, Pose2d)</a></span> - Method in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonManager.html" title="class in frc.robot.supportingClasses.Auton">AutonManager</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">A method to help with on the fly trajectory generation.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#optimize()">optimize()</a></span> - Method in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
 <dd>
 <div class="block">Needs to be run in its own thread or at least one that wasn't made by the scheduler.</div>
@@ -1738,12 +1771,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Current angle for the bumper is 30 degrees.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Balance.html#overStationDistance">overStationDistance</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Balance.html" title="class in frc.robot.Newman_Constants">Constants.Balance</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <a id="I:P">
 <!--   -->
 </a>
 <h2 class="title">P</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="frc/robot/RobotContainer.html#packageAuton(edu.wpi.first.wpilibj2.command.CommandBase)">packageAuton(CommandBase)</a></span> - Method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
+<dd>
+<div class="block">Packages auton commands so that they go to the start of the command before running the main routines.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/subsystems/RotaryArm.html#pastAngle(double)">pastAngle(double)</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/RotaryArm.html" title="class in frc.robot.subsystems">RotaryArm</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/subsystems/RotaryArm.html#pastLimit()">pastLimit()</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/RotaryArm.html" title="class in frc.robot.subsystems">RotaryArm</a></dt>
@@ -1754,7 +1793,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/RobotContainer.html#periodic()">periodic()</a></span> - Method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
 <dd>
-<div class="block">Robot container periodic method</div>
+<div class="block">Robot container periodic method.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#periodic()">periodic()</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
 <dd>
@@ -1788,6 +1827,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Whether the pid controller is at the set point.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Camera.html#pitch">pitch</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Camera.html" title="class in frc.robot.Newman_Constants">Constants.Camera</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Balance.html#pitchDeadband">pitchDeadband</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Balance.html" title="class in frc.robot.Newman_Constants">Constants.Balance</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#PitchOffset">PitchOffset</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Balance.html#pitchVelocityDeadband">pitchVelocityDeadband</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Balance.html" title="class in frc.robot.Newman_Constants">Constants.Balance</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonManager.html#placeConeHighPlaceCubeHigh()">placeConeHighPlaceCubeHigh()</a></span> - Method in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonManager.html" title="class in frc.robot.supportingClasses.Auton">AutonManager</a></dt>
 <dd>
@@ -1863,15 +1908,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Resets odometry</div>
 </dd>
-<dt><span class="memberNameLink"><a href="frc/robot/RobotContainer.html#resetOdometryTo(edu.wpi.first.math.geometry.Pose2d)">resetOdometryTo(Pose2d)</a></span> - Method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
+<dt><span class="memberNameLink"><a href="frc/robot/RobotContainer.html#resetOdometryWithAprilTag()">resetOdometryWithAprilTag()</a></span> - Method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
 <dd>
-<div class="block">resets odometry to a position passed in</div>
+<div class="block">Resets odometry to the position of the april tag</div>
 </dd>
-<dt><span class="memberNameLink"><a href="frc/robot/RobotContainer.html#resetOdometryWithAprilTags()">resetOdometryWithAprilTags()</a></span> - Method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
-<dd>
-<div class="block">Resets odometry using april tags</div>
-</dd>
-<dt><span class="memberNameLink"><a href="frc/robot/RobotContainer.html#resetOdometryWithoutAprilTag()">resetOdometryWithoutAprilTag()</a></span> - Method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
+<dt><span class="memberNameLink"><a href="frc/robot/RobotContainer.html#resetOdometryWithoutApril()">resetOdometryWithoutApril()</a></span> - Method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
 <dd>
 <div class="block">Resets odometry without april tags to 0, 0, 0.</div>
 </dd>
@@ -1957,9 +1998,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">safe speeds for testing.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Balance.html#safetyTimeLimit">safetyTimeLimit</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Balance.html" title="class in frc.robot.Newman_Constants">Constants.Balance</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#scalarWorked(double)">scalarWorked(double)</a></span> - Method in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
 <dd>
 <div class="block">Test method for each scalar to avoid bin search</div>
+</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#setAprilTagUsage(boolean)">setAprilTagUsage(boolean)</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
+<dd>
+<div class="block">setter for april tags</div>
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Gains/VelocityGainFilter.StatsResult.html#setAverage(double)">setAverage(double)</a></span> - Method in class frc.robot.supportingClasses.Gains.<a href="frc/robot/supportingClasses/Gains/VelocityGainFilter.StatsResult.html" title="class in frc.robot.supportingClasses.Gains">VelocityGainFilter.StatsResult</a></dt>
 <dd>&nbsp;</dd>
@@ -2188,6 +2235,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/OdoPosition.html#timeStamp">timeStamp</a></span> - Variable in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/OdoPosition.html" title="class in frc.robot.supportingClasses.Vision">OdoPosition</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Balance.html#tippedtoStationCenterDistance">tippedtoStationCenterDistance</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Balance.html" title="class in frc.robot.Newman_Constants">Constants.Balance</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/subsystems/Intake.html#toggle()">toggle()</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/Intake.html" title="class in frc.robot.subsystems">Intake</a></dt>
 <dd>
 <div class="block">Toggles the pnumatic for the pistons</div>
@@ -2222,8 +2271,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Creates a new ToggleManipulator command.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/OdoPosition.html#toString()">toString()</a></span> - Method in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/OdoPosition.html" title="class in frc.robot.supportingClasses.Vision">OdoPosition</a></dt>
+<dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Balance.html#toStationCenterDistance">toStationCenterDistance</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Balance.html" title="class in frc.robot.Newman_Constants">Constants.Balance</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/OdoPosition.html#toString()">toString()</a></span> - Method in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/OdoPosition.html" title="class in frc.robot.supportingClasses.Vision">OdoPosition</a></dt>
+<dd>
+<div class="block">To string method for human readability of the object.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/swerve/SwerveModule.html#toString()">toString()</a></span> - Method in class frc.robot.swerve.<a href="frc/robot/swerve/SwerveModule.html" title="class in frc.robot.swerve">SwerveModule</a></dt>
 <dd>
 <div class="block">The string representation of the swerve module</div>
@@ -2292,6 +2345,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Update all the stats values</div>
 </dd>
+<dt><span class="memberNameLink"><a href="frc/robot/RobotContainer.html#updateChassisPose()">updateChassisPose()</a></span> - Method in class frc.robot.<a href="frc/robot/RobotContainer.html" title="class in frc.robot">RobotContainer</a></dt>
+<dd>
+<div class="block">Updates the chassis position periodically.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/swerve/SwerveModule.html#updateDValue(double)">updateDValue(double)</a></span> - Method in class frc.robot.swerve.<a href="frc/robot/swerve/SwerveModule.html" title="class in frc.robot.swerve">SwerveModule</a></dt>
 <dd>
 <div class="block">updates the steering PID controller</div>
@@ -2304,10 +2361,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">updates the field object with a trajectory</div>
 </dd>
+<dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#updateOdometery()">updateOdometery()</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
+<dd>
+<div class="block">Update odometry with swerve drive.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#updateOdometryFromSwerve()">updateOdometryFromSwerve()</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
 <dd>
 <div class="block">periodic call to update odometry from encoders
  Also provides a timestamp that the update occurred</div>
+</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#updateOdometryFromVision()">updateOdometryFromVision()</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
+<dd>
+<div class="block">Updates the odometry from vision if there is a new value to update position with</div>
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#updateOdometryFromVision(frc.robot.supportingClasses.Vision.OdoPosition)">updateOdometryFromVision(OdoPosition)</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
 <dd>
@@ -2332,6 +2397,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Gains/VelocityGainFilter.html#useAble()">useAble()</a></span> - Method in class frc.robot.supportingClasses.Gains.<a href="frc/robot/supportingClasses/Gains/VelocityGainFilter.html" title="class in frc.robot.supportingClasses.Gains">VelocityGainFilter</a></dt>
 <dd>
 <div class="block">You should wait to actually use the dervy derv methods until after we have filled the array</div>
+</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#useAprilTags">useAprilTags</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#useAprilTags">useAprilTags</a></span> - Variable in class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
+<dd>
+<div class="block">Whether to update the odometry with the april tag or not.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#useAprilTags">useAprilTags</a></span> - Variable in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
+<dd>
+<div class="block">Whether to use april tags or not.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#useOptimized">useOptimized</a></span> - Variable in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
 <dd>
@@ -2366,7 +2441,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">wild speeds for if we want to go brrrrrrrrr</div>
 </dd>
 <dt><a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision"><span class="typeNameLink">VisionMedianFilter</span></a> - Class in <a href="frc/robot/supportingClasses/Vision/package-summary.html">frc.robot.supportingClasses.Vision</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">A special type of median filter that is used to filter out outliers in vision data.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html#%3Cinit%3E(int)">VisionMedianFilter(int)</a></span> - Constructor for class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision">VisionMedianFilter</a></dt>
 <dd>
 <div class="block">Constructs a VisionMedianFilter</div>
@@ -2407,9 +2484,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h2 class="title">X</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html#x">x</a></span> - Variable in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision">VisionMedianFilter</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Array for the x positional values</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html#xFilter">xFilter</a></span> - Variable in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision">VisionMedianFilter</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Median filter for the x position</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Camera.html#xPos">xPos</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Camera.html" title="class in frc.robot.Newman_Constants">Constants.Camera</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Field.html#xPositionForBlueHumanPlayerStation">xPositionForBlueHumanPlayerStation</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Field.html" title="class in frc.robot.Newman_Constants">Constants.Field</a></dt>
@@ -2433,9 +2514,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html#yaw">yaw</a></span> - Variable in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision">VisionMedianFilter</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html#yawFilter">yawFilter</a></span> - Variable in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision">VisionMedianFilter</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Median filter for the yaw</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html#yFilter">yFilter</a></span> - Variable in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision">VisionMedianFilter</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Median filter for the y position</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Camera.html#yPos">yPos</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Camera.html" title="class in frc.robot.Newman_Constants">Constants.Camera</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Field.html#yPositionForBlueHumanPlayerStation">yPositionForBlueHumanPlayerStation</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Field.html" title="class in frc.robot.Newman_Constants">Constants.Field</a></dt>

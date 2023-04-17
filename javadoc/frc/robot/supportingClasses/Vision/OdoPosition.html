@@ -133,6 +133,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">OdoPosition</span>
 extends java.lang.Object</pre>
+<div class="block">Odometry position. Holds both a position and a time that, that position was measured at.
+ The reason that we have this is because we want to update swerve drive odometry with a position 
+ and the time that we measured it for better accuracy. We also use this as a specific type for <a href="VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision"><code>VisionMedianFilter</code></a>.</div>
 </li>
 </ul>
 </div>
@@ -208,17 +211,23 @@ extends java.lang.Object</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>edu.wpi.first.math.geometry.Pose2d</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPosition()">getPosition</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Getter for the position</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTime()">getTime</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Getter for the time it occured at</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">To string method for human readability of the object.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -300,6 +309,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getPosition</h4>
 <pre class="methodSignature">public&nbsp;edu.wpi.first.math.geometry.Pose2d&nbsp;getPosition()</pre>
+<div class="block">Getter for the position</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the position measurement.</dd>
+</dl>
 </li>
 </ul>
 <a id="getTime()">
@@ -309,6 +323,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getTime</h4>
 <pre class="methodSignature">public&nbsp;double&nbsp;getTime()</pre>
+<div class="block">Getter for the time it occured at</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the time that the measurement was taken at.</dd>
+</dl>
 </li>
 </ul>
 <a id="toString()">
@@ -318,9 +337,12 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>toString</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;toString()</pre>
+<div class="block">To string method for human readability of the object.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>toString</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the string representation of the object.</dd>
 </dl>
 </li>
 </ul>

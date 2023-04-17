@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -257,16 +257,19 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#autonCommandGenerator(com.pathplanner.lib.PathPlannerTrajectory)">autonCommandGenerator</a></span>&#8203;(com.pathplanner.lib.PathPlannerTrajectory&nbsp;trajectory)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#autonCommandGenerator(com.pathplanner.lib.PathPlannerTrajectory,boolean)">autonCommandGenerator</a></span>&#8203;(com.pathplanner.lib.PathPlannerTrajectory&nbsp;trajectory,
+                     boolean&nbsp;useAprilTags)</code></th>
 <td class="colLast">
 <div class="block">Generates an AutonCommand object from a <code>PathPlannerTrajectory</code> trajectory.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#autonCommandGeneratorPlacement(com.pathplanner.lib.PathPlannerTrajectory)">autonCommandGeneratorPlacement</a></span>&#8203;(com.pathplanner.lib.PathPlannerTrajectory&nbsp;trajectory)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#autonCommandGeneratorPlacement(com.pathplanner.lib.PathPlannerTrajectory,boolean)">autonCommandGeneratorPlacement</a></span>&#8203;(com.pathplanner.lib.PathPlannerTrajectory&nbsp;trajectory,
+                              boolean&nbsp;useAprilTags)</code></th>
 <td class="colLast">
-<div class="block">Makes an auton command with placement functionality.</div>
+<div class="block">Generates an auton command which requires placement subsystems calling:
+  <a href="#holonomicControllerGenerator(com.pathplanner.lib.PathPlannerTrajectory)"><code>holonomicControllerGenerator(PathPlannerTrajectory)</code></a>.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
@@ -298,13 +301,20 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
+<td class="colFirst"><code>edu.wpi.first.wpilibj2.command.SequentialCommandGroup</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#goToStartOfCommand(frc.robot.supportingClasses.Auton.AutonCommand)">goToStartOfCommand</a></span>&#8203;(<a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a>&nbsp;mainPath)</code></th>
+<td class="colLast">
+<div class="block">Generates a trajectory to go to the start of the main path.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="HolonomicControllerCommand.html" title="class in frc.robot.supportingClasses.Auton">HolonomicControllerCommand</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#holonomicControllerGenerator(com.pathplanner.lib.PathPlannerTrajectory)">holonomicControllerGenerator</a></span>&#8203;(com.pathplanner.lib.PathPlannerTrajectory&nbsp;trajectory)</code></th>
 <td class="colLast">
 <div class="block">Generates a holonomic controller command.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#loadTrajectory(java.lang.String,boolean)">loadTrajectory</a></span>&#8203;(java.lang.String&nbsp;nameOfFile,
               boolean&nbsp;requirePlacement)</code></th>
@@ -312,62 +322,64 @@ extends java.lang.Object</pre>
 <div class="block">loads a PathPlanner trajectory with optional marker support.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>edu.wpi.first.wpilibj2.command.CommandBase</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#makeCmdToGoToHumanPlayerStation(edu.wpi.first.math.geometry.Pose2d)">makeCmdToGoToHumanPlayerStation</a></span>&#8203;(edu.wpi.first.math.geometry.Pose2d&nbsp;current)</code></th>
 <td class="colLast">
 <div class="block">On the fly trajectory generation to go to the human player station</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#makeCmdToGoToPlace(edu.wpi.first.math.geometry.Pose2d)">makeCmdToGoToPlace</a></span>&#8203;(edu.wpi.first.math.geometry.Pose2d&nbsp;current)</code></th>
 <td class="colLast">
 <div class="block">on-the-fly generates a path to go to the closest location where you can place a game element from</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>edu.wpi.first.wpilibj2.command.CommandBase</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#makeCmdToIntakeAndGoForward()">makeCmdToIntakeAndGoForward</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Makes a command to actuate intake and go forward</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onTheFlyGenerator(edu.wpi.first.math.geometry.Pose2d,edu.wpi.first.math.geometry.Pose2d)">onTheFlyGenerator</a></span>&#8203;(edu.wpi.first.math.geometry.Pose2d&nbsp;current,
                  edu.wpi.first.math.geometry.Pose2d&nbsp;endPoint)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">A method to help with on the fly trajectory generation.</div>
+</td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>edu.wpi.first.wpilibj2.command.CommandBase</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#pick()">pick</a></span>()</code></th>
 <td class="colLast">
 <div class="block">what to command is currently selected on shuffleboard.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>edu.wpi.first.wpilibj2.command.CommandBase</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#placeConeHighPlaceCubeHigh()">placeConeHighPlaceCubeHigh</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Place a cone in high at start and then place a cube in high.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>edu.wpi.first.wpilibj2.command.CommandBase</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#placeInAuton()">placeInAuton</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Requires odometry from april tags to be off in auton and for the traajectory to not be transformed by alliance</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>edu.wpi.first.wpilibj2.command.CommandBase</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#placeInAutonCone()">placeInAutonCone</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Place a cone in auton.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>edu.wpi.first.wpilibj2.command.SequentialCommandGroup</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#wrapCmd(frc.robot.supportingClasses.Auton.AutonCommand)">wrapCmd</a></span>&#8203;(<a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a>&nbsp;command)</code></th>
 <td class="colLast">
@@ -377,7 +389,7 @@ extends java.lang.Object</pre>
  Overload of <a href="#wrapCmd(frc.robot.supportingClasses.Auton.AutonCommand,edu.wpi.first.wpilibj2.command.Command...)"><code>wrapCmd(AutonCommand, Command...)</code></a></div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>edu.wpi.first.wpilibj2.command.SequentialCommandGroup</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#wrapCmd(frc.robot.supportingClasses.Auton.AutonCommand,edu.wpi.first.wpilibj2.command.Command...)">wrapCmd</a></span>&#8203;(<a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a>&nbsp;first,
        edu.wpi.first.wpilibj2.command.Command...&nbsp;restOfCommands)</code></th>
@@ -540,13 +552,14 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="autonCommandGenerator(com.pathplanner.lib.PathPlannerTrajectory)">
+<a id="autonCommandGenerator(com.pathplanner.lib.PathPlannerTrajectory,boolean)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>autonCommandGenerator</h4>
-<pre class="methodSignature">public&nbsp;<a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a>&nbsp;autonCommandGenerator&#8203;(com.pathplanner.lib.PathPlannerTrajectory&nbsp;trajectory)</pre>
+<pre class="methodSignature">public&nbsp;<a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a>&nbsp;autonCommandGenerator&#8203;(com.pathplanner.lib.PathPlannerTrajectory&nbsp;trajectory,
+                                          boolean&nbsp;useAprilTags)</pre>
 <div class="block">Generates an AutonCommand object from a <code>PathPlannerTrajectory</code> trajectory.
  Trajectory's can be loaded from path planner with
   PathPlanner.loadPath(nameOfYourTrajectory, accelerationAndVelocityConstraints). For an example
@@ -560,6 +573,7 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>trajectory</code> - the trajectory from PathPlanner to follow</dd>
+<dd><code>useAprilTags</code> - whether or not to use april tags to update odometry during the path</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>an <a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton"><code>AutonCommand</code></a> object that contains an auton path to run as well as the start and end points</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
@@ -588,19 +602,22 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="autonCommandGeneratorPlacement(com.pathplanner.lib.PathPlannerTrajectory)">
+<a id="autonCommandGeneratorPlacement(com.pathplanner.lib.PathPlannerTrajectory,boolean)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>autonCommandGeneratorPlacement</h4>
-<pre class="methodSignature">public&nbsp;<a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a>&nbsp;autonCommandGeneratorPlacement&#8203;(com.pathplanner.lib.PathPlannerTrajectory&nbsp;trajectory)</pre>
-<div class="block">Makes an auton command with placement functionality.</div>
+<pre class="methodSignature">public&nbsp;<a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a>&nbsp;autonCommandGeneratorPlacement&#8203;(com.pathplanner.lib.PathPlannerTrajectory&nbsp;trajectory,
+                                                   boolean&nbsp;useAprilTags)</pre>
+<div class="block">Generates an auton command which requires placement subsystems calling:
+  <a href="#holonomicControllerGenerator(com.pathplanner.lib.PathPlannerTrajectory)"><code>holonomicControllerGenerator(PathPlannerTrajectory)</code></a>.
+ The passed in subsystems are all stored in the <a href="AutonManager.html" title="class in frc.robot.supportingClasses.Auton"><code>AutonManager</code></a> object.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>trajectory</code> - the generated path-planner trajectory to follow</dd>
+<dd><code>trajectory</code> - the trajectory from PathPlanner to follow</dd>
+<dd><code>useAprilTags</code> - whether or not to use april tags to update odometry during the path</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the auton command to follow the trajectory with placement functionality</dd>
 </dl>
 </li>
 </ul>
@@ -651,6 +668,15 @@ extends java.lang.Object</pre>
 <h4>onTheFlyGenerator</h4>
 <pre class="methodSignature">public&nbsp;<a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a>&nbsp;onTheFlyGenerator&#8203;(edu.wpi.first.math.geometry.Pose2d&nbsp;current,
                                       edu.wpi.first.math.geometry.Pose2d&nbsp;endPoint)</pre>
+<div class="block">A method to help with on the fly trajectory generation. 
+ As of current it will still update position with april tags however this may need to be changed for better effect in the future.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>current</code> - the current position of the bot / start position of the trajectory</dd>
+<dd><code>endPoint</code> - the end position of the bot / end position of the trajectory</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the Auton command without placement support that will follow the path.</dd>
+</dl>
 </li>
 </ul>
 <a id="loadTrajectory(java.lang.String,boolean)">
@@ -662,12 +688,14 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;<a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a>&nbsp;loadTrajectory&#8203;(java.lang.String&nbsp;nameOfFile,
                                    boolean&nbsp;requirePlacement)</pre>
 <div class="block">loads a PathPlanner trajectory with optional marker support.
- If you don't want marker support then this command won't require placement subsystems.</div>
+ If you don't want marker support then this command won't require placement subsystems.
+ Any auton commands that are made using this command will use april tags.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>nameOfFile</code> - the name of the path in PathPlanner</dd>
+<dd><code>requirePlacement</code> - whether we should require placement or not</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the generated auton command which requires placement</dd>
+<dd>the generated auton command which requires placement and uses april tags</dd>
 </dl>
 </li>
 </ul>
@@ -825,7 +853,7 @@ extends java.lang.Object</pre>
 <a id="generatePullOut()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>generatePullOut</h4>
 <pre class="methodSignature">public&nbsp;edu.wpi.first.wpilibj2.command.CommandBase&nbsp;generatePullOut()</pre>
@@ -834,6 +862,24 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the generated trajectory in a wrapped command.</dd>
+</dl>
+</li>
+</ul>
+<a id="goToStartOfCommand(frc.robot.supportingClasses.Auton.AutonCommand)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>goToStartOfCommand</h4>
+<pre class="methodSignature">public&nbsp;edu.wpi.first.wpilibj2.command.SequentialCommandGroup&nbsp;goToStartOfCommand&#8203;(<a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a>&nbsp;mainPath)</pre>
+<div class="block">Generates a trajectory to go to the start of the main path. 
+ Is ran before the main path in auton to make sure that we start in the corrent spot.
+ Basically a wrapper for the main auton command to make sure that we start in the correct spot.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>mainPath</code> - the main command that will be ran in auton</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the command group for going to the start of the path and then running the passed in path.</dd>
 </dl>
 </li>
 </ul>
