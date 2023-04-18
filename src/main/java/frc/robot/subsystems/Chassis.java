@@ -111,12 +111,15 @@ public class Chassis extends SubsystemBase {
         n_fieldOrriented = Shuffleboard.getTab("Comp").add("field orriented", false).getEntry();
 
         HolonomicPIDController = new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, Constants.kDThetaController, Constants.kThetaControllerConstraints);
-        HoldController = new PIDController(0.25, 0, 0);
-
+        HolonomicPIDController.enableContinuousInput(-Math.PI, Math.PI);
         HolonomicPIDController.setTolerance(Math.toRadians(2.5));
+
+        HoldController = new PIDController(0.25, 0, 0);
+        HoldController.enableContinuousInput(-Math.PI, Math.PI);
         HoldController.setTolerance(0.025);
+
         useHold = false;
-  }
+    }
 
     public void SetHoloGoal(double angle) {
         currentGoal = angle;

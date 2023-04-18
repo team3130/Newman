@@ -89,7 +89,7 @@ public class TeleopDrive extends CommandBase {
       x = -x;
     }
 
-    if (Math.abs(theta) > Constants.kDeadband) {
+    if (Math.abs(theta) < Constants.kDeadband) {
       theta = 0;
     }
 
@@ -97,7 +97,7 @@ public class TeleopDrive extends CommandBase {
     x = xLimiter.calculate(x * Constants.kPhysicalMaxSpeedMetersPerSecond);
     y = yLimiter.calculate(y * Constants.kPhysicalMaxSpeedMetersPerSecond);
     //TODO: why doesn't theta get scaled as well??
-    theta = turningLimiter.calculate(theta * Constants.kThetaControllerConstraints.maxVelocity);
+    theta = turningLimiter.calculate(theta * Constants.kMaxAngularSpeedRadiansPerSecond);
 
     if (Math.abs(theta) > Constants.kDeadband) {
       m_chassis.drive(x, y, theta);
