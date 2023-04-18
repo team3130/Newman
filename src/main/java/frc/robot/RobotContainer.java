@@ -42,6 +42,7 @@ import frc.robot.commands.Placement.presets.GoToHighScoring;
 import frc.robot.commands.Placement.presets.GoToMidScoringCones;
 import frc.robot.commands.Placement.presets.GoToMidScoringCube;
 import frc.robot.commands.Placement.presets.GoToPickupOffGround;
+import frc.robot.commands.TurnToAngle;
 import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
 import frc.robot.subsystems.*;
@@ -223,6 +224,8 @@ public class RobotContainer {
       new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlacementPosition(m_chassis, m_autonManager));
 
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new Balance(m_chassis));
+
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).onTrue(new TurnToAngle(m_chassis, Math.PI));
     }
 
     //Weapons Gamepad:

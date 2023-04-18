@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -39,11 +41,10 @@ public class Chassis extends SubsystemBase {
 
     /** A list of the swerve modules (should be four */
     private final SwerveModule[] modules;
-    /** Makes sure that the Navx Gyro is initialized */
-    private final Navx Gyro = Navx.GetInstance();
-
     /** Whether it is field relative or robot oriented drive */
     private boolean fieldRelative = true;
+
+    protected Navx m_navx = Navx.GetInstance();
 
     /** limelight object */
     private final Limelight m_limelight;
@@ -51,6 +52,9 @@ public class Chassis extends SubsystemBase {
     /**
      * Updated periodically with the maximum speed that has been read on any of the swerve modules
      */
+    private final ProfiledPIDController HolonomicPIDController;
+    private final PIDController HoldController;
+    private Boolean useHold;
     private double maxSpeedRead = 0;
 
     /**
@@ -101,7 +105,28 @@ public class Chassis extends SubsystemBase {
         field = new Field2d();
         Shuffleboard.getTab("Comp").add("field", field);
         n_fieldOrriented = Shuffleboard.getTab("Comp").add("field orriented", false).getEntry();
-  }
+
+        HolonomicPIDController = new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, Constants.kDThetaController, Constants.kThetaControllerConstraints);
+        HolonomicPIDController.enableContinuousInput(-Math.PI, Math.PI);
+        HolonomicPIDController.setTolerance(Math.toRadians(2.5));
+
+        HoldController = new PIDController(0.25, 0, 0);
+        HoldController.enableContinuousInput(-Math.PI, Math.PI);
+        HoldController.setTolerance(0.025);
+
+        useHold = false;
+    }
+
+    public void SetHoloGoal(double angle) {
+        HolonomicPIDController.reset(getRotation2d().getRadians());
+        HolonomicPIDController.setGoal(angle);
+        useHold = false;
+    }
+
+    public void holdHoloAt(double angle) {
+        HoldController.setSetpoint(angle);
+        useHold = true;
+    }
 
     /**
     * If the PID controllers of the {@link SwerveModule}'s are all done
@@ -450,6 +475,17 @@ public class Chassis extends SubsystemBase {
         else {
             setModuleStates(m_kinematics.toSwerveModuleStates(new ChassisSpeeds(x, y, theta)));
         }
+    }
+
+    public void drive(double x, double y) {
+        double theta;
+        if (useHold) {
+            theta = HoldController.calculate(getRotation2d().getRadians());
+        }
+        else {
+            theta = HolonomicPIDController.calculate(getRotation2d().getRadians());
+        }
+        drive(x, y, theta);
     }
 
     /**

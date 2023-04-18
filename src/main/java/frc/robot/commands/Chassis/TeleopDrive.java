@@ -32,6 +32,8 @@ public class TeleopDrive extends CommandBase {
    */
   private final XboxController m_xboxController;
 
+  private boolean wasOutsideDeadBand;
+
   /**
    * Creates a new TeleopDrive command
    * Initializes slew rate limiters to limit acceleration
@@ -47,6 +49,8 @@ public class TeleopDrive extends CommandBase {
     yLimiter = new SlewRateLimiter(Constants.kMaxAccelerationDrive);
     turningLimiter = new SlewRateLimiter(Constants.kMaxAccelerationAngularDrive);
     m_xboxController = xboxController;
+
+    wasOutsideDeadBand = false;
   }
 
   /**
@@ -79,20 +83,34 @@ public class TeleopDrive extends CommandBase {
     if (Math.abs(y) < Constants.kDeadband) {
       y = 0;
     }
-    theta = Math.abs(theta) > Constants.kDeadband ? theta : 0.0;
 
     if (!m_chassis.getFieldRelative()) {
       y = -y;
       x = -x;
     }
 
+    if (Math.abs(theta) < Constants.kDeadband) {
+      theta = 0;
+    }
+
     // apply slew rate limiter which also converts to m/s and rad.s
     x = xLimiter.calculate(x * Constants.kPhysicalMaxSpeedMetersPerSecond);
     y = yLimiter.calculate(y * Constants.kPhysicalMaxSpeedMetersPerSecond);
     //TODO: why doesn't theta get scaled as well??
-    theta = turningLimiter.calculate(theta) * Constants.kPhysicalMaxSpeedMetersPerSecond;
+    theta = turningLimiter.calculate(theta * Constants.kMaxAngularSpeedRadiansPerSecond);
 
-    m_chassis.drive(x,y,theta);
+    if (Math.abs(theta) > Constants.kDeadband) {
+      m_chassis.drive(x, y, theta);
+      wasOutsideDeadBand = true;
+    }
+    else {
+      if (wasOutsideDeadBand) {
+        m_chassis.holdHoloAt(m_chassis.getRotation2d().getRadians());
+      }
+      wasOutsideDeadBand = false;
+
+      m_chassis.drive(x, y);
+    }
 
     if (Constants.debugMode) {
       m_chassis.listener();
