@@ -44,6 +44,8 @@ public class Chassis extends SubsystemBase {
     /** Whether it is field relative or robot oriented drive */
     private boolean fieldRelative = true;
 
+    protected Navx m_navx = Navx.GetInstance();
+
     /** limelight object */
     private final Limelight m_limelight;
 
