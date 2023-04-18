@@ -38,6 +38,7 @@ public class SearchBalance extends CommandBase {
   private Timer safetyTimer = new Timer();
   private double distanceToDrive;
   private int sign;
+  private double initRotation; 
   
 
 
@@ -90,7 +91,8 @@ public class SearchBalance extends CommandBase {
       if(timer.hasElapsed(Constants.Balance.stablizationTime)){
         timer.stop();
         finished = Math.abs(Navx.getPitch() - Navx.getZeroPitch()) <= Constants.Balance.pitchDeadband;
-        initPos = m_chassis.getPose2d().getTranslation().getX(); 
+        initPos = m_chassis.getX();
+         
         state = State.DRIVING;
       }
 
@@ -98,14 +100,15 @@ public class SearchBalance extends CommandBase {
     else if (state == State.DRIVING){
       
 
-        if((Math.abs(Navx.getPitch() - Navx.getZeroPitch()) > Constants.Balance.pitchDeadband) || Math.abs(m_chassis.getPose2d().getTranslation().getX() - initPos) <= distanceToDrive){
-          m_chassis.drive(sign * driveVelocity,0,0, false);
-        }
-        else{
+        if((Math.abs(Navx.getPitch() - Navx.getZeroPitch()) <= Constants.Balance.pitchDeadband) || Math.abs(m_chassis.getX() - initPos) >= distanceToDrive){
           m_chassis.stopModules();
           timer.restart();
           iterator++;
           state = State.WAITING;
+        }
+        else{
+          m_chassis.drive(sign * driveVelocity,0,0, false);
+          
         }
 
 

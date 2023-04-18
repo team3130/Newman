@@ -332,14 +332,15 @@ public class Chassis extends SubsystemBase {
     /**
      * @return the x position from odometry
      */
-    private double getX() {
+    public double getX() {
         return m_odometry.getEstimatedPosition().getX();
     }
+
 
     /**
      * @return the y position from odometry
      */
-    private double getY() {
+    public double getY() {
         return m_odometry.getEstimatedPosition().getY();
     }
 
@@ -362,7 +363,7 @@ public class Chassis extends SubsystemBase {
     }
 
     /**
-     * Initializes the data we send on shuffleboard
+    - * Initializes the data we send on shuffleboard
      * Calls the default init sendable for Subsystem Bases
      * @param builder sendable builder
      */
