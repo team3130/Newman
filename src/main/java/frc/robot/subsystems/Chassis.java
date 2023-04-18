@@ -110,8 +110,8 @@ public class Chassis extends SubsystemBase {
         Shuffleboard.getTab("Comp").add("field", field);
         n_fieldOrriented = Shuffleboard.getTab("Comp").add("field orriented", false).getEntry();
 
-        HolonomicPIDController = new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, Constants.kDThetaController, Constants.kThetaControllerConstraints);
-        HoldController = new PIDController(0.25, 0, 0);
+        HolonomicPIDController = new ProfiledPIDController(0.5, Constants.kIThetaController, Constants.kDThetaController, Constants.kThetaControllerConstraints);
+        HoldController = new PIDController(0.25, 0, 0.0025);
 
         HolonomicPIDController.setTolerance(Math.toRadians(2.5));
         HoldController.setTolerance(0.025);

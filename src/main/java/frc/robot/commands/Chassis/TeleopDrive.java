@@ -89,7 +89,7 @@ public class TeleopDrive extends CommandBase {
       x = -x;
     }
 
-    if (Math.abs(theta) > Constants.kDeadband) {
+    if (Math.abs(theta) < Constants.kDeadband) {
       theta = 0;
     }
 
