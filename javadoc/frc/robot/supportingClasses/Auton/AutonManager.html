@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -366,20 +366,25 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i16" class="altColor">
+<td class="colFirst"><code><a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#placeCubeHigh()">placeCubeHigh</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>edu.wpi.first.wpilibj2.command.CommandBase</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#placeInAuton()">placeInAuton</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Requires odometry from april tags to be off in auton and for the traajectory to not be transformed by alliance</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>edu.wpi.first.wpilibj2.command.CommandBase</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#placeInAutonCone()">placeInAutonCone</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Place a cone in auton.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>edu.wpi.first.wpilibj2.command.SequentialCommandGroup</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#wrapCmd(frc.robot.supportingClasses.Auton.AutonCommand)">wrapCmd</a></span>&#8203;(<a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a>&nbsp;command)</code></th>
 <td class="colLast">
@@ -389,7 +394,7 @@ extends java.lang.Object</pre>
  Overload of <a href="#wrapCmd(frc.robot.supportingClasses.Auton.AutonCommand,edu.wpi.first.wpilibj2.command.Command...)"><code>wrapCmd(AutonCommand, Command...)</code></a></div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>edu.wpi.first.wpilibj2.command.SequentialCommandGroup</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#wrapCmd(frc.robot.supportingClasses.Auton.AutonCommand,edu.wpi.first.wpilibj2.command.Command...)">wrapCmd</a></span>&#8203;(<a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a>&nbsp;first,
        edu.wpi.first.wpilibj2.command.Command...&nbsp;restOfCommands)</code></th>
@@ -868,7 +873,7 @@ extends java.lang.Object</pre>
 <a id="goToStartOfCommand(frc.robot.supportingClasses.Auton.AutonCommand)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>goToStartOfCommand</h4>
 <pre class="methodSignature">public&nbsp;edu.wpi.first.wpilibj2.command.SequentialCommandGroup&nbsp;goToStartOfCommand&#8203;(<a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a>&nbsp;mainPath)</pre>
@@ -881,6 +886,15 @@ extends java.lang.Object</pre>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the command group for going to the start of the path and then running the passed in path.</dd>
 </dl>
+</li>
+</ul>
+<a id="placeCubeHigh()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>placeCubeHigh</h4>
+<pre class="methodSignature">public&nbsp;<a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a>&nbsp;placeCubeHigh()</pre>
 </li>
 </ul>
 </li>
