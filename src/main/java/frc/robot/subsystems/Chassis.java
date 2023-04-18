@@ -14,7 +14,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
@@ -25,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.sensors.Limelight;
 import frc.robot.sensors.Navx;
-import frc.robot.supportingClasses.Auton.HolonomicControllerCommand;
 import frc.robot.supportingClasses.Vision.OdoPosition;
 import frc.robot.swerve.SwerveModule;
 
@@ -43,9 +41,6 @@ public class Chassis extends SubsystemBase {
 
     /** A list of the swerve modules (should be four */
     private final SwerveModule[] modules;
-    /** Makes sure that the Navx Gyro is initialized */
-    private final Navx Gyro = Navx.GetInstance();
-
     /** Whether it is field relative or robot oriented drive */
     private boolean fieldRelative = true;
 
@@ -58,7 +53,6 @@ public class Chassis extends SubsystemBase {
     private final ProfiledPIDController HolonomicPIDController;
     private final PIDController HoldController;
     private Boolean useHold;
-    private double currentGoal = 0;
     private double maxSpeedRead = 0;
 
     /**
@@ -122,14 +116,12 @@ public class Chassis extends SubsystemBase {
     }
 
     public void SetHoloGoal(double angle) {
-        currentGoal = angle;
         HolonomicPIDController.reset(getRotation2d().getRadians());
         HolonomicPIDController.setGoal(angle);
         useHold = false;
     }
 
     public void holdHoloAt(double angle) {
-        currentGoal = angle;
         HoldController.setSetpoint(angle);
         useHold = true;
     }
