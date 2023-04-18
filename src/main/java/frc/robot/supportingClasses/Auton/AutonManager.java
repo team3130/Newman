@@ -123,7 +123,7 @@ public class AutonManager {
         m_autonChooser.addOption("pull out", generatePullOut()); // as the name suggests its the safest option
         m_autonChooser.addOption("2 meters forward", generateExamplePathFromPoses());
         
-        m_autonChooser.addOption("marker path 2 cones HP", placeConeHighPlaceCubeHigh()); // really needs to be fixed. markers don't do anything right now yay
+        // m_autonChooser.addOption("marker path 2 cones HP", placeConeHighPlaceCubeHigh()); // really needs to be fixed. markers don't do anything right now yay
         // m_autonChooser.addOption("marker path 2 cones non-hp", loadTrajectory("place two cones non hp", true));
     }
 
@@ -457,18 +457,14 @@ public class AutonManager {
         AutonCommand command = autonCommandGenerator(trajectory, false);
         AutonCommand command2 = autonCommandGenerator(trajectory2, false);
 
-        CommandBase command1 = wrapCmd(command);
-
         return
             new SequentialCommandGroup(
                 new AutoZeroRotryArm(rotary),
                 new AutoZeroExtensionArm(extension),
-                new GoToPickupWithinBot(extension),
                 new ToggleManipulator(m_manipulator),
                 new TimedCommand(0.2),
-                new AutoZeroExtensionArm(extension),
                 new GoToHighScoring(rotary, extension),
-                command1,
+                command,
                 new ToggleManipulator(m_manipulator),
                 new TimedCommand(0.2),
                 new ParallelCommandGroup(
