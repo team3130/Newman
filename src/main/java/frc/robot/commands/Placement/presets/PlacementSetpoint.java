@@ -137,6 +137,6 @@ public abstract class PlacementSetpoint extends CommandBase {
    */
   @Override
   public boolean isFinished() {
-    return hasStartedExtended && m_rotaryArm.isAtPosition() && (!usesExtensionArm || m_extensionArm.atPosition());
+    return m_rotaryArm.isAtPosition() && (!usesExtensionArm || (m_extensionArm.atPosition() && hasStartedExtended));
   }
 }
