@@ -515,11 +515,8 @@ public class AutonManager {
      * @return the command group for going to the start of the path and then running the passed in path.
      */
     public SequentialCommandGroup goToStartOfCommand(AutonCommand mainPath) {
-        List<EventMarker> markers = List.of(EventMarker.fromTime(List.of("grabber"), 0), EventMarker.fromTime(List.of("place high"), 0.07));
-
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
-            safe_constraints, 
-            markers,
+            safe_constraints,
             new PathPoint(m_chassis.getPose2d().getTranslation(), new Rotation2d(), m_chassis.getRotation2d()), 
             new PathPoint(mainPath.getStartPosition().getTranslation(), new Rotation2d(), mainPath.getStartRotation()));
         AutonCommand goToStart = autonCommandGenerator(trajectory, true);
@@ -528,7 +525,7 @@ public class AutonManager {
     }
 
     public AutonCommand placeCubeHigh() {
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("place cube high", safe_constraints);
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("place cube high non hp", safe_constraints);
         return autonCommandGenerator(trajectory, true);
     }
 
