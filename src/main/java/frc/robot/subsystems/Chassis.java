@@ -120,7 +120,7 @@ public class Chassis extends SubsystemBase {
 
     public void SetHoloGoal(double angle) {
         currentGoal = angle;
-        HolonomicPIDController.reset(getHeading());
+        HolonomicPIDController.reset(getRotation2d().getRadians());
         HolonomicPIDController.setGoal(angle);
         useHold = false;
     }
@@ -483,10 +483,10 @@ public class Chassis extends SubsystemBase {
     public void drive(double x, double y) {
         double theta;
         if (useHold) {
-            theta = HoldController.calculate(getHeading());
+            theta = HoldController.calculate(getRotation2d().getRadians());
         }
         else {
-            theta = HolonomicPIDController.calculate(getHeading());
+            theta = HolonomicPIDController.calculate(getRotation2d().getRadians());
         }
         drive(x, y, theta);
     }

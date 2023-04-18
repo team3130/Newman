@@ -105,7 +105,7 @@ public class TeleopDrive extends CommandBase {
     }
     else {
       if (wasOutsideDeadBand) {
-        m_chassis.holdHoloAt(m_chassis.getHeading());
+        m_chassis.holdHoloAt(m_chassis.getRotation2d().getRadians());
       }
       wasOutsideDeadBand = false;
 
