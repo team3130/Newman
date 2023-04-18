@@ -89,12 +89,15 @@ public class TeleopDrive extends CommandBase {
       x = -x;
     }
 
+    if (Math.abs(theta) > Constants.kDeadband) {
+      theta = 0;
+    }
+
     // apply slew rate limiter which also converts to m/s and rad.s
     x = xLimiter.calculate(x * Constants.kPhysicalMaxSpeedMetersPerSecond);
     y = yLimiter.calculate(y * Constants.kPhysicalMaxSpeedMetersPerSecond);
     //TODO: why doesn't theta get scaled as well??
     theta = turningLimiter.calculate(theta * Constants.kThetaControllerConstraints.maxVelocity);
-
 
     if (Math.abs(theta) > Constants.kDeadband) {
       m_chassis.drive(x, y, theta);
@@ -103,8 +106,9 @@ public class TeleopDrive extends CommandBase {
     else {
       if (wasOutsideDeadBand) {
         m_chassis.holdHoloAt(m_chassis.getHeading());
-        wasOutsideDeadBand = false;
       }
+      wasOutsideDeadBand = false;
+
       m_chassis.drive(x, y);
     }
 
