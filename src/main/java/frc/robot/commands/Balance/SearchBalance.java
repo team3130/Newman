@@ -18,7 +18,7 @@ import frc.robot.subsystems.ExampleSubsystem;
 /** An example command that uses an example subsystem. */
 public class SearchBalance extends CommandBase {
   private final Chassis m_chassis;
-  private final double driveVelocity = Constants.Balance.driveSpeed * 2;
+  private final double driveVelocity = Constants.Balance.driveSpeed;
   private SwerveModuleState[] moduleStates;
   private int iterator = 1;
   
