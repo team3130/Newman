@@ -549,7 +549,7 @@ public class AutonManager {
 
         
 
-        AutonCommand command = autonCommandGenerator(trajectory);
+        AutonCommand command = autonCommandGenerator(trajectory,  false);
         return wrapCmd(command);
     }
 

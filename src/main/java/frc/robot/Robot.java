@@ -65,10 +65,10 @@ public class Robot extends TimedRobot {
         timer.reset();
       }
     }
-    Navx.outputToShuffleboard();
     else {
       m_robotContainer.updateChassisPose();
     }
+    Navx.outputToShuffleboard();
   }
 
     @Override
