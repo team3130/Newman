@@ -68,7 +68,7 @@ public class Robot extends TimedRobot {
     else {
       m_robotContainer.updateChassisPose();
     }
-    Navx.outputToShuffleboard();
+    
   }
 
     @Override
@@ -91,7 +91,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit () {
       CommandScheduler.getInstance().cancelAll();
       CommandScheduler.getInstance().schedule(m_robotContainer.packageAuton(m_robotContainer.getAutonCmd()));
-      //Navx.setPitchZero(Navx.getPitch());
+      Navx.setPitchZero(Navx.getPitch());
     }
 
     @Override
@@ -113,7 +113,7 @@ public class Robot extends TimedRobot {
       CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
       CommandScheduler.getInstance().schedule(m_robotContainer.unClampManipulator());
 
-      //SHOULD GO TO AUTONINIT AFTER TESTING
+      
       Navx.setPitchZero(Navx.getPitch());
     }
 

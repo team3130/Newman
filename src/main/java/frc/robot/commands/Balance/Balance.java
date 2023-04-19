@@ -183,8 +183,8 @@ public class Balance extends CommandBase {
   @Override
   public boolean isFinished() {
     //return pitchVelocityDeadband && Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband;
-    //return finished || safetyTimer.hasElapsed(Constants.Balance.safetyTimeLimit);
-    return finished;
+    return finished || safetyTimer.hasElapsed(Constants.Balance.safetyTimeLimit);
+   // return finished;
   }
 
   public double getDirection() {
