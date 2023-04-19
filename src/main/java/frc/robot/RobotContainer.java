@@ -22,6 +22,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Balance.Balance;
+import frc.robot.commands.Balance.DeadReckonBalance;
+import frc.robot.commands.Balance.OnToRamp;
+import frc.robot.commands.Balance.RileyPark;
+import frc.robot.commands.Balance.SearchBalance;
 import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
@@ -44,6 +48,7 @@ import frc.robot.commands.Placement.presets.GoToMidScoringCube;
 import frc.robot.commands.Placement.presets.GoToPickupOffGround;
 import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
+import frc.robot.sensors.Navx;
 import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.Auton.AutonCommand;
 import frc.robot.supportingClasses.Auton.AutonManager;
@@ -162,6 +167,7 @@ public class RobotContainer {
 
     configureButtonBindings();
     vomitShuffleBoardData();
+    
   }
 
   /**
@@ -219,10 +225,10 @@ public class RobotContainer {
     //new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new Balancing(m_chassis));
 
     if (Constants.debugMode) {
-      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RJOYSTICKPRESS).onTrue(new SequentialCommandGroup(new OnToRamp(m_chassis, false), new Balance(m_chassis), new RileyPark(m_chassis)));
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).onTrue(new SequentialCommandGroup(new SearchBalance(m_chassis), new RileyPark(m_chassis)));
       new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlacementPosition(m_chassis, m_autonManager));
-
-      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new Balance(m_chassis));
+      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
     }
 
     //Weapons Gamepad:

@@ -56,6 +56,11 @@ public class AutonManager {
     protected final PathConstraints violent_constraints;
 
     /**
+     * really slow velocity for when we try to balance 
+     */
+    protected final PathConstraints balance_constraints;
+
+    /**
      * The alliance that we are on so we don't have to spam networktables
      */
     private final DriverStation.Alliance alliance;
@@ -96,6 +101,7 @@ public class AutonManager {
 
         safe_constraints = new PathConstraints(2, 2);
         violent_constraints = new PathConstraints(Constants.kPhysicalMaxSpeedMetersPerSecond, 3);
+        balance_constraints = new PathConstraints(0.75, 2);
 
         Shuffleboard.getTab("Comp").add(m_autonChooser);
 
@@ -527,6 +533,24 @@ public class AutonManager {
     public AutonCommand placeCubeHigh() {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("place cube high non hp", safe_constraints);
         return autonCommandGenerator(trajectory, true);
+    }
+
+    public CommandBase setpointBalance(int dir) {
+        // the trajectory being made
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+                /* Max velocity and acceleration the path will follow along the trapezoid profile */
+                balance_constraints,
+              
+                new PathPoint(
+                        m_chassis.getPose2d().getTranslation(),
+                        new Rotation2d(), new Rotation2d()),
+                new PathPoint(new Translation2d(m_chassis.getPose2d().getTranslation().getX() + dir*Constants.Balance.toStationCenterDistance, m_chassis.getPose2d().getTranslation().getY()), new Rotation2d(), new Rotation2d(0))
+        );
+
+        
+
+        AutonCommand command = autonCommandGenerator(trajectory,  false);
+        return wrapCmd(command);
     }
 
 }

@@ -164,6 +164,8 @@ bin/
 .idea/
 .vscode/
 
+.run
+
 !NavX.json
 
 simgui.json
