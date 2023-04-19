@@ -62,22 +62,68 @@ import frc.robot.supportingClasses.Vision.OdoPosition;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
   /**
    * Auton manager is the object that handles the loading of auton paths
    */
-  protected AutonManager m_autonManager;
-  private static XboxController m_driverGamepad;
-  private static XboxController m_weaponsGamepad;
+  protected final AutonManager m_autonManager;
+
+  /**
+   * The driver Xbox controller object that we use to map buttons to commands.
+   * The left joystick is used with a default command to drive the bot to a position.
+   * The right joystick is used with a default command for the holonomic rotation of the bot.
+   * For more button bindings see {@link #configureButtonBindings()}
+   */
+  private final XboxController m_driverGamepad;
+
+  /**
+   * The driver Xbox controller object that we use to map buttons to commands.
+   * The left joystick is used with a default command for manually moving the extension arm.
+   * The right joystick is used with a default command for manually moving the rotary arm.
+   * For more button bindings see {@link #configureButtonBindings()}
+   */
+  private final XboxController m_weaponsGamepad;
+
+  /**
+   * The chassis singleton.
+   * Is used to make commands that require the chassis subsystem.
+   */
   private final Chassis m_chassis;
+
+  /**
+   * The extension arm singleton.
+   * Is used for making commands that require the extension arm.
+   */
   private final ExtensionArm m_extensionArm;
+
+  /**
+   * The rotary arm singleton.
+   * Is used for making commands that require the rotary arm.
+   */
   private final RotaryArm m_rotaryArm;
+
+  /**
+   * The manipulator singleton.
+   * Is used for making commands that require the manipulator.
+   */
   private final Manipulator m_manipulator = new Manipulator();
 
-  private int counter = 0;
-
-
+  /**
+   * The hopper singleton.
+   * Is used for making commands that require the hopper.
+   */
   private final Hopper m_hopper;
+
+  /**
+   * The intake singleton.
+   * Is used for making commands that require the intake.
+   */
   private final Intake m_intake;
+
+  /**
+   * The limelight singleton
+   * Is used for updating the robots position using april tags.
+   */
   private final Limelight m_limelight;
 
 
@@ -94,7 +140,6 @@ public class RobotContainer {
     m_chassis = new Chassis(m_limelight);
     m_hopper = new Hopper();
     m_intake = new Intake();
-
 
     Mechanism2d arm = new Mechanism2d(3, 3.5);
     MechanismRoot2d root = arm.getRoot("arm", 0.5, 2);
@@ -148,7 +193,7 @@ public class RobotContainer {
    *
    * @return the driver gamepad
    */
-  public static XboxController getDriverGamepad() {
+  public XboxController getDriverGamepad() {
     return m_driverGamepad;
   }
 
@@ -158,7 +203,7 @@ public class RobotContainer {
    *
    * @return the weapons game pad
    */
-  public static XboxController getWeaponsGamepad() {
+  public XboxController getWeaponsGamepad() {
     return m_weaponsGamepad;
   }
 
@@ -224,12 +269,6 @@ public class RobotContainer {
 
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ReverseHopper(m_hopper));
 
-    /*
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new GoToHighScoring(m_RotaryArm, m_ExtensionArm));
-    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToMidScoringCube(m_RotaryArm, m_ExtensionArm));
-    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToLowScoring(m_RotaryArm, m_ExtensionArm));
-    */
-
     SmartDashboard.putData(new FlipFieldOriented(m_chassis));
 
   }
@@ -254,15 +293,7 @@ public class RobotContainer {
    * @return the auton routine
    */
   public CommandBase getAutonCmd() {
-    CommandBase toRun = m_autonManager.pick();
-    // draws a funny shape on glass
-    /* try {
-      m_chassis.updateField2DFromTrajectory(((AutonCommand) toRun).getTrajectory());
-    }
-    catch (ClassCastException ignored) {
-
-    } */
-    return toRun;
+    return m_autonManager.pick();
   }
 
   /**
@@ -277,36 +308,17 @@ public class RobotContainer {
   }
 
   /**
-   * Robot container periodic method
+   * Robot container periodic method.
+   * Needs to be called from {@link Robot#robotPeriodic()} in order to function properly.
    */
   public void periodic() {
-     if (counter == 10) {
-      CommandBase toRun = m_autonManager.pick();
-      try {
-        m_chassis.updateField2DFromTrajectory(((AutonCommand) toRun).getTrajectory());
-      }
-      catch (ClassCastException ignored) {
-
-      }
-        counter = -1;
-    }
-    counter++; 
-
   }
 
   /**
-   * resets odometry to a position passed in
-   * @param pose the position to reset odometry to
+   * Makes a command to unclamp the manipulator. Should be used on teleop init to make sure that we don't enable and zero with manipulator clamped.
+   * @return the instant command to unclamp manipulator
    */
-  public void resetOdometryTo(Pose2d pose) {
-    m_chassis.resetOdometry(pose);
-  }
-
-  /**
-   * Creates a command to unclamp the manipulator.
-   * @return the InstantCommand that unclamps the manipulator.
-   */
-  public CommandBase retractManipulator() {
+  public CommandBase unClampManipulator() {
     return new UnClampManipulator(m_manipulator);
   }
 
@@ -323,7 +335,12 @@ public class RobotContainer {
     return false;
   }
 
-  public void resetOdometryWithoutApril(){
+  /**
+   * Resets odometry without april tags to 0, 0, 0.
+   * This is needed because the absolute encoders don't turn on for a while.
+   * The logic in Robot.Java should make it so that this can't get ran periodically
+   */
+  public void resetOdometryWithoutApril() {
     m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
   }
 
@@ -355,4 +372,5 @@ public class RobotContainer {
       return mainPath;
     }
   }
+
 }

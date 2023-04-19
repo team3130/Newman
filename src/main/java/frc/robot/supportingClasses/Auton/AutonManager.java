@@ -128,8 +128,9 @@ public class AutonManager {
         m_autonChooser.addOption("place in auton don't move", placeInAuton()); // place in auton and move out. PathPoint so reliable and can start from anywhere
         m_autonChooser.addOption("pull out", generatePullOut()); // as the name suggests its the safest option
         m_autonChooser.addOption("2 meters forward", generateExamplePathFromPoses());
+        m_autonChooser.addOption("place high", placeCubeHigh());
         
-        m_autonChooser.addOption("marker path 2 cones HP", placeConeHighPlaceCubeHigh()); // really needs to be fixed. markers don't do anything right now yay
+        // m_autonChooser.addOption("marker path 2 cones HP", placeConeHighPlaceCubeHigh()); // really needs to be fixed. markers don't do anything right now yay
         // m_autonChooser.addOption("marker path 2 cones non-hp", loadTrajectory("place two cones non hp", true));
     }
 
@@ -175,8 +176,6 @@ public class AutonManager {
         PIDController xController = new PIDController(Constants.kPXController, Constants.kIXController,Constants.kDXController);
         PIDController yController = new PIDController(Constants.kPYController, Constants.kIYController ,Constants.kDYController);
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(xController, yController, new ProfiledPIDController(Constants.kPThetaController, Constants.kIThetaController, Constants.kDThetaController, Constants.kThetaControllerConstraints));
-
-        trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
 
         return new HolonomicControllerCommand(
                 trajectory,
@@ -265,6 +264,7 @@ public class AutonManager {
      */
     public AutonCommand loadTrajectory(String nameOfFile, boolean requirePlacement) {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath(nameOfFile, safe_constraints); //TODO: Make this violent constraints
+        PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
         return (requirePlacement) ? autonCommandGeneratorPlacement(trajectory, true) : autonCommandGenerator(trajectory, true);
     }
 
@@ -463,18 +463,14 @@ public class AutonManager {
         AutonCommand command = autonCommandGenerator(trajectory, false);
         AutonCommand command2 = autonCommandGenerator(trajectory2, false);
 
-        CommandBase command1 = wrapCmd(command);
-
         return
             new SequentialCommandGroup(
                 new AutoZeroRotryArm(rotary),
                 new AutoZeroExtensionArm(extension),
-                new GoToPickupWithinBot(extension),
                 new ToggleManipulator(m_manipulator),
                 new TimedCommand(0.2),
-                new AutoZeroExtensionArm(extension),
                 new GoToHighScoring(rotary, extension),
-                command1,
+                command,
                 new ToggleManipulator(m_manipulator),
                 new TimedCommand(0.2),
                 new ParallelCommandGroup(
@@ -543,16 +539,18 @@ public class AutonManager {
      * @return the command group for going to the start of the path and then running the passed in path.
      */
     public SequentialCommandGroup goToStartOfCommand(AutonCommand mainPath) {
-        List<EventMarker> markers = List.of(EventMarker.fromTime(List.of("grabber"), 0), EventMarker.fromTime(List.of("place high"), 0.07));
-
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
-            safe_constraints, 
-            markers,
+            safe_constraints,
             new PathPoint(m_chassis.getPose2d().getTranslation(), new Rotation2d(), m_chassis.getRotation2d()), 
             new PathPoint(mainPath.getStartPosition().getTranslation(), new Rotation2d(), mainPath.getStartRotation()));
         AutonCommand goToStart = autonCommandGenerator(trajectory, true);
 
         return new SequentialCommandGroup(goToStart, mainPath);
+    }
+
+    public AutonCommand placeCubeHigh() {
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("place cube high non hp", safe_constraints);
+        return autonCommandGenerator(trajectory, true);
     }
 
 }

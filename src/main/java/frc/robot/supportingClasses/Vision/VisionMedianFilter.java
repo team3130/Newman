@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Newman_Constants.Constants;
 
@@ -180,14 +181,23 @@ public class VisionMedianFilter implements Sendable {
     }
 
     public double getReadX() {
+        if (mostRecentPose == null) {
+            return 0;
+        }
         return mostRecentPose.getX();
     }
 
     public double getReadY() {
+        if (mostRecentPose == null) {
+            return 0;
+        }
         return mostRecentPose.getY();
     }
 
     public double getReadYaw() {
+        if (mostRecentPose == null) {
+            return 0;
+        }
         return mostRecentPose.getRotation().getRadians();
     }
 
