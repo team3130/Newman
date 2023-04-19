@@ -14,7 +14,7 @@
 <!--[if IE]>
 <script type="text/javascript" src="../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="../../../../jquery/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="../../../../jquery/jquery-3.6.1.min.js"></script>
 <script type="text/javascript" src="../../../../jquery/jquery-ui.min.js"></script>
 </head>
 <body>
@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -155,48 +155,55 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>protected com.pathplanner.lib.PathConstraints</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#balance_constraints">balance_constraints</a></span></code></th>
+<td class="colLast">
+<div class="block">really slow velocity for when we try to balance</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>protected <a href="../../subsystems/ExtensionArm.html" title="class in frc.robot.subsystems">ExtensionArm</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#extension">extension</a></span></code></th>
 <td class="colLast">
 <div class="block">The extension arm subsystem</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected <a href="../../subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#m_chassis">m_chassis</a></span></code></th>
 <td class="colLast">
 <div class="block">The chassis subsystem</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected <a href="../../subsystems/Intake.html" title="class in frc.robot.subsystems">Intake</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#m_intake">m_intake</a></span></code></th>
 <td class="colLast">
 <div class="block">The intake subsystem</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected <a href="../../subsystems/Manipulator.html" title="class in frc.robot.subsystems">Manipulator</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#m_manipulator">m_manipulator</a></span></code></th>
 <td class="colLast">
 <div class="block">The manipulator subsystem</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected <a href="../../subsystems/RotaryArm.html" title="class in frc.robot.subsystems">RotaryArm</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rotary">rotary</a></span></code></th>
 <td class="colLast">
 <div class="block">The rotary arm subsystem</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected com.pathplanner.lib.PathConstraints</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#safe_constraints">safe_constraints</a></span></code></th>
 <td class="colLast">
 <div class="block">safe speeds for testing.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected com.pathplanner.lib.PathConstraints</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#violent_constraints">violent_constraints</a></span></code></th>
 <td class="colLast">
@@ -385,6 +392,11 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i19" class="rowColor">
+<td class="colFirst"><code>edu.wpi.first.wpilibj2.command.CommandBase</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setpointBalance(int)">setpointBalance</a></span>&#8203;(int&nbsp;dir)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>edu.wpi.first.wpilibj2.command.SequentialCommandGroup</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#wrapCmd(frc.robot.supportingClasses.Auton.AutonCommand)">wrapCmd</a></span>&#8203;(<a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a>&nbsp;command)</code></th>
 <td class="colLast">
@@ -394,7 +406,7 @@ extends java.lang.Object</pre>
  Overload of <a href="#wrapCmd(frc.robot.supportingClasses.Auton.AutonCommand,edu.wpi.first.wpilibj2.command.Command...)"><code>wrapCmd(AutonCommand, Command...)</code></a></div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>edu.wpi.first.wpilibj2.command.SequentialCommandGroup</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#wrapCmd(frc.robot.supportingClasses.Auton.AutonCommand,edu.wpi.first.wpilibj2.command.Command...)">wrapCmd</a></span>&#8203;(<a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a>&nbsp;first,
        edu.wpi.first.wpilibj2.command.Command...&nbsp;restOfCommands)</code></th>
@@ -457,6 +469,16 @@ extends java.lang.Object</pre>
 <h4>violent_constraints</h4>
 <pre>protected final&nbsp;com.pathplanner.lib.PathConstraints violent_constraints</pre>
 <div class="block">wild speeds for if we want to go brrrrrrrrr</div>
+</li>
+</ul>
+<a id="balance_constraints">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>balance_constraints</h4>
+<pre>protected final&nbsp;com.pathplanner.lib.PathConstraints balance_constraints</pre>
+<div class="block">really slow velocity for when we try to balance</div>
 </li>
 </ul>
 <a id="m_intake">
@@ -891,10 +913,19 @@ extends java.lang.Object</pre>
 <a id="placeCubeHigh()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>placeCubeHigh</h4>
 <pre class="methodSignature">public&nbsp;<a href="AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a>&nbsp;placeCubeHigh()</pre>
+</li>
+</ul>
+<a id="setpointBalance(int)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>setpointBalance</h4>
+<pre class="methodSignature">public&nbsp;edu.wpi.first.wpilibj2.command.CommandBase&nbsp;setpointBalance&#8203;(int&nbsp;dir)</pre>
 </li>
 </ul>
 </li>

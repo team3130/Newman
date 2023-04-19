@@ -14,7 +14,7 @@
 <!--[if IE]>
 <script type="text/javascript" src="jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="jquery/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="jquery/jquery-3.6.1.min.js"></script>
 <script type="text/javascript" src="jquery/jquery-ui.min.js"></script>
 </head>
 <body>
@@ -238,6 +238,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Creates a new ExampleCommand.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonManager.html#balance_constraints">balance_constraints</a></span> - Variable in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonManager.html" title="class in frc.robot.supportingClasses.Auton">AutonManager</a></dt>
+<dd>
+<div class="block">really slow velocity for when we try to balance</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#BalanceKd">BalanceKd</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#BalanceKf">BalanceKf</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
@@ -248,6 +252,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/subsystems/RotaryArm.html#brakeIsEnabled()">brakeIsEnabled()</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/RotaryArm.html" title="class in frc.robot.subsystems">RotaryArm</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#brakeModules()">brakeModules()</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
+<dd>
+<div class="block">Sets the wheels to an X position to prevent sliding</div>
+</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/subsystems/ExtensionArm.html#brokeLimit()">brokeLimit()</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/ExtensionArm.html" title="class in frc.robot.subsystems">ExtensionArm</a></dt>
 <dd>
 <div class="block">Uses the limit switch to see if we have broken it.</div>
@@ -396,6 +404,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Gains/VelocityGainFilter.html#data">data</a></span> - Variable in class frc.robot.supportingClasses.Gains.<a href="frc/robot/supportingClasses/Gains/VelocityGainFilter.html" title="class in frc.robot.supportingClasses.Gains">VelocityGainFilter</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="frc/robot/commands/Balance/DeadReckonBalance.html" title="class in frc.robot.commands.Balance"><span class="typeNameLink">DeadReckonBalance</span></a> - Class in <a href="frc/robot/commands/Balance/package-summary.html">frc.robot.commands.Balance</a></dt>
+<dd>
+<div class="block">An example command that uses an example subsystem.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/DeadReckonBalance.html#%3Cinit%3E(frc.robot.subsystems.Chassis)">DeadReckonBalance(Chassis)</a></span> - Constructor for class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/DeadReckonBalance.html" title="class in frc.robot.commands.Balance">DeadReckonBalance</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.html#debugMode">debugMode</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.html" title="class in frc.robot.Newman_Constants">Constants</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/Newman_Constants/Constants.Balance.html#defaultPitchZero">defaultPitchZero</a></span> - Static variable in class frc.robot.Newman_Constants.<a href="frc/robot/Newman_Constants/Constants.Balance.html" title="class in frc.robot.Newman_Constants">Constants.Balance</a></dt>
@@ -454,7 +468,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/Balance.html#end(boolean)">end(boolean)</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/Balance.html" title="class in frc.robot.commands.Balance">Balance</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/DeadReckonBalance.html#end(boolean)">end(boolean)</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/DeadReckonBalance.html" title="class in frc.robot.commands.Balance">DeadReckonBalance</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/OnToRamp.html#end(boolean)">end(boolean)</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/OnToRamp.html" title="class in frc.robot.commands.Balance">OnToRamp</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/RileyPark.html#end(boolean)">end(boolean)</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/RileyPark.html" title="class in frc.robot.commands.Balance">RileyPark</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/SearchBalance.html#end(boolean)">end(boolean)</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/SearchBalance.html" title="class in frc.robot.commands.Balance">SearchBalance</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/commands/Chassis/GoToAngle.html#end(boolean)">end(boolean)</a></span> - Method in class frc.robot.commands.Chassis.<a href="frc/robot/commands/Chassis/GoToAngle.html" title="class in frc.robot.commands.Chassis">GoToAngle</a></dt>
 <dd>
@@ -548,7 +568,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/Balance.html#execute()">execute()</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/Balance.html" title="class in frc.robot.commands.Balance">Balance</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/DeadReckonBalance.html#execute()">execute()</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/DeadReckonBalance.html" title="class in frc.robot.commands.Balance">DeadReckonBalance</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/OnToRamp.html#execute()">execute()</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/OnToRamp.html" title="class in frc.robot.commands.Balance">OnToRamp</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/RileyPark.html#execute()">execute()</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/RileyPark.html" title="class in frc.robot.commands.Balance">RileyPark</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/SearchBalance.html#execute()">execute()</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/SearchBalance.html" title="class in frc.robot.commands.Balance">SearchBalance</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/commands/Chassis/GoToAngle.html#execute()">execute()</a></span> - Method in class frc.robot.commands.Chassis.<a href="frc/robot/commands/Chassis/GoToAngle.html" title="class in frc.robot.commands.Chassis">GoToAngle</a></dt>
 <dd>
@@ -972,7 +998,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">This shouldn't be necessary as we can just pass the initialized object,
  However this can be here just in case we need it last minute</div>
 </dd>
+<dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#getX()">getX()</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html#getX()">getX()</a></span> - Method in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision">VisionMedianFilter</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#getY()">getY()</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html#getY()">getY()</a></span> - Method in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision">VisionMedianFilter</a></dt>
 <dd>&nbsp;</dd>
@@ -981,6 +1011,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Returns the current yaw of the Navx.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html#getYaw()">getYaw()</a></span> - Method in class frc.robot.supportingClasses.Vision.<a href="frc/robot/supportingClasses/Vision/VisionMedianFilter.html" title="class in frc.robot.supportingClasses.Vision">VisionMedianFilter</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/sensors/Navx.html#getZeroPitch()">getZeroPitch()</a></span> - Static method in class frc.robot.sensors.<a href="frc/robot/sensors/Navx.html" title="class in frc.robot.sensors">Navx</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/commands/Chassis/GoToAngle.html" title="class in frc.robot.commands.Chassis"><span class="typeNameLink">GoToAngle</span></a> - Class in <a href="frc/robot/commands/Chassis/package-summary.html">frc.robot.commands.Chassis</a></dt>
 <dd>
@@ -1124,7 +1156,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/Balance.html#initialize()">initialize()</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/Balance.html" title="class in frc.robot.commands.Balance">Balance</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/DeadReckonBalance.html#initialize()">initialize()</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/DeadReckonBalance.html" title="class in frc.robot.commands.Balance">DeadReckonBalance</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/OnToRamp.html#initialize()">initialize()</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/OnToRamp.html" title="class in frc.robot.commands.Balance">OnToRamp</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/RileyPark.html#initialize()">initialize()</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/RileyPark.html" title="class in frc.robot.commands.Balance">RileyPark</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/SearchBalance.html#initialize()">initialize()</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/SearchBalance.html" title="class in frc.robot.commands.Balance">SearchBalance</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/commands/Chassis/FlipFieldOriented.html#initialize()">initialize()</a></span> - Method in class frc.robot.commands.Chassis.<a href="frc/robot/commands/Chassis/FlipFieldOriented.html" title="class in frc.robot.commands.Chassis">FlipFieldOriented</a></dt>
 <dd>
@@ -1210,7 +1248,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#initSendable(edu.wpi.first.util.sendable.SendableBuilder)">initSendable(SendableBuilder)</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
 <dd>
-<div class="block">Initializes the data we send on shuffleboard
+<div class="block">- * Initializes the data we send on shuffleboard
  Calls the default init sendable for Subsystem Bases</div>
 </dd>
 <dt><span class="memberNameLink"><a href="frc/robot/subsystems/ExtensionArm.html#initSendable(edu.wpi.first.util.sendable.SendableBuilder)">initSendable(SendableBuilder)</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/ExtensionArm.html" title="class in frc.robot.subsystems">ExtensionArm</a></dt>
@@ -1264,7 +1302,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/Balance.html#isFinished()">isFinished()</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/Balance.html" title="class in frc.robot.commands.Balance">Balance</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/DeadReckonBalance.html#isFinished()">isFinished()</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/DeadReckonBalance.html" title="class in frc.robot.commands.Balance">DeadReckonBalance</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/OnToRamp.html#isFinished()">isFinished()</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/OnToRamp.html" title="class in frc.robot.commands.Balance">OnToRamp</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/RileyPark.html#isFinished()">isFinished()</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/RileyPark.html" title="class in frc.robot.commands.Balance">RileyPark</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/SearchBalance.html#isFinished()">isFinished()</a></span> - Method in class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/SearchBalance.html" title="class in frc.robot.commands.Balance">SearchBalance</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/commands/Chassis/GoToAngle.html#isFinished()">isFinished()</a></span> - Method in class frc.robot.commands.Chassis.<a href="frc/robot/commands/Chassis/GoToAngle.html" title="class in frc.robot.commands.Chassis">GoToAngle</a></dt>
 <dd>&nbsp;</dd>
@@ -1759,6 +1803,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">A method to help with on the fly trajectory generation.</div>
 </dd>
+<dt><a href="frc/robot/commands/Balance/OnToRamp.html" title="class in frc.robot.commands.Balance"><span class="typeNameLink">OnToRamp</span></a> - Class in <a href="frc/robot/commands/Balance/package-summary.html">frc.robot.commands.Balance</a></dt>
+<dd>
+<div class="block">An example command that uses an example subsystem.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/OnToRamp.html#%3Cinit%3E(frc.robot.subsystems.Chassis,boolean)">OnToRamp(Chassis, boolean)</a></span> - Constructor for class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/OnToRamp.html" title="class in frc.robot.commands.Balance">OnToRamp</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonCommand.html#optimize()">optimize()</a></span> - Method in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonCommand.html" title="class in frc.robot.supportingClasses.Auton">AutonCommand</a></dt>
 <dd>
 <div class="block">Needs to be run in its own thread or at least one that wasn't made by the scheduler.</div>
@@ -1946,7 +1996,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">An example command that uses an example subsystem.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/RileyPark.html#%3Cinit%3E(frc.robot.subsystems.Chassis,double)">RileyPark(Chassis, double)</a></span> - Constructor for class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/RileyPark.html" title="class in frc.robot.commands.Balance">RileyPark</a></dt>
+<dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/RileyPark.html#%3Cinit%3E(frc.robot.subsystems.Chassis)">RileyPark(Chassis)</a></span> - Constructor for class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/RileyPark.html" title="class in frc.robot.commands.Balance">RileyPark</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/Robot.html" title="class in frc.robot"><span class="typeNameLink">Robot</span></a> - Class in <a href="frc/robot/package-summary.html">frc.robot</a></dt>
 <dd>&nbsp;</dd>
@@ -2004,6 +2054,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Test method for each scalar to avoid bin search</div>
 </dd>
+<dt><a href="frc/robot/commands/Balance/SearchBalance.html" title="class in frc.robot.commands.Balance"><span class="typeNameLink">SearchBalance</span></a> - Class in <a href="frc/robot/commands/Balance/package-summary.html">frc.robot.commands.Balance</a></dt>
+<dd>
+<div class="block">An example command that uses an example subsystem.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/commands/Balance/SearchBalance.html#%3Cinit%3E(frc.robot.subsystems.Chassis)">SearchBalance(Chassis)</a></span> - Constructor for class frc.robot.commands.Balance.<a href="frc/robot/commands/Balance/SearchBalance.html" title="class in frc.robot.commands.Balance">SearchBalance</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/subsystems/Chassis.html#setAprilTagUsage(boolean)">setAprilTagUsage(boolean)</a></span> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/Chassis.html" title="class in frc.robot.subsystems">Chassis</a></dt>
 <dd>
 <div class="block">setter for april tags</div>
@@ -2036,6 +2092,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Sets the module states to desired states</div>
 </dd>
+<dt><span class="memberNameLink"><a href="frc/robot/sensors/Navx.html#setPitchZero(double)">setPitchZero(double)</a></span> - Static method in class frc.robot.sensors.<a href="frc/robot/sensors/Navx.html" title="class in frc.robot.sensors">Navx</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="frc/robot/supportingClasses/Auton/AutonManager.html#setpointBalance(int)">setpointBalance(int)</a></span> - Method in class frc.robot.supportingClasses.Auton.<a href="frc/robot/supportingClasses/Auton/AutonManager.html" title="class in frc.robot.supportingClasses.Auton">AutonManager</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="frc/robot/swerve/SwerveModule.html#setPValue(double)">setPValue(double)</a></span> - Method in class frc.robot.swerve.<a href="frc/robot/swerve/SwerveModule.html" title="class in frc.robot.swerve">SwerveModule</a></dt>
 <dd>
 <div class="block">Setter for the P value</div>
