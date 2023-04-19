@@ -39,7 +39,7 @@ public class SearchBalance extends CommandBase {
   private double distanceToDrive;
   private int sign;
   private double initRotation; 
-  private double firstIteration;
+ 
   
 
 
@@ -57,7 +57,7 @@ public class SearchBalance extends CommandBase {
     m_chassis.stopModules();
 
     finished = false;
-    firstIteration = true;
+    
     
     state = State.TO_RAMP;
     iterator = 1;
@@ -109,7 +109,7 @@ public class SearchBalance extends CommandBase {
           distanceToDrive = distanceToDrive / 2;
           state = State.WAITING;
         }
-        else 
+         
         else{
           m_chassis.drive(sign * driveVelocity,0,0, false);
           
