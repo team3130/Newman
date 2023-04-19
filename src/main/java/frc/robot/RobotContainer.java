@@ -22,6 +22,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.commands.Balance.Balance;
+import frc.robot.commands.Balance.DeadReckonBalance;
+import frc.robot.commands.Balance.OnToRamp;
+import frc.robot.commands.Balance.RileyPark;
+import frc.robot.commands.Balance.SearchBalance;
 import frc.robot.commands.Chassis.FlipFieldOriented;
 import frc.robot.commands.Chassis.TeleopDrive;
 import frc.robot.commands.Chassis.ZeroEverything;
@@ -42,8 +46,10 @@ import frc.robot.commands.Placement.presets.GoToHighScoring;
 import frc.robot.commands.Placement.presets.GoToMidScoringCones;
 import frc.robot.commands.Placement.presets.GoToMidScoringCube;
 import frc.robot.commands.Placement.presets.GoToPickupOffGround;
+import frc.robot.commands.ResetGoalHeading;
 import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
+import frc.robot.sensors.Navx;
 import frc.robot.subsystems.*;
 import frc.robot.supportingClasses.Auton.AutonCommand;
 import frc.robot.supportingClasses.Auton.AutonManager;
@@ -162,6 +168,7 @@ public class RobotContainer {
 
     configureButtonBindings();
     vomitShuffleBoardData();
+    
   }
 
   /**
@@ -219,10 +226,13 @@ public class RobotContainer {
     //new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new Balancing(m_chassis));
 
     if (Constants.debugMode) {
-      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
       new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlacementPosition(m_chassis, m_autonManager));
-
-      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new Balance(m_chassis));
+      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).onTrue(new SequentialCommandGroup(new ZeroWheels(m_chassis), new Balance(m_chassis), new RileyPark(m_chassis)));
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).onTrue(new SequentialCommandGroup(new DeadReckonBalance(m_chassis), new RileyPark(m_chassis)));
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).onTrue(new SequentialCommandGroup(new SearchBalance(m_chassis), new RileyPark(m_chassis)));
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RJOYSTICKPRESS).onTrue(new SequentialCommandGroup(new OnToRamp(m_chassis, false), new Balance(m_chassis), new RileyPark(m_chassis)));
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).onTrue(new SequentialCommandGroup(m_autonManager.setpointBalance(-1), new RileyPark(m_chassis)));
     }
 
     //Weapons Gamepad:
@@ -264,6 +274,20 @@ public class RobotContainer {
   }
 
   /**
+   * Resets odometry using april tags
+   * @return whether the update was successful or not
+   */
+  public boolean resetOdometryWithAprilTags() {
+    OdoPosition positionToResetTo = m_limelight.calculate();
+    if (positionToResetTo != null) {
+      m_chassis.resetOdometry(positionToResetTo.getPosition());
+      return true;
+    }
+    return false;
+  }
+
+
+  /**
    * Gets the selected auton command that is on shuffleboard
    *
    * @return the auton routine
@@ -287,7 +311,8 @@ public class RobotContainer {
    * Robot container periodic method.
    * Needs to be called from {@link Robot#robotPeriodic()} in order to function properly.
    */
-  public void periodic() {}
+  public void periodic() {
+  }
 
   /**
    * Makes a command to unclamp the manipulator. Should be used on teleop init to make sure that we don't enable and zero with manipulator clamped.
@@ -301,7 +326,7 @@ public class RobotContainer {
    * Resets odometry to the position of the april tag
    * @return success or not
    */
-  public boolean resetOdometryWithAprilTag() {
+  public boolean resetOdometryWithApril() {
     OdoPosition position = m_limelight.calculate();
     if (position != null) {
       m_chassis.resetOdometry(position.getPosition());
@@ -325,6 +350,10 @@ public class RobotContainer {
    */
   public void updateChassisPose() {
     m_chassis.updateOdometery();
+  }
+
+  public CommandBase resetGoalHeading(){
+    return new ResetGoalHeading(m_chassis);
   }
 
   /**

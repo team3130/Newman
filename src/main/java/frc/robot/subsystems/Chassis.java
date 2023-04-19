@@ -78,6 +78,8 @@ public class Chassis extends SubsystemBase {
       this (new Pose2d(), new Rotation2d(), limelight);
     }
 
+    private double goalHeading = 0;
+    private double thetaP = 0.001; //major magic number
     /**
      * Makes a chassis with a starting position
      * @param startingPos the initial position to say that the robot is at
@@ -206,6 +208,40 @@ public class Chassis extends SubsystemBase {
         }
     }
 
+    public double thetaToStabilizeHeading(){
+        return (getErrorInHeading(goalHeading)) * thetaP;
+    }
+    public boolean outOfThetaStabilizeDeadband(){
+        if (Math.abs(Navx.getHeading() - goalHeading) > 3d){
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public double getErrorInHeading(double goalHeading) {
+        double error = Math.abs(goalHeading - Navx.getHeading());
+        if (error > 180) {
+            error = 360 - error;
+            if (Navx.getHeading() < goalHeading) { //odds these negatives need to be flipped are 50-50
+                error = -error;
+            }
+        }else if (Navx.getHeading() > goalHeading) {
+                error = -error;
+            }
+        return error;
+    }
+    public double getGoalHeading(){
+        return goalHeading;
+    }
+    public void resetGoalHeading(){
+        goalHeading = Navx.getHeading();
+    }
+    public double getHolonomicP(){
+        return thetaP;
+    }
+    public void setHolonomicP(double newP){
+        thetaP = newP;
+    }
 
     /**
      * subsystem looped call made by the scheduler.
@@ -257,6 +293,17 @@ public class Chassis extends SubsystemBase {
       for (SwerveModule module : modules) {
           module.turnToAngle(setpoint);
       }
+    }
+
+    /**
+     * Sets the wheels to an X position to prevent sliding
+     */
+    public void brakeModules(){
+        modules[Constants.Side.LEFT_FRONT].turnToAngle(Math.PI /4);
+        modules[Constants.Side.RIGHT_BACK].turnToAngle(Math.PI /4);
+
+        modules[Constants.Side.LEFT_BACK].turnToAngle(-Math.PI /4);
+        modules[Constants.Side.RIGHT_FRONT].turnToAngle(-Math.PI / 4);
     }
 
     /**
@@ -385,6 +432,9 @@ public class Chassis extends SubsystemBase {
         builder.addDoubleProperty("Y position", this::getY, null);
         builder.addDoubleProperty("rotation", this::getYaw, null);
         builder.addDoubleProperty("max speed read", this::getMaxSpeedRead, null);
+
+        builder.addDoubleProperty("goal heading", this::getGoalHeading, null);
+        builder.addDoubleProperty("holonomic p", this::getHolonomicP, this::setHolonomicP);
     }
 
     /**
@@ -435,7 +485,16 @@ public class Chassis extends SubsystemBase {
         field.getObject("traj").setTrajectory(trajectory);
     }
 
+    
     /**
+     * setter for april tags
+     * @param useAprilTags whether to use april tags or not
+     */
+    public void setAprilTagUsage(boolean useAprilTags) {
+        this.useAprilTags = useAprilTags;
+    }
+
+      /**
      * The same as {@link #drive(double, double, double)} except you pass in if you are field relative or not.
      * This method will drive the swerve modules based to x, y and theta vectors.
      * @param x velocity in the x dimension m/s
@@ -448,7 +507,8 @@ public class Chassis extends SubsystemBase {
             setModuleStates(m_kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(x, y, theta, getRotation2d())));
         }
         else {
-            setModuleStates(m_kinematics.toSwerveModuleStates(new ChassisSpeeds(x, y, theta)));
+            goalHeading = theta;
+            setModuleStates(m_kinematics.toSwerveModuleStates(new ChassisSpeeds(x, y, thetaToStabilizeHeading())));
         }
     }
 
@@ -460,13 +520,5 @@ public class Chassis extends SubsystemBase {
      */
     public void drive(double x, double y, double theta) {
         drive(x, y, theta, getFieldRelative());
-    }
-
-    /**
-     * setter for april tags
-     * @param useAprilTags whether to use april tags or not
-     */
-    public void setAprilTagUsage(boolean useAprilTags) {
-        this.useAprilTags = useAprilTags;
     }
 }

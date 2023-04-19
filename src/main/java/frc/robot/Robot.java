@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.sensors.Navx;
 
 public class Robot extends TimedRobot {
 
@@ -53,7 +54,7 @@ public class Robot extends TimedRobot {
           m_robotContainer.resetOdometryWithoutApril();
           haveResetManually = true;
         } else {
-          if (m_robotContainer.resetOdometryWithAprilTag()) {
+          if (m_robotContainer.resetOdometryWithApril()) {
             timer.stop();
             timer.reset();
           }
@@ -64,9 +65,9 @@ public class Robot extends TimedRobot {
         timer.reset();
       }
     }
-    else {
-      m_robotContainer.updateChassisPose();
-    }
+    Navx.outputToShuffleboard();
+
+   
   }
 
     @Override
@@ -108,6 +109,10 @@ public class Robot extends TimedRobot {
       CommandScheduler.getInstance().cancelAll();
       // zero the rotary arm into frame perimeter for both safety and resetting encoders.
       CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
+      //TODO: SHOULD GO TO AUTONINIT AFTER TESTING
+      Navx.setPitchZero(Navx.getPitch());
+      
+      CommandScheduler.getInstance().schedule(m_robotContainer.resetGoalHeading());
       CommandScheduler.getInstance().schedule(m_robotContainer.unClampManipulator());
     }
 

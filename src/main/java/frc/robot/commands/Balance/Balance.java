@@ -22,25 +22,28 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class Balance extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Chassis m_chassis;
-  private final double pitchZero = -8.211; //should go in Constants
-  private final double pitchDeadband = 5;
-  private final double pitchVelocityDeadband = 0.5;
+  private double pitchZero =Constants.Balance.defaultPitchZero; //should go in Constants
+  private final double pitchDeadband = Constants.Balance.pitchDeadband;
+  private final double pitchVelocityDeadband = Constants.Balance.pitchVelocityDeadband;
 
 
   private double direction;
   private int iterator;
   private boolean pitchVelocityCheck = false;
-  private final double driveVelocity = 0.625;
+  private final double driveVelocity = Constants.Balance.driveSpeed;
   private double oddPitch;
   private double pitch;
-  private double roll;
-  private double tilt;
-  private double velocityPitch;
-  private double velocityRoll;
-  private double VelocityTilt;
-  private double AccelerationTilt;
-  private MedianFilter fVelocityTilt;
-  private double prev;
+
+
+  private boolean nearZero; 
+  private boolean drivingNegative;
+  private boolean hasSwitched;
+  private boolean timerIsOn;
+  private boolean finished;
+ 
+  private Timer timer = new Timer();
+  private Timer safetyTimer = new Timer();
+
   private static ShuffleboardTab tab = Shuffleboard.getTab("Chassis");
 
 
@@ -59,12 +62,26 @@ public class Balance extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    pitchZero = Navx.getZeroPitch();
 
     oddPitch = 0;
-
-    
     pitch = (Navx.getPitch());
+
+    pitchVelocityCheck = false;
+    drivingNegative = true;
+    hasSwitched = false;
+    iterator = 0;
     
+    nearZero = false;
+    timerIsOn = false;
+
+    finished = false;
+
+    timer.reset();
+    timer.start();
+
+    safetyTimer.reset();
+    safetyTimer.start();
   }
 
   
@@ -74,7 +91,8 @@ public class Balance extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+   
+
     pitch = (Navx.getPitch());
  
 
@@ -85,37 +103,88 @@ public class Balance extends CommandBase {
      }
     else{oddPitch = Navx.getPitch();}
 
+   
+   
+
+    
+  if( Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband){
+    nearZero = true;
+    hasSwitched = true;
+    timerIsOn = false;
+  }
+
+   if(!hasSwitched){
+      timerIsOn = false;
+
+      if(Navx.getPitch() < pitchZero){
+    
+        m_chassis.drive(driveVelocity, 0, 0, false);
+
+      if(drivingNegative){ //maybe put a pitch  is around zero check for timer also 
+        hasSwitched = true;
+        drivingNegative = false;
+      }
+      else{hasSwitched = false;}
+    }
+      else{
+        m_chassis.drive(-driveVelocity, 0, 0, false);
+
+      if(!drivingNegative){
+        hasSwitched = true;
+        drivingNegative = true;
+      }
+      else{hasSwitched = false;}
+
+      
+    }
+
     
 
 
-    //trajectory to go forward 2 meters * sign
-    /* Call should be:
-    ConditionalCommand balance = new ConditionalCommand(Balance(m_chassis, 1), Balance(m_chassis, -1), Navx.getPitch() > 1).until(Math.abs(Navx.getPitch())) <= 5.0;
-    */
-    if(Navx.getPitch() < pitchZero){
-      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(driveVelocity,0,0));
-      m_chassis.setModuleStates(moduleStates);
-    }
+  }
     else{
-      SwerveModuleState[] moduleStates = m_chassis.getKinematics().toSwerveModuleStates(new ChassisSpeeds(-driveVelocity,0,0));
-      m_chassis.setModuleStates(moduleStates);
+      m_chassis.stopModules();
+
+      if(!timerIsOn){
+         timer.restart(); 
+         timerIsOn = true;
+      }
+     
+     if(nearZero){ 
+      m_chassis.brakeModules();
+          if(timer.hasElapsed(Constants.Balance.stablizationTime)){
+            hasSwitched = false;
+            finished = Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband;
+       // timerIsOn = false;
+      }
     }
+      else {
+        m_chassis.brakeModules();
+          if(timer.hasElapsed(Constants.Balance.stablizationTime)){
+            hasSwitched = false;
+            // timerIsOn = false;
+        }
+      }
+  
+      
 
-
-
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
+    timer.stop();
     m_chassis.stopModules();
+   
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pitchVelocityCheck && Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband;
+    //return pitchVelocityDeadband && Math.abs(Navx.getPitch() - pitchZero) <= pitchDeadband;
+    //return finished || safetyTimer.hasElapsed(Constants.Balance.safetyTimeLimit);
+    return finished;
   }
 
   public double getDirection() {
