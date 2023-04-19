@@ -61,22 +61,68 @@ import frc.robot.supportingClasses.Vision.OdoPosition;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
   /**
    * Auton manager is the object that handles the loading of auton paths
    */
-  protected AutonManager m_autonManager;
-  private static XboxController m_driverGamepad;
-  private static XboxController m_weaponsGamepad;
+  protected final AutonManager m_autonManager;
+
+  /**
+   * The driver Xbox controller object that we use to map buttons to commands.
+   * The left joystick is used with a default command to drive the bot to a position.
+   * The right joystick is used with a default command for the holonomic rotation of the bot.
+   * For more button bindings see {@link #configureButtonBindings()}
+   */
+  private final XboxController m_driverGamepad;
+
+  /**
+   * The driver Xbox controller object that we use to map buttons to commands.
+   * The left joystick is used with a default command for manually moving the extension arm.
+   * The right joystick is used with a default command for manually moving the rotary arm.
+   * For more button bindings see {@link #configureButtonBindings()}
+   */
+  private final XboxController m_weaponsGamepad;
+
+  /**
+   * The chassis singleton.
+   * Is used to make commands that require the chassis subsystem.
+   */
   private final Chassis m_chassis;
+
+  /**
+   * The extension arm singleton.
+   * Is used for making commands that require the extension arm.
+   */
   private final ExtensionArm m_extensionArm;
+
+  /**
+   * The rotary arm singleton.
+   * Is used for making commands that require the rotary arm.
+   */
   private final RotaryArm m_rotaryArm;
+
+  /**
+   * The manipulator singleton.
+   * Is used for making commands that require the manipulator.
+   */
   private final Manipulator m_manipulator = new Manipulator();
 
-  private int counter = 0;
-
-
+  /**
+   * The hopper singleton.
+   * Is used for making commands that require the hopper.
+   */
   private final Hopper m_hopper;
+
+  /**
+   * The intake singleton.
+   * Is used for making commands that require the intake.
+   */
   private final Intake m_intake;
+
+  /**
+   * The limelight singleton
+   * Is used for updating the robots position using april tags.
+   */
   private final Limelight m_limelight;
 
 
@@ -93,7 +139,6 @@ public class RobotContainer {
     m_chassis = new Chassis(m_limelight);
     m_hopper = new Hopper();
     m_intake = new Intake();
-
 
     Mechanism2d arm = new Mechanism2d(3, 3.5);
     MechanismRoot2d root = arm.getRoot("arm", 0.5, 2);
@@ -147,7 +192,7 @@ public class RobotContainer {
    *
    * @return the driver gamepad
    */
-  public static XboxController getDriverGamepad() {
+  public XboxController getDriverGamepad() {
     return m_driverGamepad;
   }
 
@@ -157,7 +202,7 @@ public class RobotContainer {
    *
    * @return the weapons game pad
    */
-  public static XboxController getWeaponsGamepad() {
+  public XboxController getWeaponsGamepad() {
     return m_weaponsGamepad;
   }
 
@@ -180,13 +225,10 @@ public class RobotContainer {
     //new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).whileTrue(new Balancing(m_chassis));
 
     if (Constants.debugMode) {
-      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_LBUMPER).onTrue(new SequentialCommandGroup(new ZeroWheels(m_chassis), new Balance(m_chassis), new RileyPark(m_chassis)));
-      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_A).onTrue(new SequentialCommandGroup(new DeadReckonBalance(m_chassis), new RileyPark(m_chassis)));
-      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).onTrue(new SequentialCommandGroup(new SearchBalance(m_chassis), new RileyPark(m_chassis)));
       new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_RJOYSTICKPRESS).onTrue(new SequentialCommandGroup(new OnToRamp(m_chassis, false), new Balance(m_chassis), new RileyPark(m_chassis)));
-      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_X).onTrue(new SequentialCommandGroup(m_autonManager.setpointBalance(-1), new RileyPark(m_chassis)));
-      
-      
+      new JoystickButton(m_driverGamepad, Constants.Buttons.LST_BTN_Y).onTrue(new SequentialCommandGroup(new SearchBalance(m_chassis), new RileyPark(m_chassis)));
+      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToClosestPlacementPosition(m_chassis, m_autonManager));
+      new JoystickTrigger(m_driverGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToHumanPlayerStation(m_chassis, m_autonManager));
     }
 
     //Weapons Gamepad:
@@ -223,29 +265,9 @@ public class RobotContainer {
 
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_B).whileTrue(new ReverseHopper(m_hopper));
 
-    /*
-    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_LBUMPER).whileTrue(new GoToHighScoring(m_RotaryArm, m_ExtensionArm));
-    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_LTRIGGER).whileTrue(new GoToMidScoringCube(m_RotaryArm, m_ExtensionArm));
-    new JoystickTrigger(m_weaponsGamepad, Constants.Buttons.LST_AXS_RTRIGGER).whileTrue(new GoToLowScoring(m_RotaryArm, m_ExtensionArm));
-    */
-
     SmartDashboard.putData(new FlipFieldOriented(m_chassis));
 
   }
-
-  /**
-   * Resets odometry using april tags
-   * @return whether the update was successful or not
-   */
-  public boolean resetOdometryWithAprilTags() {
-    OdoPosition positionToResetTo = m_limelight.calculate();
-    if (positionToResetTo != null) {
-      m_chassis.resetOdometry(positionToResetTo.getPosition());
-      return true;
-    }
-    return false;
-  }
-
 
   /**
    * Gets the selected auton command that is on shuffleboard
@@ -268,37 +290,30 @@ public class RobotContainer {
   }
 
   /**
-   * Robot container periodic method
+   * Robot container periodic method.
+   * Needs to be called from {@link Robot#robotPeriodic()} in order to function properly.
    */
-  public void periodic() {
-     /*if (counter == 10) {
-      CommandBase toRun = m_autonManager.pick();
-      try {
-        m_chassis.updateField2DFromTrajectory(((AutonCommand) toRun).getTrajectory());
-      }
-      catch (ClassCastException ignored) {
-
-      }
-        counter = -1;
-    }
-    counter++; 
- */
-  }
-
-  /**
-   * resets odometry to a position passed in
-   * @param pose the position to reset odometry to
-   */
-  public void resetOdometryTo(Pose2d pose) {
-    m_chassis.resetOdometry(pose);
-  }
+  public void periodic() {}
 
   /**
    * Makes a command to unclamp the manipulator. Should be used on teleop init to make sure that we don't enable and zero with manipulator clamped.
-   * @return the command to unclamp manipulator
+   * @return the instant command to unclamp manipulator
    */
   public CommandBase unClampManipulator() {
     return new UnClampManipulator(m_manipulator);
+  }
+
+  /**
+   * Resets odometry to the position of the april tag
+   * @return success or not
+   */
+  public boolean resetOdometryWithAprilTag() {
+    OdoPosition position = m_limelight.calculate();
+    if (position != null) {
+      m_chassis.resetOdometry(position.getPosition());
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -306,7 +321,33 @@ public class RobotContainer {
    * This is needed because the absolute encoders don't turn on for a while.
    * The logic in Robot.Java should make it so that this can't get ran periodically
    */
-  public void resetOdometryWithoutAprilTag() {
+  public void resetOdometryWithoutApril() {
     m_chassis.resetOdometry(new Pose2d(0, 0, new Rotation2d()));
   }
+
+  /**
+   * Updates the chassis position periodically.
+   * Calls {@link Chassis#updateOdometery()}
+   */
+  public void updateChassisPose() {
+    m_chassis.updateOdometery();
+  }
+
+  /**
+   * Packages auton commands so that they go to the start of the command before running the main routines.
+   * As of 4/13 this command also brings up the rotary arm to high.
+   * If mainPath is an auton command then we can convert it to an AutonCommand and go to the start of its path. 
+   * If it is not an Auton command then this method will just return the passed in command.
+   * @param mainPath the main path to run. 
+   * @return A full auton routine if the passed in command is an auton command. Otherwise it will just return the passed in command.
+   */
+  public CommandBase packageAuton(CommandBase mainPath) {
+    try {
+      return m_autonManager.goToStartOfCommand((AutonCommand) mainPath);
+    }
+    catch (Exception ignored) {
+      return mainPath;
+    }
+  }
+
 }

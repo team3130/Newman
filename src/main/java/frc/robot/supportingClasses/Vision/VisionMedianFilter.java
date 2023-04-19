@@ -5,30 +5,53 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Newman_Constants.Constants;
 
+/**
+ * A special type of median filter that is used to filter out outliers in vision data.
+ */
 public class VisionMedianFilter implements Sendable {
     // hehe
     protected int head;
     // size of elements we want in our moving window
     protected final int bucketSize;
-    // raw values
+    
+    /**
+     * Array for the x positional values
+     */
     protected double[] x;
     protected double[] y;
     protected double[] yaw;
     protected double[] time;
 
-    // heaps
+    /**
+     * Median filter for the x position
+     */
     protected MedianFilter xFilter;
+
+    /**
+     * Median filter for the y position
+     */
     protected MedianFilter yFilter;
+
+    /**
+     * Median filter for the yaw
+     */
     protected MedianFilter yawFilter;
 
-    // Magic error scalar for radians to length
+    /** Magic error scalar for radians to length */
     protected double kP;
 
+    /**
+     * Holds the amount of items we have added to the filter
+     */
     protected int itemsAdded = 0;
 
+    /**
+     * The most recent pose that was added to the filter.
+     */
     protected Pose2d mostRecentPose;
 
     /**
@@ -158,14 +181,23 @@ public class VisionMedianFilter implements Sendable {
     }
 
     public double getReadX() {
+        if (mostRecentPose == null) {
+            return 0;
+        }
         return mostRecentPose.getX();
     }
 
     public double getReadY() {
+        if (mostRecentPose == null) {
+            return 0;
+        }
         return mostRecentPose.getY();
     }
 
     public double getReadYaw() {
+        if (mostRecentPose == null) {
+            return 0;
+        }
         return mostRecentPose.getRotation().getRadians();
     }
 

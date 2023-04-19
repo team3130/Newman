@@ -49,19 +49,26 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     m_robotContainer.periodic();
     if (timer.hasElapsed(Constants.kResetTime)) {
-      if (!haveResetManually) {
-        m_robotContainer.resetOdometryWithoutAprilTag();
-        haveResetManually = true; // makes it so this if statement won't trigger again
-      }
-      else { // if we have already reset odometry with april tags then attempt to reset with april tags
-        if (m_robotContainer.resetOdometryWithAprilTags()) {
-          // when it was successful cut off this who sh-bang from running
-          timer.reset();
-          timer.stop();
+      if (Constants.useAprilTags) {
+        if (!haveResetManually) {
+          m_robotContainer.resetOdometryWithoutApril();
+          haveResetManually = true;
+        } else {
+          if (m_robotContainer.resetOdometryWithAprilTag()) {
+            timer.stop();
+            timer.reset();
+          }
         }
+      } else {
+        m_robotContainer.resetOdometryWithoutApril();
+        timer.stop();
+        timer.reset();
       }
     }
     Navx.outputToShuffleboard();
+    else {
+      m_robotContainer.updateChassisPose();
+    }
   }
 
     @Override
@@ -83,9 +90,8 @@ public class Robot extends TimedRobot {
   @Override
     public void autonomousInit () {
       CommandScheduler.getInstance().cancelAll();
+      CommandScheduler.getInstance().schedule(m_robotContainer.packageAuton(m_robotContainer.getAutonCmd()));
       //Navx.setPitchZero(Navx.getPitch());
-      CommandScheduler.getInstance().schedule(m_robotContainer.getAutonCmd());
-    
     }
 
     @Override
@@ -105,7 +111,6 @@ public class Robot extends TimedRobot {
       CommandScheduler.getInstance().cancelAll();
       // zero the rotary arm into frame perimeter for both safety and resetting encoders.
       CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
-      // un clamp the manipulator so that we don't zero the arm into a game element
       CommandScheduler.getInstance().schedule(m_robotContainer.unClampManipulator());
 
       //SHOULD GO TO AUTONINIT AFTER TESTING

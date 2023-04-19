@@ -181,7 +181,8 @@ public class RotaryArm extends SubsystemBase {
    * @return the static feed forward gain
    */
   public double getFeedForward(double extensionLength){
-    return Constants.Extension.kRotaryStaticGain * extensionLength * Math.sin(getArmAngle());
+    // 24/34 is an approximate ratio between the weights on the extension arm and manipulator.
+    return Constants.Extension.kRotaryStaticGain * (24d/34d * (extensionLength + Constants.Extension.kExtensionLengthRetracted)) * Math.sin(getArmAngle());
   }
 
   /**
