@@ -18,7 +18,7 @@ import frc.robot.subsystems.ExampleSubsystem;
 /** An example command that uses an example subsystem. */
 public class SearchBalance extends CommandBase {
   private final Chassis m_chassis;
-  private final double driveVelocity = Constants.Balance.driveSpeed;
+  private final double driveVelocity = Constants.Balance.driveSpeed * 2;
   private SwerveModuleState[] moduleStates;
   private int iterator = 1;
   
@@ -39,6 +39,7 @@ public class SearchBalance extends CommandBase {
   private double distanceToDrive;
   private int sign;
   private double initRotation; 
+  private double firstIteration;
   
 
 
@@ -56,6 +57,7 @@ public class SearchBalance extends CommandBase {
     m_chassis.stopModules();
 
     finished = false;
+    firstIteration = true;
     
     state = State.TO_RAMP;
     iterator = 1;
@@ -72,7 +74,7 @@ public class SearchBalance extends CommandBase {
   @Override
   public void execute() {
     if(state == State.TO_RAMP){
-      m_chassis.drive(-driveVelocity, 0, 0, false);
+      m_chassis.drive(-driveVelocity * 2, 0, 0, false);
 
       if(Math.abs(Navx.getPitch() - Navx.getZeroPitch()) >= Constants.Balance.changeForRampPitch){
         m_chassis.stopModules();
@@ -85,7 +87,7 @@ public class SearchBalance extends CommandBase {
       m_chassis.brakeModules();
       
       
-      distanceToDrive = (distanceToDrive / iterator); 
+      
       sign = (Navx.getPitch() < Navx.getZeroPitch()) ? 1 : -1;
 
       if(timer.hasElapsed(Constants.Balance.stablizationTime)){
@@ -104,8 +106,10 @@ public class SearchBalance extends CommandBase {
           m_chassis.stopModules();
           timer.restart();
           iterator++;
+          distanceToDrive = distanceToDrive / 2;
           state = State.WAITING;
         }
+        else 
         else{
           m_chassis.drive(sign * driveVelocity,0,0, false);
           

@@ -53,7 +53,7 @@ public class OnToRamp extends CommandBase {
   public void execute() {
     double angVelocity = Math.toRadians( initHeading - Navx.getYaw());
 
-    m_chassis.drive(-driveVelocity, 0, 0, false);
+    m_chassis.drive(-driveVelocity * 2, 0, 0, false);
    
   }
 
