@@ -25,6 +25,8 @@ public class SearchBalance extends CommandBase {
 
   
   private boolean finished;
+
+  private boolean useAprilTags;
   
   private double initPos;
 
@@ -39,10 +41,6 @@ public class SearchBalance extends CommandBase {
   private double distanceToDrive;
   private int sign;
   private double initRotation; 
- 
-  
-
-
 
   public SearchBalance(Chassis chassis) {
     m_chassis = chassis;
@@ -65,8 +63,11 @@ public class SearchBalance extends CommandBase {
     sign = -1;
 
     timer.reset();
-    safetyTimer.reset();
     safetyTimer.start();
+    safetyTimer.reset();
+
+    useAprilTags = m_chassis.getAprilTags();
+    m_chassis.setAprilTagUsage(false);
 
   }
 
@@ -74,7 +75,7 @@ public class SearchBalance extends CommandBase {
   @Override
   public void execute() {
     if(state == State.TO_RAMP){
-      m_chassis.drive(-driveVelocity * 2, 0, 0, false);
+      m_chassis.drive(-driveVelocity, 0, 0, false);
 
       if(Math.abs(Navx.getPitch() - Navx.getZeroPitch()) >= Constants.Balance.changeForRampPitch){
         m_chassis.stopModules();
@@ -85,12 +86,11 @@ public class SearchBalance extends CommandBase {
     }
     else if (state == State.WAITING){
       m_chassis.brakeModules();
-      
-      
-      
+
       sign = (Navx.getPitch() < Navx.getZeroPitch()) ? 1 : -1;
 
       if(timer.hasElapsed(Constants.Balance.stablizationTime)){
+        timer.reset();
         timer.stop();
         finished = Math.abs(Navx.getPitch() - Navx.getZeroPitch()) <= Constants.Balance.pitchDeadband;
         initPos = m_chassis.getX();
@@ -104,7 +104,8 @@ public class SearchBalance extends CommandBase {
 
         if((Math.abs(Navx.getPitch() - Navx.getZeroPitch()) <= Constants.Balance.pitchDeadband) || Math.abs(m_chassis.getX() - initPos) >= distanceToDrive){
           m_chassis.stopModules();
-          timer.restart();
+          timer.reset();
+          timer.stop();
           iterator++;
           distanceToDrive = distanceToDrive / 2;
           state = State.WAITING;
@@ -128,10 +129,11 @@ public class SearchBalance extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_chassis.stopModules();
-    timer.stop();
     timer.reset();
-    safetyTimer.stop();
+    timer.stop();
     safetyTimer.reset();
+    safetyTimer.stop();
+    m_chassis.setAprilTagUsage(Constants.useAprilTags);
 
   }
 

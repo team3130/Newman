@@ -126,9 +126,9 @@ public class AutonManager {
         m_autonChooser.addOption("place in auton balance", placeInAutonBalance());
         m_autonChooser.addOption("pull out", generatePullOut()); // as the name suggests its the safest option
         m_autonChooser.addOption("2 meters forward", generateExamplePathFromPoses());
-        if (Constants.debugMode) {
+
             m_autonChooser.addOption("place high", placeCubeHigh());
-        }
+
         
         // m_autonChooser.addOption("marker path 2 cones HP", placeConeHighPlaceCubeHigh()); // really needs to be fixed. markers don't do anything right now yay
         // m_autonChooser.addOption("marker path 2 cones non-hp", loadTrajectory("place two cones non hp", true));
@@ -419,7 +419,7 @@ public class AutonManager {
                         new Rotation2d(0), new Rotation2d()
                 ),
 
-                new PathPoint(new Translation2d(0, 0), new Rotation2d(0), new Rotation2d(0))
+                new PathPoint(new Translation2d(0.25, 0), new Rotation2d(0), new Rotation2d(0))
         );
 
         AutonCommand command = autonCommandGenerator(trajectory, false);

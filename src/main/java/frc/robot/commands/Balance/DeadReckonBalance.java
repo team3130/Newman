@@ -31,6 +31,8 @@ public class DeadReckonBalance extends CommandBase {
   private boolean finished;
 
   private double initPos;
+
+  private boolean useAprilTags;
   
 
 
@@ -54,60 +56,47 @@ public class DeadReckonBalance extends CommandBase {
     distanceFlag = false;
     onRamp = false;
 
+    useAprilTags = useAprilTags;
+    m_chassis.setAprilTagUsage(false);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-   if(!distanceFlag){
+   if (!distanceFlag) {
     if (Math.abs(Navx.getPitch() - pitchZero) >= Constants.Balance.changeForRampPitch && !onRamp) { //8 is how many degrees for the bot to understand it is on the ramp
       onRamp = true;
-      
     }
-
     if(onRamp && Navx.getPitch() - pitchZero >= Constants.Balance.changeForRampPitch ){ //Assumes positive pitch is when the bot is tilted the second time
       //maybe instead of this condition for pitch read the direction change
       distanceFlag = true;
       m_chassis.stopModules();
-      
-
-
-
     }
-
-
-
    }
-   else{
-    initPos = m_chassis.getPose2d().getTranslation().getX(); 
-
-    if(Math.abs(m_chassis.getPose2d().getTranslation().getX() - initPos) <= Constants.Balance.tippedtoStationCenterDistance){ //0.4 is meters
+   else {
+    initPos = m_chassis.getPose2d().getTranslation().getX();
+    if (Math.abs(m_chassis.getPose2d().getTranslation().getX() - initPos) <= Constants.Balance.tippedtoStationCenterDistance){ //0.4 is meters
       m_chassis.drive(-driveSpeed,0,0, false);
     }
-    else{
+    else {
       m_chassis.stopModules();
       finished = true;
     }
-
    }
-
-
-
-
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_chassis.stopModules();
-
+    m_chassis.setAprilTagUsage(Constants.useAprilTags);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return finished  ; //5 is how many degrees for the bot to know the ramp has tipped the other way
+    return finished ; //5 is how many degrees for the bot to know the ramp has tipped the other way
   }
 }
 

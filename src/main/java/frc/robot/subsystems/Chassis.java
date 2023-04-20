@@ -481,4 +481,8 @@ public class Chassis extends SubsystemBase {
     public void setAprilTagUsage(boolean useAprilTags) {
         this.useAprilTags = useAprilTags;
     }
+
+    public boolean getAprilTags() {
+        return useAprilTags;
+    }
 }

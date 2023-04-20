@@ -100,6 +100,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousExit () {
+      timer.reset();
+      timer.start();
     }
 
   /**
