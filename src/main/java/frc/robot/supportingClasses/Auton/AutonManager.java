@@ -1,13 +1,9 @@
 package frc.robot.supportingClasses.Auton;
 
-import java.util.List;
-
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
-import com.pathplanner.lib.PathPlannerTrajectory.EventMarker;
-
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -19,12 +15,13 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.commands.Balance.RileyPark;
+import frc.robot.commands.Balance.SearchBalance;
 import frc.robot.commands.Intake.ToggleIntake;
 import frc.robot.commands.Manipulator.ToggleManipulator;
 import frc.robot.commands.Placement.AutoZeroExtensionArm;
 import frc.robot.commands.Placement.AutoZeroRotryArm;
 import frc.robot.commands.Placement.presets.GoToHighScoring;
-import frc.robot.commands.Placement.presets.GoToPickupWithinBot;
 import frc.robot.commands.TimedCommand;
 import frc.robot.subsystems.*;
 
@@ -126,9 +123,12 @@ public class AutonManager {
         m_autonChooser.addOption("Intake spit", actuateIntake()); // intake and spit out
         m_autonChooser.addOption("place in auton move out", placeInAutonCone()); // place in auton and then don't leave the zone (good for if middle)
         m_autonChooser.addOption("place in auton don't move", placeInAuton()); // place in auton and move out. PathPoint so reliable and can start from anywhere
+        m_autonChooser.addOption("place in auton balance", placeInAutonBalance());
         m_autonChooser.addOption("pull out", generatePullOut()); // as the name suggests its the safest option
         m_autonChooser.addOption("2 meters forward", generateExamplePathFromPoses());
-        m_autonChooser.addOption("place high", placeCubeHigh());
+        if (Constants.debugMode) {
+            m_autonChooser.addOption("place high", placeCubeHigh());
+        }
         
         // m_autonChooser.addOption("marker path 2 cones HP", placeConeHighPlaceCubeHigh()); // really needs to be fixed. markers don't do anything right now yay
         // m_autonChooser.addOption("marker path 2 cones non-hp", loadTrajectory("place two cones non hp", true));
@@ -401,7 +401,7 @@ public class AutonManager {
      * Requires odometry from april tags to be off in auton and for the traajectory to not be transformed by alliance
      * @return A command to place in auton
      */
-    public CommandBase placeInAuton() {
+    public SequentialCommandGroup placeInAuton() {
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 safe_constraints,
                 new PathPoint(
@@ -432,6 +432,14 @@ public class AutonManager {
                     wrapCmd(command2),
                     new AutoZeroExtensionArm(extension),
                     new AutoZeroRotryArm(rotary));
+    }
+
+    /**
+     * Requires odometry from april tags to be off in auton and for the traajectory to not be transformed by alliance
+     * @return A command to place in auton
+     */
+    public SequentialCommandGroup placeInAutonBalance() {
+        return placeInAuton().andThen(new SequentialCommandGroup(new SearchBalance(m_chassis), new RileyPark(m_chassis)));
     }
 
     /**
