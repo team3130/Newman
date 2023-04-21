@@ -165,11 +165,46 @@ extends edu.wpi.first.wpilibj2.command.SubsystemBase</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>protected edu.wpi.first.util.datalog.BooleanLogEntry</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#fieldRelativeLog">fieldRelativeLog</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected edu.wpi.first.util.datalog.DoubleLogEntry</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#heading">heading</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected edu.wpi.first.util.datalog.DataLog</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#log">log</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected edu.wpi.first.util.datalog.DoubleLogEntry</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#theta_controller">theta_controller</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>protected boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#useAprilTags">useAprilTags</a></span></code></th>
 <td class="colLast">
 <div class="block">Whether to update the odometry with the april tag or not.</div>
 </td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected edu.wpi.first.util.datalog.BooleanLogEntry</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#useAprilTagsLog">useAprilTagsLog</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected edu.wpi.first.util.datalog.DoubleLogEntry</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#x_controller">x_controller</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected edu.wpi.first.util.datalog.DoubleLogEntry</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#y_controller">y_controller</a></span></code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -542,13 +577,76 @@ extends edu.wpi.first.wpilibj2.command.SubsystemBase</pre>
 <a id="useAprilTags">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>useAprilTags</h4>
 <pre>protected&nbsp;boolean useAprilTags</pre>
 <div class="block">Whether to update the odometry with the april tag or not.
  Usuallt used as a toggleable in auton commands.
  Default value is <a href="../Newman_Constants/Constants.html#useAprilTags"><code>Constants.useAprilTags</code></a> however is mutable.</div>
+</li>
+</ul>
+<a id="log">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>log</h4>
+<pre>protected&nbsp;edu.wpi.first.util.datalog.DataLog log</pre>
+</li>
+</ul>
+<a id="x_controller">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>x_controller</h4>
+<pre>protected&nbsp;edu.wpi.first.util.datalog.DoubleLogEntry x_controller</pre>
+</li>
+</ul>
+<a id="y_controller">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>y_controller</h4>
+<pre>protected&nbsp;edu.wpi.first.util.datalog.DoubleLogEntry y_controller</pre>
+</li>
+</ul>
+<a id="theta_controller">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>theta_controller</h4>
+<pre>protected&nbsp;edu.wpi.first.util.datalog.DoubleLogEntry theta_controller</pre>
+</li>
+</ul>
+<a id="useAprilTagsLog">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>useAprilTagsLog</h4>
+<pre>protected&nbsp;edu.wpi.first.util.datalog.BooleanLogEntry useAprilTagsLog</pre>
+</li>
+</ul>
+<a id="heading">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>heading</h4>
+<pre>protected&nbsp;edu.wpi.first.util.datalog.DoubleLogEntry heading</pre>
+</li>
+</ul>
+<a id="fieldRelativeLog">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>fieldRelativeLog</h4>
+<pre>protected&nbsp;edu.wpi.first.util.datalog.BooleanLogEntry fieldRelativeLog</pre>
 </li>
 </ul>
 </li>
