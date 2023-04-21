@@ -128,5 +128,16 @@ public class Limelight {
         return best;
     }
 
+    public void modifyToAllianceStation(DriverStation.Alliance alliance) {
+        if (!Constants.useAprilTags || !camera.isConnected()) {
+            return;
+        }
+        if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+            aprilTagFieldLayout.setOrigin(AprilTagFieldLayout.OriginPosition.kRedAllianceWallRightSide);
+        }
+        else {
+            aprilTagFieldLayout.setOrigin(AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide);
+        }
+    }
 }
 

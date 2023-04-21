@@ -350,4 +350,7 @@ public class RobotContainer {
     }
   }
 
+  public Limelight getLimelight() {
+    return m_limelight;
+  }
 }

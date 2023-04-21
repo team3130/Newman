@@ -4,13 +4,20 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.sensors.Navx;
 
+import java.sql.Driver;
+
 public class Robot extends TimedRobot {
+
+  private Alliance alliance;
+  private short counter = 0;
 
   /**
    * A timer for resetting odometry. Gets started on robotInit and will run until we reset odometry with april tags
@@ -36,6 +43,7 @@ public class Robot extends TimedRobot {
     timer = new Timer();
     timer.reset();
     timer.start();
+    alliance = Alliance.Invalid;
   }
 
   /**
@@ -68,7 +76,17 @@ public class Robot extends TimedRobot {
     else {
       m_robotContainer.updateChassisPose();
     }
-    
+    if (alliance == Alliance.Invalid) {
+      alliance = DriverStation.getAlliance();
+    }
+    else if (counter > 100) {
+      if (DriverStation.getAlliance() != alliance) {
+        alliance = DriverStation.getAlliance();
+        m_robotContainer.getLimelight().modifyToAllianceStation(alliance);
+      }
+      counter = -1;
+    }
+    counter++;
   }
 
     @Override
