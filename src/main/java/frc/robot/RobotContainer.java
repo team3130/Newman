@@ -293,7 +293,11 @@ public class RobotContainer {
    * Robot container periodic method.
    * Needs to be called from {@link Robot#robotPeriodic()} in order to function properly.
    */
-  public void periodic() {}
+  public void periodic() {
+    if (Constants.debugMode) {
+      Navx.outputToShuffleboard();
+    }
+  }
 
   /**
    * Makes a command to unclamp the manipulator. Should be used on teleop init to make sure that we don't enable and zero with manipulator clamped.

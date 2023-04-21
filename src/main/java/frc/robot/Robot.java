@@ -33,6 +33,8 @@ public class Robot extends TimedRobot {
    * Whether we have reset odometry without april tags yet
    */
   private boolean haveResetManually = false;
+  
+  private boolean suceededTeleReset = false;
 
   /**
    * Initializes robot container and the timer for resetting odometry.
@@ -129,6 +131,7 @@ public class Robot extends TimedRobot {
   @Override
     public void teleopInit () {
       CommandScheduler.getInstance().cancelAll();
+      
       // zero the rotary arm into frame perimeter for both safety and resetting encoders.
       CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
       CommandScheduler.getInstance().schedule(m_robotContainer.unClampManipulator());
@@ -139,7 +142,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic () {
-
+      if (Constants.useAprilTags && !suceededTeleReset) {
+        if (m_robotContainer.resetOdometryWithAprilTag()) {
+          suceededTeleReset = true;
+        }
+      }
     }
 
     @Override

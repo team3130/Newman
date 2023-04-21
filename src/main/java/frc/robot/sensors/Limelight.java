@@ -19,7 +19,6 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.io.IOException;
-import java.sql.Driver;
 import java.util.Optional;
 
 public class Limelight {
@@ -132,7 +131,7 @@ public class Limelight {
         if (!Constants.useAprilTags || !camera.isConnected()) {
             return;
         }
-        if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+        if (alliance == DriverStation.Alliance.Red) {
             aprilTagFieldLayout.setOrigin(AprilTagFieldLayout.OriginPosition.kRedAllianceWallRightSide);
         }
         else {

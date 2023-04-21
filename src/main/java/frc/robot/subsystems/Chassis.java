@@ -13,10 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.util.datalog.BooleanLogEntry;
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.datalog.DataLogEntry;
-import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.*;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -43,6 +40,8 @@ public class Chassis extends SubsystemBase {
     /** The odometry object */
     private final SwerveDrivePoseEstimator m_odometry;
 
+    private final SwerveDrivePoseEstimator m_teleOdo;
+
     /** A list of the swerve modules (should be four */
     private final SwerveModule[] modules;
     /** Makes sure that the Navx Gyro is initialized */
@@ -64,6 +63,8 @@ public class Chassis extends SubsystemBase {
      */
     private final Field2d field;
 
+    private final Field2d teleField;
+
     /**
      * A comp network table entry for whether drivetrain is in field oriented or not
      */
@@ -71,17 +72,14 @@ public class Chassis extends SubsystemBase {
 
     /**
      * Whether to update the odometry with the april tag or not.
-     * Usuallt used as a toggleable in auton commands.
+     * Usually used as a toggleable in auton commands.
      * Default value is {@link Constants#useAprilTags} however is mutable.
      */
     protected boolean useAprilTags = Constants.useAprilTags;
 
     protected DataLog log;
-    protected DoubleLogEntry x_controller;
-    protected DoubleLogEntry y_controller;
-    protected DoubleLogEntry theta_controller;
+    protected DoubleLogEntry navxHeadingLog;
     protected BooleanLogEntry useAprilTagsLog;
-    protected DoubleLogEntry heading;
     protected BooleanLogEntry fieldRelativeLog;
 
     /**
@@ -113,19 +111,23 @@ public class Chassis extends SubsystemBase {
         m_limelight = limelight;
 
         field = new Field2d();
-        Shuffleboard.getTab("Comp").add("field", field);
+        teleField = new Field2d();
+        // Shuffleboard.getTab("Comp").add("field", field);
         n_fieldOrriented = Shuffleboard.getTab("Comp").add("field orriented", false).getEntry();
 
-        DataLogManager.start();
-        DriverStation.startDataLog(DataLogManager.getLog());
+        if (Constants.debugMode) {
+            DataLogManager.start();
+            DriverStation.startDataLog(DataLogManager.getLog());
 
-        log = DataLogManager.getLog();
-        x_controller = new DoubleLogEntry(log, "/my/xInputs");
-        y_controller = new DoubleLogEntry(log, "/my/yInputs");
-        theta_controller = new DoubleLogEntry(log, "/my/thetaInputs");
-        useAprilTagsLog = new BooleanLogEntry(log, "/my/useAprilTags");
-        fieldRelativeLog = new BooleanLogEntry(log, "/my/useAprilTags");
-        heading = new DoubleLogEntry(log, "/my/heading");
+            log = DataLogManager.getLog();
+            useAprilTagsLog = new BooleanLogEntry(log, "/my/useAprilTags");
+            fieldRelativeLog = new BooleanLogEntry(log, "/my/fieldRelative");
+            navxHeadingLog = new DoubleLogEntry(log, "/trust/navx");
+            Shuffleboard.getTab("orientation").add("odometry", field);
+            Shuffleboard.getTab("orientation").add("teleOdometry", teleField);
+        }
+
+        m_teleOdo = new SwerveDrivePoseEstimator(m_kinematics, Navx.getRotation(), generatePoses(), new Pose2d(0, 0, new Rotation2d()));
   }
 
     /**
@@ -157,7 +159,9 @@ public class Chassis extends SubsystemBase {
      */
     public void flipFieldRelative() {
       fieldRelative = !fieldRelative;
-      fieldRelativeLog.append(fieldRelative);
+      if (Constants.debugMode) {
+          fieldRelativeLog.append(fieldRelative);
+      }
     }
 
     /**
@@ -188,8 +192,7 @@ public class Chassis extends SubsystemBase {
      * @return the bot rotation
      */
     public Rotation2d getRotation2d() {
-        Rotation2d heading =  m_odometry.getEstimatedPosition().getRotation();
-        this.heading.append(heading.getDegrees(), (long) Timer.getFPGATimestamp());
+        Rotation2d heading =  m_teleOdo.getEstimatedPosition().getRotation();
         return heading;
     }
 
@@ -212,6 +215,7 @@ public class Chassis extends SubsystemBase {
      */
     public void updateOdometryFromSwerve() {
       m_odometry.updateWithTime(Timer.getFPGATimestamp(), Navx.getRotation(), generatePoses());
+      m_teleOdo.updateWithTime(Timer.getFPGATimestamp(), Navx.getRotation(), generatePoses());
     }
 
     /**
@@ -220,7 +224,10 @@ public class Chassis extends SubsystemBase {
     public void updateOdometryFromVision() {
         OdoPosition position = refreshPosition();
         if (position != null) {
-            updateOdometryFromVision(position);
+            if (Constants.useAprilTags && useAprilTags) {
+                updateOdometryFromVision(position);
+            }
+            updateTeleOdoFromVision(position);
         }
     }
 
@@ -229,8 +236,10 @@ public class Chassis extends SubsystemBase {
      */
     public void updateOdometery() {
         updateOdometryFromSwerve();
-        if (Constants.useAprilTags && useAprilTags) {
-            updateOdometryFromVision();
+        updateOdometryFromVision();
+        if (Constants.debugMode) {
+            field.setRobotPose(m_odometry.getEstimatedPosition());
+            teleField.setRobotPose(m_teleOdo.getEstimatedPosition());
         }
     }
 
@@ -243,7 +252,6 @@ public class Chassis extends SubsystemBase {
     @Override
     public void periodic() {
         n_fieldOrriented.setBoolean(fieldRelative);
-        field.setRobotPose(m_odometry.getEstimatedPosition());
     }
 
   /**
@@ -290,7 +298,7 @@ public class Chassis extends SubsystemBase {
     /**
      * Sets the wheels to an X position to prevent sliding
      */
-    public void brakeModules(){
+    public void brakeModules() {
         modules[Constants.Side.LEFT_FRONT].turnToAngle(Math.PI /4);
         modules[Constants.Side.RIGHT_BACK].turnToAngle(Math.PI /4);
 
@@ -459,6 +467,10 @@ public class Chassis extends SubsystemBase {
         );
     }
 
+    public void updateTeleOdoFromVision(OdoPosition refreshPosition) {
+        m_teleOdo.addVisionMeasurement(new Pose2d(refreshPosition.getPosition().getTranslation(), refreshPosition.getPosition().getRotation()), refreshPosition.getTime());
+    }
+
     /**
      * Refreshes the position from limelight and it's median filter
      * @return the odoPosition from limelight
@@ -499,9 +511,6 @@ public class Chassis extends SubsystemBase {
      * @param theta the angular (holonomic) speed of the bot
      */
     public void drive(double x, double y, double theta) {
-        x_controller.append(x, (long) Timer.getFPGATimestamp());
-        y_controller.append(y, (long) Timer.getFPGATimestamp());
-        theta_controller.append(theta, (long) Timer.getFPGATimestamp());
         drive(x, y, theta, getFieldRelative());
     }
 
@@ -511,7 +520,9 @@ public class Chassis extends SubsystemBase {
      */
     public void setAprilTagUsage(boolean useAprilTags) {
         this.useAprilTags = useAprilTags;
-        useAprilTagsLog.append(useAprilTags, (long) Timer.getFPGATimestamp());
+        if (Constants.debugMode) {
+            useAprilTagsLog.append(useAprilTags, (long) Timer.getFPGATimestamp());
+        }
     }
 
     public boolean getAprilTags() {
