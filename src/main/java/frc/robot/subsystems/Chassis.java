@@ -152,6 +152,9 @@ public class Chassis extends SubsystemBase {
         resetEncoders();
         Navx.resetNavX();
         m_odometry.resetPosition(Navx.getRotation(), generatePoses(), pose);
+        if (!Constants.useAprilTags) {
+            m_teleOdo.resetPosition(Navx.getRotation(), generatePoses(), pose);
+        }
     }
 
     /**

@@ -1,6 +1,5 @@
 package frc.robot.supportingClasses.Auton;
 
-import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.EventMarker;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -448,12 +447,13 @@ public class AutonCommand extends CommandBase {
             }
             // for our purposed read this one
             else {
-                commands[toAdd].initialize();
-                if (useOptimized) {
-                    indicesToRun.add(toAdd);
-                }
-                else {
-                    indicesToRun.add(toAdd);
+                if (commands[toAdd] != null) {
+                    commands[toAdd].initialize();
+                    if (useOptimized) {
+                        indicesToRun.add(toAdd);
+                    } else {
+                        indicesToRun.add(toAdd);
+                    }
                 }
             }
             current = closest;

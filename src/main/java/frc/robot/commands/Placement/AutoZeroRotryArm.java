@@ -34,7 +34,7 @@ public class AutoZeroRotryArm extends CommandBase {
   @Override
   public void initialize() {
      m_rotaryArm.releaseBrake();
-     m_rotaryArm.spin(-0.15);
+     m_rotaryArm.spin(-0.25);
 
   }
 

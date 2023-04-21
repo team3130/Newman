@@ -167,7 +167,6 @@ public class RobotContainer {
 
     configureButtonBindings();
     vomitShuffleBoardData();
-    
   }
 
   /**

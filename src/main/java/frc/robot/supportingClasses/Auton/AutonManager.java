@@ -24,6 +24,10 @@ import frc.robot.commands.Placement.AutoZeroRotryArm;
 import frc.robot.commands.Placement.presets.GoToHighScoring;
 import frc.robot.commands.TimedCommand;
 import frc.robot.subsystems.*;
+import org.opencv.core.Mat;
+
+import java.nio.file.Path;
+import java.util.List;
 
 /**
  * A class to generate our auton paths from PathPlanner
@@ -125,11 +129,12 @@ public class AutonManager {
         m_autonChooser.addOption("place in auton don't move", placeInAuton()); // place in auton and move out. PathPoint so reliable and can start from anywhere
         // m_autonChooser.addOption("place in auton balance", placeInAutonBalance());
         m_autonChooser.addOption("pull out", generatePullOut()); // as the name suggests its the safest option
-        m_autonChooser.addOption("2 meters forward", generateExamplePathFromPoses());
+        // m_autonChooser.addOption("2 meters forward", generateExamplePathFromPoses());
 
-        m_autonChooser.addOption("place high", placeCubeHigh());
+        // m_autonChooser.addOption("place high", placeCubeHigh());
         m_autonChooser.addOption("dumb dumb balance", generateDumbBalance());
         m_autonChooser.addOption("place in auton move out and return", placeInAutonConeReturn());
+        m_autonChooser.addOption("lmao", generateLeaveBalance());
 
         
         // m_autonChooser.addOption("marker path 2 cones HP", placeConeHighPlaceCubeHigh()); // really needs to be fixed. markers don't do anything right now yay
@@ -463,7 +468,8 @@ public class AutonManager {
                         new Rotation2d(0), new Rotation2d()
                 ),
 
-                new PathPoint(new Translation2d(-4, 0), new Rotation2d(0), new Rotation2d(0))
+                new PathPoint(new Translation2d(-3, 0), new Rotation2d(0), new Rotation2d(0)),
+                new PathPoint(new Translation2d(-4, 0), new Rotation2d(0), new Rotation2d(Math.PI))
         );
 
         AutonCommand command = autonCommandGenerator(trajectory, false);
@@ -561,7 +567,7 @@ public class AutonManager {
             new Rotation2d(0), new Rotation2d()
         ),
 
-        new PathPoint(new Translation2d(1.5, 0), new Rotation2d(0), new Rotation2d(0))
+        new PathPoint(new Translation2d(1.5, 0), new Rotation2d(0), new Rotation2d())
         );
 
         AutonCommand command = autonCommandGenerator(trajectory, false);
@@ -619,6 +625,17 @@ public class AutonManager {
         );
 
         return placeInAuton().andThen(autonCommandGenerator(trajectory, false)).andThen(new RileyPark(m_chassis));
+    }
+
+    public CommandBase generateLeaveBalance() {
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+                balance_constraints,
+                List.of(new PathPoint(new Translation2d(-1.95, 0), new Rotation2d(), new Rotation2d()),
+                new PathPoint(new Translation2d(-4, 0), new Rotation2d(), new Rotation2d()),
+                new PathPoint(new Translation2d(-1.65, 0), new Rotation2d(), new Rotation2d()))
+        );
+
+        return generateDumbBalance().andThen(autonCommandGenerator(trajectory, false));
     }
 
 }

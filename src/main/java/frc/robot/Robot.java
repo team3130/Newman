@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
    */
   private boolean haveResetManually = false;
   
-  private boolean suceededTeleReset = false;
+  private boolean suceededTeleRest = false;
 
   /**
    * Initializes robot container and the timer for resetting odometry.
@@ -131,20 +131,20 @@ public class Robot extends TimedRobot {
   @Override
     public void teleopInit () {
       CommandScheduler.getInstance().cancelAll();
-      
+
+      m_robotContainer.resetOdometryWithoutApril();
       // zero the rotary arm into frame perimeter for both safety and resetting encoders.
       CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
       CommandScheduler.getInstance().schedule(m_robotContainer.unClampManipulator());
-
       
       Navx.setPitchZero(Navx.getPitch());
     }
 
     @Override
     public void teleopPeriodic () {
-      if (Constants.useAprilTags && !suceededTeleReset) {
+      if (Constants.useAprilTags && !suceededTeleRest) {
         if (m_robotContainer.resetOdometryWithAprilTag()) {
-          suceededTeleReset = true;
+          suceededTeleRest = true;
         }
       }
     }
