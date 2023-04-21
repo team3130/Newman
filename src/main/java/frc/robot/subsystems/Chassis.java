@@ -13,7 +13,13 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DataLogEntry;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -70,6 +76,14 @@ public class Chassis extends SubsystemBase {
      */
     protected boolean useAprilTags = Constants.useAprilTags;
 
+    protected DataLog log;
+    protected DoubleLogEntry x_controller;
+    protected DoubleLogEntry y_controller;
+    protected DoubleLogEntry theta_controller;
+    protected BooleanLogEntry useAprilTagsLog;
+    protected DoubleLogEntry heading;
+    protected BooleanLogEntry fieldRelativeLog;
+
     /**
      * Makes a chassis that starts at 0, 0, 0
      * @param limelight the limelight object that we can use for updating odometry
@@ -101,6 +115,17 @@ public class Chassis extends SubsystemBase {
         field = new Field2d();
         Shuffleboard.getTab("Comp").add("field", field);
         n_fieldOrriented = Shuffleboard.getTab("Comp").add("field orriented", false).getEntry();
+
+        DataLogManager.start();
+        DriverStation.startDataLog(DataLogManager.getLog());
+
+        log = DataLogManager.getLog();
+        x_controller = new DoubleLogEntry(log, "/my/xInputs");
+        y_controller = new DoubleLogEntry(log, "/my/yInputs");
+        theta_controller = new DoubleLogEntry(log, "/my/thetaInputs");
+        useAprilTagsLog = new BooleanLogEntry(log, "/my/useAprilTags");
+        fieldRelativeLog = new BooleanLogEntry(log, "/my/useAprilTags");
+        heading = new DoubleLogEntry(log, "/my/heading");
   }
 
     /**
@@ -132,6 +157,7 @@ public class Chassis extends SubsystemBase {
      */
     public void flipFieldRelative() {
       fieldRelative = !fieldRelative;
+      fieldRelativeLog.append(fieldRelative);
     }
 
     /**
@@ -161,8 +187,10 @@ public class Chassis extends SubsystemBase {
      * Returns the bots rotation according to Navx as a {@link Rotation2d}
      * @return the bot rotation
      */
-    public Rotation2d getRotation2d(){
-      return m_odometry.getEstimatedPosition().getRotation();
+    public Rotation2d getRotation2d() {
+        Rotation2d heading =  m_odometry.getEstimatedPosition().getRotation();
+        this.heading.append(heading.getDegrees(), (long) Timer.getFPGATimestamp());
+        return heading;
     }
 
     /**
@@ -471,6 +499,9 @@ public class Chassis extends SubsystemBase {
      * @param theta the angular (holonomic) speed of the bot
      */
     public void drive(double x, double y, double theta) {
+        x_controller.append(x, (long) Timer.getFPGATimestamp());
+        y_controller.append(y, (long) Timer.getFPGATimestamp());
+        theta_controller.append(theta, (long) Timer.getFPGATimestamp());
         drive(x, y, theta, getFieldRelative());
     }
 
@@ -480,6 +511,7 @@ public class Chassis extends SubsystemBase {
      */
     public void setAprilTagUsage(boolean useAprilTags) {
         this.useAprilTags = useAprilTags;
+        useAprilTagsLog.append(useAprilTags, (long) Timer.getFPGATimestamp());
     }
 
     public boolean getAprilTags() {

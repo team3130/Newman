@@ -123,11 +123,13 @@ public class AutonManager {
         m_autonChooser.addOption("Intake spit", actuateIntake()); // intake and spit out
         m_autonChooser.addOption("place in auton move out", placeInAutonCone()); // place in auton and then don't leave the zone (good for if middle)
         m_autonChooser.addOption("place in auton don't move", placeInAuton()); // place in auton and move out. PathPoint so reliable and can start from anywhere
-        m_autonChooser.addOption("place in auton balance", placeInAutonBalance());
+        // m_autonChooser.addOption("place in auton balance", placeInAutonBalance());
         m_autonChooser.addOption("pull out", generatePullOut()); // as the name suggests its the safest option
         m_autonChooser.addOption("2 meters forward", generateExamplePathFromPoses());
 
-            m_autonChooser.addOption("place high", placeCubeHigh());
+        m_autonChooser.addOption("place high", placeCubeHigh());
+        m_autonChooser.addOption("dumb dumb balance", generateDumbBalance());
+        m_autonChooser.addOption("place in auton move out and return", placeInAutonConeReturn());
 
         
         // m_autonChooser.addOption("marker path 2 cones HP", placeConeHighPlaceCubeHigh()); // really needs to be fixed. markers don't do anything right now yay
@@ -353,19 +355,15 @@ public class AutonManager {
         final double y_value;
         final double rotation;
 
-        if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
-            x_value = Constants.Field.xPositionForBlueHumanPlayerStation;
-            y_value = Constants.Field.yPositionForBlueHumanPlayerStation;
-            rotation = Constants.Field.rotationForBlueHumanPlayerStation;
-        } else {
-            x_value = Constants.Field.xPositionForRedHumanPlayerStation;
-            y_value = Constants.Field.yPositionForRedHumanPlayerStation;
-            rotation = Constants.Field.rotationForRedHumanPlayerStation;
-        }
+        x_value = Constants.Field.xPositionForBlueHumanPlayerStation;
+        y_value = Constants.Field.yPositionForBlueHumanPlayerStation;
+        rotation = Constants.Field.rotationForBlueHumanPlayerStation;
 
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(safe_constraints,
                 new PathPoint(current.getTranslation(), new Rotation2d(0), current.getRotation()),
                 new PathPoint(new Translation2d(x_value, y_value), new Rotation2d(), new Rotation2d(rotation)));
+
+        trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
 
         return autonCommandGenerator(trajectory, true);
     }
@@ -491,6 +489,55 @@ public class AutonManager {
     }
 
     /**
+     * Place a cone in auton.
+     * Requires odometry from april tags to be off in auton and for the traajectory to not be transformed by alliance.
+     * @return a command to place a cone in auton.
+     */
+    public CommandBase placeInAutonConeReturn() {
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+                safe_constraints,
+                new PathPoint(
+                        new Translation2d(0, 0),
+                        new Rotation2d(0), new Rotation2d()
+                ),
+
+                new PathPoint(new Translation2d(0.75, 0), new Rotation2d(0), new Rotation2d(0))
+        );
+
+        PathPlannerTrajectory trajectory2 = PathPlanner.generatePath(
+                safe_constraints,
+                new PathPoint(
+                        new Translation2d(0.75, 0),
+                        new Rotation2d(0), new Rotation2d()
+                ),
+
+                new PathPoint(new Translation2d(-4, 0), new Rotation2d(0), new Rotation2d(0)),
+                new PathPoint(new Translation2d(-1, 0), new Rotation2d(), new Rotation2d())
+        );
+
+        AutonCommand command = autonCommandGenerator(trajectory, false);
+        AutonCommand command2 = autonCommandGenerator(trajectory2, false);
+
+        return
+                new SequentialCommandGroup(
+                        new AutoZeroRotryArm(rotary),
+                        new AutoZeroExtensionArm(extension),
+                        new ToggleManipulator(m_manipulator),
+                        new TimedCommand(0.2),
+                        new GoToHighScoring(rotary, extension),
+                        command,
+                        new ToggleManipulator(m_manipulator),
+                        new TimedCommand(0.2),
+                        new ParallelCommandGroup(
+                                command2,
+                                new SequentialCommandGroup(
+                                        new AutoZeroExtensionArm(extension),
+                                        new AutoZeroRotryArm(rotary)
+                                )
+                        ));
+    }
+
+    /**
      * Place a cone in high at start and then place a cube in high.
      * @return the auton command for the generated trajectory wrapped
      */
@@ -559,6 +606,19 @@ public class AutonManager {
 
         AutonCommand command = autonCommandGenerator(trajectory,  false);
         return wrapCmd(command);
+    }
+
+    public CommandBase generateDumbBalance() {
+        PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+                /* Max velocity and acceleration the path will follow along the trapezoid profile */
+                balance_constraints,
+
+                new PathPoint(new Translation2d(0.25, 0),
+                        new Rotation2d(), new Rotation2d()),
+                new PathPoint(new Translation2d(-1.95, 0), new Rotation2d(), new Rotation2d(0))
+        );
+
+        return placeInAuton().andThen(autonCommandGenerator(trajectory, false)).andThen(new RileyPark(m_chassis));
     }
 
 }
