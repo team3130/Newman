@@ -619,10 +619,11 @@ public class AutonManager {
                 balance_constraints,
 
                 List.of(new PathPoint(new Translation2d(0.25, 0),
-                        new Rotation2d(), new Rotation2d()),
-                new PathPoint(new Translation2d(-1.95, 0), new Rotation2d(), new Rotation2d(0)),
-                        new PathPoint(new Translation2d(-3.5, 0), new Rotation2d(), new Rotation2d()),
-                        new PathPoint(new Translation2d(-1.35, 0), new Rotation2d(), new Rotation2d()))
+                        new Rotation2d(
+                        ), new Rotation2d()),
+                new PathPoint(new Translation2d(-1.95, 0), new Rotation2d(Math.PI), new Rotation2d()),
+                        new PathPoint(new Translation2d(-3.35, 0), new Rotation2d(Math.PI), new Rotation2d()),
+                        new PathPoint(new Translation2d(-1.4, 0), new Rotation2d(), new Rotation2d()))
         );
 
         PathPlannerTrajectory trajectory1 = PathPlanner.generatePath(
@@ -657,8 +658,10 @@ public class AutonManager {
                 new ParallelCommandGroup(
                     new SequentialCommandGroup(
                         new AutoZeroExtensionArm(extension),
-                        new AutoZeroRotryArm(rotary))),
-                    command3);
+                        new AutoZeroRotryArm(rotary)),
+                    command3),
+                new RileyPark(m_chassis)
+                );
     }
 
 
