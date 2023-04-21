@@ -134,7 +134,6 @@ public class AutonManager {
         // m_autonChooser.addOption("place high", placeCubeHigh());
         m_autonChooser.addOption("dumb dumb balance", generateDumbBalance());
         m_autonChooser.addOption("place in auton move out and return", placeInAutonConeReturn());
-        m_autonChooser.addOption("lmao", generateLeaveBalance());
 
         
         // m_autonChooser.addOption("marker path 2 cones HP", placeConeHighPlaceCubeHigh()); // really needs to be fixed. markers don't do anything right now yay
@@ -619,23 +618,48 @@ public class AutonManager {
                 /* Max velocity and acceleration the path will follow along the trapezoid profile */
                 balance_constraints,
 
-                new PathPoint(new Translation2d(0.25, 0),
+                List.of(new PathPoint(new Translation2d(0.25, 0),
                         new Rotation2d(), new Rotation2d()),
-                new PathPoint(new Translation2d(-1.95, 0), new Rotation2d(), new Rotation2d(0))
+                new PathPoint(new Translation2d(-1.95, 0), new Rotation2d(), new Rotation2d(0)),
+                        new PathPoint(new Translation2d(-3.5, 0), new Rotation2d(), new Rotation2d()),
+                        new PathPoint(new Translation2d(-1.35, 0), new Rotation2d(), new Rotation2d()))
         );
 
-        return placeInAuton().andThen(autonCommandGenerator(trajectory, false)).andThen(new RileyPark(m_chassis));
-    }
+        PathPlannerTrajectory trajectory1 = PathPlanner.generatePath(
+                safe_constraints,
+                new PathPoint(
+                        new Translation2d(0, 0),
+                        new Rotation2d(0), new Rotation2d()
+                ),
 
-    public CommandBase generateLeaveBalance() {
-        PathPlannerTrajectory trajectory = PathPlanner.generatePath(
-                balance_constraints,
-                List.of(new PathPoint(new Translation2d(-1.95, 0), new Rotation2d(), new Rotation2d()),
-                new PathPoint(new Translation2d(-4, 0), new Rotation2d(), new Rotation2d()),
-                new PathPoint(new Translation2d(-1.65, 0), new Rotation2d(), new Rotation2d()))
+                new PathPoint(new Translation2d(0.75, 0), new Rotation2d(0), new Rotation2d(0))
         );
 
-        return generateDumbBalance().andThen(autonCommandGenerator(trajectory, false));
+        PathPlannerTrajectory trajectory2 = PathPlanner.generatePath(
+                safe_constraints,
+                new PathPoint(
+                        new Translation2d(0.75, 0),
+                        new Rotation2d(0), new Rotation2d()
+                ),
+
+                new PathPoint(new Translation2d(0.25, 0), new Rotation2d(0), new Rotation2d(0))
+        );
+
+        AutonCommand command = autonCommandGenerator(trajectory1, false);
+        AutonCommand command2 = autonCommandGenerator(trajectory2, false);
+        AutonCommand command3 = autonCommandGenerator(trajectory, false);
+        return new SequentialCommandGroup(
+                new ToggleManipulator(m_manipulator),
+                new GoToHighScoring(rotary, extension),
+                wrapCmd(command),
+                new ToggleManipulator(m_manipulator),
+                wrapCmd(command2),
+                new ParallelCommandGroup(
+                    new SequentialCommandGroup(
+                        new AutoZeroExtensionArm(extension),
+                        new AutoZeroRotryArm(rotary))),
+                    command3);
     }
+
 
 }
