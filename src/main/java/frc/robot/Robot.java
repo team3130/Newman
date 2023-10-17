@@ -112,7 +112,7 @@ public class Robot extends TimedRobot {
       // zero the rotary arm into frame perimeter for both safety and resetting encoders.
       CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
       CommandScheduler.getInstance().schedule(m_robotContainer.unClampManipulator());
-
+      CommandScheduler.getInstance().schedule(m_robotContainer.resetEverything());
       
       Navx.setPitchZero(Navx.getPitch());
     }

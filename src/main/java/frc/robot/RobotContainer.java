@@ -278,6 +278,10 @@ public class RobotContainer {
     return m_autonManager.pick();
   }
 
+  public CommandBase resetEverything() {
+    return new ZeroEverything(m_chassis);
+  }
+
   /**
    * Schedules a command to zero the extension arm
    */
