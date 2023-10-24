@@ -48,9 +48,11 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     m_robotContainer.periodic();
+
+    // reset chassis pose every kResetTime seconds
     if (timer.hasElapsed(Constants.kResetTime)) {
       if (Constants.useAprilTags) {
-        if (!haveResetManually) {
+        if (!haveResetManually) { // resets us to 0 0 0 at start
           m_robotContainer.resetOdometryWithoutApril();
           haveResetManually = true;
         } else {
@@ -64,8 +66,7 @@ public class Robot extends TimedRobot {
         timer.stop();
         timer.reset();
       }
-    }
-    else {
+    } else {
       m_robotContainer.updateChassisPose();
     }
     

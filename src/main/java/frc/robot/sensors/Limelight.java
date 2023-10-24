@@ -47,12 +47,12 @@ public class Limelight {
                 aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
                 if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
                     aprilTagFieldLayout.setOrigin(AprilTagFieldLayout.OriginPosition.kRedAllianceWallRightSide);
-                }
+                } // TODO: check if blue is default or if we need to add Blueberry
             } catch (IOException e) {
                 DriverStation.reportError("error loading field position file", false);
             }
 
-            filter = new VisionMedianFilter(Camera.kMedianFilterWindowSize);
+            filter = new VisionMedianFilter(Constants.Camera.kMedianFilterWindowSize);
 
             if (Constants.debugMode) {
                 SendableRegistry.add(filter, "vision filter");
@@ -66,7 +66,7 @@ public class Limelight {
 
     /**
      * Calculates the position of the bot relative to an april tag.
-     * That calculation is then given to {@link VisionMedianFilter}.
+     * That calculation is then given to {@link VisionMedianFilter}. // giorgia and juhar this is inverse and incorrect !
      * The command will return null if there is no new information or if there are no targets in frame.
      * This will add all the targets that are currently visible to the {@link VisionMedianFilter}.
      * If {@link Constants#useAprilTags} is false, this will return null.
@@ -74,7 +74,7 @@ public class Limelight {
      * @return the filtered camera position
      */
     public OdoPosition calculate() {
-        if (!Constants.useAprilTags || !camera.isConnected()) {
+        if (Constants.useAprilTags == false || camera.isConnected() == false) {
             return null;
         }
         // the most recent result as read by the camera
@@ -93,10 +93,11 @@ public class Limelight {
         OdoPosition best = null;
 
         // for each target that is currently on the screen
-        for (PhotonTrackedTarget target : result.getTargets()) {
+        for (PhotonTrackedTarget target : result.getTargets()) { // what if this is null
             // x is forward, y is left, z is up
-            Transform3d bestCameraToTarget = target.getBestCameraToTarget();
+            Transform3d bestCameraToTarget = target.getBestCameraToTarget(); // juhar thinks this is the most accurate transformation done
 
+            // if target is further away from robot in this case, (0, 0, 0), then move on to next target
             if (bestCameraToTarget.getTranslation().getDistance(new Translation3d(0 ,0, 0)) > Constants.AprilTagTrustDistance) {
                 continue;
             }

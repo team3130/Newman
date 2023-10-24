@@ -83,6 +83,10 @@ public class VisionMedianFilter implements Sendable {
         kP = Constants.kKugelMedianFilterP;
     }
 
+    /*
+    Returns our position at a given time using odemetry
+    Looks at a moving array, or a window of time, that contains multiple snapshots of camera readings
+     */
     public OdoPosition getOdoPose(OdoPosition position) {
         Pose2d pose = position.pose2d;
         x[head] = pose.getX();
@@ -99,8 +103,9 @@ public class VisionMedianFilter implements Sendable {
         head = (head + 1) % bucketSize;
 
         // setup for the search
-        double smallestErrorSeen = Double.MAX_VALUE;
-        int indexOfSmallestError = bucketSize / 2;
+        double smallestErrorSeen = Double.MAX_VALUE; // to be replaced
+        int indexOfSmallestError = bucketSize / 2; // random number assigned
+
         // find the smallest error
         for (int i = 0; i < bucketSize - 1; i++) {
             double error = Math.abs(x[i] - medianX) + Math.abs(y[i] - medianY) + kP * Math.abs(yaw[i] - medianYaw);
