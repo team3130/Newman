@@ -272,7 +272,7 @@ public class RotaryArm extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     builder.setSmartDashboardType("Rotary arm");
     builder.addBooleanProperty("lim switch", this::brokeLimit, null);
-    builder.addDoubleProperty("rotary length", this::getRawTicks, null);
+    //builder.addDoubleProperty("rotary length", this::getRawTicks, null);
     builder.addDoubleProperty("rotary angle", this::getArmAngle, null);
     builder.addBooleanProperty("Brake", this::brakeIsEnabled, null);
   }
@@ -280,8 +280,8 @@ public class RotaryArm extends SubsystemBase {
   /**
    * @return gets the angle of the rotary arm in raw ticks
    */
-  public double getRawTicks() {
+  /*public double getRawTicks() {
     return rotaryMotor.getSelectedSensorPosition();
-  }
+  }*/
 
 }
