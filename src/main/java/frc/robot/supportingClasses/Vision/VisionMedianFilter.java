@@ -84,7 +84,7 @@ public class VisionMedianFilter implements Sendable {
     }
 
     /*
-    Returns our position at a given time using odemetry
+    Returns our position at a given time using odometry
     Looks at a moving array, or a window of time, that contains multiple snapshots of camera readings
      */
     public OdoPosition getOdoPose(OdoPosition position) {

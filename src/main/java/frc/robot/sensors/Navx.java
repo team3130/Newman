@@ -57,6 +57,13 @@ public class Navx {
         return -1;
     }
 
+    public Rotation2d getRotation2d() {
+        if (m_bNavXPresent) {
+            return m_navX.getRotation2d();
+        }
+        return null;
+    }
+
     /**
      * get the angle in radians
      * @return the angle as a rotation 2d (in radians)

@@ -128,6 +128,16 @@ public class Chassis extends SubsystemBase {
     }
 
     /**
+     * Updates the odometry from vision if there is a new value to update position with
+     */
+    public void updateOdometryFromVision() {
+        OdoPosition position = refreshPosition();
+        if (position != null) {
+            updateOdometryFromVision(position);
+        }
+    }
+
+    /**
      * update odometry from april tags
      * @param refreshPosition time and position to set to
      */
@@ -156,16 +166,6 @@ public class Chassis extends SubsystemBase {
      */
     public void updateOdometryFromSwerve() {
         m_odometry.updateWithTime(Timer.getFPGATimestamp(), Navx.getRotation(), generatePoses());
-    }
-
-    /**
-     * Updates the odometry from vision if there is a new value to update position with
-     */
-    public void updateOdometryFromVision() {
-        OdoPosition position = refreshPosition();
-        if (position != null) {
-            updateOdometryFromVision(position);
-        }
     }
 
     /**
