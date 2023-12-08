@@ -16,7 +16,7 @@ public class VisionMedianFilter implements Sendable {
     // hehe
     protected int head;
     // size of elements we want in our moving window
-    protected final int bucketSize;
+    protected final int windowSize;
     
     /**
      * Array for the x positional values
@@ -61,12 +61,12 @@ public class VisionMedianFilter implements Sendable {
      */
     public VisionMedianFilter(int bucketSize) {
         head = 0;
-        if (bucketSize % 2 == 0) {
+        if (bucketSize % 2 == 0) { // if the bucket size is even
             bucketSize--;
         }
 
         else if (bucketSize < 1) {
-            DriverStation.reportError("bucket size is too small", true);
+            DriverStation.reportError("window size is too small", true);
         }
 
         x = new double[bucketSize];
@@ -78,7 +78,7 @@ public class VisionMedianFilter implements Sendable {
         yFilter = new MedianFilter(bucketSize);
         yawFilter = new MedianFilter(bucketSize);
 
-        this.bucketSize = bucketSize;
+        this.windowSize = bucketSize;
 
         kP = Constants.kKugelMedianFilterP;
     }
@@ -100,14 +100,14 @@ public class VisionMedianFilter implements Sendable {
         double medianY = yFilter.calculate(pose.getY());
         double medianYaw = yawFilter.calculate(pose.getRotation().getRadians());
 
-        head = (head + 1) % bucketSize;
+        head = (head + 1) % windowSize;//make sure the window doesn't get bigger than bucket size
 
         // setup for the search
         double smallestErrorSeen = Double.MAX_VALUE; // to be replaced
-        int indexOfSmallestError = bucketSize / 2; // random number assigned
+        int indexOfSmallestError = windowSize / 2; // random number assigned
 
         // find the smallest error
-        for (int i = 0; i < bucketSize - 1; i++) {
+        for (int i = 0; i < windowSize - 1; i++) {
             double error = Math.abs(x[i] - medianX) + Math.abs(y[i] - medianY) + kP * Math.abs(yaw[i] - medianYaw);
             if (error < smallestErrorSeen) {
                 smallestErrorSeen = error;
@@ -150,7 +150,7 @@ public class VisionMedianFilter implements Sendable {
     }
 
     public int getBucketSize() {
-        return bucketSize;
+        return windowSize;
     }
 
     public double[] getX() {

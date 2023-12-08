@@ -144,37 +144,26 @@ public class Chassis extends SubsystemBase {
      * Update odometry with swerve drive. Also updates odometry with vision if the {@link Constants#useAprilTags}'s flag true
      */
     public void updateOdometery() {
-        updateOdometryFromSwerve();
-        if (Constants.useAprilTags && useAprilTags) {
-            updateOdometryFromVision();
-        }
-    }
-
-    /**
-     * periodic call to update odometry from encoders
-     * Also provides a timestamp that the update occurred
-     */
-    public void updateOdometryFromSwerve() {
+        /**
+         * periodic call to update odometry from encoders
+         * Also provides a timestamp that the update occurred
+         */
         m_odometry.updateWithTime(Timer.getFPGATimestamp(), Navx.getRotation(), generatePoses());
-    }
-
-    /**
-     * Updates the odometry from vision if there is a new value to update position with
-     */
-    public void updateOdometryFromVision() {
-        OdoPosition position = refreshPosition();
-        if (position != null) {
-            updateOdometryFromVision(position);
+        if (Constants.useAprilTags && useAprilTags) {
+            /**
+             * Updates the odometry from vision if there is a new value to update position with
+             */
+            /**
+             * Refreshes the position from limelight and it's median filter
+             * @return the odoPosition from limelight
+             */
+            OdoPosition position =  m_limelight.calculate();
+            if (position != null) {
+                updateOdometryFromVision(position);
+            }
         }
     }
 
-    /**
-     * Refreshes the position from limelight and it's median filter
-     * @return the odoPosition from limelight
-     */
-    public OdoPosition refreshPosition() {
-        return m_limelight.calculate();
-    }
 
     /**
      * Flip-flops between field relative and bot relative swerve drive
