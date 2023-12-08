@@ -9,6 +9,7 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Newman_Constants.Constants;
 
+
 /**
  * A special type of median filter that is used to filter out outliers in vision data.
  */
