@@ -5,7 +5,7 @@
 package frc.robot.commands.Chassis.presets;
 
 import frc.robot.subsystems.Chassis;
-import frc.robot.supportingClasses.Vision.AutomaticallyGoToALocation;
+import frc.robot.controls.AutomaticallyGoToALocation;
 import frc.robot.supportingClasses.Auton.AutonManager;
 
 /**
