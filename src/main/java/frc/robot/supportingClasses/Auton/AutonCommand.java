@@ -1,6 +1,5 @@
 package frc.robot.supportingClasses.Auton;
 
-import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.EventMarker;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,7 +15,7 @@ import frc.robot.commands.Manipulator.ToggleManipulator;
 import frc.robot.commands.Placement.AutoZeroExtensionArm;
 import frc.robot.commands.Placement.AutoZeroRotryArm;
 import frc.robot.commands.Placement.presets.*;
-import frc.robot.commands.TimedCommand;
+import frc.robot.controls.TimedCommand;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.ExtensionArm;
 import frc.robot.subsystems.Manipulator;

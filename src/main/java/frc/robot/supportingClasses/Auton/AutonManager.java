@@ -1,12 +1,9 @@
 package frc.robot.supportingClasses.Auton;
 
-import java.util.List;
-
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
-import com.pathplanner.lib.PathPlannerTrajectory.EventMarker;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
@@ -24,8 +21,7 @@ import frc.robot.commands.Manipulator.ToggleManipulator;
 import frc.robot.commands.Placement.AutoZeroExtensionArm;
 import frc.robot.commands.Placement.AutoZeroRotryArm;
 import frc.robot.commands.Placement.presets.GoToHighScoring;
-import frc.robot.commands.Placement.presets.GoToPickupWithinBot;
-import frc.robot.commands.TimedCommand;
+import frc.robot.controls.TimedCommand;
 import frc.robot.subsystems.*;
 
 /**
