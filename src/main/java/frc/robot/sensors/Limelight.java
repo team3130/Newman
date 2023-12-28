@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.Newman_Constants.Constants.Camera;
-import frc.robot.supportingClasses.Vision.VisionMedianFilter;
 import frc.robot.supportingClasses.Vision.OdoPosition;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
@@ -28,7 +27,6 @@ public class Limelight {
 
     private static final ShuffleboardTab tab = Shuffleboard.getTab("PhotonCamera");
     AprilTagFieldLayout aprilTagFieldLayout;
-    VisionMedianFilter filter;
     int successfulUpdates = 0;
 
     GenericEntry n_yaw;
@@ -52,13 +50,6 @@ public class Limelight {
                 DriverStation.reportError("error loading field position file", false);
             }
 
-            filter = new VisionMedianFilter(Constants.Camera.kMedianFilterWindowSize);
-
-            if (Constants.debugMode) {
-                SendableRegistry.add(filter, "vision filter");
-                SmartDashboard.putData(filter);
-            }
-
             n_yaw = Shuffleboard.getTab("PhotonVision").add("Yaw", 0).getEntry();
             n_pitch = Shuffleboard.getTab("PhotonVision").add("Pitch", 0).getEntry();
         }   
@@ -66,9 +57,9 @@ public class Limelight {
 
     /**
      * Calculates the position of the bot relative to an april tag.
-     * That calculation is then given to {@link VisionMedianFilter}. // giorgia and juhar this is inverse and incorrect !
+     * That calculation is then given to filter (deleted). // giorgia and juhar this is inverse and incorrect !
      * The command will return null if there is no new information or if there are no targets in frame.
-     * This will add all the targets that are currently visible to the {@link VisionMedianFilter}.
+     * This will add all the targets that are currently visible to the filter (deleted)
      * If {@link Constants#useAprilTags} is false, this will return null.
      *
      * @return the filtered camera position
@@ -90,7 +81,7 @@ public class Limelight {
         lastReadTime = result.getTimestampSeconds();
 
         // default value for what we will return
-        OdoPosition best = null;
+        OdoPosition bestpos = null;
 
         // for each target that is currently on the screen
         for (PhotonTrackedTarget target : result.getTargets()) { // what if this is null
@@ -122,11 +113,12 @@ public class Limelight {
             /* updates the best value that we will return on the last iteration,
               also passes the read position into the {@link VisionMedianFilter)
              */
-            best = filter.getOdoPose(
-                    new OdoPosition(position.toPose2d(), result.getTimestampSeconds()));
+            //best = filter.getOdoPose(
+            //        new OdoPosition(position.toPose2d(), result.getTimestampSeconds()));
+            bestpos = new OdoPosition(position.toPose2d(), result.getTimestampSeconds());
         }
         // returns the last filtered value that we checked in the above for loop
-        return best;
+        return bestpos;
     }
 
 }

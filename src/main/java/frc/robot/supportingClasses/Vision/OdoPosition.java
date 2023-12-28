@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 /**
  * Odometry position. Holds both a position and a time that, that position was measured at.
  * The reason that we have this is because we want to update swerve drive odometry with a position 
- * and the time that we measured it for better accuracy. We also use this as a specific type for {@link frc.robot.supportingClasses.Vision.VisionMedianFilter}.
+ * and the time that we measured it for better accuracy. We also use this as a specific type for visionfilter (deleted)
  */
 public class OdoPosition {
     protected final Pose2d pose2d;
