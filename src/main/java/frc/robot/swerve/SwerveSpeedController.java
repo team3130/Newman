@@ -25,7 +25,7 @@ public class SwerveSpeedController {
 
     private final WPI_TalonFX motor;
 
-    private final double sensorPositionCoefficient;
+    private final double metersPerTick;
     private final double sensorVelocityCoefficient;
     private final double nominalVoltage = 12.0;
 
@@ -34,9 +34,9 @@ public class SwerveSpeedController {
     private double referenceVelocity;
 
     public SwerveSpeedController(int port, ModuleConfiguration moduleConfiguration, ShuffleboardContainer container) {
-        sensorPositionCoefficient = Math.PI * moduleConfiguration.getWheelDiameter()
+        metersPerTick = Math.PI * moduleConfiguration.getWheelDiameter()
                 * moduleConfiguration.getDriveReduction() / TICKS_PER_ROTATION;
-        sensorVelocityCoefficient = sensorPositionCoefficient * 10.0;
+        sensorVelocityCoefficient = metersPerTick * 10.0;
 
         TalonFXConfiguration motorConfiguration = new TalonFXConfiguration();
 
@@ -96,7 +96,7 @@ public class SwerveSpeedController {
      * @return position in meters
      */
     public double getStatePosition() {
-        return motor.getSelectedSensorPosition() * sensorPositionCoefficient;
+        return motor.getSelectedSensorPosition() * metersPerTick;
     }
 
     /**
