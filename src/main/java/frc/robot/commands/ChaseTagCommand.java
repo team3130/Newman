@@ -107,7 +107,7 @@ public class ChaseTagCommand extends CommandBase {
 
         if (lastTarget == null) {
             // No target has been visible
-            chassis.stop();
+            chassis.stopModules();
         } else {
             // Drive to the target
             var xSpeed = xController.calculate(robotPose.getX());
@@ -125,7 +125,9 @@ public class ChaseTagCommand extends CommandBase {
                 omegaSpeed = 0;
             }
 
-            drivetrainSubsystem.drive(
+            drive(double x, double y, double theta, boolean fieldRelative)
+
+            chassis.drive(
                     ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, omegaSpeed, robotPose2d.getRotation()));
         }
     }
