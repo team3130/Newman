@@ -453,6 +453,14 @@ public class Chassis extends SubsystemBase {
     }
 
     /**
+     * Sets the desired chassis speeds
+     * @param chassisSpeeds desired chassis speeds
+     */
+    public void drive(ChassisSpeeds chassisSpeeds) {
+        desiredChassisSpeeds = chassisSpeeds;
+    }
+
+    /**
      * Our main method to drive using three variables. Locked to field relative or robot oriented based off of {@link #fieldRelative}.
      * @param x the velocity in the x dimension m/s
      * @param y the velocity in the y dimension m/s
