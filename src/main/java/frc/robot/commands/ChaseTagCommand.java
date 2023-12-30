@@ -110,23 +110,23 @@ public class ChaseTagCommand extends CommandBase {
             drivetrainSubsystem.stop();
         } else {
             // Drive to the target
-            var xSpeed = xController.calculate(robotPose.getX());
+            var xOutput = xController.calculate(robotPose.getX());
             if (xController.atGoal()) {
-                xSpeed = 0;
+                xOutput = 0;
             }
 
-            var ySpeed = yController.calculate(robotPose.getY());
+            var yOutput = yController.calculate(robotPose.getY());
             if (yController.atGoal()) {
-                ySpeed = 0;
+                yOutput = 0;
             }
 
-            var omegaSpeed = omegaController.calculate(robotPose2d.getRotation().getRadians());
+            var thetaOutput = omegaController.calculate(robotPose2d.getRotation().getRadians());
             if (omegaController.atGoal()) {
-                omegaSpeed = 0;
+                thetaOutput = 0;
             }
 
             drivetrainSubsystem.drive(
-                    ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, omegaSpeed, robotPose2d.getRotation()));
+                    ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, thetaOutput, robotPose2d.getRotation()));
         }
     }
 
