@@ -17,7 +17,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Chassis;
 
 public class ChaseTagCommand extends CommandBase {
 
@@ -32,36 +32,36 @@ public class ChaseTagCommand extends CommandBase {
                     new Rotation3d(0.0, 0.0, Math.PI));
 
     private final PhotonCamera photonCamera;
-    private final DrivetrainSubsystem drivetrainSubsystem;
+    private final Chassis chassis;
     private final Supplier<Pose2d> poseProvider;
 
     private final ProfiledPIDController xController = new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
     private final ProfiledPIDController yController = new ProfiledPIDController(3, 0, 0, Y_CONSTRAINTS);
-    private final ProfiledPIDController omegaController = new ProfiledPIDController(2, 0, 0, OMEGA_CONSTRAINTS);
+    private final ProfiledPIDController thetaController = new ProfiledPIDController(2, 0, 0, OMEGA_CONSTRAINTS);
 
     private PhotonTrackedTarget lastTarget;
 
     public ChaseTagCommand(
             PhotonCamera photonCamera,
-            DrivetrainSubsystem drivetrainSubsystem,
+            Chassis chassis,
             Supplier<Pose2d> poseProvider) {
         this.photonCamera = photonCamera;
-        this.drivetrainSubsystem = drivetrainSubsystem;
+        this.chassis = chassis;
         this.poseProvider = poseProvider;
 
         xController.setTolerance(0.2);
         yController.setTolerance(0.2);
-        omegaController.setTolerance(Units.degreesToRadians(3));
-        omegaController.enableContinuousInput(-Math.PI, Math.PI);
+        thetaController.setTolerance(Units.degreesToRadians(3));
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-        addRequirements(drivetrainSubsystem);
+        addRequirements(chassis);
     }
 
     @Override
     public void initialize() {
         lastTarget = null;
         var robotPose = poseProvider.get();
-        omegaController.reset(robotPose.getRotation().getRadians());
+        thetaController.reset(robotPose.getRotation().getRadians());
         xController.reset(robotPose.getX());
         yController.reset(robotPose.getY());
     }
@@ -101,13 +101,13 @@ public class ChaseTagCommand extends CommandBase {
                 // Drive
                 xController.setGoal(goalPose.getX());
                 yController.setGoal(goalPose.getY());
-                omegaController.setGoal(goalPose.getRotation().getRadians());
+                thetaController.setGoal(goalPose.getRotation().getRadians());
             }
         }
 
         if (lastTarget == null) {
             // No target has been visible
-            drivetrainSubsystem.stop();
+            chassis.stop();
         } else {
             // Drive to the target
             var xSpeed = xController.calculate(robotPose.getX());
@@ -120,8 +120,8 @@ public class ChaseTagCommand extends CommandBase {
                 ySpeed = 0;
             }
 
-            var omegaSpeed = omegaController.calculate(robotPose2d.getRotation().getRadians());
-            if (omegaController.atGoal()) {
+            var omegaSpeed = thetaController.calculate(robotPose2d.getRotation().getRadians());
+            if (thetaController.atGoal()) {
                 omegaSpeed = 0;
             }
 
