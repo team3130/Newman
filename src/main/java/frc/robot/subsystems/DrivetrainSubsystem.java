@@ -197,7 +197,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // Set the swerve module states
         if (desiredChassisSpeeds != null) {
             var desiredStates = DrivetrainConstants.KINEMATICS.toSwerveModuleStates(desiredChassisSpeeds);
-            if(desiredChassisSpeeds.vxMetersPerSecond == 0.0 && desiredChassisSpeeds.vyMetersPerSecond == 0.0
+            if (desiredChassisSpeeds.vxMetersPerSecond == 0.0 && desiredChassisSpeeds.vyMetersPerSecond == 0.0
                     && desiredChassisSpeeds.omegaRadiansPerSecond == 0.0) {
                 var currentStates = getModuleStates();
                 // Keep the wheels at their current angle when stopped, don't snap back to straight
