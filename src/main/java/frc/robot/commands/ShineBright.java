@@ -4,11 +4,11 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.LEDs;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.LEDs;
 
 /** An example command that uses an example subsystem. */
-public class ExampleCommand extends CommandBase {
+public class ShineBright extends CommandBase {
 
   /**
    * The subsystem that this command requires
@@ -20,7 +20,7 @@ public class ExampleCommand extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ExampleCommand(LEDs subsystem) {
+  public ShineBright(LEDs subsystem) {
     m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -30,13 +30,22 @@ public class ExampleCommand extends CommandBase {
    * Called when the command is initially scheduled.
    */
   @Override
-  public void initialize() {}
+  public void initialize() {
+
+  }
 
   /**
    * Called every time the scheduler runs while the command is scheduled.
    */
   @Override
-  public void execute() {}
+  public void execute() {
+      for (var i = 0; i < LEDs.m_ledBuffer.getLength(); i++) {
+        // Sets the specified LED to the RGB values for red
+        LEDs.m_ledBuffer.setRGB(i, 255, 0, 0);
+      }
+
+      LEDs.m_led.setData(LEDs.m_ledBuffer);
+  }
 
   /**
    * Called once the command ends or is interrupted.

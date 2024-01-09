@@ -4,16 +4,12 @@
 
 package frc.robot.commands.Balance;
 
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import frc.robot.Newman_Constants.Constants;
 import frc.robot.sensors.Navx;
 import frc.robot.subsystems.Chassis;
-import frc.robot.subsystems.ExampleSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class SearchBalance extends CommandBase {

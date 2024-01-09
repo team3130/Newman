@@ -46,6 +46,7 @@ import frc.robot.commands.Placement.presets.GoToHighScoring;
 import frc.robot.commands.Placement.presets.GoToMidScoringCones;
 import frc.robot.commands.Placement.presets.GoToMidScoringCube;
 import frc.robot.commands.Placement.presets.GoToPickupOffGround;
+import frc.robot.commands.ShineBright;
 import frc.robot.controls.JoystickTrigger;
 import frc.robot.sensors.Limelight;
 import frc.robot.sensors.Navx;
@@ -82,6 +83,7 @@ public class RobotContainer {
    * For more button bindings see {@link #configureButtonBindings()}
    */
   private final XboxController m_weaponsGamepad;
+  private LEDs m_led = new LEDs();
 
   /**
    * The chassis singleton.
@@ -165,6 +167,8 @@ public class RobotContainer {
     m_rotaryArm.setDefaultCommand(new MoveRotaryArm(m_rotaryArm, m_extensionArm, m_weaponsGamepad));
     m_extensionArm.setDefaultCommand(new MoveExtensionArm(m_extensionArm, m_weaponsGamepad));
 
+    //m_led.setDefaultCommand(new ShineBright(m_led));
+
     configureButtonBindings();
     vomitShuffleBoardData();
     
@@ -236,6 +240,7 @@ public class RobotContainer {
 
     //Intake
     new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_Y).whileTrue(new SpinHopper(m_hopper));
+    new JoystickButton(m_weaponsGamepad, Constants.Buttons.LST_BTN_A).whileTrue(new ShineBright(m_led));
 /*    new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_S).whileTrue(new ReverseHopper(m_hopper, m_pivot));
     new POVButton(m_weaponsGamepad, Constants.Buttons.LST_POV_N).whileTrue(new UnjamHopper(m_hopper));*/
 

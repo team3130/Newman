@@ -8,7 +8,9 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Newman_Constants.Constants;
+import frc.robot.commands.ShineBright;
 import frc.robot.sensors.Navx;
+import frc.robot.subsystems.LEDs;
 
 public class Robot extends TimedRobot {
 
@@ -36,7 +38,8 @@ public class Robot extends TimedRobot {
     timer = new Timer();
     timer.reset();
     timer.start();
-  }
+    }
+
 
   /**
    * Gets ran every loop while code is running on the roborio.
@@ -69,7 +72,8 @@ public class Robot extends TimedRobot {
     } else {
       m_robotContainer.updateChassisPose();
     }
-    
+
+
   }
 
     @Override
@@ -112,9 +116,9 @@ public class Robot extends TimedRobot {
     public void teleopInit () {
       CommandScheduler.getInstance().cancelAll();
       // zero the rotary arm into frame perimeter for both safety and resetting encoders.
-      CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
+      //CommandScheduler.getInstance().schedule(m_robotContainer.zeroCommand());
       CommandScheduler.getInstance().schedule(m_robotContainer.unClampManipulator());
-      CommandScheduler.getInstance().schedule(m_robotContainer.resetEverything());
+    //  CommandScheduler.getInstance().schedule(m_robotContainer.resetEverything());
       
       Navx.setPitchZero(Navx.getPitch());
     }
